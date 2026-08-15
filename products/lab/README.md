@@ -1,6 +1,6 @@
 # LightUI site
 
-工作区的可呈现面：作品集（study）+ 笔记 + 关于。
+工作区的可呈现面：作品集（study）+ 图谱 + 笔记。
 
 ```bash
 # 在仓库根目录
@@ -18,6 +18,5 @@ make dev
 | `/s/<slug>` | 演示 / 理念 |
 | `/notes` | 笔记索引 |
 | `/notes/<slug>` | 一篇笔记 |
-| `/about` | 关于 |
 
 笔记原文在仓库根 `writing/`。

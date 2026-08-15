@@ -3,7 +3,6 @@ import { Shell } from "./components/Shell";
 import { messages } from "./lib/i18n";
 import { parseRoute, usePath } from "./lib/nav";
 import { usePrefs } from "./lib/prefs";
-import { About } from "./pages/About";
 import { Graph } from "./pages/Graph";
 import { Home } from "./pages/Home";
 import { NotePage } from "./pages/NotePage";
@@ -22,7 +21,6 @@ export function App() {
       {route.name === "study" ? <StudyPage slug={route.slug} /> : null}
       {route.name === "notes" ? <Notes /> : null}
       {route.name === "note" ? <NotePage slug={route.slug} /> : null}
-      {route.name === "about" ? <About /> : null}
       {route.name === "missing" ? <NotFound path={route.path} /> : null}
     </Shell>
   );

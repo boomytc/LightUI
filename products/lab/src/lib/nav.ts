@@ -43,7 +43,6 @@ export type Route =
   | { name: "study"; slug: string }
   | { name: "notes" }
   | { name: "note"; slug: string }
-  | { name: "about" }
   | { name: "graph" }
   | { name: "missing"; path: string };
 
@@ -52,7 +51,6 @@ export function parseRoute(path: string): Route {
   if (clean === "/") return { name: "home" };
   if (clean === "/studies") return { name: "studies" };
   if (clean === "/notes") return { name: "notes" };
-  if (clean === "/about") return { name: "about" };
   if (clean === "/graph") return { name: "graph" };
 
   const study = /^\/s\/([^/]+)$/.exec(clean);

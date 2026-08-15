@@ -18,8 +18,8 @@ aggregate commands, and project skills.
 skills/                  agent workflows for this repo
 design/                  visual source (tokens, base, favicon)
 docs/                    catalog, conventions, study / writing contracts
-writing/                 public notes and about (the site blog)
-products/lab/            the site: home, studies, notes, about
+writing/                 public notes (the site blog)
+products/lab/            the site: home, studies, graph, notes
 studies/<slug>/          one idea + isolated playground
 scripts/sync-catalog.mjs regenerate docs/catalog.md
 ```
@@ -33,7 +33,7 @@ at the repository root.
 | --- | --- |
 | New or extracted UI idea | `studies/<slug>/` |
 | Catalog browsing, study frame, site chrome | `products/lab/` |
-| Public essay / about copy | `writing/` |
+| Public essay | `writing/notes/` |
 | Color, type, radius, shadow | `design/tokens.css` |
 | How to add a study | `docs/conventions.md` + `docs/study-contract.md` |
 | Agent procedure | `skills/lightui*` |

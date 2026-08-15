@@ -2,8 +2,8 @@
 name: lightui-lab
 description: >
   Build or restyle the LightUI public site in products/lab: home, studies
-  portfolio, notes/blog, about, study frame, routing. Use when changing
-  the presentable index, /studies, /graph, /notes, /about, /s/:slug, lab chrome,
+  portfolio, notes/blog, study frame, routing. Use when changing
+  the presentable index, /studies, /graph, /notes, /s/:slug, lab chrome,
   or the user says lab UI / catalog / 作品集 / 博客 / LightUI site.
   Slash command: /lightui-lab.
 ---
@@ -27,11 +27,11 @@ Do not link out to sibling private repositories.
 
 ## Routes
 
-`/` home · `/studies` · `/graph` · `/s/<slug>` · `/notes` · `/notes/<slug>` · `/about`
+`/` home · `/studies` · `/graph` · `/s/<slug>` · `/notes` · `/notes/<slug>`
 
 ## Verify
 
 Home shows a featured study and latest notes. `/studies` lists every
-`active` / `draft` study. `/notes` lists `writing/notes`. About renders
-`writing/about.md`. After visual changes, check desktop and ~390px;
+`active` / `draft` study. `/notes` lists `writing/notes`. After visual
+changes, check desktop and ~390px;
 no page-level horizontal scroll.

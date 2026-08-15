@@ -1,6 +1,6 @@
 # LightUI site (`products/lab`)
 
-Public face of the workspace: portfolio of studies, notes, about.
+Public face of the workspace: portfolio of studies, graph, notes.
 This directory is a product root.
 
 ## Commands

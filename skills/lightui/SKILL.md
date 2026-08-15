@@ -17,7 +17,7 @@ Read `AGENTS.md` first.
 | --- | --- |
 | New idea, extract/replicate an interaction, change a playground | `studies/<slug>/` and follow **lightui-study** |
 | Catalog home, study frame, site chrome, routing | `products/lab/` and follow **lightui-lab** |
-| Public note / about copy | `writing/` (`docs/writing.md`) |
+| Public note | `writing/notes/` (`docs/writing.md`) |
 | Color, type, radius, shadow | `design/tokens.css` |
 | Index / how-to | `docs/catalog.md`, `docs/conventions.md`, `docs/study-contract.md` |
 | Explainer films (generated) | `make films` — do not commit stills or mp4s |

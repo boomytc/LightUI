@@ -4,7 +4,7 @@
 
 仓库：<https://github.com/boomytc/LightUI>
 
-可呈现入口是站点（`products/lab`）：作品、图谱、笔记、关于。每个理念是独立的 `studies/<slug>/`。
+可呈现入口是站点（`products/lab`）：作品、图谱、笔记。每个理念是独立的 `studies/<slug>/`。
 
 ## 怎么用
 
@@ -31,7 +31,7 @@ design/                       色板、字体、圆角（站点与 study 共用�
 docs/catalog.md               由 study.json 生成的索引
 docs/writing.md               公开笔记约定
 writing/                      关于页 + 笔记原文
-products/lab/                 站点：首页 / 作品 / 图谱 / 笔记 / 关于
+products/lab/                 站点：首页 / 作品 / 图谱 / 笔记
 studies/<slug>/               一则理念 + 独立 playground
 ```
 

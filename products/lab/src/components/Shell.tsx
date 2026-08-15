@@ -9,7 +9,6 @@ const NAV = [
   { href: "/studies", key: "navWorks" as const, match: (p: string) => p === "/studies" || p.startsWith("/s/") },
   { href: "/graph", key: "navGraph" as const, match: (p: string) => p === "/graph" },
   { href: "/notes", key: "navNotes" as const, match: (p: string) => p.startsWith("/notes") },
-  { href: "/about", key: "navAbout" as const, match: (p: string) => p === "/about" },
 ];
 
 export function Shell({ children }: { children: ReactNode }) {
@@ -21,22 +20,22 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="flex min-h-dvh flex-col bg-bg text-fg">
       <header className="border-b border-border bg-surface/80 backdrop-blur-sm">
         <div className="page-width flex h-14 items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-2.5 no-underline">
-            <span className="grid size-7 place-items-center rounded-md bg-fg text-surface" aria-hidden="true">
-              <svg viewBox="0 0 24 24" className="size-3.5" fill="none">
-                <path
-                  d="M5 19 19 5v14Z"
-                  fill="currentColor"
-                  fillOpacity="0.35"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                />
-              </svg>
-            </span>
-            <span className="text-[15px] font-semibold tracking-tight">LightUI</span>
-          </Link>
-          <div className="flex items-center gap-1">
-            <nav className="mr-1 hidden items-center gap-1 sm:flex" aria-label="site">
+          <div className="flex min-w-0 items-center gap-5">
+            <Link href="/" className="flex items-center gap-2.5 no-underline">
+              <span className="grid size-7 place-items-center rounded-md bg-fg text-surface" aria-hidden="true">
+                <svg viewBox="0 0 24 24" className="size-3.5" fill="none">
+                  <path
+                    d="M5 19 19 5v14Z"
+                    fill="currentColor"
+                    fillOpacity="0.35"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                  />
+                </svg>
+              </span>
+              <span className="text-[15px] font-semibold tracking-tight">LightUI</span>
+            </Link>
+            <nav className="hidden items-center gap-0.5 sm:flex" aria-label="site">
               {NAV.map((item) => {
                 const active = item.match(path);
                 return (
@@ -55,6 +54,8 @@ export function Shell({ children }: { children: ReactNode }) {
                 );
               })}
             </nav>
+          </div>
+          <div className="flex shrink-0 items-center gap-1">
             <IconButton
               label={locale === "zh" ? copy.langToEn : copy.langToZh}
               onClick={toggleLocale}
