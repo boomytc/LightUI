@@ -1,5 +1,5 @@
-import { DateStamp } from "../components/DateStamp";
 import { Link } from "../components/Link";
+import { NoteItem } from "../components/NoteItem";
 import { Page } from "../components/Page";
 import { StudyCard } from "../components/StudyCard";
 import { loadStudies } from "../lib/catalog";
@@ -71,23 +71,7 @@ export function Home() {
           ) : (
             <ul className="mt-4 divide-y divide-border border-y border-border">
               {latestNotes.map((note) => (
-                <li key={note.slug}>
-                  <Link
-                    href={`/notes/${note.slug}`}
-                    className="flex flex-col gap-1 py-4 no-underline sm:flex-row sm:items-baseline sm:gap-6"
-                  >
-                    <DateStamp
-                      created={note.date}
-                      updated={note.updated}
-                      locale={locale}
-                      className="shrink-0 font-mono text-[12px] text-fg-subtle"
-                    />
-                    <span className="min-w-0">
-                      <span className="block text-[15px] font-medium text-fg">{note.title}</span>
-                      <span className="mt-1 block text-[13px] leading-relaxed text-fg-muted">{note.summary}</span>
-                    </span>
-                  </Link>
-                </li>
+                <NoteItem key={note.slug} note={note} locale={locale} compact />
               ))}
             </ul>
           )}

@@ -171,14 +171,14 @@ export function Markdown({ source }: { source: string }) {
         }
         if (block.type === "p") {
           return (
-            <p key={i} className="text-[15px] leading-relaxed text-fg-muted">
+            <p key={i} className="text-[15px] leading-[1.75] text-fg">
               {inline(block.text)}
             </p>
           );
         }
         if (block.type === "ul") {
           return (
-            <ul key={i} className="list-disc space-y-1.5 pl-5 text-[15px] leading-relaxed text-fg-muted">
+            <ul key={i} className="list-disc space-y-1.5 pl-5 text-[15px] leading-[1.75] text-fg">
               {block.items.map((item, j) => (
                 <li key={j}>{inline(item)}</li>
               ))}
@@ -187,7 +187,7 @@ export function Markdown({ source }: { source: string }) {
         }
         if (block.type === "ol") {
           return (
-            <ol key={i} className="list-decimal space-y-1.5 pl-5 text-[15px] leading-relaxed text-fg-muted">
+            <ol key={i} className="list-decimal space-y-1.5 pl-5 text-[15px] leading-[1.75] text-fg">
               {block.items.map((item, j) => (
                 <li key={j}>{inline(item)}</li>
               ))}

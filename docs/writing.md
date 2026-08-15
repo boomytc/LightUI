@@ -31,3 +31,8 @@ The site discovers notes with `import.meta.glob`. Do not edit a registry.
 Keep notes short. A study's `idea.md` stays the technical write-up; a note
 is the public essay around it. You may link other studies by name. Do not
 number them (“第一则”, “第四则”) — the count goes stale.
+
+The lab renders `related` as a try-card under the essay. Do not also open
+the body by linking that same study. Link a contrast or the graph only
+when they ask a different question. When a paragraph names several
+models, write them as a short list.
