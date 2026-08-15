@@ -7,10 +7,10 @@ import { cn } from "../lib/utils";
 import { FieldLabel, Frame, TriggerButton } from "./Frame";
 import { Popover } from "./Popover";
 
-export function MultiSelectDemo() {
+export function MultiSelectDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [selected, setSelected] = useState<string[]>(["design"]);
 
   return (

@@ -7,6 +7,7 @@ export type LoadedStudy = {
   meta: StudyMeta;
   ideas: { zh: string; en: string };
   StudyView?: ComponentType;
+  StageView?: ComponentType;
 };
 
 const metaModules = import.meta.glob("../../../../studies/*/study.json", {
@@ -30,6 +31,10 @@ const viewModules = import.meta.glob("../../../../studies/*/src/StudyView.tsx", 
   eager: true,
 }) as Record<string, { StudyView?: ComponentType }>;
 
+const stageModules = import.meta.glob("../../../../studies/*/src/StageView.tsx", {
+  eager: true,
+}) as Record<string, { StageView?: ComponentType }>;
+
 function dirOf(jsonPath: string): string {
   return jsonPath.replace(/\/study\.json$/, "");
 }
@@ -45,6 +50,7 @@ export function loadStudies(): LoadedStudy[] {
         en: ideaEnModules[`${dir}/idea.en.md`] ?? zh,
       },
       StudyView: viewModules[`${dir}/src/StudyView.tsx`]?.StudyView,
+      StageView: stageModules[`${dir}/src/StageView.tsx`]?.StageView,
     };
   });
 

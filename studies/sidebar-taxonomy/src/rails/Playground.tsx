@@ -75,7 +75,7 @@ export function Playground() {
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
         <div data-film="play">
-          <Demo id={meta.id} />
+          <KindDemo id={meta.id} />
         </div>
 
         <ul className="mt-4 flex flex-wrap gap-2">
@@ -126,7 +126,7 @@ function SpecCard({ text, locale }: { text: string; locale: "zh" | "en" }) {
   );
 }
 
-function Demo({ id }: { id: KindId }) {
+export function KindDemo({ id, defaultOpen }: { id: KindId; defaultOpen?: boolean }) {
   switch (id) {
     case "floating":
       return <FloatingDemo />;
@@ -137,6 +137,6 @@ function Demo({ id }: { id: KindId }) {
     case "collapsible":
       return <CollapsibleDemo />;
     case "offcanvas":
-      return <OffCanvasDemo />;
+      return <OffCanvasDemo defaultOpen={defaultOpen} />;
   }
 }

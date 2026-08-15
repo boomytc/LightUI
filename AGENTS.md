@@ -37,7 +37,7 @@ at the repository root.
 | Color, type, radius, shadow | `design/tokens.css` |
 | How to add a study | `docs/conventions.md` + `docs/study-contract.md` |
 | Agent procedure | `skills/lightui*` |
-| Explainer films (generated) | `make films` — do not commit mp4 / stills into this repo |
+| Fixture stills (generated) | `make stills` from `/s/<slug>/stage` — do not commit png / mp4 |
 
 Do not create empty study folders. Do not start a workspace-level component
 library. If two studies later share a true primitive, extract it then.

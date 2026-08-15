@@ -1,6 +1,11 @@
+import { StageView } from "./StageView";
 import { StudyView } from "./StudyView";
 
 export function App() {
+  if (new URLSearchParams(window.location.search).has("stage")) {
+    return <StageView />;
+  }
+
   return (
     <div className="min-h-dvh bg-bg text-fg">
       <header className="page-width flex items-center gap-3 py-4">

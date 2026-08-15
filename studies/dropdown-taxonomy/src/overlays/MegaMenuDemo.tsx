@@ -33,9 +33,9 @@ const ICONS: Record<MegaIcon, ComponentType<{ className?: string }>> = {
   book: BookOpen,
 };
 
-export function MegaMenuDemo() {
+export function MegaMenuDemo({ defaultOpen = true }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(defaultOpen);
   const [picked, setPicked] = useState<string | null>(null);
 
   return (

@@ -79,7 +79,7 @@ export function Playground() {
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
         <div data-film="play">
-          <Demo id={meta.id} />
+          <KindDemo id={meta.id} />
         </div>
 
         <ul className="mt-4 flex flex-wrap gap-2">
@@ -130,7 +130,7 @@ function SpecCard({ text, locale }: { text: string; locale: "zh" | "en" }) {
   );
 }
 
-function Demo({ id }: { id: KindId }) {
+export function KindDemo({ id, defaultOpen }: { id: KindId; defaultOpen?: boolean }) {
   switch (id) {
     case "floating":
       return <FloatingDemo />;
@@ -139,13 +139,13 @@ function Demo({ id }: { id: KindId }) {
     case "breadcrumb":
       return <BreadcrumbDemo />;
     case "dropdown":
-      return <DropdownDemo />;
+      return <DropdownDemo defaultOpen={defaultOpen} />;
     case "mega":
-      return <MegaDemo />;
+      return <MegaDemo defaultOpen={defaultOpen} />;
     case "drawer":
-      return <DrawerDemo />;
+      return <DrawerDemo defaultOpen={defaultOpen} />;
     case "overlay":
-      return <OverlayDemo />;
+      return <OverlayDemo defaultOpen={defaultOpen} />;
     case "scrollspy":
       return <ScrollspyDemo />;
     case "shrink":

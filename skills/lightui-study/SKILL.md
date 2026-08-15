@@ -28,8 +28,10 @@ Do not invent a second copy of these rules. Follow the files:
    answers) and `links` to the next question (`after`) or a mix-up
    (`contrast`). Do not list neighbor studies in `idea.md`.
 4. Implement the playground in `studies/<slug>/`. Export
-   `StudyView` from `src/StudyView.tsx`. Standalone chrome stays in
-   `src/App.tsx` only.
+   `StudyView` from `src/StudyView.tsx` and `StageView` from
+   `src/StageView.tsx` (one kind, one locked state, no chrome).
+   Standalone chrome stays in `src/App.tsx` only (`?stage=1` mounts
+   the stage).
 5. Relative imports only. Tokens from `design/tokens.css`. Bind
    `127.0.0.1`. Give the study its own port (lab is 5173; next free is
    in `docs/conventions.md`).
@@ -43,5 +45,6 @@ Do not invent a second copy of these rules. Follow the files:
 Copy the teaching surface and the rule (geometry, timing, state). Leave
 behind routers, auth, databases, PWA, preview bridges, and deploy
 adapters. Do not copy sandbox screenshots or source clips. Do not commit
-stills or mp4s into `references/` — those are generated (`make films`)
-and gitignored. `SOURCE.md` is operator-only if present.
+stills or mp4s into `references/` — those are generated from the
+stage (`make stills`) and gitignored. `SOURCE.md` is operator-only
+if present. Do not screenshot `/s/<slug>` teaching pages.

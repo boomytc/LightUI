@@ -3,6 +3,7 @@
 Machine-readable unit: `studies/<slug>/study.json`.
 Human write-up: `studies/<slug>/idea.md`.
 Mount surface: `studies/<slug>/src/StudyView.tsx` exporting `StudyView`.
+Optional stage: `studies/<slug>/src/StageView.tsx` exporting `StageView`.
 Generated stills and films are not part of the contract.
 
 The lab (`products/lab`) discovers studies with `import.meta.glob` on those
@@ -62,10 +63,26 @@ export function StudyView() {
   each provide chrome.
 - Bind standalone `vite` to `127.0.0.1`.
 
+## `StageView`
+
+```tsx
+export function StageView() {
+  // one kind, one locked state, no lab chrome
+}
+```
+
+The stage is how this repo presents a fixture: one kind, one complete
+state, no site header, no「说清楚」, no sibling modules. Lab mounts it at
+`/s/<slug>/stage?kind=<id>&state=closed|open` and does not put that URL
+in the site nav. Standalone playgrounds use `?stage=1` with the same
+query. Stills are captured from this URL (`make stills`), not from the
+teaching page.
+
 ## Discovery paths (from `products/lab/src/lib/catalog.ts`)
 
 ```
 ../../../../studies/*/study.json
 ../../../../studies/*/idea.md
 ../../../../studies/*/src/StudyView.tsx
+../../../../studies/*/src/StageView.tsx
 ```

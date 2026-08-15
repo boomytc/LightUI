@@ -82,7 +82,7 @@ export function Playground() {
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
         <div data-film="play">
-          <Demo id={meta.id} />
+          <KindDemo id={meta.id} />
         </div>
 
         <ul className="mt-4 flex flex-wrap gap-2">
@@ -139,21 +139,21 @@ function SpecCard({ text, locale }: { text: string; locale: "zh" | "en" }) {
   );
 }
 
-function Demo({ id }: { id: KindId }) {
+export function KindDemo({ id, defaultOpen }: { id: KindId; defaultOpen?: boolean }) {
   switch (id) {
     case "select":
-      return <SelectDemo />;
+      return <SelectDemo defaultOpen={defaultOpen} />;
     case "multi":
-      return <MultiSelectDemo />;
+      return <MultiSelectDemo defaultOpen={defaultOpen} />;
     case "grouped":
-      return <GroupedSelectDemo />;
+      return <GroupedSelectDemo defaultOpen={defaultOpen} />;
     case "cascader":
-      return <CascaderDemo />;
+      return <CascaderDemo defaultOpen={defaultOpen} />;
     case "split":
-      return <SplitButtonDemo />;
+      return <SplitButtonDemo defaultOpen={defaultOpen} />;
     case "mega":
-      return <MegaMenuDemo />;
+      return <MegaMenuDemo defaultOpen={defaultOpen ?? true} />;
     case "date":
-      return <DatePickerDemo />;
+      return <DatePickerDemo defaultOpen={defaultOpen ?? true} />;
   }
 }

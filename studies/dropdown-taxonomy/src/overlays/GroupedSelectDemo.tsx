@@ -6,10 +6,10 @@ import { cn } from "../lib/utils";
 import { FieldLabel, Frame, TriggerButton } from "./Frame";
 import { Popover } from "./Popover";
 
-export function GroupedSelectDemo() {
+export function GroupedSelectDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [value, setValue] = useState("linyi");
   const current = TEAMS.flatMap((g) => g.items).find((item) => item.id === value);
 

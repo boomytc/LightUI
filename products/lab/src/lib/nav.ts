@@ -41,6 +41,7 @@ export type Route =
   | { name: "home" }
   | { name: "studies" }
   | { name: "study"; slug: string }
+  | { name: "stage"; slug: string }
   | { name: "notes" }
   | { name: "note"; slug: string }
   | { name: "graph" }
@@ -52,6 +53,9 @@ export function parseRoute(path: string): Route {
   if (clean === "/studies") return { name: "studies" };
   if (clean === "/notes") return { name: "notes" };
   if (clean === "/graph") return { name: "graph" };
+
+  const stage = /^\/s\/([^/]+)\/stage$/.exec(clean);
+  if (stage?.[1]) return { name: "stage", slug: stage[1] };
 
   const study = /^\/s\/([^/]+)$/.exec(clean);
   if (study?.[1]) return { name: "study", slug: study[1] };

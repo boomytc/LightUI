@@ -6,9 +6,9 @@ import { Frame, HeroWash } from "./Frame";
 
 const ITEMS = [loc("AI 写作", "AI writing"), loc("AI 绘画", "AI image"), loc("效率工具", "Utilities")];
 
-export function DropdownDemo() {
+export function DropdownDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [picked, setPicked] = useState(ITEMS[1]);
 
   return (

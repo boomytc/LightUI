@@ -5,9 +5,9 @@ import { pick, useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { FakeCards, FakeLines, Frame, HeroWash } from "./Frame";
 
-export function OverlayDemo() {
+export function OverlayDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const btnRef = useRef<HTMLButtonElement>(null);
 
   function close() {

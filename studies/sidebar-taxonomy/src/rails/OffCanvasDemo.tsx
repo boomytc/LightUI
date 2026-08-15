@@ -53,9 +53,9 @@ const TOC = [
   },
 ];
 
-export function OffCanvasDemo() {
+export function OffCanvasDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [section, setSection] = useState(TOC[0].id);
   const btnRef = useRef<HTMLButtonElement>(null);
   const panelId = useId();

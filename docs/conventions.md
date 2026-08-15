@@ -36,12 +36,15 @@ studies/<slug>/
   idea.md
   study.json
   src/StudyView.tsx     export function StudyView
+  src/StageView.tsx     export function StageView (fixture, no chrome)
   src/main.tsx          standalone shell only
 ```
 
 Do not commit stills or films. `studies/<slug>/references/` is an optional
-local output of `make films` (gitignored except `SOURCE.md`). The study
-itself is the idea, the machines, and the playground.
+local output (gitignored except `SOURCE.md`). Stills come from this
+repo's stage (`make stills`). Films are optional and may be written back
+later. The study itself is the idea, the machines, the playground, and
+the stage.
 
 `idea.md` is the human catalog unit. It should answer:
 

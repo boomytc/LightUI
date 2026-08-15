@@ -7,11 +7,11 @@ import { cn } from "../lib/utils";
 import { FieldLabel, Frame, TriggerButton } from "./Frame";
 import { Popover } from "./Popover";
 
-export function CascaderDemo() {
+export function CascaderDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState<string[]>([]);
+  const [open, setOpen] = useState(defaultOpen);
+  const [draft, setDraft] = useState<string[]>(defaultOpen ? ["zj", "hz"] : []);
   const [path, setPath] = useState<string[]>([]);
   const columns = columnsOf(REGIONS, draft);
   const labels = regionLabel(REGIONS, path, locale);

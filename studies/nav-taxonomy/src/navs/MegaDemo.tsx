@@ -10,9 +10,9 @@ const MEGA = [
   { title: loc("效率", "Work"), items: [loc("笔记", "Notes"), loc("表格", "Sheets"), loc("自动化", "Automate")] },
 ];
 
-export function MegaDemo() {
+export function MegaDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [picked, setPicked] = useState(MEGA[0].items[1]);
 
   return (

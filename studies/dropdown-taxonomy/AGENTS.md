@@ -27,7 +27,8 @@ The lab mounts `StudyView` at `/s/dropdown-taxonomy`.
 - `src/lib/cascader.ts` — parent expands, leaf commits (no DOM)
 - `src/lib/date-range.ts` — from / to / nights / past lock (no DOM)
 - `src/overlays/` — the seven fixtures
-- `references/` — optional local stills / film from `make films` (not committed)
+- `src/StageView.tsx` — one kind, one locked state, no chrome
+- `references/` — optional local stills from `make stills` (not committed)
 
 ## Rules
 

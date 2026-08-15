@@ -21,11 +21,11 @@ import { Popover } from "./Popover";
 const WEEKDAYS_ZH = ["一", "二", "三", "四", "五", "六", "日"];
 const WEEKDAYS_EN = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
-export function DatePickerDemo() {
+export function DatePickerDemo({ defaultOpen = true }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const today = useMemo(() => todayDay(), []);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(defaultOpen);
   const [month, setMonth] = useState<Day>(() => ({ y: today.y, m: today.m, d: 1 }));
   const [range, setRange] = useState<DateRange>(() => {
     const from = { y: today.y, m: today.m, d: Math.min(today.d + 3, 28) };

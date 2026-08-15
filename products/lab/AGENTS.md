@@ -24,5 +24,6 @@ From workspace root: `make dev`.
 - Tokens come from `design/tokens.css`.
 - Bind to `127.0.0.1`.
 - Keep routing in `src/lib/nav.ts`.
+- `/s/<slug>/stage` is the fixture stage. Do not add it to the site nav.
 
 See `docs/study-contract.md`, `docs/writing.md`, and `skills/lightui-lab/SKILL.md`.

@@ -4,10 +4,10 @@ import { useLocale } from "../lib/site-locale";
 import { Frame } from "./Frame";
 import { Popover } from "./Popover";
 
-export function SplitButtonDemo() {
+export function SplitButtonDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
   const chevronRef = useRef<HTMLButtonElement>(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [draft, setDraft] = useState(
     locale === "en" ? "Write the piece…" : "写下你的文章内容…",
   );

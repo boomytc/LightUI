@@ -27,7 +27,9 @@ Do not link out to sibling private repositories.
 
 ## Routes
 
-`/` home · `/studies` · `/graph` · `/s/<slug>` · `/notes` · `/notes/<slug>`
+`/` home · `/studies` · `/graph` · `/s/<slug>` · `/s/<slug>/stage` · `/notes` · `/notes/<slug>`
+
+`/s/<slug>/stage` is not in the site nav. It is the fixture stage.
 
 ## Verify
 

@@ -7,11 +7,16 @@ import { Graph } from "./pages/Graph";
 import { Home } from "./pages/Home";
 import { NotePage } from "./pages/NotePage";
 import { Notes } from "./pages/Notes";
+import { StagePage } from "./pages/StagePage";
 import { Studies } from "./pages/Studies";
 import { StudyPage } from "./pages/StudyPage";
 
 export function App() {
   const route = parseRoute(usePath());
+
+  if (route.name === "stage") {
+    return <StagePage slug={route.slug} />;
+  }
 
   return (
     <Shell>

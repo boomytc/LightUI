@@ -6,10 +6,10 @@ import { cn } from "../lib/utils";
 import { FieldLabel, Frame, TriggerButton } from "./Frame";
 import { Popover } from "./Popover";
 
-export function SelectDemo() {
+export function SelectDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [value, setValue] = useState<string>("");
   const current = ORDER_STATUSES.find((o) => o.id === value);
 

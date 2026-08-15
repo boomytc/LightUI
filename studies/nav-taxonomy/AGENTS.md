@@ -27,7 +27,8 @@ The lab mounts `StudyView` at `/s/nav-taxonomy`.
 - `src/lib/spy.ts` — pick the intersecting section (no DOM)
 - `src/lib/shrink.ts` — enter 40 / leave 16 (no DOM)
 - `src/navs/` — the nine fixtures
-- `references/` — optional local stills / film from `make films` (not committed)
+- `src/StageView.tsx` — one kind, one locked state, no chrome
+- `references/` — optional local stills from `make stills` (not committed)
 
 ## Rules
 

@@ -1,5 +1,5 @@
 # Makefile
-.PHONY: help catalog install dev dev-study build preview test typecheck clean films films-capture films-tts films-render
+.PHONY: help catalog install dev dev-study build preview test typecheck clean stills films films-capture films-tts films-render
 
 .DEFAULT_GOAL := help
 
@@ -40,6 +40,9 @@ test: ## 运行全部 workspace 测试
 
 typecheck: ## 类型检查全部 workspace
 	npm run typecheck --workspaces --if-present
+
+stills: ## 从本仓库舞台导出 references 静帧（不依赖 LightWeaver）
+	python3 scripts/capture-stage.py $(if $(PROJECT),--project $(PROJECT),)
 
 films-capture: ## 从运行中的 lab 截取 stills（可选 PROJECT=slug）
 	@test -d "$(LIGHTWEAVER)" || { echo "缺少 LightWeaver：$(LIGHTWEAVER)"; exit 1; }
