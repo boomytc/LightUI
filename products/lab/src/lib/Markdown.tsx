@@ -9,6 +9,17 @@ type Block =
   | { type: "pre"; code: string }
   | { type: "table"; headers: string[]; rows: string[][] };
 
+const DEF = /^\*\*(.+?)\*\*[：:]\s*(.*)$/;
+
+function asDefs(items: string[]): { name: string; text: string }[] | null {
+  const defs = items.map((item) => {
+    const match = DEF.exec(item);
+    return match?.[1] != null ? { name: match[1], text: match[2] ?? "" } : null;
+  });
+  if (defs.length === 0 || defs.some((d) => !d)) return null;
+  return defs as { name: string; text: string }[];
+}
+
 function inline(text: string): ReactNode[] {
   const parts: ReactNode[] = [];
   const re = /(\[([^\]]+)\]\(([^)]+)\))|(`[^`]+`)|(\*\*[^*]+\*\*)/g;
@@ -177,6 +188,19 @@ export function Markdown({ source }: { source: string }) {
           );
         }
         if (block.type === "ul") {
+          const defs = asDefs(block.items);
+          if (defs) {
+            return (
+              <dl key={i} className="grid grid-cols-[auto_1fr] items-baseline gap-x-3 gap-y-1.5 text-[15px] leading-[1.75] text-fg">
+                {defs.map((def) => (
+                  <div key={def.name} className="contents">
+                    <dt className="font-medium">{def.name}</dt>
+                    <dd className="min-w-0">{inline(def.text)}</dd>
+                  </div>
+                ))}
+              </dl>
+            );
+          }
           return (
             <ul key={i} className="list-disc space-y-1.5 pl-5 text-[15px] leading-[1.75] text-fg">
               {block.items.map((item, j) => (

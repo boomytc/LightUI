@@ -56,7 +56,7 @@
 
 .page-prose {
   box-sizing: border-box;
-  width: min(46rem, 100%);
+  width: min(40rem, 100%);
   margin-inline: auto;
   padding-inline: clamp(1.25rem, 4vw, 2rem);
 }
