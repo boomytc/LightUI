@@ -39,7 +39,6 @@ Do not invent a second copy of these rules. Follow the files:
 
 Copy the teaching surface and the rule (geometry, timing, state). Leave
 behind routers, auth, databases, PWA, preview bridges, and deploy
-adapters. `references/` should be first-party stills of the lab page and a
-Remotion film via sibling LightWeaver (`make films` from this repo). Do not keep sandbox screenshots
-or source clips. `SOURCE.md` is operator-only — do not surface it on
-the public site.
+adapters. Do not copy sandbox screenshots or source clips. Do not commit
+stills or mp4s into `references/` — those are generated (`make films`)
+and gitignored. `SOURCE.md` is operator-only if present.

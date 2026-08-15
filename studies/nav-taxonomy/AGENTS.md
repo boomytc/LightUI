@@ -27,7 +27,7 @@ The lab mounts `StudyView` at `/s/nav-taxonomy`.
 - `src/lib/spy.ts` — pick the intersecting section (no DOM)
 - `src/lib/shrink.ts` — enter 40 / leave 16 (no DOM)
 - `src/navs/` — the nine fixtures
-- `references/` — first-party lab stills and the Remotion film (`make films`, pipeline in LightWeaver)
+- `references/` — optional local stills / film from `make films` (not committed)
 
 ## Rules
 

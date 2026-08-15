@@ -23,8 +23,11 @@ studies/<slug>/
   study.json
   src/StudyView.tsx     export function StudyView
   src/main.tsx          standalone shell only
-  references/           first-party lab stills + film (`make films` → LightWeaver)
 ```
+
+Do not commit stills or films. `studies/<slug>/references/` is an optional
+local output of `make films` (gitignored except `SOURCE.md`). The study
+itself is the idea, the machines, and the playground.
 
 `idea.md` is the human catalog unit. It should answer:
 

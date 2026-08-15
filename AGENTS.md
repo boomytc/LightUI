@@ -37,7 +37,7 @@ at the repository root.
 | Color, type, radius, shadow | `design/tokens.css` |
 | How to add a study | `docs/conventions.md` + `docs/study-contract.md` |
 | Agent procedure | `skills/lightui*` |
-| Study stills / explainer films | `studies/<slug>/references/` (generate with LightWeaver, or `make films`) |
+| Explainer films (generated) | `make films` — do not commit mp4 / stills into this repo |
 
 Do not create empty study folders. Do not start a workspace-level component
 library. If two studies later share a true primitive, extract it then.
@@ -88,5 +88,5 @@ Standalone study: `make dev-study STUDY=intent-cascade` → `:5174`.
 
 ## Cleanup
 
-Remove transient `dist/`, `.cache/`, and one-off screenshots that are not
-deliberate `references/` fixtures.
+Remove transient `dist/`, `.cache/`, and generated `references/` media.
+Do not commit mp4 or stills.

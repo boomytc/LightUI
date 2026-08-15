@@ -9,3 +9,7 @@ dist
 .env.*
 *.local.yaml
 *.local.yml
+
+# Derived stills / films (regenerate with `make films`). Keep SOURCE.md.
+studies/*/references/*
+!studies/*/references/SOURCE.md

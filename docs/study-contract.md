@@ -3,6 +3,7 @@
 Machine-readable unit: `studies/<slug>/study.json`.
 Human write-up: `studies/<slug>/idea.md`.
 Mount surface: `studies/<slug>/src/StudyView.tsx` exporting `StudyView`.
+Generated stills and films are not part of the contract.
 
 The lab (`products/lab`) discovers studies with `import.meta.glob` on those
 three files. Adding a study does not require editing a registry.

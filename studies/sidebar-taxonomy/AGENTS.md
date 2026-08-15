@@ -27,7 +27,7 @@ The lab mounts `StudyView` at `/s/sidebar-taxonomy`.
 - `src/lib/accordion.ts` — parent toggle / default child (no DOM)
 - `src/lib/space.ts` — occupy vs overlay widths (no DOM)
 - `src/rails/` — the five fixtures
-- `references/` — first-party lab stills and the Remotion film (`make films`, pipeline in LightWeaver)
+- `references/` — optional local stills / film from `make films` (not committed)
 
 ## Rules
 
