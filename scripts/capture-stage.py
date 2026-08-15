@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Capture fixture stills from this repo's stage. Does not call LightWeaver."""
+"""Capture fixture stills from this repo's stage."""
 
 from __future__ import annotations
 

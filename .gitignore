@@ -10,6 +10,6 @@ dist
 *.local.yaml
 *.local.yml
 
-# Derived stills / films. Stills: `make stills`. Keep SOURCE.md.
+# Derived stills (`make stills`). Keep SOURCE.md.
 studies/*/references/*
 !studies/*/references/SOURCE.md

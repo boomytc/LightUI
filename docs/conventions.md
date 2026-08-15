@@ -40,11 +40,10 @@ studies/<slug>/
   src/main.tsx          standalone shell only
 ```
 
-Do not commit stills or films. `studies/<slug>/references/` is an optional
-local output (gitignored except `SOURCE.md`). Stills come from this
-repo's stage (`make stills`). Mp4 write-back is optional (`make films`)
-and is not the source of the fixture. The study itself is the idea, the
-machines, the playground, and the stage.
+Do not commit stills. `studies/<slug>/references/` is optional local
+output (gitignored except `SOURCE.md`). Capture from the stage with
+`make stills`. The study itself is the idea, the machines, the
+playground, and the stage.
 
 `idea.md` is the human catalog unit. It should answer:
 

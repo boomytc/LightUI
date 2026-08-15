@@ -1,11 +1,10 @@
 # Makefile
-.PHONY: help catalog install dev dev-study build preview test typecheck clean stills films films-tts films-render
+.PHONY: help catalog install dev dev-study build preview test typecheck clean stills
 
 .DEFAULT_GOAL := help
 
 STUDY ?= intent-cascade
 LAB_DIR := products/lab
-LIGHTWEAVER ?= $(abspath ../LightWeaver)
 PROJECT ?=
 
 help: ## 显示帮助信息
@@ -43,20 +42,6 @@ typecheck: ## 类型检查全部 workspace
 
 stills: ## 从本仓库舞台导出 references 静帧
 	python3 scripts/capture-stage.py $(if $(PROJECT),--project $(PROJECT),)
-
-# Optional mp4 write-back. Stills are owned here (`make stills`).
-# These targets do nothing unless LIGHTWEAVER exists beside this repo.
-films-tts: ## （可选）合成讲解旁白
-	@test -d "$(LIGHTWEAVER)" || { echo "可选：未找到 $(LIGHTWEAVER)"; exit 1; }
-	$(MAKE) -C "$(LIGHTWEAVER)" films-tts PROJECT="$(PROJECT)"
-
-films-render: ## （可选）渲染 mp4 并写回 references/
-	@test -d "$(LIGHTWEAVER)" || { echo "可选：未找到 $(LIGHTWEAVER)"; exit 1; }
-	$(MAKE) -C "$(LIGHTWEAVER)" films-render LIGHTUI_ROOT="$(CURDIR)" PROJECT="$(PROJECT)"
-
-films: ## （可选）旁白 + 渲染；静帧请用 make stills
-	@test -d "$(LIGHTWEAVER)" || { echo "可选：未找到 $(LIGHTWEAVER)"; exit 1; }
-	$(MAKE) -C "$(LIGHTWEAVER)" films LIGHTUI_ROOT="$(CURDIR)" PROJECT="$(PROJECT)"
 
 clean: ## 清理构建缓存
 	@find products studies -type d \( -name dist -o -name .cache \) -exec rm -rf {} +

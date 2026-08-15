@@ -15,5 +15,3 @@ make stills PROJECT=intent-cascade
 ```
 
 Standalone: `http://127.0.0.1:5174/?stage=1`
-
-Films (`cursor-movement.mp4` / `.en.mp4`) are optional write-back, not the source of the fixture.
