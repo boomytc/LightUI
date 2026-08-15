@@ -42,8 +42,3 @@ export function parseRoute(path: string): Route {
 
   return { name: "missing", path };
 }
-
-export function parseStudySlug(path: string): string | null {
-  const route = parseRoute(path);
-  return route.name === "study" ? route.slug : null;
-}

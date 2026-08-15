@@ -52,8 +52,8 @@ mean editing a registry. Run `make catalog` so `docs/catalog.md` matches.
 
 ## Skills
 
-Repository agent skills live under root-level `skills/<name>/SKILL.md`,
-same as other Light* workspaces. Do not put them in `.grok/skills/`.
+Repository agent skills live under root-level `skills/<name>/SKILL.md`.
+Do not put them in `.grok/skills/`.
 
 - `skills/lightui` — where a change belongs
 - `skills/lightui-study` — extract / add a study
@@ -61,12 +61,15 @@ same as other Light* workspaces. Do not put them in `.grok/skills/`.
 
 ## Boundaries
 
-- Like LightGame / LightAgent: the unit of work lives one level down.
-- Like LightPet: `products/lab` is a standalone product root.
-- Like LightCanvas: bind playgrounds and the lab to `127.0.0.1`.
-- Unlike LightCanvas: this is not a single product. Studies stay independent.
-- When extracting from an external sandbox, copy the idea and the teaching
+- The unit of work lives one level down: `studies/<slug>/` or `products/lab/`.
+- `products/lab` is a standalone product root. Bind it and playgrounds to
+  `127.0.0.1`.
+- This is not a single-app repo. Studies stay independent and do not import
+  each other.
+- When extracting from an external demo, copy the idea and the teaching
   playground. Do not copy auth, PWA, preview bridges, or deploy adapters.
+- Do not mention or link sibling private repositories from this repo's
+  public pages or README.
 
 ## Validation
 

@@ -7,8 +7,7 @@
   "tags": ["pointer", "menu", "geometry"],
   "origin": {
     "kind": "extract",
-    "label": "Grok workspace Aim Menu",
-    "path": "/Users/boom/Downloads/FRjVwOa6ioqosjOI-grok-workspace",
+    "label": "Amazon mega dropdown / menu-aim",
     "lineage": [
       "Amazon mega dropdown (Ben Kamens, 2013)",
       "jquery-menu-aim",

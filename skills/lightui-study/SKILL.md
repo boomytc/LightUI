@@ -29,7 +29,7 @@ Do not invent a second copy of these rules. Follow the files:
    (lab already uses 5173).
 6. Do not edit a lab registry. Discovery is `import.meta.glob`.
 7. Run `make catalog`, then `make test` and `make typecheck`.
-8. Open lab `/` and `/s/<slug>`. Exercise the interaction, not just a
+8. Open `/studies` and `/s/<slug>`. Exercise the interaction, not just a
    screenshot. Check the 理念 tab renders `idea.md`.
 
 ## Extracting from an external project

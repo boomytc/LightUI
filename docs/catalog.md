@@ -7,7 +7,7 @@ Do not keep a second registry.
 
 | Slug | Idea | Origin | Status |
 | --- | --- | --- | --- |
-| [intent-cascade](../studies/intent-cascade/) | 根据鼠标移动方向推测是不是要进子菜单，用安全三角保护斜向穿越，而不是给所有 hover 加一段 delay。 | Grok workspace Aim Menu | active |
+| [intent-cascade](../studies/intent-cascade/) | 根据鼠标移动方向推测是不是要进子菜单，用安全三角保护斜向穿越，而不是给所有 hover 加一段 delay。 | Amazon mega dropdown / menu-aim | active |
 
 ## How to read a row
 

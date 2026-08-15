@@ -1,6 +1,6 @@
 # 菜单意图预测 · 安全三角
 
-从 Grok workspace 的 Aim Menu 演示里抽出来的规则。抽的是判定，不是那套应用脚手架。
+从一则菜单意图预测演示里抽出来的规则。抽的是判定，不是那套应用脚手架。
 
 ## 问题
 
@@ -51,22 +51,16 @@ function predictsIntent(prev, curr, top, bot, pad = 6) {
 
 本 study 把走廊画出来，方便对照调试。
 
-## 从源项目里留下什么、丢掉什么
-
-源路径：`/Users/boom/Downloads/FRjVwOa6ioqosjOI-grok-workspace`
+## 从源演示里留下什么、丢掉什么
 
 留下：
 
-- `geometry.ts` 的三角 / 斜率 / `predictsIntent`
+- 三角 / 斜率 / `predictsIntent`
 - 指针历史、rest delay、gap bridge、进入子菜单后锁定
 - 蓝 / 绿三角 overlay 作为教学层
-- Linear 风格筛选树作为可操作 fixture
+- 筛选树作为可操作 fixture
 - 三组对照手势：斜向穿越、纵向切换、三级穿透
 
-丢掉：
-
-- TanStack Start / Router
-- Better Auth / Neon / PGLite
-- Grok PWA、preview host bridge、OG / 登录头
+丢掉：源演示里的路由、登录、数据库和宿主壳。
 
 抽离时只做了一处结构整理：`useIntentCascade` 接收 `tree` 和 `initialPath`，不再写死演示数据。几何层保持无 DOM。

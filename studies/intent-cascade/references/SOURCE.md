@@ -1,6 +1,6 @@
 # Source
 
-Extracted from the Aim Menu playground in:
+Local extract only. Do not surface this path on the public site.
 
 `/Users/boom/Downloads/FRjVwOa6ioqosjOI-grok-workspace`
 

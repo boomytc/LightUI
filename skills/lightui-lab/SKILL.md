@@ -13,7 +13,7 @@ description: >
 Product root: `products/lab/`. Read its `AGENTS.md`.
 
 This is the unified public face. Do not add a second site product.
-LightWeb stays the person / resume site.
+Do not link out to sibling private repositories.
 
 ## Rules
 

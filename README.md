@@ -2,7 +2,7 @@
 
 存放和探索 UI/UX 理念的工作区：自己实现过的交互，或别处遇到、值得留下来复刻的行为。
 
-可呈现入口是站点（`products/lab`）：作品集、笔记、关于。每个理念仍是独立的 `studies/<slug>/`。个人介绍和履历不在这里，那是 LightWeb。
+可呈现入口是站点（`products/lab`）：作品集、笔记、关于。每个理念是独立的 `studies/<slug>/`。
 
 ## 怎么用
 
@@ -33,12 +33,11 @@ products/lab/                 站点：首页 / 作品 / 笔记 / 关于
 studies/intent-cascade/       第一则：菜单意图预测
 ```
 
-对照其它 Light* 项目：根目录是工作区，可运行单元在下一层。Lab 相当于 LightPet 的 `products/`；study 相当于 LightGame 的 `games/`。
+根目录是工作区，可运行单元在下一层：站点在 `products/lab/`，每则理念在 `studies/<slug>/`。
 
 ## 当前 study
 
-见 [docs/catalog.md](docs/catalog.md)。第一则抽自
-`/Users/boom/Downloads/FRjVwOa6ioqosjOI-grok-workspace` 的 Aim Menu：抽的是安全三角判定和教学 playground，不是那套 Grok / auth / PWA 脚手架。
+见 [docs/catalog.md](docs/catalog.md)。第一则是菜单意图预测：抽的是安全三角判定和教学 playground。
 
 ## 以后怎么长
 
