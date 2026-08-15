@@ -22,7 +22,6 @@ writing/                 public notes and about (the site blog)
 products/lab/            the site: home, studies, notes, about
 studies/<slug>/          one idea + isolated playground
 scripts/sync-catalog.mjs regenerate docs/catalog.md
-tools/study-films/       shim: explainer films live in sibling LightWeaver
 ```
 
 Root `package.json` is a workspace orchestrator only. Do not put app `src/`
@@ -38,7 +37,7 @@ at the repository root.
 | Color, type, radius, shadow | `design/tokens.css` |
 | How to add a study | `docs/conventions.md` + `docs/study-contract.md` |
 | Agent procedure | `skills/lightui*` |
-| Study stills / explainer films | LightWeaver `products/study-films/` → `studies/<slug>/references/` (`make films`) |
+| Study stills / explainer films | `studies/<slug>/references/` (generate with LightWeaver, or `make films`) |
 
 Do not create empty study folders. Do not start a workspace-level component
 library. If two studies later share a true primitive, extract it then.
