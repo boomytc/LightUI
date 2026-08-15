@@ -46,7 +46,7 @@ To specify one of these, say three things:
 
 ## Relation to menu intent
 
-[Menu intent](/s/intent-cascade) answers a later question: once you already have a *hover* cascade, a diagonal must not steal the submenu. This study is the earlier question — which machine is this downward panel.
+[Menu intent](/s/intent-cascade) answers a later question: once you already have a *hover* cascade, a diagonal must not steal the submenu. This study is the earlier question — which machine is this downward panel. Whether a left-hand rail occupies space is a different study: [Name the sidebar](/s/sidebar-taxonomy).
 
 The Cascader here is click-to-expand columns. The Mega Menu is click-to-toggle. Neither needs a safe triangle. If those surfaces became hover-tracking, that other study’s corridor applies.
 

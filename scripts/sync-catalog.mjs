@@ -25,15 +25,28 @@ for (const slug of slugs) {
     console.error(`slug mismatch: folder=${slug} study.json=${meta.slug}`);
     process.exitCode = 1;
   }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(meta.created ?? "") || !/^\d{4}-\d{2}-\d{2}$/.test(meta.updated ?? "")) {
+    console.error(`missing created/updated (YYYY-MM-DD): ${slug}`);
+    process.exitCode = 1;
+  }
   rows.push(meta);
 }
 
+rows.sort((a, b) => {
+  const rank = { active: 0, draft: 1, retired: 2 };
+  const byStatus = (rank[a.status] ?? 9) - (rank[b.status] ?? 9);
+  if (byStatus !== 0) return byStatus;
+  const byUpdated = String(b.updated ?? "").localeCompare(String(a.updated ?? ""));
+  if (byUpdated !== 0) return byUpdated;
+  return String(a.slug).localeCompare(String(b.slug));
+});
+
 const table = [
-  "| Slug | Idea | Status |",
-  "| --- | --- | --- |",
+  "| Slug | Idea | Status | Created | Updated |",
+  "| --- | --- | --- | --- | --- |",
   ...rows.map((m) => {
     const idea = m.summary.replace(/\|/g, "\\|");
-    return `| [${m.slug}](../studies/${m.slug}/) | ${idea} | ${m.status} |`;
+    return `| [${m.slug}](../studies/${m.slug}/) | ${idea} | ${m.status} | ${m.created} | ${m.updated} |`;
   }),
 ].join("\n");
 
@@ -49,6 +62,7 @@ ${table}
 ## How to read a row
 
 - **Idea** is the transferable rule, not the demo skin.
+- **Updated** is the day to bump when the study changes. The lab sorts by it.
 `;
 
 await writeFile(outFile, md);

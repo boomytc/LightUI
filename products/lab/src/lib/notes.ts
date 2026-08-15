@@ -1,3 +1,4 @@
+import { compareDayDesc, parseDay } from "./dates";
 import { parseFrontmatter } from "./frontmatter";
 import type { Locale } from "./prefs";
 
@@ -5,6 +6,7 @@ export type Note = {
   slug: string;
   title: string;
   date: string;
+  updated: string;
   summary: string;
   related: string[];
   body: string;
@@ -30,6 +32,7 @@ function toNote(path: string, raw: string): Note & { locale: Locale } {
     locale,
     title: data.title ?? slug,
     date: data.date ?? "",
+    updated: parseDay(data.updated) ?? data.date ?? "",
     summary: data.summary ?? "",
     related: (data.related ?? "")
       .split(",")
@@ -44,11 +47,15 @@ const parsed = Object.entries(noteModules).map(([path, raw]) => toNote(path, raw
 export function loadNotes(locale: Locale): Note[] {
   const zh = parsed.filter((n) => n.locale === "zh");
   if (locale !== "en") {
-    return [...zh].sort((a, b) => b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug));
+    return [...zh].sort(compareNotes);
   }
   return zh
     .map((note) => parsed.find((n) => n.locale === "en" && n.slug === note.slug) ?? note)
-    .sort((a, b) => b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug));
+    .sort(compareNotes);
+}
+
+function compareNotes(a: Note, b: Note): number {
+  return compareDayDesc(a.updated, b.updated) || a.slug.localeCompare(b.slug);
 }
 
 export function loadNote(slug: string, locale: Locale): Note | undefined {

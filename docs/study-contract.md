@@ -16,6 +16,8 @@ three files. Adding a study does not require editing a registry.
   "eyebrow": "Cursor intent · Safe triangle",
   "summary": "One or two sentences. The transferable rule, not the demo skin.",
   "status": "active",
+  "created": "2026-08-15",
+  "updated": "2026-08-15",
   "tags": ["pointer", "menu", "geometry"]
 }
 ```
@@ -27,7 +29,11 @@ three files. Adding a study does not require editing a registry.
 | `eyebrow` | Optional kicker above the title. |
 | `summary` | What the user should remember. |
 | `status` | `active` \| `draft` \| `retired` |
+| `created` | First day the study existed. `YYYY-MM-DD`. |
+| `updated` | Last day the idea or playground changed. Bump it when you edit. `YYYY-MM-DD`. |
 | `tags` | Lowercase behavior tags, not product names. |
+
+The lab sorts `active` first, then `updated` descending, then `created`, then slug. Use the calendar day, not a clock time.
 
 ## `StudyView`
 

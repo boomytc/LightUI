@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import { DateStamp } from "./DateStamp";
 import { messages } from "../lib/i18n";
 import { studyEyebrow, studySummary, studyTitle } from "../lib/localize";
 import { navigate } from "../lib/nav";
@@ -29,6 +30,12 @@ export function StudyCard({ meta, locale }: { meta: StudyMeta; locale: Locale })
       </div>
       <p className="mt-3 flex-1 text-[13px] leading-relaxed text-fg-muted">{studySummary(meta, locale)}</p>
       <div className="mt-5 flex flex-wrap items-center gap-1.5">
+        <DateStamp
+          created={meta.created}
+          updated={meta.updated}
+          locale={locale}
+          className="mr-1 font-mono text-[11px] text-fg-subtle"
+        />
         <StatusChip status={meta.status} locale={locale} />
         {meta.tags.map((tag) => (
           <span key={tag} className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-fg-muted">

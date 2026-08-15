@@ -1,0 +1,13 @@
+{
+  "slug": "sidebar-taxonomy",
+  "title": "给侧栏起对名字",
+  "titleEn": "Name the sidebar",
+  "eyebrow": "Space model · Rail taxonomy",
+  "eyebrowEn": "Space model · Rail taxonomy",
+  "summary": "靠左的导航不是同一种东西。先按占位和展开方式选模型（悬浮岛 / 滚轮 / 多级 / 可折叠 / 隐藏式），再谈外观。",
+  "summaryEn": "A left-hand rail is not one widget. Pick the model by occupancy and what expand changes — island, wheel, multi-level, collapsible, or off-canvas — then talk about the skin.",
+  "status": "active",
+  "created": "2026-08-15",
+  "updated": "2026-08-15",
+  "tags": ["sidebar", "layout", "taxonomy"]
+}

@@ -1,9 +1,9 @@
 {
-  "name": "@lightui/lab",
+  "name": "@lightui/sidebar-taxonomy",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "LightUI presentable catalog: browse studies and run their playgrounds",
+  "description": "Name the sidebar: five space models for a left rail",
   "engines": {
     "node": ">=20"
   },
@@ -12,7 +12,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit --pretty false",
-    "test": "tsx --test src/lib/frontmatter.test.ts src/lib/dates.test.ts"
+    "test": "tsx --test src/lib/wheel.test.ts src/lib/accordion.test.ts src/lib/space.test.ts"
   },
   "dependencies": {
     "lucide-react": "^0.510.0",

@@ -1,3 +1,4 @@
+import { DateStamp } from "../components/DateStamp";
 import { Link } from "../components/Link";
 import { Page } from "../components/Page";
 import { StudyCard } from "../components/StudyCard";
@@ -69,9 +70,12 @@ export function Home() {
                     href={`/notes/${note.slug}`}
                     className="flex flex-col gap-1 py-4 no-underline sm:flex-row sm:items-baseline sm:gap-6"
                   >
-                    <time className="shrink-0 font-mono text-[12px] text-fg-subtle" dateTime={note.date}>
-                      {note.date}
-                    </time>
+                    <DateStamp
+                      created={note.date}
+                      updated={note.updated}
+                      locale={locale}
+                      className="shrink-0 font-mono text-[12px] text-fg-subtle"
+                    />
                     <span className="min-w-0">
                       <span className="block text-[15px] font-medium text-fg">{note.title}</span>
                       <span className="mt-1 block text-[13px] leading-relaxed text-fg-muted">{note.summary}</span>

@@ -33,6 +33,8 @@ studies/<slug>/
 3. Why is a naive alternative worse?
 
 `study.json` is the machine catalog unit. The lab glob-loads it.
+Set `created` and `updated` (`YYYY-MM-DD`). Bump `updated` when the
+idea or playground changes.
 
 ## Runtime
 

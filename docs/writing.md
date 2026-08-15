@@ -18,11 +18,15 @@ English files are optional. Missing `.en.md` falls back to the Chinese note.
 ---
 title: 斜线不该换菜单
 date: 2026-08-15
+updated: 2026-08-15
 summary: One or two sentences.
 related: intent-cascade
 ---
 
-Body in Markdown. `related` is an optional comma-separated list of study slugs.
+Body in Markdown. `date` is the day the note was written (`YYYY-MM-DD`).
+`updated` is optional; omit it when it would match `date`. The lab
+sorts by `updated`, falling back to `date`. `related` is an optional
+comma-separated list of study slugs.
 ```
 
 The site discovers notes with `import.meta.glob`. Do not edit a registry.

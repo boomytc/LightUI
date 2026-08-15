@@ -16,5 +16,7 @@ export type StudyMeta = {
   summaryEn?: string;
   status: StudyStatus;
   tags: string[];
+  created?: string;
+  updated?: string;
   origin?: StudyOrigin;
 };

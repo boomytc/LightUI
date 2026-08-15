@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import { DateStamp } from "../components/DateStamp";
 import { Link } from "../components/Link";
 import { Page } from "../components/Page";
 import { Markdown } from "../lib/Markdown";
@@ -34,7 +35,10 @@ export function StudyPage({ slug }: { slug: string }) {
             <BackLink label={copy.backWorks} />
             <div className="min-w-0">
               <p className="truncate text-[14px] font-semibold tracking-tight">{studyTitle(meta, locale)}</p>
-              {eyebrow ? <p className="truncate text-[12px] text-fg-subtle">{eyebrow}</p> : null}
+              <p className="truncate text-[12px] text-fg-subtle">
+                {eyebrow ? `${eyebrow} · ` : null}
+                <DateStamp created={meta.created} updated={meta.updated} locale={locale} />
+              </p>
             </div>
           </div>
           <div className="flex rounded-lg border border-border p-0.5">

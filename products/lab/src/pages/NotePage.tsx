@@ -1,3 +1,4 @@
+import { DateStamp } from "../components/DateStamp";
 import { Link } from "../components/Link";
 import { Page } from "../components/Page";
 import { Markdown } from "../lib/Markdown";
@@ -34,7 +35,7 @@ export function NotePage({ slug }: { slug: string }) {
           {copy.notesIndex}
         </Link>
         <span className="mx-2">/</span>
-        <time dateTime={note.date}>{note.date}</time>
+        <DateStamp created={note.date} updated={note.updated} locale={locale} />
       </p>
       <div className="mt-6">
         <Markdown source={`# ${note.title}\n\n${note.body}`} />

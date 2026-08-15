@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { compareStudies } from "./dates";
 import type { Locale } from "./prefs";
 import type { StudyMeta } from "./study";
 
@@ -47,12 +48,7 @@ export function loadStudies(): LoadedStudy[] {
     };
   });
 
-  const rank: Record<StudyMeta["status"], number> = { active: 0, draft: 1, retired: 2 };
-  return studies.sort((a, b) => {
-    const byStatus = rank[a.meta.status] - rank[b.meta.status];
-    if (byStatus !== 0) return byStatus;
-    return a.meta.slug.localeCompare(b.meta.slug);
-  });
+  return studies.sort((a, b) => compareStudies(a.meta, b.meta));
 }
 
 export function loadStudy(slug: string): LoadedStudy | undefined {

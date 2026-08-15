@@ -7,5 +7,7 @@
   "summary": "往下展开的面板不是同一种东西。先按提交规则选模型（单选 / 多选 / 分组 / 级联 / 分割按钮 / 巨型导航 / 日期），再谈外观。",
   "summaryEn": "A panel that opens downward is not one widget. Pick the model by what it commits — single, multi, grouped, cascader, split button, mega nav, or dates — then talk about the skin.",
   "status": "active",
+  "created": "2026-08-15",
+  "updated": "2026-08-15",
   "tags": ["overlay", "select", "taxonomy"]
 }
