@@ -46,9 +46,9 @@ To name a sidebar, say three things:
 | Long article | TOC permanently crowds the text | Off-canvas yields the column until asked |
 | Dense admin | One flat list never ends | Parents file; children indent |
 
-## Versus the other two studies
+## Versus the other three studies
 
-[Name the dropdown](/s/dropdown-taxonomy) is about what a downward panel commits. [Menu intent](/s/intent-cascade) is about a hover cascade that must not steal on a diagonal. This page is earlier — whether this left-hand thing occupies space, and how it yields.
+[Name the dropdown](/s/dropdown-taxonomy) is about what a downward panel commits. [Menu intent](/s/intent-cascade) is about a hover cascade that must not steal on a diagonal. [Name the nav](/s/nav-taxonomy) is about where a site’s primary nav lives and how it opens. This page is earlier — whether this left-hand thing occupies space, and how it yields.
 
 The multi-level fixture here is click-to-accordion. If it became hover-tracking, that other study’s corridor applies.
 

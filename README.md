@@ -35,13 +35,14 @@ products/lab/                 站点：首页 / 作品 / 笔记 / 关于
 studies/intent-cascade/       菜单意图预测
 studies/dropdown-taxonomy/    给下拉起对名字
 studies/sidebar-taxonomy/     给侧栏起对名字
+studies/nav-taxonomy/         给导航起对名字
 ```
 
 根目录是工作区，可运行单元在下一层：站点在 `products/lab/`，每则理念在 `studies/<slug>/`。
 
 ## 当前 study
 
-见 [docs/catalog.md](docs/catalog.md)。目前三则：菜单意图预测（安全三角），给下拉起对名字（七种提交模型），给侧栏起对名字（五种空间模型）。
+见 [docs/catalog.md](docs/catalog.md)。目前四则：菜单意图预测（安全三角），给下拉起对名字（七种提交模型），给侧栏起对名字（五种空间模型），给导航起对名字（九种位置 / 展开 / 滚动模型）。
 
 ## 以后怎么长
 
