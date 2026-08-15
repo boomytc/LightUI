@@ -13,4 +13,4 @@ related: dropdown-taxonomy
 
 最容易混的一对是 Grouped 和 Cascader。一个是把名单归档，一个是一层一层走到叶子。
 
-第二则 study [给下拉起对名字](/s/dropdown-taxonomy) 把七种模型做成可以点的对照。菜单斜向穿越不该换项，是另一件事，在 [菜单意图预测](/s/intent-cascade)。
+[给下拉起对名字](/s/dropdown-taxonomy) 把这些模型做成可以点的对照。斜向穿越不该换项，在 [菜单意图预测](/s/intent-cascade)。问题怎么串，见 [图谱](/graph)。

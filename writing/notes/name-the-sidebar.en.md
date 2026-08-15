@@ -13,4 +13,4 @@ Ask three things first: the name, the scene, and whether expand changes width or
 
 The pairs people mix up: collapse is not off-canvas; multi-level is not a wheel.
 
-The third study, [Name the sidebar](/s/sidebar-taxonomy), turns the five models into a live contrast. What a downward panel commits is [Name the dropdown](/s/dropdown-taxonomy). A diagonal that must not steal a hover submenu is [Menu intent](/s/intent-cascade).
+[Name the sidebar](/s/sidebar-taxonomy) turns the models into a live contrast. What a downward panel commits is [Name the dropdown](/s/dropdown-taxonomy). A diagonal that must not steal a hover submenu is [Menu intent](/s/intent-cascade). How the questions chain is on the [map](/graph).

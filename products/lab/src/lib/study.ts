@@ -1,11 +1,5 @@
 export type StudyStatus = "active" | "draft" | "retired";
 
-export type StudyOrigin = {
-  kind?: "extract" | "original";
-  label?: string;
-  labelEn?: string;
-};
-
 export type StudyRel = "after" | "contrast";
 
 export type StudyLink = {
@@ -32,5 +26,4 @@ export type StudyMeta = {
   tags: string[];
   created?: string;
   updated?: string;
-  origin?: StudyOrigin;
 };

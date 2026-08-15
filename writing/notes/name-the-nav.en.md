@@ -13,4 +13,4 @@ Ask three things first: the name, the scene, and placement / reveal / scroll. St
 
 The pairs people mix up: a drawer is not a full-screen overlay; a dropdown is not a mega menu; shrink is not a floating sticky.
 
-The fourth study, [Name the nav](/s/nav-taxonomy), turns the nine models into a live contrast. What a downward panel commits is [Name the dropdown](/s/dropdown-taxonomy). Whether a left rail occupies is [Name the sidebar](/s/sidebar-taxonomy). A diagonal that must not steal a hover submenu is [Menu intent](/s/intent-cascade).
+[Name the nav](/s/nav-taxonomy) turns the models into a live contrast. What a downward panel commits is [Name the dropdown](/s/dropdown-taxonomy). Whether a left rail occupies is [Name the sidebar](/s/sidebar-taxonomy). A diagonal that must not steal a hover submenu is [Menu intent](/s/intent-cascade). How the questions chain is on the [map](/graph).

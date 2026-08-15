@@ -13,4 +13,4 @@ related: sidebar-taxonomy
 
 最容易混的两对是：可折叠不是隐藏式；多级不是滚轮。
 
-第三则 study [给侧栏起对名字](/s/sidebar-taxonomy) 把五种模型做成可以点的对照。往下展开的面板提交什么，在 [给下拉起对名字](/s/dropdown-taxonomy)。斜向穿越不该换项，在 [菜单意图预测](/s/intent-cascade)。
+[给侧栏起对名字](/s/sidebar-taxonomy) 把这些模型做成可以点的对照。往下展开的面板提交什么，在 [给下拉起对名字](/s/dropdown-taxonomy)。斜向穿越不该换项，在 [菜单意图预测](/s/intent-cascade)。问题怎么串，见 [图谱](/graph)。

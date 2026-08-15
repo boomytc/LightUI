@@ -32,6 +32,21 @@ for (const slug of slugs) {
   rows.push(meta);
 }
 
+const known = new Set(rows.map((m) => m.slug));
+for (const m of rows) {
+  for (const link of Array.isArray(m.links) ? m.links : []) {
+    if (!link?.slug) continue;
+    if (!known.has(link.slug)) {
+      console.error(`broken link: ${m.slug} -> ${link.slug}`);
+      process.exitCode = 1;
+    }
+    if (link.rel && link.rel !== "after" && link.rel !== "contrast") {
+      console.error(`bad rel on ${m.slug}: ${link.rel}`);
+      process.exitCode = 1;
+    }
+  }
+}
+
 rows.sort((a, b) => {
   const rank = { active: 0, draft: 1, retired: 2 };
   const byStatus = (rank[a.status] ?? 9) - (rank[b.status] ?? 9);

@@ -20,7 +20,7 @@ Read `AGENTS.md` first.
 | Public note / about copy | `writing/` (`docs/writing.md`) |
 | Color, type, radius, shadow | `design/tokens.css` |
 | Index / how-to | `docs/catalog.md`, `docs/conventions.md`, `docs/study-contract.md` |
-| Study stills / explainer films | sibling LightWeaver `products/study-films/` (`make films`) |
+| Explainer films (generated) | `make films` — do not commit stills or mp4s |
 
 Root `package.json` is workspaces only. Do not add app `src/` at repo root.
 Do not create empty study folders or a shared component library.

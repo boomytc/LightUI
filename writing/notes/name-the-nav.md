@@ -13,4 +13,4 @@ related: nav-taxonomy
 
 最容易混的三对：抽屉不是全屏；下拉不是巨型菜单；收缩不是悬浮吸顶。
 
-第四则 study [给导航起对名字](/s/nav-taxonomy) 把九种模型做成可以点的对照。往下展开的面板提交什么，在 [给下拉起对名字](/s/dropdown-taxonomy)。靠左那一块占不占位，在 [给侧栏起对名字](/s/sidebar-taxonomy)。斜向穿越不该换项，在 [菜单意图预测](/s/intent-cascade)。
+[给导航起对名字](/s/nav-taxonomy) 把这些模型做成可以点的对照。往下展开的面板提交什么，在 [给下拉起对名字](/s/dropdown-taxonomy)。靠左那一块占不占位，在 [给侧栏起对名字](/s/sidebar-taxonomy)。斜向穿越不该换项，在 [菜单意图预测](/s/intent-cascade)。问题怎么串，见 [图谱](/graph)。

@@ -84,7 +84,8 @@ make dev
 ```
 
 Lab: `http://127.0.0.1:5173/`.
-Standalone study: `make dev-study STUDY=intent-cascade` → `:5174`.
+Standalone study: `make dev-study STUDY=<slug>`. Ports: see
+`docs/conventions.md` (5174–5177 taken, next `5178`).
 
 ## Cleanup
 

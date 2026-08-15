@@ -31,4 +31,5 @@ comma-separated list of study slugs.
 
 The site discovers notes with `import.meta.glob`. Do not edit a registry.
 Keep notes short. A study's `idea.md` stays the technical write-up; a note
-is the public essay around it.
+is the public essay around it. You may link other studies by name. Do not
+number them (“第一则”, “第四则”) — the count goes stale.

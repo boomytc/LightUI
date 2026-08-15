@@ -13,4 +13,4 @@ related: intent-cascade
 
 判定时第三个顶点必须是**上一帧**，不是当前指针。可视化里的蓝三角把当前指针画成顶点，只是为了让人看见走廊。
 
-第一则 study [菜单意图预测](/s/intent-cascade) 把这条规则做成可以对照的 playground：开关意图预测，走廊会画出来。
+[菜单意图预测](/s/intent-cascade) 把这条规则做成可以对照的 playground：开关意图预测，走廊会画出来。问题怎么串，见 [图谱](/graph)。

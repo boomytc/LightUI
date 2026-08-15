@@ -17,7 +17,10 @@ Do not invent a second copy of these rules. Follow the files:
 
 ## Procedure
 
-1. Name the **behavior** (`intent-cascade`, not `grok-demo`).
+1. Decide **kind vs new study**. Same question, new skin → add a kind
+   to the existing study. A new first question → new `studies/<slug>/`.
+   See `docs/conventions.md`. Name the **behavior** (`intent-cascade`,
+   not `grok-demo`).
 2. Write `idea.md` **before** scaffolding UI. Problem, rule, why not the
    naive alternative. Do not add lineage or a kept/dropped source diary.
 3. Add `study.json` matching the folder slug. Set `created` and
@@ -28,8 +31,8 @@ Do not invent a second copy of these rules. Follow the files:
    `StudyView` from `src/StudyView.tsx`. Standalone chrome stays in
    `src/App.tsx` only.
 5. Relative imports only. Tokens from `design/tokens.css`. Bind
-   `127.0.0.1`. Give the study its own port if it has a Vite server
-   (lab already uses 5173).
+   `127.0.0.1`. Give the study its own port (lab is 5173; next free is
+   in `docs/conventions.md`).
 6. Do not edit a lab registry. Discovery is `import.meta.glob`.
 7. Run `make catalog`, then `make test` and `make typecheck`.
 8. Open `/studies` and `/s/<slug>`. Exercise the interaction, not just a

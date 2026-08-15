@@ -13,6 +13,20 @@ came from.
 Good: `intent-cascade`, `magnetic-snap`, `undo-stack-ime`.
 Bad: `amazon-menu`, `grok-demo`, `new-study`.
 
+## Kind or new study
+
+Same **question**, a new skin → add a kind to the existing study.
+A new **question you must answer first** → open `studies/<slug>/`, set
+`asks`, and hang `links` (`after` / `contrast`) on the graph.
+
+| Looks like | Still the same question | Different question |
+| --- | --- | --- |
+| Another mega panel | Site IA columns in `nav-taxonomy` | What the panel **commits** → `dropdown-taxonomy` |
+| Another left rail | Occupancy / expand in `sidebar-taxonomy` | Whether vertical is the primary nav at all → `nav-taxonomy` |
+| Another slide-in | Off-canvas occupancy in `sidebar-taxonomy` | Small-screen hamburger from the edge → `nav-taxonomy` |
+
+Do not merge these taxonomies into one encyclopedia. The graph keeps the questions apart.
+
 ## Required files
 
 ```
@@ -43,7 +57,9 @@ idea or playground changes. Set `asks` (the question) and `links`
 ## Runtime
 
 - Each study owns its own `package.json` (workspace package `@lightui/<slug>`).
-- Bind playgrounds to `127.0.0.1`.
+- Bind playgrounds to `127.0.0.1` and give each Vite study a unique port.
+  Lab is `5173`. Taken: `5174` intent-cascade, `5175` dropdown-taxonomy,
+  `5176` sidebar-taxonomy, `5177` nav-taxonomy. Next free: `5178`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

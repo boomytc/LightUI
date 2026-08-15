@@ -13,4 +13,4 @@ Another path: the previous pointer sample and the submenu’s leading-edge corne
 
 The third vertex of the test must be the **previous** sample, not the live pointer. The blue overlay uses the live pointer only so the corridor is visible.
 
-The first study, [Menu intent](/s/intent-cascade), turns the rule into a playground you can compare: toggle intent, and the corridor is drawn.
+[Menu intent](/s/intent-cascade) turns the rule into a playground you can compare: toggle intent, and the corridor is drawn. How the questions chain is on the [map](/graph).
