@@ -12,12 +12,11 @@ type Props = {
   enabled: boolean;
   showTriangles: boolean;
   restDelay: number;
-  bare?: boolean;
 };
 
 type Chip = { id: string; path: string[]; label: string };
 
-export function Playground({ enabled, showTriangles, restDelay, bare = false }: Props) {
+export function Playground({ enabled, showTriangles, restDelay }: Props) {
   const locale = useLocale();
   const cascade = useIntentCascade({
     enabled,
@@ -131,7 +130,7 @@ export function Playground({ enabled, showTriangles, restDelay, bare = false }: 
               />
             </div>
 
-            {bare ? null : cascade.coarse ? (
+            {cascade.coarse ? (
               <p className="mt-8 max-w-md text-[13px] leading-relaxed text-fg-muted">
                 {locale === "en"
                   ? "This interaction needs a mouse trail. On a touch device the menu opens by tap. Try a diagonal slide on a computer to see the safe triangle."
@@ -146,7 +145,7 @@ export function Playground({ enabled, showTriangles, restDelay, bare = false }: 
             )}
           </div>
 
-          {bare ? null : <SpecCard locale={locale} restDelay={restDelay} />}
+          <SpecCard locale={locale} restDelay={restDelay} />
         </div>
 
         <TriangleOverlay

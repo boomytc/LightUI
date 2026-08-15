@@ -12,7 +12,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit --pretty false",
-    "test": "tsx --test src/lib/geometry.test.ts"
+    "test": "tsx --test src/lib/geometry.test.ts src/lib/pin.test.ts src/lib/stage-fixtures.test.ts"
   },
   "dependencies": {
     "lucide-react": "^0.510.0",

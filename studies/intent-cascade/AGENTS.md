@@ -25,7 +25,8 @@ The lab mounts `StudyView` at `/s/intent-cascade`.
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/geometry.ts` — triangle / slope / intent tests (no DOM)
 - `src/intent/useIntentCascade.ts` — pointer sampling, protection, rest delay
-- `src/StageView.tsx` — menu island, no teaching chrome
+- `src/StageView.tsx` — one locked menu state, no teaching chrome
+- `src/lib/stage-fixtures.ts` — `status` / `diagonal` / `project` / `third`
 - `references/` — optional local stills from `make stills` (not committed)
 
 ## Rules

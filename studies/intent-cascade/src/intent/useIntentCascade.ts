@@ -6,10 +6,13 @@ import {
   pointInTriangle,
   predictsIntent,
   type Point,
+  type Rect,
 } from "../lib/geometry";
+import { leadingEdge, visualTriangle } from "../lib/pin";
 import type { MenuNode } from "../lib/menu-data";
-import { pick, type Locale } from "../lib/site-locale";
-import type { AimBand, AimDecision, CascadeState, LevelSlice, PointerKind } from "./types";
+import type { Locale } from "../lib/site-locale";
+import type { AimBand, AimDecision, CascadeState, PointerKind } from "./types";
+import { childrenOf, levelsFrom } from "./levels";
 
 export type IntentOptions = {
   enabled: boolean;
@@ -28,55 +31,13 @@ const CLOSE_GRACE = 200;
 const PANEL_PAD = 2;
 const TRI_PAD = 6;
 
-function childrenOf(tree: MenuNode[], path: string[]): MenuNode[] | null {
-  let nodes = tree;
-  for (const id of path) {
-    const node = nodes.find((n) => n.id === id);
-    if (!node?.children?.length) return null;
-    nodes = node.children;
-  }
-  return nodes;
-}
-
-function levelsFrom(tree: MenuNode[], path: string[], locale: Locale): LevelSlice[] {
-  const slices: LevelSlice[] = [
-    {
-      level: 0,
-      nodes: tree,
-      activeId: path[0] ?? null,
-      placeholder: locale === "en" ? "Search all..." : "搜索全部...",
-    },
-  ];
-  let walk = tree;
-  for (let i = 0; i < path.length; i++) {
-    const node = walk.find((n) => n.id === path[i]);
-    if (!node?.children?.length) break;
-    slices.push({
-      level: i + 1,
-      nodes: node.children,
-      activeId: path[i + 1] ?? null,
-      placeholder: node.searchPlaceholder
-        ? pick(node.searchPlaceholder, locale)
-        : locale === "en"
-          ? `Search ${pick(node.label, locale)}...`
-          : `搜索${pick(node.label, locale)}...`,
-    });
-    walk = node.children;
-  }
-  return slices;
-}
-
-function readRect(el: Element | null | undefined) {
+function readRect(el: Element | null | undefined): Rect | null {
   if (!el) return null;
   const r = el.getBoundingClientRect();
   return { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
 }
 
-function inGapBridge(
-  p: Point,
-  parentRect: { left: number; top: number; right: number; bottom: number },
-  childRect: { left: number; top: number; right: number; bottom: number },
-): boolean {
+function inGapBridge(p: Point, parentRect: Rect, childRect: Rect): boolean {
   const left = Math.min(parentRect.right, childRect.left);
   const right = Math.max(parentRect.right, childRect.left);
   const top = Math.min(parentRect.top, childRect.top) - 4;
@@ -184,25 +145,14 @@ export function useIntentCascade({
 
         const itemRect = readRect(itemRefs.current.get(parentId));
         const confirmed = inChildOf.has(level + 1);
-        const top = { x: childRect.left, y: childRect.top + 2 };
-        const bottom = { x: childRect.left, y: childRect.bottom - 2 };
+        const { top, bottom } = leadingEdge(childRect);
         if (!confirmed && !onApproachSide(cursor, top, bottom)) continue;
-
-        const cursorVertex: Point = confirmed
-          ? itemRect
-            ? { x: itemRect.left + 12, y: (itemRect.top + itemRect.bottom) / 2 }
-            : cursor
-          : cursor;
 
         next.push({
           level,
           parentId,
           color: confirmed ? "confirm" : "predict",
-          triangle: {
-            cursor: cursorVertex,
-            top,
-            bottom,
-          },
+          triangle: visualTriangle(cursor, childRect, itemRect, confirmed),
         });
       }
       return next;

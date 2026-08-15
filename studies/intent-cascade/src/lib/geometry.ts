@@ -1,5 +1,7 @@
 export type Point = { x: number; y: number };
 
+export type Rect = { left: number; top: number; right: number; bottom: number };
+
 export type Triangle = {
   cursor: Point;
   top: Point;
@@ -111,11 +113,7 @@ export function predictsIntent(
   return isHeadingTowardSubmenu(prev, curr, top, bottom);
 }
 
-export function pointInRect(
-  p: Point,
-  rect: { left: number; top: number; right: number; bottom: number },
-  pad = 0,
-): boolean {
+export function pointInRect(p: Point, rect: Rect, pad = 0): boolean {
   return (
     p.x >= rect.left - pad &&
     p.x <= rect.right + pad &&

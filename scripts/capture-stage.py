@@ -20,7 +20,12 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
             for state in ("closed", "open")
         )
     ],
-    "intent-cascade": [("menu", "open", "menu.png")],
+    "intent-cascade": [
+        ("status", "open", "status.png"),
+        ("diagonal", "open", "diagonal.png"),
+        ("project", "open", "project.png"),
+        ("third", "open", "third.png"),
+    ],
     "sidebar-taxonomy": [
         ("floating", "closed", "floating.png"),
         ("wheel", "closed", "wheel.png"),
@@ -42,8 +47,6 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:
-    if slug == "intent-cascade":
-        return f"{LAB}/s/{slug}/stage"
     return f"{LAB}/s/{slug}/stage?kind={kind}&state={state}"
 
 
