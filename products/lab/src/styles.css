@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@import "../../../design/tokens.css";
+@import "../../../design/base.css";
+@source "../../../studies/**/*.{ts,tsx}";
+@source "./**/*.{ts,tsx}";

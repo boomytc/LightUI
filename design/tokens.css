@@ -1,0 +1,33 @@
+@theme {
+  --color-bg: #f4f5f7;
+  --color-bg-warm: #eef0f3;
+  --color-surface: #ffffff;
+  --color-surface-2: #f7f8fa;
+  --color-fg: #17181c;
+  --color-fg-muted: #5c616b;
+  --color-fg-subtle: #8b909a;
+  --color-border: rgb(23 24 28 / 0.08);
+  --color-border-strong: rgb(23 24 28 / 0.14);
+  --color-accent: #3b6cff;
+  --color-accent-soft: #e8eeff;
+  --color-accent-fg: #ffffff;
+  --color-intent: #16a34a;
+  --color-intent-soft: #e7f8ed;
+  --color-predict: #2f6bff;
+  --color-predict-soft: rgb(47 107 255 / 0.14);
+  --color-ring: rgb(59 108 255 / 0.35);
+
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-2xl: 28px;
+
+  --font-sans: "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --shadow-menu: 0 1px 2px rgb(23 24 28 / 0.04), 0 16px 40px rgb(23 24 28 / 0.08);
+  --shadow-card: 0 1px 2px rgb(23 24 28 / 0.04), 0 10px 28px rgb(23 24 28 / 0.05);
+}

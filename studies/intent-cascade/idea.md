@@ -1,0 +1,72 @@
+# 菜单意图预测 · 安全三角
+
+从 Grok workspace 的 Aim Menu 演示里抽出来的规则。抽的是判定，不是那套应用脚手架。
+
+## 问题
+
+多级菜单从一级斜着滑向二级时，指针会短暂经过中间其它项。若「hover 到谁就展开谁」，子菜单会在途中被抢走。
+
+一律给 hover 加 200ms 延迟也不对：纵向扫列表会发黏，斜向穿越又常常不够。
+
+## 规则
+
+子菜单打开后，用「上一帧指针」和子菜单左缘上下两点构成一个三角形（安全走廊）。
+
+每一帧：
+
+1. **点在三角内**，或 **对顶角斜率下降且对底角斜率上升**（朝向子菜单锥）→ 判定为朝向子菜单。此时不切换一级高亮。
+2. 指针改道、离开走廊，或在其它项上停驻超过 `restDelay`（默认 280ms）→ 立刻切换。
+3. 指针已经进入子菜单面板 → 锁定当前路径（可视化变绿）。
+4. 两列之间的缝（gap bridge）也算安全区，避免列间距把走廊打断。
+5. 沿一级列表上下移动、轨迹不朝向子菜单 → 即时切换。意图预测只保护「像是要进子菜单」的轨迹。
+
+可视化里的蓝三角第三个顶点是**当前指针**，方便看出走廊。真正做判定时，第三个顶点必须是**上一帧指针**——否则指针永远在自己的顶点上，测不到意图。
+
+## 判定伪代码
+
+```
+function predictsIntent(prev, curr, top, bot, pad = 6) {
+  if (pointInTriangle(curr, prev, top, bot, pad)) return true
+  // Amazon / jquery-menu-aim slope test
+  return slope(curr, top) < slope(prev, top)
+      && slope(curr, bot) > slope(prev, bot)
+}
+```
+
+`pointInTriangle` 用同侧叉积，并对细长三角做一点外扩（`pad`），避免采样抖动把走廊判丢。
+
+## 和「加 delay」的差别
+
+| | 一律 delay | 意图预测 |
+| --- | --- | --- |
+| 纵向扫一级 | 发黏 | 即时 |
+| 斜向进二级 | 仍可能途中切换 | 走廊内保护 |
+| 停在错误项上 | 等固定时间 | 超过 `restDelay` 才放弃保护 |
+
+## 谱系
+
+- Amazon mega dropdown，Ben Kamens, 2013
+- [jquery-menu-aim](https://github.com/kamens/jQuery-menu-aim)
+- Floating UI [`safePolygon`](https://floating-ui.com/docs/usehover#safepolygon)
+
+本 study 把走廊画出来，方便对照调试。
+
+## 从源项目里留下什么、丢掉什么
+
+源路径：`/Users/boom/Downloads/FRjVwOa6ioqosjOI-grok-workspace`
+
+留下：
+
+- `geometry.ts` 的三角 / 斜率 / `predictsIntent`
+- 指针历史、rest delay、gap bridge、进入子菜单后锁定
+- 蓝 / 绿三角 overlay 作为教学层
+- Linear 风格筛选树作为可操作 fixture
+- 三组对照手势：斜向穿越、纵向切换、三级穿透
+
+丢掉：
+
+- TanStack Start / Router
+- Better Auth / Neon / PGLite
+- Grok PWA、preview host bridge、OG / 登录头
+
+抽离时只做了一处结构整理：`useIntentCascade` 接收 `tree` 和 `initialPath`，不再写死演示数据。几何层保持无 DOM。

@@ -1,0 +1,19 @@
+{
+  "name": "lightui",
+  "private": true,
+  "workspaces": [
+    "products/lab",
+    "studies/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @lightui/lab",
+    "dev:study": "npm run dev -w @lightui/intent-cascade",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "catalog": "node scripts/sync-catalog.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
