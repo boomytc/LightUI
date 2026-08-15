@@ -1,88 +1,108 @@
 import { Link } from "../components/Link";
+import { Page } from "../components/Page";
 import { StudyCard } from "../components/StudyCard";
 import { loadStudies } from "../lib/catalog";
+import { messages } from "../lib/i18n";
 import { loadNotes } from "../lib/notes";
+import { usePrefs } from "../lib/prefs";
 
 export function Home() {
+  const { locale } = usePrefs();
+  const copy = messages(locale);
   const studies = loadStudies().filter((s) => s.meta.status !== "retired");
-  const notes = loadNotes();
+  const notes = loadNotes(locale);
   const featured = studies[0];
   const latestNotes = notes.slice(0, 3);
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-5 pb-20 pt-12 sm:px-8 sm:pt-16">
-      <section className="max-w-2xl">
-        <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-fg-subtle">Notebook</p>
-        <h1 className="mt-3 text-[2.1rem] font-semibold leading-[1.15] tracking-tight sm:text-[2.6rem]">
-          一本可以点开的 UI/UX 笔记本。
+    <Page as="main" className="pb-20 pt-12 sm:pt-16">
+      <section>
+        <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-fg-subtle">{copy.homeEyebrow}</p>
+        <h1 className="mt-3 text-[2.1rem] font-semibold leading-[1.15] tracking-tight break-keep sm:text-[2.6rem]">
+          {copy.homeTitle}
         </h1>
-        <p className="mt-4 text-[15px] leading-relaxed text-fg-muted">
-          作品是可以再摸一遍的交互。笔记写它为什么值得留下。不是组件库，也不是产品壳。
-        </p>
+        <p className="mt-4 max-w-[42rem] text-[15px] leading-relaxed text-fg-muted">{copy.homeLede}</p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/studies"
             className="inline-flex h-9 items-center rounded-lg bg-fg px-3.5 text-[13px] font-medium text-surface no-underline"
           >
-            看作品
+            {copy.homeSeeWorks}
           </Link>
           <Link
             href="/notes"
             className="inline-flex h-9 items-center rounded-lg border border-border px-3.5 text-[13px] font-medium text-fg no-underline hover:bg-surface-2"
           >
-            读笔记
+            {copy.homeReadNotes}
           </Link>
         </div>
       </section>
 
-      <section className="mt-16">
-        <SectionHead title="作品" href="/studies" extra={`${studies.length} 则`} />
-        {featured ? (
-          <div className="mt-4 max-w-xl">
-            <StudyCard meta={featured.meta} />
-          </div>
-        ) : (
-          <Empty>还没有 study。</Empty>
-        )}
-      </section>
+      <div className="mt-16 grid gap-14 lg:grid-cols-2 lg:gap-16">
+        <section className="min-w-0">
+          <SectionHead title={copy.homeWorks} href="/studies" extra={copy.worksCount(studies.length)} all={copy.homeAll} />
+          {featured ? (
+            <div className="mt-4">
+              <StudyCard meta={featured.meta} locale={locale} />
+            </div>
+          ) : (
+            <Empty>{copy.emptyStudy}</Empty>
+          )}
+        </section>
 
-      <section className="mt-16">
-        <SectionHead title="笔记" href="/notes" extra={notes.length ? `${notes.length} 篇` : undefined} />
-        {latestNotes.length === 0 ? (
-          <Empty>还没有笔记。</Empty>
-        ) : (
-          <ul className="mt-4 divide-y divide-border border-y border-border">
-            {latestNotes.map((note) => (
-              <li key={note.slug}>
-                <Link
-                  href={`/notes/${note.slug}`}
-                  className="flex flex-col gap-1 py-4 no-underline sm:flex-row sm:items-baseline sm:gap-6"
-                >
-                  <time className="shrink-0 font-mono text-[12px] text-fg-subtle" dateTime={note.date}>
-                    {note.date}
-                  </time>
-                  <span className="min-w-0">
-                    <span className="block text-[15px] font-medium text-fg">{note.title}</span>
-                    <span className="mt-1 block text-[13px] leading-relaxed text-fg-muted">{note.summary}</span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-    </main>
+        <section className="min-w-0">
+          <SectionHead
+            title={copy.homeNotes}
+            href="/notes"
+            extra={notes.length ? copy.notesCount(notes.length) : undefined}
+            all={copy.homeAll}
+          />
+          {latestNotes.length === 0 ? (
+            <Empty>{copy.emptyNote}</Empty>
+          ) : (
+            <ul className="mt-4 divide-y divide-border border-y border-border">
+              {latestNotes.map((note) => (
+                <li key={note.slug}>
+                  <Link
+                    href={`/notes/${note.slug}`}
+                    className="flex flex-col gap-1 py-4 no-underline sm:flex-row sm:items-baseline sm:gap-6"
+                  >
+                    <time className="shrink-0 font-mono text-[12px] text-fg-subtle" dateTime={note.date}>
+                      {note.date}
+                    </time>
+                    <span className="min-w-0">
+                      <span className="block text-[15px] font-medium text-fg">{note.title}</span>
+                      <span className="mt-1 block text-[13px] leading-relaxed text-fg-muted">{note.summary}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+    </Page>
   );
 }
 
-function SectionHead({ title, href, extra }: { title: string; href: string; extra?: string }) {
+function SectionHead({
+  title,
+  href,
+  extra,
+  all,
+}: {
+  title: string;
+  href: string;
+  extra?: string;
+  all: string;
+}) {
   return (
     <div className="flex items-baseline justify-between gap-4">
       <h2 className="text-[13px] font-medium text-fg-muted">{title}</h2>
       <div className="flex items-center gap-3 text-[12px] text-fg-subtle">
         {extra ? <span>{extra}</span> : null}
         <Link href={href} className="no-underline hover:text-fg">
-          全部
+          {all}
         </Link>
       </div>
     </div>

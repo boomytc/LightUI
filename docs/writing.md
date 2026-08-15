@@ -4,9 +4,13 @@ Editorial content for the LightUI site. This is not operator documentation
 (`docs/`) and not a study (`studies/`).
 
 ```
-writing/about.md           /about
-writing/notes/<slug>.md    /notes/<slug>
+writing/about.md              /about (zh)
+writing/about.en.md           /about (en)
+writing/notes/<slug>.md       /notes/<slug> (zh)
+writing/notes/<slug>.en.md    /notes/<slug> (en)
 ```
+
+English files are optional. Missing `.en.md` falls back to the Chinese note.
 
 ## Note file
 

@@ -1,5 +1,8 @@
+import { Page } from "./components/Page";
 import { Shell } from "./components/Shell";
+import { messages } from "./lib/i18n";
 import { parseRoute, usePath } from "./lib/nav";
+import { usePrefs } from "./lib/prefs";
 import { About } from "./pages/About";
 import { Home } from "./pages/Home";
 import { NotePage } from "./pages/NotePage";
@@ -24,9 +27,10 @@ export function App() {
 }
 
 function NotFound({ path }: { path: string }) {
+  const { locale } = usePrefs();
   return (
-    <main className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8">
-      <p className="text-[15px] text-fg-muted">没有这个页面：{path}</p>
-    </main>
+    <Page as="main" className="py-16">
+      <p className="text-[15px] text-fg-muted">{messages(locale).missingPage(path)}</p>
+    </Page>
   );
 }

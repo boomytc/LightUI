@@ -6,6 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="LightUI：可操作的 UI/UX 笔记。作品是 study，文章是笔记。" />
     <title>LightUI</title>
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem("lightui-theme");
+          if (theme !== "light" && theme !== "dark") {
+            theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          }
+          if (theme === "dark") document.documentElement.classList.add("dark");
+          document.documentElement.lang = localStorage.getItem("lightui-locale") === "en" ? "en" : "zh-CN";
+        } catch (e) {}
+      })();
+    </script>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap"

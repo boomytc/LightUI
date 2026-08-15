@@ -3,7 +3,7 @@ import { StudyView } from "./StudyView";
 export function App() {
   return (
     <div className="min-h-dvh bg-bg text-fg">
-      <header className="mx-auto flex w-full max-w-6xl items-center gap-3 px-5 py-4 sm:px-8">
+      <header className="page-width flex items-center gap-3 py-4">
         <span className="grid size-8 place-items-center rounded-lg bg-fg text-surface" aria-hidden="true">
           <svg viewBox="0 0 24 24" className="size-4" fill="none">
             <path d="M5 19 19 5v14Z" fill="currentColor" fillOpacity="0.35" stroke="currentColor" strokeWidth="1.4" />

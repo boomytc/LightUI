@@ -1,9 +1,10 @@
 import type { ComponentType } from "react";
+import type { Locale } from "./prefs";
 import type { StudyMeta } from "./study";
 
 export type LoadedStudy = {
   meta: StudyMeta;
-  idea: string;
+  ideas: { zh: string; en: string };
   StudyView?: ComponentType;
 };
 
@@ -13,6 +14,12 @@ const metaModules = import.meta.glob("../../../../studies/*/study.json", {
 }) as Record<string, StudyMeta>;
 
 const ideaModules = import.meta.glob("../../../../studies/*/idea.md", {
+  eager: true,
+  query: "?raw",
+  import: "default",
+}) as Record<string, string>;
+
+const ideaEnModules = import.meta.glob("../../../../studies/*/idea.en.md", {
   eager: true,
   query: "?raw",
   import: "default",
@@ -29,9 +36,13 @@ function dirOf(jsonPath: string): string {
 export function loadStudies(): LoadedStudy[] {
   const studies = Object.entries(metaModules).map(([jsonPath, meta]) => {
     const dir = dirOf(jsonPath);
+    const zh = ideaModules[`${dir}/idea.md`] ?? "";
     return {
       meta,
-      idea: ideaModules[`${dir}/idea.md`] ?? "",
+      ideas: {
+        zh,
+        en: ideaEnModules[`${dir}/idea.en.md`] ?? zh,
+      },
       StudyView: viewModules[`${dir}/src/StudyView.tsx`]?.StudyView,
     };
   });
@@ -46,4 +57,8 @@ export function loadStudies(): LoadedStudy[] {
 
 export function loadStudy(slug: string): LoadedStudy | undefined {
   return loadStudies().find((s) => s.meta.slug === slug);
+}
+
+export function studyIdea(study: LoadedStudy, locale: Locale): string {
+  return locale === "en" ? study.ideas.en : study.ideas.zh;
 }

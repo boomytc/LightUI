@@ -2,6 +2,8 @@
 
 存放和探索 UI/UX 理念的工作区：自己实现过的交互，或别处遇到、值得留下来复刻的行为。
 
+仓库：<https://github.com/boomytc/LightUI>
+
 可呈现入口是站点（`products/lab`）：作品集、笔记、关于。每个理念是独立的 `studies/<slug>/`。
 
 ## 怎么用

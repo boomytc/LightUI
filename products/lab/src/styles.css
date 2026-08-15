@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 @import "../../../design/tokens.css";
 @import "../../../design/base.css";
 @source "../../../studies/**/*.{ts,tsx}";

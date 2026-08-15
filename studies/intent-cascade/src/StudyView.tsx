@@ -1,46 +1,68 @@
 import { useState } from "react";
 import { DEMO_HINTS } from "./lib/menu-data";
+import { pick, useLocale } from "./lib/site-locale";
 import { Playground } from "./intent/Playground";
 
 export function StudyView() {
+  const locale = useLocale();
   const [enabled, setEnabled] = useState(true);
   const [showTriangles, setShowTriangles] = useState(true);
   const [restDelay, setRestDelay] = useState(280);
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 pb-20 sm:px-8">
+    <div className="page-width pb-20">
       <section className="grid gap-10 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
         <div>
           <p className="mb-3 text-[12px] font-medium uppercase tracking-[0.14em] text-fg-subtle">
             Cursor intent · Safe triangle
           </p>
-          <h1 className="max-w-xl text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
-            根据鼠标移动方向，推测你是不是要进子菜单。
+          <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg break-keep sm:text-[2.6rem]">
+            {locale === "en"
+              ? "Guess from the pointer path whether you are heading into the submenu."
+              : "根据鼠标移动方向，推测你是不是要进子菜单。"}
           </h1>
           <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
-            多级菜单的经典问题：从一级斜着滑向二级时，指针会短暂经过其它项，菜单被误切换。下面这套交互用「安全三角」保护那条斜线。
+            {locale === "en"
+              ? "Classic cascade-menu problem: a diagonal slide into the second level briefly crosses other items and the menu switches. The safe triangle protects that diagonal."
+              : "多级菜单的经典问题：从一级斜着滑向二级时，指针会短暂经过其它项，菜单被误切换。下面这套交互用「安全三角」保护那条斜线。"}
           </p>
         </div>
 
         <div className="rounded-2xl border border-border bg-surface p-4 shadow-card">
           <div className="flex flex-col gap-3">
             <ToggleRow
-              label="意图预测"
-              hint={enabled ? "斜向穿越会被保护" : "经典 hover，途经即切换"}
+              label={locale === "en" ? "Intent prediction" : "意图预测"}
+              hint={
+                enabled
+                  ? locale === "en"
+                    ? "Diagonal crossing is protected"
+                    : "斜向穿越会被保护"
+                  : locale === "en"
+                    ? "Classic hover — crossing switches immediately"
+                    : "经典 hover，途经即切换"
+              }
               checked={enabled}
               onChange={setEnabled}
             />
             <ToggleRow
-              label="显示安全三角"
-              hint="蓝 = 预测走廊 · 绿 = 已进入子菜单"
+              label={locale === "en" ? "Show safe triangle" : "显示安全三角"}
+              hint={
+                locale === "en"
+                  ? "Blue = predicted corridor · Green = inside submenu"
+                  : "蓝 = 预测走廊 · 绿 = 已进入子菜单"
+              }
               checked={showTriangles}
               onChange={setShowTriangles}
             />
             <label className="flex items-center justify-between gap-4 pt-1">
               <span>
-                <span className="block text-[13px] font-medium text-fg">停驻超时</span>
+                <span className="block text-[13px] font-medium text-fg">
+                  {locale === "en" ? "Dwell timeout" : "停驻超时"}
+                </span>
                 <span className="mt-0.5 block text-[12px] text-fg-subtle">
-                  停在其它项上超过 {restDelay}ms 仍会切换
+                  {locale === "en"
+                    ? `Dwelling on another item for ${restDelay}ms still switches`
+                    : `停在其它项上超过 ${restDelay}ms 仍会切换`}
                 </span>
               </span>
               <input
@@ -63,10 +85,10 @@ export function StudyView() {
         {DEMO_HINTS.map((h) => {
           const Icon = h.icon;
           return (
-            <article key={h.title} className="rounded-2xl border border-border bg-surface p-5 shadow-card">
+            <article key={h.id} className="rounded-2xl border border-border bg-surface p-5 shadow-card">
               <Icon className="size-4 text-fg-muted" strokeWidth={2} />
-              <h2 className="mt-3 text-[15px] font-semibold tracking-tight">{h.title}</h2>
-              <p className="mt-2 text-[13px] leading-relaxed text-fg-muted">{h.body}</p>
+              <h2 className="mt-3 text-[15px] font-semibold tracking-tight">{pick(h.title, locale)}</h2>
+              <p className="mt-2 text-[13px] leading-relaxed text-fg-muted">{pick(h.body, locale)}</p>
             </article>
           );
         })}
@@ -74,22 +96,36 @@ export function StudyView() {
 
       <section className="mt-14 grid gap-10 lg:grid-cols-2">
         <article>
-          <h2 className="text-[1.35rem] font-semibold tracking-tight">算法怎么判</h2>
+          <h2 className="text-[1.35rem] font-semibold tracking-tight">
+            {locale === "en" ? "How it decides" : "算法怎么判"}
+          </h2>
           <ol className="mt-5 space-y-4 text-[14px] leading-relaxed text-fg-muted">
             <li>
-              <span className="font-medium text-fg">1. 采样轨迹</span>
+              <span className="font-medium text-fg">
+                {locale === "en" ? "1. Sample the trail" : "1. 采样轨迹"}
+              </span>
               <br />
-              记录最近几次指针位置。子菜单打开后，用「上一帧」和当前子菜单左缘上下两点构成三角形。
+              {locale === "en"
+                ? "Keep the last few pointer samples. After a submenu opens, the previous sample and the leading-edge corners form a triangle."
+                : "记录最近几次指针位置。子菜单打开后，用「上一帧」和当前子菜单左缘上下两点构成三角形。"}
             </li>
             <li>
-              <span className="font-medium text-fg">2. 点在三角内 / 斜率收敛</span>
+              <span className="font-medium text-fg">
+                {locale === "en" ? "2. Point in triangle / slopes converge" : "2. 点在三角内 / 斜率收敛"}
+              </span>
               <br />
-              若当前点落在「上一帧 → 子菜单顶/底」的三角里，或对顶角斜率下降、对底角斜率上升，则判定为朝向子菜单。
+              {locale === "en"
+                ? "If the current point sits in the previous-sample triangle, or the slope to the top falls while the slope to the bottom rises, treat it as heading into the submenu."
+                : "若当前点落在「上一帧 → 子菜单顶/底」的三角里，或对顶角斜率下降、对底角斜率上升，则判定为朝向子菜单。"}
             </li>
             <li>
-              <span className="font-medium text-fg">3. 延迟切换，停驻则放弃</span>
+              <span className="font-medium text-fg">
+                {locale === "en" ? "3. Delay the switch; abandon on dwell" : "3. 延迟切换，停驻则放弃"}
+              </span>
               <br />
-              朝向子菜单时不切换一级高亮。指针改道、离开三角，或在其它项上停驻超过超时，立刻切换。进入子菜单则锁定（绿三角）。
+              {locale === "en"
+                ? "Do not switch the first-level highlight while heading in. If the pointer turns, leaves the triangle, or dwells on another item past the timeout, switch immediately. Entering the submenu locks it (green)."
+                : "朝向子菜单时不切换一级高亮。指针改道、离开三角，或在其它项上停驻超过超时，立刻切换。进入子菜单则锁定（绿三角）。"}
             </li>
           </ol>
         </article>
@@ -108,21 +144,37 @@ export function StudyView() {
 }`}
           </pre>
           <p className="mt-4 text-[13px] leading-relaxed text-surface/55">
-            可视化里的蓝三角是「从当前指针到子菜单左缘」——方便理解走廊。真正做判定时，三角的第三个顶点是上一帧指针，否则指针永远在自己的顶点上，测不到意图。
+            {locale === "en"
+              ? "The blue triangle in the overlay uses the live pointer as the third vertex so the corridor is visible. The real test uses the previous sample — otherwise the pointer sits on its own vertex and intent cannot be measured."
+              : "可视化里的蓝三角是「从当前指针到子菜单左缘」——方便理解走廊。真正做判定时，三角的第三个顶点是上一帧指针，否则指针永远在自己的顶点上，测不到意图。"}
           </p>
         </article>
       </section>
 
       <section className="mt-14 rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-8">
-        <h2 className="text-[1.2rem] font-semibold tracking-tight">和「加 delay」有什么不同</h2>
+        <h2 className="text-[1.2rem] font-semibold tracking-tight">
+          {locale === "en" ? "Why not a flat delay?" : "和「加 delay」有什么不同"}
+        </h2>
         <div className="mt-5 grid gap-6 text-[14px] leading-relaxed text-fg-muted md:grid-cols-2">
           <p>
-            给 hover 一律加 200ms 延迟，纵向切换会发黏，斜向穿越又常常不够。意图预测只在「像是要进子菜单」时延迟，沿列表上下移动仍然是即时的。
+            {locale === "en"
+              ? "A 200ms delay on every hover makes vertical scanning sticky, and is often still too short for a diagonal. Intent delays only when the path looks like it is entering the submenu."
+              : "给 hover 一律加 200ms 延迟，纵向切换会发黏，斜向穿越又常常不够。意图预测只在「像是要进子菜单」时延迟，沿列表上下移动仍然是即时的。"}
           </p>
           <p>
-            同一思路出现在 Amazon mega dropdown（Ben Kamens, 2013）、jquery-menu-aim，以及 Floating UI 的{" "}
-            <code className="rounded bg-surface-2 px-1 py-0.5 font-mono text-[12px] text-fg">safePolygon</code>
-            。本页把走廊画出来，方便对照调试。
+            {locale === "en" ? (
+              <>
+                The same idea shows up in the Amazon mega dropdown (Ben Kamens, 2013), jquery-menu-aim, and Floating UI{" "}
+                <code className="rounded bg-surface-2 px-1 py-0.5 font-mono text-[12px] text-fg">safePolygon</code>
+                . This page draws the corridor so you can debug it.
+              </>
+            ) : (
+              <>
+                同一思路出现在 Amazon mega dropdown（Ben Kamens, 2013）、jquery-menu-aim，以及 Floating UI 的{" "}
+                <code className="rounded bg-surface-2 px-1 py-0.5 font-mono text-[12px] text-fg">safePolygon</code>
+                。本页把走廊画出来，方便对照调试。
+              </>
+            )}
           </p>
         </div>
       </section>

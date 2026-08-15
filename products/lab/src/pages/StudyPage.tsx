@@ -1,41 +1,47 @@
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "../components/Link";
+import { Page } from "../components/Page";
 import { Markdown } from "../lib/Markdown";
-import { loadStudy } from "../lib/catalog";
+import { loadStudy, studyIdea } from "../lib/catalog";
+import { messages } from "../lib/i18n";
+import { studyOrigin, studyTitle } from "../lib/localize";
+import { usePrefs } from "../lib/prefs";
 
 export function StudyPage({ slug }: { slug: string }) {
+  const { locale } = usePrefs();
+  const copy = messages(locale);
   const study = loadStudy(slug);
   const [tab, setTab] = useState<"play" | "idea">("play");
 
   if (!study) {
     return (
-      <main className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8">
-        <p className="text-[15px] text-fg-muted">没有这个 study：{slug}</p>
-        <BackLink />
-      </main>
+      <Page as="main" className="py-16">
+        <p className="text-[15px] text-fg-muted">{copy.missingStudy(slug)}</p>
+        <BackLink label={copy.backWorks} />
+      </Page>
     );
   }
 
-  const { meta, idea, StudyView } = study;
+  const { meta, StudyView } = study;
 
   return (
     <div>
       <div className="border-b border-border bg-surface">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-3 sm:px-8">
+        <div className="page-width flex flex-wrap items-center justify-between gap-3 py-3">
           <div className="flex min-w-0 items-center gap-3">
-            <BackLink />
+            <BackLink label={copy.backWorks} />
             <div className="min-w-0">
-              <p className="truncate text-[14px] font-semibold tracking-tight">{meta.title}</p>
-              <p className="truncate text-[12px] text-fg-subtle">{meta.origin.label}</p>
+              <p className="truncate text-[14px] font-semibold tracking-tight">{studyTitle(meta, locale)}</p>
+              <p className="truncate text-[12px] text-fg-subtle">{studyOrigin(meta, locale)}</p>
             </div>
           </div>
           <div className="flex rounded-lg border border-border p-0.5">
             <TabButton active={tab === "play"} onClick={() => setTab("play")}>
-              演示
+              {copy.tabPlay}
             </TabButton>
             <TabButton active={tab === "idea"} onClick={() => setTab("idea")}>
-              理念
+              {copy.tabIdea}
             </TabButton>
           </div>
         </div>
@@ -45,27 +51,25 @@ export function StudyPage({ slug }: { slug: string }) {
         StudyView ? (
           <StudyView />
         ) : (
-          <p className="mx-auto max-w-6xl px-5 py-12 text-[14px] text-fg-muted sm:px-8">
-            这个 study 还没有 StudyView。
-          </p>
+          <p className="page-width py-12 text-[14px] text-fg-muted">{copy.noStudyView}</p>
         )
       ) : (
-        <article className="mx-auto w-full max-w-3xl px-5 py-12 sm:px-8">
-          <Markdown source={idea} />
-        </article>
+        <Page as="article" measure="prose" className="py-12">
+          <Markdown source={studyIdea(study, locale)} />
+        </Page>
       )}
     </div>
   );
 }
 
-function BackLink() {
+function BackLink({ label }: { label: string }) {
   return (
     <Link
       href="/studies"
       className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-[13px] text-fg-muted no-underline hover:bg-surface-2 hover:text-fg"
     >
       <ArrowLeft className="size-3.5" />
-      作品
+      {label}
     </Link>
   );
 }

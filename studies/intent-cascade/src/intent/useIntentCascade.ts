@@ -7,6 +7,7 @@ import {
   type Point,
 } from "../lib/geometry";
 import type { MenuNode } from "../lib/menu-data";
+import { pick, type Locale } from "../lib/site-locale";
 import type { AimBand, AimDecision, CascadeState, LevelSlice, PointerKind } from "./types";
 
 export type IntentOptions = {
@@ -14,6 +15,7 @@ export type IntentOptions = {
   restDelay: number;
   tree: MenuNode[];
   initialPath?: string[];
+  locale?: Locale;
 };
 
 type ItemHit = { level: number; id: string };
@@ -33,9 +35,14 @@ function childrenOf(tree: MenuNode[], path: string[]): MenuNode[] | null {
   return nodes;
 }
 
-function levelsFrom(tree: MenuNode[], path: string[]): LevelSlice[] {
+function levelsFrom(tree: MenuNode[], path: string[], locale: Locale): LevelSlice[] {
   const slices: LevelSlice[] = [
-    { level: 0, nodes: tree, activeId: path[0] ?? null, placeholder: "搜索全部..." },
+    {
+      level: 0,
+      nodes: tree,
+      activeId: path[0] ?? null,
+      placeholder: locale === "en" ? "Search all..." : "搜索全部...",
+    },
   ];
   let walk = tree;
   for (let i = 0; i < path.length; i++) {
@@ -45,7 +52,11 @@ function levelsFrom(tree: MenuNode[], path: string[]): LevelSlice[] {
       level: i + 1,
       nodes: node.children,
       activeId: path[i + 1] ?? null,
-      placeholder: node.searchPlaceholder ?? `搜索${node.label}...`,
+      placeholder: node.searchPlaceholder
+        ? pick(node.searchPlaceholder, locale)
+        : locale === "en"
+          ? `Search ${pick(node.label, locale)}...`
+          : `搜索${pick(node.label, locale)}...`,
     });
     walk = node.children;
   }
@@ -70,7 +81,7 @@ function inGapBridge(
   return p.x >= left - 2 && p.x <= right + 2 && p.y >= top && p.y <= bottom;
 }
 
-export function useIntentCascade({ enabled, restDelay, tree, initialPath = [] }: IntentOptions) {
+export function useIntentCascade({ enabled, restDelay, tree, initialPath = [], locale = "zh" }: IntentOptions) {
   const [open, setOpen] = useState(true);
   const [path, setPath] = useState<string[]>(initialPath);
   const [mouse, setMouse] = useState<Point | null>(null);
@@ -92,6 +103,7 @@ export function useIntentCascade({ enabled, restDelay, tree, initialPath = [] }:
   const restDelayRef = useRef(restDelay);
   const treeRef = useRef(tree);
   const initialPathRef = useRef(initialPath);
+  const localeRef = useRef(locale);
 
   pathRef.current = path;
   openRef.current = open;
@@ -99,8 +111,9 @@ export function useIntentCascade({ enabled, restDelay, tree, initialPath = [] }:
   restDelayRef.current = restDelay;
   treeRef.current = tree;
   initialPathRef.current = initialPath;
+  localeRef.current = locale;
 
-  const levels = useMemo(() => levelsFrom(tree, path), [tree, path]);
+  const levels = useMemo(() => levelsFrom(tree, path, locale), [tree, path, locale]);
 
   const registerPanel = useCallback((level: number, el: HTMLElement | null) => {
     if (el) panelRefs.current.set(level, el);
@@ -191,7 +204,7 @@ export function useIntentCascade({ enabled, restDelay, tree, initialPath = [] }:
       }
     }
     if (panel != null) {
-      const slice = levelsFrom(treeRef.current, pathRef.current)[panel];
+      const slice = levelsFrom(treeRef.current, pathRef.current, localeRef.current)[panel];
       if (slice) {
         for (const node of slice.nodes) {
           const rect = readRect(itemRefs.current.get(node.id));

@@ -1,20 +1,25 @@
 import type { ReactNode } from "react";
+import { Moon, Sun } from "lucide-react";
 import { Link } from "./Link";
+import { messages } from "../lib/i18n";
 import { usePath } from "../lib/nav";
+import { GITHUB_URL, usePrefs } from "../lib/prefs";
 
 const NAV = [
-  { href: "/studies", label: "作品", match: (p: string) => p === "/studies" || p.startsWith("/s/") },
-  { href: "/notes", label: "笔记", match: (p: string) => p.startsWith("/notes") },
-  { href: "/about", label: "关于", match: (p: string) => p === "/about" },
+  { href: "/studies", key: "navWorks" as const, match: (p: string) => p === "/studies" || p.startsWith("/s/") },
+  { href: "/notes", key: "navNotes" as const, match: (p: string) => p.startsWith("/notes") },
+  { href: "/about", key: "navAbout" as const, match: (p: string) => p === "/about" },
 ];
 
 export function Shell({ children }: { children: ReactNode }) {
   const path = usePath();
+  const { theme, locale, toggleTheme, toggleLocale } = usePrefs();
+  const copy = messages(locale);
 
   return (
     <div className="flex min-h-dvh flex-col bg-bg text-fg">
       <header className="border-b border-border bg-surface/80 backdrop-blur-sm">
-        <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
+        <div className="page-width flex h-14 items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2.5 no-underline">
             <span className="grid size-7 place-items-center rounded-md bg-fg text-surface" aria-hidden="true">
               <svg viewBox="0 0 24 24" className="size-3.5" fill="none">
@@ -29,34 +34,107 @@ export function Shell({ children }: { children: ReactNode }) {
             </span>
             <span className="text-[15px] font-semibold tracking-tight">LightUI</span>
           </Link>
-          <nav className="flex items-center gap-1" aria-label="站点">
-            {NAV.map((item) => {
-              const active = item.match(path);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  ariaCurrent={active ? "page" : undefined}
-                  className={
-                    active
-                      ? "rounded-md px-2.5 py-1 text-[13px] font-medium text-fg no-underline"
-                      : "rounded-md px-2.5 py-1 text-[13px] text-fg-muted no-underline hover:bg-surface-2 hover:text-fg"
-                  }
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
+          <div className="flex items-center gap-1">
+            <nav className="mr-1 hidden items-center gap-1 sm:flex" aria-label="site">
+              {NAV.map((item) => {
+                const active = item.match(path);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    ariaCurrent={active ? "page" : undefined}
+                    className={
+                      active
+                        ? "rounded-md px-2.5 py-1 text-[13px] font-medium text-fg no-underline"
+                        : "rounded-md px-2.5 py-1 text-[13px] text-fg-muted no-underline hover:bg-surface-2 hover:text-fg"
+                    }
+                  >
+                    {copy[item.key]}
+                  </Link>
+                );
+              })}
+            </nav>
+            <IconButton
+              label={locale === "zh" ? copy.langToEn : copy.langToZh}
+              onClick={toggleLocale}
+            >
+              <span className="text-[12px] font-semibold tracking-wide">
+                {locale === "zh" ? "EN" : "中"}
+              </span>
+            </IconButton>
+            <IconButton
+              label={theme === "dark" ? copy.themeToLight : copy.themeToDark}
+              onClick={toggleTheme}
+            >
+              {theme === "dark" ? <Sun className="size-4" strokeWidth={1.8} /> : <Moon className="size-4" strokeWidth={1.8} />}
+            </IconButton>
+            <a
+              href={GITHUB_URL}
+              className="inline-flex size-9 items-center justify-center rounded-lg text-fg-muted no-underline hover:bg-surface-2 hover:text-fg"
+              rel="noreferrer"
+              target="_blank"
+              aria-label={copy.github}
+            >
+              <GitHubMark />
+            </a>
+          </div>
         </div>
       </header>
+      <nav className="page-width flex gap-1 border-b border-border py-2 sm:hidden" aria-label="site">
+        {NAV.map((item) => {
+          const active = item.match(path);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              ariaCurrent={active ? "page" : undefined}
+              className={
+                active
+                  ? "rounded-md px-2.5 py-1 text-[13px] font-medium text-fg no-underline"
+                  : "rounded-md px-2.5 py-1 text-[13px] text-fg-muted no-underline"
+              }
+            >
+              {copy[item.key]}
+            </Link>
+          );
+        })}
+      </nav>
       <div className="flex-1">{children}</div>
       <footer className="border-t border-border">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2 px-5 py-5 sm:px-8">
-          <p className="text-[12px] text-fg-subtle">LightUI · 可操作的 UI/UX 笔记</p>
-          <p className="text-[12px] text-fg-subtle">作品是 study，文章是笔记</p>
+        <div className="page-width py-5">
+          <p className="text-[12px] text-fg-subtle">{copy.footer}</p>
         </div>
       </footer>
     </div>
+  );
+}
+
+function IconButton({
+  label,
+  onClick,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className="inline-flex size-9 items-center justify-center rounded-lg text-fg-muted hover:bg-surface-2 hover:text-fg"
+    >
+      {children}
+    </button>
+  );
+}
+
+function GitHubMark() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-4" fill="currentColor" aria-hidden="true">
+      <path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3Z" />
+    </svg>
   );
 }

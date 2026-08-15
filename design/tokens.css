@@ -30,4 +30,30 @@
 
   --shadow-menu: 0 1px 2px rgb(23 24 28 / 0.04), 0 16px 40px rgb(23 24 28 / 0.08);
   --shadow-card: 0 1px 2px rgb(23 24 28 / 0.04), 0 10px 28px rgb(23 24 28 / 0.05);
+
+  --color-play-glow: #eef2ff;
+}
+
+.dark {
+  color-scheme: dark;
+  --color-bg: #111216;
+  --color-bg-warm: #16171c;
+  --color-surface: #1a1b21;
+  --color-surface-2: #22232a;
+  --color-fg: #eceef2;
+  --color-fg-muted: #9aa0ab;
+  --color-fg-subtle: #6d7380;
+  --color-border: rgb(255 255 255 / 0.08);
+  --color-border-strong: rgb(255 255 255 / 0.14);
+  --color-accent: #6b8cff;
+  --color-accent-soft: rgb(107 140 255 / 0.16);
+  --color-accent-fg: #111216;
+  --color-intent: #34d399;
+  --color-intent-soft: rgb(52 211 153 / 0.14);
+  --color-predict: #6b8cff;
+  --color-predict-soft: rgb(107 140 255 / 0.16);
+  --color-ring: rgb(107 140 255 / 0.4);
+  --shadow-menu: 0 1px 2px rgb(0 0 0 / 0.35), 0 16px 40px rgb(0 0 0 / 0.4);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.28), 0 10px 28px rgb(0 0 0 / 0.22);
+  --color-play-glow: rgb(107 140 255 / 0.14);
 }

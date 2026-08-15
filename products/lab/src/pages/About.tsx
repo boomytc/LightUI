@@ -1,10 +1,13 @@
+import { Page } from "../components/Page";
 import { Markdown } from "../lib/Markdown";
 import { loadAbout } from "../lib/about";
+import { usePrefs } from "../lib/prefs";
 
 export function About() {
+  const { locale } = usePrefs();
   return (
-    <article className="mx-auto w-full max-w-3xl px-5 py-12 sm:px-8">
-      <Markdown source={loadAbout()} />
-    </article>
+    <Page as="article" measure="prose" className="py-12">
+      <Markdown source={loadAbout(locale)} />
+    </Page>
   );
 }

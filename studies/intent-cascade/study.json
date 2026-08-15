@@ -1,8 +1,11 @@
 {
   "slug": "intent-cascade",
   "title": "菜单意图预测",
+  "titleEn": "Menu intent",
   "eyebrow": "Cursor intent · Safe triangle",
+  "eyebrowEn": "Cursor intent · Safe triangle",
   "summary": "根据鼠标移动方向推测是不是要进子菜单，用安全三角保护斜向穿越，而不是给所有 hover 加一段 delay。",
+  "summaryEn": "Guess from the pointer path whether you are heading into the submenu. A safe triangle protects a diagonal instead of delaying every hover.",
   "status": "active",
   "tags": ["pointer", "menu", "geometry"],
   "origin": {

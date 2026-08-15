@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Check, ChevronRight, Search } from "lucide-react";
 import { cn } from "../lib/utils";
 import { TONE_CLASS, type MenuNode } from "../lib/menu-data";
+import { pick, type Locale } from "../lib/site-locale";
 import type { LevelSlice } from "./types";
 
 type Props = {
@@ -10,6 +11,7 @@ type Props = {
   path: string[];
   hoveredId: string | null;
   selectedId: string | null;
+  locale: Locale;
   onSelectLeaf: (node: MenuNode, path: string[]) => void;
   onItemClick: (level: number, node: MenuNode) => void;
   registerPanel: (level: number, el: HTMLElement | null) => void;
@@ -19,7 +21,7 @@ type Props = {
 function filterNodes(nodes: MenuNode[], q: string): MenuNode[] {
   const s = q.trim().toLowerCase();
   if (!s) return nodes;
-  return nodes.filter((n) => n.label.toLowerCase().includes(s));
+  return nodes.filter((n) => n.label.zh.toLowerCase().includes(s) || n.label.en.toLowerCase().includes(s));
 }
 
 export function CascadeMenu({
@@ -32,6 +34,7 @@ export function CascadeMenu({
   onItemClick,
   registerPanel,
   registerItem,
+  locale,
 }: Props) {
   const [queries, setQueries] = useState<Record<number, string>>({});
 
@@ -52,6 +55,7 @@ export function CascadeMenu({
           onItemClick={onItemClick}
           registerPanel={registerPanel}
           registerItem={registerItem}
+          locale={locale}
         />
       ))}
     </div>
@@ -69,6 +73,7 @@ function Panel({
   onItemClick,
   registerPanel,
   registerItem,
+  locale,
 }: {
   slice: LevelSlice;
   query: string;
@@ -80,6 +85,7 @@ function Panel({
   onItemClick: (level: number, node: MenuNode) => void;
   registerPanel: (level: number, el: HTMLElement | null) => void;
   registerItem: (id: string, el: HTMLElement | null) => void;
+  locale: Locale;
 }) {
   const shown = useMemo(() => filterNodes(slice.nodes, query), [slice.nodes, query]);
 
@@ -101,7 +107,9 @@ function Panel({
       </div>
       <ul className="flex flex-col p-1.5" role="menu">
         {shown.length === 0 ? (
-          <li className="px-2.5 py-3 text-center text-[12px] text-fg-subtle">无匹配项</li>
+          <li className="px-2.5 py-3 text-center text-[12px] text-fg-subtle">
+            {locale === "en" ? "No matches" : "无匹配项"}
+          </li>
         ) : (
           shown.map((node) => {
             const active = slice.activeId === node.id;
@@ -130,7 +138,7 @@ function Panel({
                     className={cn("size-3.5 shrink-0", node.tone ? TONE_CLASS[node.tone] : "text-fg-muted")}
                     strokeWidth={2}
                   />
-                  <span className="min-w-0 flex-1 truncate font-medium">{node.label}</span>
+                  <span className="min-w-0 flex-1 truncate font-medium">{pick(node.label, locale)}</span>
                   {picked ? <Check className="size-3.5 text-accent" strokeWidth={2.4} /> : null}
                   {hasKids ? <ChevronRight className="size-3.5 text-fg-subtle" strokeWidth={2} /> : null}
                 </button>

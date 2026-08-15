@@ -1,9 +1,13 @@
 import { ArrowUpRight } from "lucide-react";
-import type { StudyMeta } from "../lib/study";
+import { messages } from "../lib/i18n";
+import { studyEyebrow, studySummary, studyTitle } from "../lib/localize";
 import { navigate } from "../lib/nav";
+import type { Locale } from "../lib/prefs";
+import type { StudyMeta } from "../lib/study";
 
-export function StudyCard({ meta }: { meta: StudyMeta }) {
+export function StudyCard({ meta, locale }: { meta: StudyMeta; locale: Locale }) {
   const href = `/s/${meta.slug}`;
+  const eyebrow = studyEyebrow(meta, locale);
 
   return (
     <a
@@ -16,16 +20,16 @@ export function StudyCard({ meta }: { meta: StudyMeta }) {
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          {meta.eyebrow ? (
-            <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-fg-subtle">{meta.eyebrow}</p>
+          {eyebrow ? (
+            <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-fg-subtle">{eyebrow}</p>
           ) : null}
-          <h2 className="mt-2 text-[1.15rem] font-semibold tracking-tight">{meta.title}</h2>
+          <h2 className="mt-2 text-[1.15rem] font-semibold tracking-tight">{studyTitle(meta, locale)}</h2>
         </div>
         <ArrowUpRight className="size-4 shrink-0 text-fg-subtle transition-colors duration-150 group-hover:text-fg" />
       </div>
-      <p className="mt-3 flex-1 text-[13px] leading-relaxed text-fg-muted">{meta.summary}</p>
+      <p className="mt-3 flex-1 text-[13px] leading-relaxed text-fg-muted">{studySummary(meta, locale)}</p>
       <div className="mt-5 flex flex-wrap items-center gap-1.5">
-        <StatusChip status={meta.status} />
+        <StatusChip status={meta.status} locale={locale} />
         {meta.tags.map((tag) => (
           <span key={tag} className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-fg-muted">
             {tag}
@@ -36,14 +40,15 @@ export function StudyCard({ meta }: { meta: StudyMeta }) {
   );
 }
 
-function StatusChip({ status }: { status: StudyMeta["status"] }) {
-  const copy =
-    status === "active" ? "可操作" : status === "draft" ? "草稿" : "已归档";
+function StatusChip({ status, locale }: { status: StudyMeta["status"]; locale: Locale }) {
+  const copy = messages(locale);
+  const label =
+    status === "active" ? copy.statusActive : status === "draft" ? copy.statusDraft : copy.statusRetired;
   const tone =
     status === "active"
       ? "bg-intent-soft text-intent"
       : status === "draft"
         ? "bg-accent-soft text-accent"
         : "bg-surface-2 text-fg-subtle";
-  return <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${tone}`}>{copy}</span>;
+  return <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${tone}`}>{label}</span>;
 }

@@ -8,6 +8,11 @@
     -moz-osx-font-smoothing: grayscale;
     background: var(--color-bg);
     color: var(--color-fg);
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
   }
 
   body {
@@ -41,6 +46,19 @@
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
+}
+
+.page-width {
+  box-sizing: border-box;
+  width: 100%;
+  padding-inline: clamp(1.25rem, 3.5vw, 4rem);
+}
+
+.page-prose {
+  box-sizing: border-box;
+  width: min(46rem, 100%);
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 2rem);
 }
 
 @media (prefers-reduced-motion: reduce) {

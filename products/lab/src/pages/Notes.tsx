@@ -1,21 +1,24 @@
 import { Link } from "../components/Link";
+import { Page } from "../components/Page";
+import { messages } from "../lib/i18n";
 import { loadNotes } from "../lib/notes";
+import { usePrefs } from "../lib/prefs";
 
 export function Notes() {
-  const notes = loadNotes();
+  const { locale } = usePrefs();
+  const copy = messages(locale);
+  const notes = loadNotes(locale);
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-5 pb-20 pt-12 sm:px-8">
+    <Page as="main" measure="prose" className="pb-20 pt-12">
       <header>
-        <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-fg-subtle">Notes</p>
-        <h1 className="mt-3 text-[1.8rem] font-semibold tracking-tight">笔记</h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-fg-muted">
-          写为什么值得留下。算法和对照 playground 放在对应的 study 里。
-        </p>
+        <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-fg-subtle">{copy.notesEyebrow}</p>
+        <h1 className="mt-3 text-[1.8rem] font-semibold tracking-tight">{copy.notesTitle}</h1>
+        <p className="mt-3 text-[15px] leading-relaxed text-fg-muted">{copy.notesLede}</p>
       </header>
 
       {notes.length === 0 ? (
-        <p className="mt-10 text-[13px] text-fg-subtle">还没有笔记。见 docs/writing.md。</p>
+        <p className="mt-10 text-[13px] text-fg-subtle">{copy.emptyNote}</p>
       ) : (
         <ul className="mt-10 divide-y divide-border border-y border-border">
           {notes.map((note) => (
@@ -36,6 +39,6 @@ export function Notes() {
           ))}
         </ul>
       )}
-    </main>
+    </Page>
   );
 }
