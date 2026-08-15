@@ -28,7 +28,7 @@ From this directory, after `npm install`:
 npm run capture    # lab stills (zh → references + public/stills; en → public/stills/en)
 npm run tts        # Hi-Fi clone WAV lines into public/voice/{zh,en}
                    # add -- --seed to rebuild prompt wavs
-npm run render     # Remotion → studies/*/references/*.{mp4,en.mp4}
+npm run render     # Remotion, then ffmpeg CRF 28 → studies/*/references/*.{mp4,en.mp4}
 npm run films      # all three
 npm run studio     # preview compositions
 ```
