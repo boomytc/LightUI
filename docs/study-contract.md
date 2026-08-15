@@ -78,6 +78,10 @@ in the site nav. Standalone playgrounds use `?stage=1` with the same
 query. Stills are captured from this URL (`make stills`), not from the
 teaching page.
 
+`src/lib/stage-query.ts` is an eight-line helper copied into each study
+that has kinds. Do not import it across studies. If you change the
+query contract (`kind`, `state=closed|open`), update every copy.
+
 ## Discovery paths (from `products/lab/src/lib/catalog.ts`)
 
 ```

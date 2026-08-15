@@ -30,7 +30,7 @@ skills/                       本仓库的 agent skill
 design/                       色板、字体、圆角（站点与 study 共用）
 docs/catalog.md               由 study.json 生成的索引
 docs/writing.md               公开笔记约定
-writing/                      关于页 + 笔记原文
+writing/                      公开笔记
 products/lab/                 站点：首页 / 作品 / 图谱 / 笔记
 studies/<slug>/               一则理念 + 独立 playground
 ```

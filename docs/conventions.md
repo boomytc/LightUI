@@ -42,9 +42,9 @@ studies/<slug>/
 
 Do not commit stills or films. `studies/<slug>/references/` is an optional
 local output (gitignored except `SOURCE.md`). Stills come from this
-repo's stage (`make stills`). Films are optional and may be written back
-later. The study itself is the idea, the machines, the playground, and
-the stage.
+repo's stage (`make stills`). Mp4 write-back is optional (`make films`)
+and is not the source of the fixture. The study itself is the idea, the
+machines, the playground, and the stage.
 
 `idea.md` is the human catalog unit. It should answer:
 
