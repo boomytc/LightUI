@@ -1,6 +1,7 @@
-# Source
+# References
 
-Private sandbox pointer only. Do not surface this path on the public site.
-The sandbox was ours; delete it after the study is in.
+Stills and the film are captured from this repo's lab, not from a sandbox.
 
-`/Users/boom/Downloads/FRjVwOa6ioqosjOI-grok-workspace`
+- Page: `http://127.0.0.1:5173/s/intent-cascade`
+- Pipeline: `tools/study-films` (`make films`)
+- Films: `cursor-movement.mp4` (zh) · `cursor-movement.en.mp4` (en)

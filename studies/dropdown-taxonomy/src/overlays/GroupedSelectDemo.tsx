@@ -20,6 +20,7 @@ export function GroupedSelectDemo() {
         ref={triggerRef}
         open={open}
         aria-haspopup="listbox"
+        aria-label={locale === "en" ? "Reviewer" : "评审成员"}
         onClick={() => setOpen((v) => !v)}
       >
         <span>{current ? pick(current.label, locale) : ""}</span>

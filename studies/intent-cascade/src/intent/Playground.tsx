@@ -54,7 +54,10 @@ export function Playground({ enabled, showTriangles, restDelay }: Props) {
   const pathLabels = collectPathLabels(FILTER_TREE, cascade.snapshot.path, locale);
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-border bg-surface shadow-card">
+    <section
+      data-film="play"
+      className="relative overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
+    >
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-3.5">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
           <span className="text-[13px] font-medium text-fg-muted">

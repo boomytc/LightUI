@@ -34,6 +34,7 @@ writing/                      关于页 + 笔记原文
 products/lab/                 站点：首页 / 作品 / 笔记 / 关于
 studies/intent-cascade/       菜单意图预测
 studies/dropdown-taxonomy/    给下拉起对名字
+tools/study-films/            站点截图 + Remotion 讲解片
 ```
 
 根目录是工作区，可运行单元在下一层：站点在 `products/lab/`，每则理念在 `studies/<slug>/`。

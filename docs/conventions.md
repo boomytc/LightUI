@@ -23,7 +23,7 @@ studies/<slug>/
   study.json
   src/StudyView.tsx     export function StudyView
   src/main.tsx          standalone shell only
-  references/           optional evidence
+  references/           first-party lab stills + film (`make films`)
 ```
 
 `idea.md` is the human catalog unit. It should answer:

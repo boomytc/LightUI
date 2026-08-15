@@ -5,3 +5,7 @@ dist
 *.tsbuildinfo
 .playwright-cli
 *.log
+.env
+.env.*
+*.local.yaml
+*.local.yml

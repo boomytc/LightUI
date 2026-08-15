@@ -39,6 +39,7 @@ export function CascaderDemo() {
             ref={triggerRef}
             open={open}
             aria-haspopup="dialog"
+            aria-label={locale === "en" ? "Region" : "所在地区"}
             onClick={() => {
               const next = !open;
               setOpen(next);
@@ -73,6 +74,7 @@ export function CascaderDemo() {
                       <li key={item.id}>
                         <button
                           type="button"
+                          data-region={item.id}
                           onClick={() => chooseLevel(level, item.id)}
                           className={cn(
                             "flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-[13px]",

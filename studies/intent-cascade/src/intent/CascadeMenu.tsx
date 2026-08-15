@@ -122,6 +122,7 @@ function Panel({
                 <button
                   type="button"
                   role="menuitem"
+                  data-node={node.id}
                   ref={(el) => registerItem(node.id, el)}
                   onClick={() => {
                     onItemClick(slice.level, node);

@@ -1,5 +1,5 @@
 # Makefile
-.PHONY: help catalog install dev dev-study build preview test typecheck clean
+.PHONY: help catalog install dev dev-study build preview test typecheck clean films films-capture films-tts films-render
 
 .DEFAULT_GOAL := help
 
@@ -38,6 +38,18 @@ test: ## 运行全部 workspace 测试
 
 typecheck: ## 类型检查全部 workspace
 	npm run typecheck --workspaces --if-present
+
+films-capture: ## 从运行中的 lab 截取 studies/*/references 截图
+	npm run capture --prefix tools/study-films
+
+films-tts: ## 用 VoxCPM2 合成讲解旁白
+	npm run tts --prefix tools/study-films
+
+films-render: ## Remotion 渲染并写回 references/*.mp4
+	npm run render --prefix tools/study-films
+
+films: ## 截图 + 旁白 + 渲染（lab 需在 127.0.0.1:5173）
+	npm run films --prefix tools/study-films
 
 clean: ## 清理构建缓存
 	@find products studies -type d \( -name dist -o -name .cache \) -exec rm -rf {} +

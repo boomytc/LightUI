@@ -20,6 +20,7 @@ export function MultiSelectDemo() {
         ref={triggerRef}
         open={open}
         aria-haspopup="listbox"
+        aria-label={locale === "en" ? "Your skills" : "你的技能"}
         onClick={() => setOpen((v) => !v)}
       >
         <span className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">

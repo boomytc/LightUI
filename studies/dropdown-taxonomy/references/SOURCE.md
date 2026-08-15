@@ -1,6 +1,7 @@
-# Source
+# References
 
-Private sandbox pointer only. Do not surface this path on the public site.
-The sandbox was ours; delete it after the study is in.
+Stills and the film are captured from this repo's lab, not from a sandbox.
 
-`/Users/boom/Downloads/9ezDLe1Xnk9uDy7a-grok-workspace`
+- Page: `http://127.0.0.1:5173/s/dropdown-taxonomy`
+- Pipeline: `tools/study-films` (`make films`)
+- Films: `source-tutorial.mp4` (zh) · `source-tutorial.en.mp4` (en)

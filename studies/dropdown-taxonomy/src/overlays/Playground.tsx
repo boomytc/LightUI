@@ -28,6 +28,7 @@ export function Playground() {
             <button
               key={kind.id}
               type="button"
+              data-kind={kind.id}
               onClick={() => setActive(kind.id)}
               className={cn(
                 "flex min-w-44 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
@@ -80,7 +81,9 @@ export function Playground() {
 
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
-        <Demo id={meta.id} />
+        <div data-film="play">
+          <Demo id={meta.id} />
+        </div>
 
         <ul className="mt-4 flex flex-wrap gap-2">
           {meta.rules.map((rule) => (

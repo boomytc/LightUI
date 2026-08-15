@@ -54,7 +54,12 @@ export function DatePickerDemo() {
   return (
     <Frame title={locale === "en" ? "Hotel · stay dates" : "酒店预订 · 入住日期"}>
       <FieldLabel>{locale === "en" ? "Stay" : "入住日期"}</FieldLabel>
-      <TriggerButton ref={triggerRef} open={open} onClick={() => setOpen((v) => !v)}>
+      <TriggerButton
+        ref={triggerRef}
+        open={open}
+        aria-label={locale === "en" ? "Stay dates" : "入住日期"}
+        onClick={() => setOpen((v) => !v)}
+      >
         <span>{label}</span>
         <ChevronDown className="size-4 shrink-0 text-fg-muted" />
       </TriggerButton>

@@ -36,5 +36,7 @@ Do not invent a second copy of these rules. Follow the files:
 
 Copy the teaching surface and the rule (geometry, timing, state). Leave
 behind routers, auth, databases, PWA, preview bridges, and deploy
-adapters. A local `references/SOURCE.md` is only a private pointer to a
-sandbox we will delete — do not surface it on the public site.
+adapters. `references/` should be first-party stills of the lab page and a
+Remotion film from `tools/study-films`. Do not keep sandbox screenshots
+or source clips. `SOURCE.md` is operator-only — do not surface it on
+the public site.
