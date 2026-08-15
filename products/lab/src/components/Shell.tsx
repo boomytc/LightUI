@@ -101,8 +101,8 @@ export function Shell({ children }: { children: ReactNode }) {
           );
         })}
       </nav>
-      <div>{children}</div>
-      <footer className="border-t border-border">
+      <div className="flex-1">{children}</div>
+      <footer className="mt-auto border-t border-border">
         <div className="page-width py-5">
           <p className="text-[12px] text-fg-subtle">{copy.footer}</p>
         </div>
