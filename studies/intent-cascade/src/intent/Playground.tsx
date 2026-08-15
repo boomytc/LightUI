@@ -56,7 +56,6 @@ export function Playground({ enabled, showTriangles, restDelay, bare = false }: 
 
   return (
     <section
-      data-film="play"
       className="relative overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
     >
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-3.5">

@@ -32,7 +32,7 @@ docs/catalog.md               由 study.json 生成的索引
 docs/writing.md               公开笔记约定
 writing/                      公开笔记
 products/lab/                 站点：首页 / 作品 / 图谱 / 笔记
-studies/<slug>/               一则理念 + 独立 playground
+studies/<slug>/               一则理念 + playground + 舞台
 ```
 
 根目录是工作区，可运行单元在下一层：站点在 `products/lab/`，每则理念在 `studies/<slug>/`。

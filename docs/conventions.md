@@ -63,7 +63,7 @@ idea or playground changes. Set `asks` (the question) and `links`
   Lab is `5173`. Taken: `5174` intent-cascade, `5175` dropdown-taxonomy,
   `5176` sidebar-taxonomy, `5177` nav-taxonomy. Next free: `5178`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
-  from outside the study root.
+  and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.
 - Keep demo fixtures next to the playground. Do not import another study.
 - If two studies later share a true primitive, extract it then.

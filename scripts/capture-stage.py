@@ -41,9 +41,6 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
     ],
 }
 
-KEEP_SUFFIXES = {".mp4", ".md"}
-
-
 def stage_url(slug: str, kind: str, state: str) -> str:
     if slug == "intent-cascade":
         return f"{LAB}/s/{slug}/stage"
@@ -52,7 +49,7 @@ def stage_url(slug: str, kind: str, state: str) -> str:
 
 def union_clip(page):
     boxes = []
-    for sel in ("[data-stage=fixture]", "[data-film=popover]"):
+    for sel in ("[data-stage=fixture]", "[data-stage=popover]"):
         for el in page.locator(sel).all():
             box = el.bounding_box()
             if box and box["width"] > 1 and box["height"] > 1:

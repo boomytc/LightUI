@@ -20,8 +20,9 @@ design/                  visual source (tokens, base, favicon)
 docs/                    catalog, conventions, study / writing contracts
 writing/                 public notes (the site blog)
 products/lab/            the site: home, studies, graph, notes
-studies/<slug>/          one idea + isolated playground
+studies/<slug>/          one idea + playground + stage
 scripts/sync-catalog.mjs regenerate docs/catalog.md
+scripts/capture-stage.py export stage stills (`make stills`)
 ```
 
 Root `package.json` is a workspace orchestrator only. Do not put app `src/`
@@ -37,15 +38,15 @@ at the repository root.
 | Color, type, radius, shadow | `design/tokens.css` |
 | How to add a study | `docs/conventions.md` + `docs/study-contract.md` |
 | Agent procedure | `skills/lightui*` |
-| Fixture stills (generated) | `make stills` from `/s/<slug>/stage` — do not commit png / mp4 |
+| Fixture stills (generated) | `make stills` from `/s/<slug>/stage` — do not commit png |
 
 Do not create empty study folders. Do not start a workspace-level component
 library. If two studies later share a true primitive, extract it then.
 
 ## Study contract
 
-Every study must contain `idea.md`, `study.json`, `src/StudyView.tsx`
-(named export `StudyView`), `README.md`, and `AGENTS.md`. Details:
+Every study must contain `idea.md`, `study.json`, `src/StudyView.tsx`,
+`src/StageView.tsx`, `README.md`, and `AGENTS.md`. Details:
 `docs/study-contract.md`.
 
 The lab discovers studies with `import.meta.glob`. Adding a study does not
@@ -90,4 +91,4 @@ Standalone study: `make dev-study STUDY=<slug>`. Ports: see
 ## Cleanup
 
 Remove transient `dist/`, `.cache/`, and generated `references/` media.
-Do not commit mp4 or stills.
+Do not commit stills.

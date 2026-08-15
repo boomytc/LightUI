@@ -74,7 +74,7 @@ export function Playground() {
 
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
-        <div data-film="play">
+        <div>
           <KindDemo id={meta.id} />
         </div>
 

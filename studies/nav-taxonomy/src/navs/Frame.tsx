@@ -10,7 +10,6 @@ export function Frame({
 }) {
   return (
     <div
-      data-film="fixture"
       className="overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
     >
       <div className="border-b border-border px-4 py-2.5">

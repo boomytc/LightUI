@@ -85,7 +85,7 @@ export function Popover({
   return createPortal(
     <div
       ref={panelRef}
-      data-film="popover"
+      data-stage="popover"
       style={style}
       className={cn(
         "overflow-hidden rounded-xl border border-border bg-surface shadow-menu",
