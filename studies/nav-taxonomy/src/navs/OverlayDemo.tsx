@@ -25,10 +25,10 @@ export function OverlayDemo({ defaultOpen = false }: { defaultOpen?: boolean } =
   }, [open]);
 
   return (
-    <Frame title={locale === "en" ? "Sue · show" : "Sue · 作品集"}>
+    <Frame title={locale === "en" ? "Show" : "作品集"}>
       <div className="relative h-full overflow-hidden">
         <div className="flex h-11 items-center justify-between px-3">
-          <span className="text-[13px] font-medium">Sue</span>
+          <span className="text-[13px] font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
           <button
             ref={btnRef}
             type="button"

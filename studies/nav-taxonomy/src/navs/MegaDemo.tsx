@@ -16,10 +16,10 @@ export function MegaDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}
   const [picked, setPicked] = useState(MEGA[0].items[1]);
 
   return (
-    <Frame title={locale === "en" ? "Sue · catalog" : "Sue · 分类"}>
+    <Frame title={locale === "en" ? "Catalog" : "分类"}>
       <div className="flex h-full flex-col">
         <div className="relative z-20 flex h-11 shrink-0 items-center gap-4 border-b border-border px-4 text-[13px]">
-          <span className="font-medium">Sue</span>
+          <span className="font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
           <span className="text-fg-muted">{locale === "en" ? "Home" : "首页"}</span>
           <div onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
             <button

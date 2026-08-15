@@ -11,7 +11,7 @@ export function SidebarDemo() {
   const [page, setPage] = useState("home");
 
   return (
-    <Frame title={locale === "en" ? "Sue · console" : "Sue · 控制台"}>
+    <Frame title={locale === "en" ? "Console" : "控制台"}>
       <div className="flex h-full">
         <aside
           className="flex shrink-0 flex-col border-r border-border bg-surface"
@@ -44,7 +44,7 @@ export function SidebarDemo() {
                 collapsed ? "w-0 opacity-0" : "opacity-100",
               )}
             >
-              Sue
+              {locale === "en" ? "Desk" : "台"}
             </span>
           </div>
           <nav className="flex flex-col gap-0.5 px-2" aria-label={locale === "en" ? "Console" : "控制台"}>

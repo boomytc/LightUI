@@ -155,7 +155,7 @@ export function OffCanvasDemo({ defaultOpen = false }: { defaultOpen?: boolean }
           </div>
 
           <p className="text-[12px] text-fg-subtle">
-            {locale === "en" ? "Sue · 12 min · occupancy is zero until asked" : "Sue · 12 分钟 · 默认宽度为零"}
+            {locale === "en" ? "12 min · occupancy is zero until asked" : "12 分钟 · 默认宽度为零"}
           </p>
           <h3 className="mt-2 max-w-xl text-[1.25rem] font-semibold tracking-tight">
             {locale === "en" ? "How to keep a design system alive" : "如何建立一套可持续的设计系统"}

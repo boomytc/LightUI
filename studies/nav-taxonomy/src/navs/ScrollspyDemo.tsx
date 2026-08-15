@@ -57,7 +57,7 @@ export function ScrollspyDemo() {
   }
 
   return (
-    <Frame title={locale === "en" ? "Sue · landing" : "Sue · 落地页"}>
+    <Frame title={locale === "en" ? "Landing" : "落地页"}>
       <div className="flex h-full">
         <nav className="flex w-[4.75rem] shrink-0 flex-col gap-0.5 border-r border-border bg-surface-2 py-3 pr-1 pl-2">
           {SECTIONS.map((item) => (

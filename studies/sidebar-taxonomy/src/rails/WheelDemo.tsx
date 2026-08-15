@@ -77,13 +77,15 @@ export function WheelDemo() {
   }, []);
 
   return (
-    <Frame title={locale === "en" ? "Sue · portfolio" : "Sue · 作品集"} dark>
+    <Frame title={locale === "en" ? "Portfolio" : "作品集"} dark>
       <div
         ref={stageRef}
         className="relative flex min-h-[22rem] select-none overflow-hidden bg-fg text-surface"
       >
         <div className="relative z-10 flex w-[44%] min-w-36 flex-col justify-center pl-5">
-          <p className="mb-6 text-[11px] tracking-[0.16em] text-white/45 uppercase">Sue</p>
+          <p className="mb-6 text-[11px] tracking-[0.16em] text-white/45 uppercase">
+            {locale === "en" ? "Studio" : "工作室"}
+          </p>
           <div className="relative h-72">
             {WORKS.map((item, index) => {
               const visual = wheelVisual(wheelOffset(index, active));

@@ -7,14 +7,14 @@ export function FloatingDemo() {
   const locale = useLocale();
 
   return (
-    <Frame title={locale === "en" ? "Sue · portfolio" : "Sue · 作品集"}>
+    <Frame title={locale === "en" ? "Portfolio" : "作品集"}>
       <div className="h-full overflow-y-auto bg-surface-2">
         <div className="sticky top-3 z-20 flex justify-center px-3 pt-1">
           <nav
             aria-label={locale === "en" ? "Primary" : "主导航"}
             className="flex items-center gap-1 rounded-full bg-surface px-2 py-1.5 shadow-card"
           >
-            <span className="px-2.5 text-[13px] font-medium">Sue</span>
+            <span className="px-2.5 text-[13px] font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
             {LINKS.map((item, index) => (
               <span
                 key={item.id}

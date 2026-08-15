@@ -17,10 +17,10 @@ export function BreadcrumbDemo() {
   const trail = crumbTrail(TREE, depth);
 
   return (
-    <Frame title={locale === "en" ? "Sue · docs" : "Sue · 文档"}>
+    <Frame title={locale === "en" ? "Docs" : "文档"}>
       <div className="flex h-full flex-col">
         <div className="flex h-11 shrink-0 items-center gap-4 border-b border-border px-4 text-[13px]">
-          <span className="font-medium">Sue</span>
+          <span className="font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
           {LINKS.map((item, index) => (
             <span key={item.id} className={index === 1 ? "font-medium text-accent" : "text-fg-muted"}>
               {pick(item.label, locale)}

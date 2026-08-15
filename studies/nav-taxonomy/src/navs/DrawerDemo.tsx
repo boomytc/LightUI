@@ -25,10 +25,10 @@ export function DrawerDemo({ defaultOpen = false }: { defaultOpen?: boolean } = 
   }, [open]);
 
   return (
-    <Frame title={locale === "en" ? "Sue · phone" : "Sue · 小屏"}>
+    <Frame title={locale === "en" ? "Phone" : "小屏"}>
       <div className="relative h-full overflow-hidden">
         <div className="flex h-11 items-center justify-between border-b border-border px-3">
-          <span className="text-[13px] font-medium">Sue</span>
+          <span className="text-[13px] font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
           <button
             ref={btnRef}
             type="button"

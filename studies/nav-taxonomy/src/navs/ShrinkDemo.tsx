@@ -10,7 +10,7 @@ export function ShrinkDemo() {
   const [shrunk, setShrunk] = useState(false);
 
   return (
-    <Frame title={locale === "en" ? "Sue · brand" : "Sue · 品牌站"}>
+    <Frame title={locale === "en" ? "Brand" : "品牌站"}>
       <div
         className="h-full overflow-y-auto"
         onScroll={(event) => {
@@ -26,7 +26,7 @@ export function ShrinkDemo() {
               : "h-14 bg-transparent text-surface",
           )}
         >
-          <span className="text-[13px] font-medium">Sue</span>
+          <span className="text-[13px] font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
           <nav className="flex gap-4 text-[13px]" aria-label={locale === "en" ? "Primary" : "主导航"}>
             {LINKS.map((item, index) => (
               <span key={item.id} className={index === 0 ? (shrunk ? "font-medium text-accent" : "font-medium") : undefined}>
