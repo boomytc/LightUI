@@ -55,10 +55,9 @@ export function pointInTriangleShape(p: Point, t: Triangle, pad = 0): boolean {
 }
 
 /**
- * Amazon / jquery-menu-aim slope test.
- * For a submenu opening to the RIGHT: if the pointer is moving such that the
- * slope to the top corner is decreasing and the slope to the bottom corner is
- * increasing, the user is heading into the submenu cone.
+ * Slope test for a submenu opening to the right: if the slope to the top
+ * corner falls and the slope to the bottom corner rises, the pointer is
+ * heading into the cone.
  */
 export function isHeadingTowardSubmenu(
   prev: Point,
@@ -83,11 +82,22 @@ export function isHeadingTowardSubmenu(
 }
 
 /**
+ * True while the pointer is still on the parent side of a right-opening
+ * submenu. Past the leading edge the corridor has been crossed — a live
+ * third vertex there would paint a reverse cone.
+ */
+export function onApproachSide(curr: Point, top: Point, bottom: Point, slack = 2): boolean {
+  const edgeX = (top.x + bottom.x) / 2;
+  return curr.x <= edgeX + slack;
+}
+
+/**
  * Combined intent test used by the menu:
  * 1. Current point sits inside the triangle formed by the *previous* sample
  *    and the submenu's leading-edge corners (the true "safe corridor").
  * 2. Fallback slope test — catches fast diagonal flicks that skip the triangle
  *    between sampled frames.
+ * 3. Never true past the leading edge (that is the reverse cone).
  */
 export function predictsIntent(
   prev: Point,
@@ -96,6 +106,7 @@ export function predictsIntent(
   bottom: Point,
   pad = 6,
 ): boolean {
+  if (!onApproachSide(curr, top, bottom)) return false;
   if (pointInTriangle(curr, prev, top, bottom, pad)) return true;
   return isHeadingTowardSubmenu(prev, curr, top, bottom);
 }

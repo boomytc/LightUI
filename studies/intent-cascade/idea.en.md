@@ -1,6 +1,6 @@
 # Menu intent · Safe triangle
 
-Extracted from a menu-intent demo. The extract is the judgment, not the host chrome.
+Guess from the pointer path whether you are heading into the submenu. A safe triangle protects the diagonal.
 
 ## The problem
 
@@ -19,6 +19,7 @@ Each frame:
 3. The pointer is already in the submenu panel → lock the path (the overlay turns green).
 4. The gap between columns is also safe, so a small gutter does not break the corridor.
 5. Moving up and down the first column, not toward the submenu → switch immediately. Intent only protects a path that looks like it is entering the submenu.
+6. Past the submenu’s leading edge the corridor ends. Further right is not protected, and no reverse triangle is drawn.
 
 The blue overlay uses the **live** pointer as the third vertex so the corridor is visible. The real test uses the **previous** sample — otherwise the pointer sits on its own vertex and intent cannot be measured.
 
@@ -27,7 +28,7 @@ The blue overlay uses the **live** pointer as the third vertex so the corridor i
 ```
 function predictsIntent(prev, curr, top, bot, pad = 6) {
   if (pointInTriangle(curr, prev, top, bot, pad)) return true
-  // Amazon / jquery-menu-aim slope test
+  // slope test: heading into the cone
   return slope(curr, top) < slope(prev, top)
       && slope(curr, bot) > slope(prev, bot)
 }
@@ -43,24 +44,4 @@ function predictsIntent(prev, curr, top, bot, pad = 6) {
 | Diagonal into submenu | May still switch mid-path | Protected in the corridor |
 | Dwell on the wrong item | Wait the fixed time | Give up after `restDelay` |
 
-## Lineage
-
-- Amazon mega dropdown, Ben Kamens, 2013
-- [jquery-menu-aim](https://github.com/kamens/jQuery-menu-aim)
-- Floating UI [`safePolygon`](https://floating-ui.com/docs/usehover#safepolygon)
-
-This study draws the corridor so you can debug it.
-
-## What was kept, what was dropped
-
-Kept:
-
-- Triangle / slope / `predictsIntent`
-- Pointer history, rest delay, gap bridge, lock after entering the submenu
-- Blue / green overlay as teaching chrome
-- A filter tree as the operable fixture
-- Three contrast gestures: diagonal, vertical, third level
-
-Dropped: routing, sign-in, database, and host chrome from the source demo.
-
-The only structural change: `useIntentCascade` takes a `tree` and `initialPath` instead of hard-coded demo data. Geometry stays DOM-free.
+This page draws the corridor so you can debug it. Geometry stays DOM-free. `useIntentCascade` takes a `tree` and `initialPath`.

@@ -138,7 +138,7 @@ export function StudyView() {
 {`function predictsIntent(prev, curr, top, bot) {
   if (pointInTriangle(curr, prev, top, bot))
     return true
-  // Amazon / jquery-menu-aim
+  // slope test
   return slope(curr, top) < slope(prev, top)
       && slope(curr, bot) > slope(prev, bot)
 }`}
@@ -162,19 +162,9 @@ export function StudyView() {
               : "给 hover 一律加 200ms 延迟，纵向切换会发黏，斜向穿越又常常不够。意图预测只在「像是要进子菜单」时延迟，沿列表上下移动仍然是即时的。"}
           </p>
           <p>
-            {locale === "en" ? (
-              <>
-                The same idea shows up in the Amazon mega dropdown (Ben Kamens, 2013), jquery-menu-aim, and Floating UI{" "}
-                <code className="rounded bg-surface-2 px-1 py-0.5 font-mono text-[12px] text-fg">safePolygon</code>
-                . This page draws the corridor so you can debug it.
-              </>
-            ) : (
-              <>
-                同一思路出现在 Amazon mega dropdown（Ben Kamens, 2013）、jquery-menu-aim，以及 Floating UI 的{" "}
-                <code className="rounded bg-surface-2 px-1 py-0.5 font-mono text-[12px] text-fg">safePolygon</code>
-                。本页把走廊画出来，方便对照调试。
-              </>
-            )}
+            {locale === "en"
+              ? "This page draws the corridor so you can see why a diagonal is protected and a vertical scan is not."
+              : "本页把走廊画出来，方便看出为什么斜线会被保护、纵向扫却立刻切换。"}
           </p>
         </div>
       </section>

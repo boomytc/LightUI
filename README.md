@@ -32,14 +32,15 @@ docs/catalog.md               由 study.json 生成的索引
 docs/writing.md               公开笔记约定
 writing/                      关于页 + 笔记原文
 products/lab/                 站点：首页 / 作品 / 笔记 / 关于
-studies/intent-cascade/       第一则：菜单意图预测
+studies/intent-cascade/       菜单意图预测
+studies/dropdown-taxonomy/    给下拉起对名字
 ```
 
 根目录是工作区，可运行单元在下一层：站点在 `products/lab/`，每则理念在 `studies/<slug>/`。
 
 ## 当前 study
 
-见 [docs/catalog.md](docs/catalog.md)。第一则是菜单意图预测：抽的是安全三角判定和教学 playground。
+见 [docs/catalog.md](docs/catalog.md)。目前两则：菜单意图预测（安全三角），以及给下拉起对名字（七种提交模型）。
 
 ## 以后怎么长
 

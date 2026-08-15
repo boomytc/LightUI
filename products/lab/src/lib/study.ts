@@ -1,11 +1,9 @@
 export type StudyStatus = "active" | "draft" | "retired";
 
 export type StudyOrigin = {
-  kind: "extract" | "original";
-  label: string;
+  kind?: "extract" | "original";
+  label?: string;
   labelEn?: string;
-  path?: string;
-  lineage?: string[];
 };
 
 export type StudyMeta = {
@@ -18,5 +16,5 @@ export type StudyMeta = {
   summaryEn?: string;
   status: StudyStatus;
   tags: string[];
-  origin: StudyOrigin;
+  origin?: StudyOrigin;
 };

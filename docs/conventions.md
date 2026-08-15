@@ -31,7 +31,6 @@ studies/<slug>/
 1. What breaks for the user if this idea is missing?
 2. What is the actual rule (geometry, timing, state machine)?
 3. Why is a naive alternative worse?
-4. Where did it come from, and what did we refuse to copy?
 
 `study.json` is the machine catalog unit. The lab glob-loads it.
 

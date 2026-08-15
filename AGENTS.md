@@ -66,8 +66,9 @@ Do not put them in `.grok/skills/`.
   `127.0.0.1`.
 - This is not a single-app repo. Studies stay independent and do not import
   each other.
-- When extracting from an external demo, copy the idea and the teaching
-  playground. Do not copy auth, PWA, preview bridges, or deploy adapters.
+- When bringing a sandbox in, copy the idea and the teaching playground.
+  Do not copy auth, PWA, preview bridges, or deploy adapters. Do not put
+  lineage or a kept/dropped diary on public pages.
 - Do not mention or link sibling private repositories from this repo's
   public pages or README.
 

@@ -9,7 +9,7 @@ Cascade menus have an old snag: sliding from the first level into the second bri
 
 The usual patch is a 200ms delay on every hover. Vertical scanning becomes sticky, and a diagonal is often still too short. Both failures sit on the same delay.
 
-The Amazon mega dropdown (2013), jquery-menu-aim, and Floating UI `safePolygon` take another path: the previous pointer sample and the submenu’s leading-edge corners form a corridor. While you stay inside, treat it as heading into the submenu. Moving up and down the list, not toward the submenu, switches immediately.
+Another path: the previous pointer sample and the submenu’s leading-edge corners form a corridor. While you stay inside, treat it as heading into the submenu. Moving up and down the list, not toward the submenu, switches immediately.
 
 The third vertex of the test must be the **previous** sample, not the live pointer. The blue overlay uses the live pointer only so the corridor is visible.
 

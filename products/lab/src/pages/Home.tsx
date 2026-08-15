@@ -11,7 +11,7 @@ export function Home() {
   const copy = messages(locale);
   const studies = loadStudies().filter((s) => s.meta.status !== "retired");
   const notes = loadNotes(locale);
-  const featured = studies[0];
+  const featured = studies.slice(0, 4);
   const latestNotes = notes.slice(0, 3);
 
   return (
@@ -41,12 +41,14 @@ export function Home() {
       <div className="mt-16 grid gap-14 lg:grid-cols-2 lg:gap-16">
         <section className="min-w-0">
           <SectionHead title={copy.homeWorks} href="/studies" extra={copy.worksCount(studies.length)} all={copy.homeAll} />
-          {featured ? (
-            <div className="mt-4">
-              <StudyCard meta={featured.meta} locale={locale} />
-            </div>
-          ) : (
+          {featured.length === 0 ? (
             <Empty>{copy.emptyStudy}</Empty>
+          ) : (
+            <div className="mt-4 grid gap-4">
+              {featured.map((study) => (
+                <StudyCard key={study.meta.slug} meta={study.meta} locale={locale} />
+              ))}
+            </div>
           )}
         </section>
 

@@ -19,7 +19,7 @@ Do not invent a second copy of these rules. Follow the files:
 
 1. Name the **behavior** (`intent-cascade`, not `grok-demo`).
 2. Write `idea.md` **before** scaffolding UI. Problem, rule, why not the
-   naive alternative, lineage, what was refused (auth/PWA/host chrome).
+   naive alternative. Do not add lineage or a kept/dropped source diary.
 3. Add `study.json` matching the folder slug.
 4. Implement the playground in `studies/<slug>/`. Export
    `StudyView` from `src/StudyView.tsx`. Standalone chrome stays in
@@ -36,4 +36,5 @@ Do not invent a second copy of these rules. Follow the files:
 
 Copy the teaching surface and the rule (geometry, timing, state). Leave
 behind routers, auth, databases, PWA, preview bridges, and deploy
-adapters. Put evidence in `references/` with a short `SOURCE.md`.
+adapters. A local `references/SOURCE.md` is only a private pointer to a
+sandbox we will delete — do not surface it on the public site.

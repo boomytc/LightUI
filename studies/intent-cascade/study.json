@@ -7,14 +7,5 @@
   "summary": "根据鼠标移动方向推测是不是要进子菜单，用安全三角保护斜向穿越，而不是给所有 hover 加一段 delay。",
   "summaryEn": "Guess from the pointer path whether you are heading into the submenu. A safe triangle protects a diagonal instead of delaying every hover.",
   "status": "active",
-  "tags": ["pointer", "menu", "geometry"],
-  "origin": {
-    "kind": "extract",
-    "label": "Amazon mega dropdown / menu-aim",
-    "lineage": [
-      "Amazon mega dropdown (Ben Kamens, 2013)",
-      "jquery-menu-aim",
-      "Floating UI safePolygon"
-    ]
-  }
+  "tags": ["pointer", "menu", "geometry"]
 }

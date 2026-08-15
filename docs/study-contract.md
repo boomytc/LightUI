@@ -16,13 +16,7 @@ three files. Adding a study does not require editing a registry.
   "eyebrow": "Cursor intent · Safe triangle",
   "summary": "One or two sentences. The transferable rule, not the demo skin.",
   "status": "active",
-  "tags": ["pointer", "menu", "geometry"],
-  "origin": {
-    "kind": "extract",
-    "label": "Short source name",
-    "path": "optional local path or URL",
-    "lineage": ["Prior art, if any"]
-  }
+  "tags": ["pointer", "menu", "geometry"]
 }
 ```
 
@@ -34,7 +28,6 @@ three files. Adding a study does not require editing a registry.
 | `summary` | What the user should remember. |
 | `status` | `active` \| `draft` \| `retired` |
 | `tags` | Lowercase behavior tags, not product names. |
-| `origin.kind` | `extract` (from elsewhere) or `original` (first-party). |
 
 ## `StudyView`
 

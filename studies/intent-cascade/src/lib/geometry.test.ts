@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   isHeadingTowardSubmenu,
+  onApproachSide,
   pointInRect,
   pointInTriangle,
   predictsIntent,
@@ -57,6 +58,12 @@ describe("predictsIntent", () => {
   it("does not protect a downward hop onto a sibling item", () => {
     const curr = { x: 40, y: 220 };
     assert.equal(predictsIntent(prev, curr, top, bottom, 0), false);
+  });
+
+  it("does not protect a point past the submenu leading edge", () => {
+    assert.equal(onApproachSide({ x: 300, y: 120 }, top, bottom), false);
+    assert.equal(predictsIntent(prev, { x: 300, y: 120 }, top, bottom), false);
+    assert.equal(predictsIntent({ x: 250, y: 80 }, { x: 320, y: 200 }, top, bottom), false);
   });
 });
 

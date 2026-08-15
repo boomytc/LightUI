@@ -1,6 +1,6 @@
 # 菜单意图预测 · 安全三角
 
-从一则菜单意图预测演示里抽出来的规则。抽的是判定，不是那套应用脚手架。
+根据指针轨迹判断是不是要进子菜单，用安全三角保护斜向穿越。
 
 ## 问题
 
@@ -19,6 +19,7 @@
 3. 指针已经进入子菜单面板 → 锁定当前路径（可视化变绿）。
 4. 两列之间的缝（gap bridge）也算安全区，避免列间距把走廊打断。
 5. 沿一级列表上下移动、轨迹不朝向子菜单 → 即时切换。意图预测只保护「像是要进子菜单」的轨迹。
+6. 指针越过子菜单左缘之后，走廊结束。再往右不是保护区，也不画反向三角。
 
 可视化里的蓝三角第三个顶点是**当前指针**，方便看出走廊。真正做判定时，第三个顶点必须是**上一帧指针**——否则指针永远在自己的顶点上，测不到意图。
 
@@ -27,7 +28,7 @@
 ```
 function predictsIntent(prev, curr, top, bot, pad = 6) {
   if (pointInTriangle(curr, prev, top, bot, pad)) return true
-  // Amazon / jquery-menu-aim slope test
+  // slope test: heading into the cone
   return slope(curr, top) < slope(prev, top)
       && slope(curr, bot) > slope(prev, bot)
 }
@@ -43,24 +44,4 @@ function predictsIntent(prev, curr, top, bot, pad = 6) {
 | 斜向进二级 | 仍可能途中切换 | 走廊内保护 |
 | 停在错误项上 | 等固定时间 | 超过 `restDelay` 才放弃保护 |
 
-## 谱系
-
-- Amazon mega dropdown，Ben Kamens, 2013
-- [jquery-menu-aim](https://github.com/kamens/jQuery-menu-aim)
-- Floating UI [`safePolygon`](https://floating-ui.com/docs/usehover#safepolygon)
-
-本 study 把走廊画出来，方便对照调试。
-
-## 从源演示里留下什么、丢掉什么
-
-留下：
-
-- 三角 / 斜率 / `predictsIntent`
-- 指针历史、rest delay、gap bridge、进入子菜单后锁定
-- 蓝 / 绿三角 overlay 作为教学层
-- 筛选树作为可操作 fixture
-- 三组对照手势：斜向穿越、纵向切换、三级穿透
-
-丢掉：源演示里的路由、登录、数据库和宿主壳。
-
-抽离时只做了一处结构整理：`useIntentCascade` 接收 `tree` 和 `initialPath`，不再写死演示数据。几何层保持无 DOM。
+本页把走廊画出来，方便对照调试。几何层没有 DOM；`useIntentCascade` 接收 `tree` 和 `initialPath`。

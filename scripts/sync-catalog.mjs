@@ -29,12 +29,11 @@ for (const slug of slugs) {
 }
 
 const table = [
-  "| Slug | Idea | Origin | Status |",
-  "| --- | --- | --- | --- |",
+  "| Slug | Idea | Status |",
+  "| --- | --- | --- |",
   ...rows.map((m) => {
     const idea = m.summary.replace(/\|/g, "\\|");
-    const origin = m.origin?.label ?? "";
-    return `| [${m.slug}](../studies/${m.slug}/) | ${idea} | ${origin} | ${m.status} |`;
+    return `| [${m.slug}](../studies/${m.slug}/) | ${idea} | ${m.status} |`;
   }),
 ].join("\n");
 
@@ -50,8 +49,6 @@ ${table}
 ## How to read a row
 
 - **Idea** is the transferable rule, not the demo skin.
-- **Origin** names the source we extracted from, or \`original\`.
-- Host chrome from an external sandbox (auth, PWA, deploy adapters) is not part of the study.
 `;
 
 await writeFile(outFile, md);

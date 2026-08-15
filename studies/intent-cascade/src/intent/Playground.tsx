@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Plus, RotateCcw, X } from "lucide-react";
+import { useRef, useState } from "react";
+import { RotateCcw, X } from "lucide-react";
 import { collectPathLabels, FILTER_TREE, type MenuNode } from "../lib/menu-data";
 import { useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { CascadeMenu } from "./CascadeMenu";
+import { SpecCard } from "./SpecCard";
 import { TriangleOverlay } from "./TriangleOverlay";
 import { useIntentCascade } from "./useIntentCascade";
 
@@ -23,8 +24,10 @@ export function Playground({ enabled, showTriangles, restDelay }: Props) {
     tree: FILTER_TREE,
     initialPath: ["status"],
     locale,
+    persistent: true,
   });
   const [chips, setChips] = useState<Chip[]>([]);
+  const frameRef = useRef<HTMLDivElement>(null);
 
   const onSelectLeaf = (node: MenuNode, path: string[]) => {
     const labels = collectPathLabels(FILTER_TREE, path, locale);
@@ -98,58 +101,58 @@ export function Playground({ enabled, showTriangles, restDelay }: Props) {
         </div>
       </header>
 
-      <div className="relative min-h-[460px] bg-[radial-gradient(circle_at_50%_0%,var(--color-play-glow)_0%,transparent_42%)] px-5 py-8 sm:min-h-[520px] sm:px-10">
-        <div className="mb-6 flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => (cascade.snapshot.open ? cascade.closeMenu() : cascade.openMenu())}
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-surface px-3 text-[13px] font-medium text-fg shadow-card hover:bg-surface-2"
-          >
-            <Plus className="size-3.5" />
-            {locale === "en" ? "Add filter" : "添加筛选"}
-          </button>
-          {pathLabels.length > 0 && cascade.snapshot.open ? (
-            <span className="text-[12px] text-fg-subtle">
-              {locale === "en" ? "Path" : "路径"} {pathLabels.join(" → ")}
-            </span>
-          ) : null}
+      <div
+        ref={frameRef}
+        className="relative min-h-[460px] overflow-hidden bg-[radial-gradient(circle_at_50%_0%,var(--color-play-glow)_0%,transparent_42%)] px-5 py-8 sm:min-h-[520px] sm:px-10"
+      >
+        <div className="flex flex-col gap-8 xl:flex-row xl:items-start xl:justify-between xl:gap-10">
+          <div className="min-w-0 flex-1">
+            {pathLabels.length > 0 ? (
+              <p className="mb-4 text-[12px] text-fg-subtle">
+                {locale === "en" ? "Path" : "路径"} {pathLabels.join(" → ")}
+              </p>
+            ) : null}
+
+            <div ref={cascade.rootRef} className="relative inline-flex max-w-full overflow-x-auto pb-1">
+              <CascadeMenu
+                levels={cascade.levels}
+                open={cascade.snapshot.open}
+                path={cascade.snapshot.path}
+                hoveredId={cascade.snapshot.hoveredId}
+                selectedId={chips.at(-1)?.id ?? null}
+                locale={locale}
+                onSelectLeaf={onSelectLeaf}
+                onItemClick={cascade.onItemClick}
+                registerPanel={cascade.registerPanel}
+                registerItem={cascade.registerItem}
+              />
+            </div>
+
+            {cascade.coarse ? (
+              <p className="mt-8 max-w-md text-[13px] leading-relaxed text-fg-muted">
+                {locale === "en"
+                  ? "This interaction needs a mouse trail. On a touch device the menu opens by tap. Try a diagonal slide on a computer to see the safe triangle."
+                  : "此交互依赖鼠标轨迹。当前是触控设备，菜单按点选展开。请在电脑上斜向划过一级菜单，观察安全三角。"}
+              </p>
+            ) : (
+              <p className="mt-8 max-w-lg text-[13px] leading-relaxed text-fg-muted">
+                {locale === "en"
+                  ? "Rest on Status, then slide diagonally to Canceled. The blue triangle is the predicted corridor — while you stay inside, other first-level items will not steal the submenu. It turns green after you enter the submenu."
+                  : "把指针放在「状态」上，再斜着滑向右侧「已取消」。蓝色三角是预测走廊——只要还在里面，途经的其它一级项不会抢走子菜单。进入子菜单后三角变绿。"}
+              </p>
+            )}
+          </div>
+
+          <SpecCard locale={locale} restDelay={restDelay} />
         </div>
 
-        <div ref={cascade.rootRef} className="relative inline-flex max-w-full overflow-x-auto pb-1">
-          <CascadeMenu
-            levels={cascade.levels}
-            open={cascade.snapshot.open}
-            path={cascade.snapshot.path}
-            hoveredId={cascade.snapshot.hoveredId}
-            selectedId={chips.at(-1)?.id ?? null}
-            locale={locale}
-            onSelectLeaf={onSelectLeaf}
-            onItemClick={cascade.onItemClick}
-            registerPanel={cascade.registerPanel}
-            registerItem={cascade.registerItem}
-          />
-        </div>
-
-        {cascade.coarse ? (
-          <p className="mt-8 max-w-md text-[13px] leading-relaxed text-fg-muted">
-            {locale === "en"
-              ? "This interaction needs a mouse trail. On a touch device the menu opens by tap. Try a diagonal slide on a computer to see the safe triangle."
-              : "此交互依赖鼠标轨迹。当前是触控设备，菜单按点选展开。请在电脑上斜向划过一级菜单，观察安全三角。"}
-          </p>
-        ) : (
-          <p className="mt-8 max-w-lg text-[13px] leading-relaxed text-fg-muted">
-            {locale === "en"
-              ? "Rest on Status, then slide diagonally to Canceled. The blue triangle is the predicted corridor — while you stay inside, other first-level items will not steal the submenu. It turns green after you enter the submenu."
-              : "把指针放在「状态」上，再斜着滑向右侧「已取消」。蓝色三角是预测走廊——只要还在里面，途经的其它一级项不会抢走子菜单。进入子菜单后三角变绿。"}
-          </p>
-        )}
+        <TriangleOverlay
+          containerRef={frameRef}
+          mouse={cascade.snapshot.mouse}
+          bands={cascade.snapshot.bands}
+          visible={showTriangles && cascade.snapshot.open && !cascade.coarse}
+        />
       </div>
-
-      <TriangleOverlay
-        mouse={cascade.snapshot.mouse}
-        bands={cascade.snapshot.bands}
-        visible={showTriangles && cascade.snapshot.open && !cascade.coarse}
-      />
     </section>
   );
 }

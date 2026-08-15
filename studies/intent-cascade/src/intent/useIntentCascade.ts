@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   dist,
+  onApproachSide,
   pointInRect,
   pointInTriangle,
   predictsIntent,
@@ -16,6 +17,8 @@ export type IntentOptions = {
   tree: MenuNode[];
   initialPath?: string[];
   locale?: Locale;
+  /** Keep the menu open. Teaching playgrounds should set this. */
+  persistent?: boolean;
 };
 
 type ItemHit = { level: number; id: string };
@@ -81,7 +84,14 @@ function inGapBridge(
   return p.x >= left - 2 && p.x <= right + 2 && p.y >= top && p.y <= bottom;
 }
 
-export function useIntentCascade({ enabled, restDelay, tree, initialPath = [], locale = "zh" }: IntentOptions) {
+export function useIntentCascade({
+  enabled,
+  restDelay,
+  tree,
+  initialPath = [],
+  locale = "zh",
+  persistent = false,
+}: IntentOptions) {
   const [open, setOpen] = useState(true);
   const [path, setPath] = useState<string[]>(initialPath);
   const [mouse, setMouse] = useState<Point | null>(null);
@@ -104,6 +114,7 @@ export function useIntentCascade({ enabled, restDelay, tree, initialPath = [], l
   const treeRef = useRef(tree);
   const initialPathRef = useRef(initialPath);
   const localeRef = useRef(locale);
+  const persistentRef = useRef(persistent);
 
   pathRef.current = path;
   openRef.current = open;
@@ -112,6 +123,7 @@ export function useIntentCascade({ enabled, restDelay, tree, initialPath = [], l
   treeRef.current = tree;
   initialPathRef.current = initialPath;
   localeRef.current = locale;
+  persistentRef.current = persistent;
 
   const levels = useMemo(() => levelsFrom(tree, path, locale), [tree, path, locale]);
 
@@ -172,6 +184,10 @@ export function useIntentCascade({ enabled, restDelay, tree, initialPath = [], l
 
         const itemRect = readRect(itemRefs.current.get(parentId));
         const confirmed = inChildOf.has(level + 1);
+        const top = { x: childRect.left, y: childRect.top + 2 };
+        const bottom = { x: childRect.left, y: childRect.bottom - 2 };
+        if (!confirmed && !onApproachSide(cursor, top, bottom)) continue;
+
         const cursorVertex: Point = confirmed
           ? itemRect
             ? { x: itemRect.left + 12, y: (itemRect.top + itemRect.bottom) / 2 }
@@ -184,8 +200,8 @@ export function useIntentCascade({ enabled, restDelay, tree, initialPath = [], l
           color: confirmed ? "confirm" : "predict",
           triangle: {
             cursor: cursorVertex,
-            top: { x: childRect.left, y: childRect.top + 2 },
-            bottom: { x: childRect.left, y: childRect.bottom - 2 },
+            top,
+            bottom,
           },
         });
       }
@@ -336,6 +352,8 @@ export function useIntentCascade({ enabled, restDelay, tree, initialPath = [], l
         setDecision("protected");
         return;
       }
+
+      if (persistentRef.current) return;
 
       closeTimer.current = window.setTimeout(() => {
         if (!openRef.current) return;

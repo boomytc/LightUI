@@ -17,7 +17,3 @@ export function studyEyebrow(meta: StudyMeta, locale: Locale): string | undefine
   const value = localized(meta.eyebrow ?? "", meta.eyebrowEn, locale);
   return value || undefined;
 }
-
-export function studyOrigin(meta: StudyMeta, locale: Locale): string {
-  return localized(meta.origin.label, meta.origin.labelEn, locale);
-}

@@ -5,7 +5,7 @@ import { Page } from "../components/Page";
 import { Markdown } from "../lib/Markdown";
 import { loadStudy, studyIdea } from "../lib/catalog";
 import { messages } from "../lib/i18n";
-import { studyOrigin, studyTitle } from "../lib/localize";
+import { studyEyebrow, studyTitle } from "../lib/localize";
 import { usePrefs } from "../lib/prefs";
 
 export function StudyPage({ slug }: { slug: string }) {
@@ -24,6 +24,7 @@ export function StudyPage({ slug }: { slug: string }) {
   }
 
   const { meta, StudyView } = study;
+  const eyebrow = studyEyebrow(meta, locale);
 
   return (
     <div>
@@ -33,7 +34,7 @@ export function StudyPage({ slug }: { slug: string }) {
             <BackLink label={copy.backWorks} />
             <div className="min-w-0">
               <p className="truncate text-[14px] font-semibold tracking-tight">{studyTitle(meta, locale)}</p>
-              <p className="truncate text-[12px] text-fg-subtle">{studyOrigin(meta, locale)}</p>
+              {eyebrow ? <p className="truncate text-[12px] text-fg-subtle">{eyebrow}</p> : null}
             </div>
           </div>
           <div className="flex rounded-lg border border-border p-0.5">
