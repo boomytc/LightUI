@@ -1,7 +1,7 @@
 {
   "slug": "sidebar-taxonomy",
-  "title": "给侧栏起对名字",
-  "titleEn": "Name the sidebar",
+  "title": "侧边栏",
+  "titleEn": "Sidebar",
   "eyebrow": "Space model · Rail taxonomy",
   "eyebrowEn": "Space model · Rail taxonomy",
   "summary": "靠左的导航不是同一种东西。先按占位和展开方式选模型（悬浮岛 / 滚轮 / 多级 / 可折叠 / 隐藏式），再谈外观。",

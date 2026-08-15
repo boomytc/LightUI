@@ -20,7 +20,7 @@ export function Studies() {
       {studies.length === 0 ? (
         <p className="mt-10 text-[13px] text-fg-subtle">{copy.emptyStudy}</p>
       ) : (
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        <div className="mt-8 grid gap-4 md:grid-cols-2">
           {studies.map((s) => (
             <StudyCard key={s.meta.slug} meta={s.meta} locale={locale} />
           ))}

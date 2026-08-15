@@ -16,10 +16,10 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
-- **给下拉起对名字** (`dropdown-taxonomy`) — 往下展开的面板提交什么？
-- **菜单意图预测** (`intent-cascade`) — 斜向穿越该不该换项？
-- **给导航起对名字** (`nav-taxonomy`) — 这块叫导航的东西住在哪、怎么开？
-- **给侧栏起对名字** (`sidebar-taxonomy`) — 靠左那一块占不占位、怎么让路？
+- **下拉框** (`dropdown-taxonomy`) — 往下展开的面板提交什么？
+- **多级菜单** (`intent-cascade`) — 斜向穿越该不该换项？
+- **导航栏** (`nav-taxonomy`) — 这块叫导航的东西住在哪、怎么开？
+- **侧边栏** (`sidebar-taxonomy`) — 靠左那一块占不占位、怎么让路？
 
 ## Edges
 

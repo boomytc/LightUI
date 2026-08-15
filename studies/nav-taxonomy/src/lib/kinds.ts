@@ -56,8 +56,8 @@ export const KINDS: KindMeta[] = [
       loc("小屏不要挤这一栏，改抽屉", "On a small screen, do not squeeze it — use a drawer"),
     ],
     spec: loc(
-      "做竖排主导航：侧栏长期占位，可折成图标栏。占位和展开的五种模型见「给侧栏起对名字」。",
-      "A vertical primary nav: the rail occupies, and may collapse to icons. The five space models live in Name the sidebar.",
+      "做竖排主导航：侧栏长期占位，可折成图标栏。占位和展开的五种模型见「侧边栏」。",
+      "A vertical primary nav: the rail occupies, and may collapse to icons. The five space models live in Sidebar.",
     ),
     note: loc("竖排是一种主导航。五种空间模型在另一则。", "Vertical is a kind of primary nav. The five space models live in the other study."),
     lives: loc("占位；竖排", "Occupies; vertical"),
@@ -94,8 +94,8 @@ export const KINDS: KindMeta[] = [
       loc("触发器和菜单之间不要留缝", "Do not leave a gap between trigger and menu"),
     ],
     spec: loc(
-      "做站点二级下拉：工具栏下开一列子页。提交规则见「给下拉起对名字」；斜向穿越见「菜单意图预测」。",
-      "A site dropdown: one column of children under a section. Commit models live in Name the dropdown; the corridor lives in Menu intent.",
+      "做站点二级下拉：工具栏下开一列子页。提交规则见「下拉框」；斜向穿越见「多级菜单」。",
+      "A site dropdown: one column of children under a section. Commit models live in Dropdown; the corridor lives in Cascade menu.",
     ),
     note: loc("下拉是一列子页。巨型是多列分类。", "A dropdown is one column. Mega is a classified grid."),
     lives: loc("顶栏；一列展开", "Top bar; one column"),

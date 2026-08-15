@@ -21,4 +21,4 @@ Ask three things first: the name, the scene, and when the panel closes.
 
 The pair people mix up is Grouped and Cascader. One files a roster. The other walks a tree to a leaf.
 
-A diagonal that must not steal a hover submenu is a different problem, in [Menu intent](/s/intent-cascade). How the questions chain is on the [map](/graph).
+A diagonal that must not steal a hover submenu is a different problem, in [Cascade menu](/s/intent-cascade). How the questions chain is on the [map](/graph).

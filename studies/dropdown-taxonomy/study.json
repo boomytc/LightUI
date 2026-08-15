@@ -1,7 +1,7 @@
 {
   "slug": "dropdown-taxonomy",
-  "title": "给下拉起对名字",
-  "titleEn": "Name the dropdown",
+  "title": "下拉框",
+  "titleEn": "Dropdown",
   "eyebrow": "Commit model · Overlay taxonomy",
   "eyebrowEn": "Commit model · Overlay taxonomy",
   "summary": "往下展开的面板不是同一种东西。先按提交规则选模型（单选 / 多选 / 分组 / 级联 / 分割按钮 / 巨型导航 / 日期），再谈外观。",

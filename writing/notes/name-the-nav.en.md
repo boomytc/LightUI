@@ -23,4 +23,4 @@ Ask three things first: the name, the scene, and placement / reveal / scroll.
 
 The pairs people mix up: a drawer is not a full-screen overlay; a dropdown is not a mega menu; shrink is not a floating sticky.
 
-What a downward panel commits is [Name the dropdown](/s/dropdown-taxonomy). Whether a left rail occupies is [Name the sidebar](/s/sidebar-taxonomy). A diagonal that must not steal a hover submenu is [Menu intent](/s/intent-cascade). How the questions chain is on the [map](/graph).
+What a downward panel commits is [Dropdown](/s/dropdown-taxonomy). Whether a left rail occupies is [Sidebar](/s/sidebar-taxonomy). A diagonal that must not steal a hover submenu is [Cascade menu](/s/intent-cascade). How the questions chain is on the [map](/graph).

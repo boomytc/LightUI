@@ -19,4 +19,4 @@ related: sidebar-taxonomy
 
 最容易混的两对是：可折叠不是隐藏式；多级不是滚轮。
 
-往下展开的面板提交什么，在 [给下拉起对名字](/s/dropdown-taxonomy)。斜向穿越不该换项，在 [菜单意图预测](/s/intent-cascade)。问题怎么串，见 [图谱](/graph)。
+往下展开的面板提交什么，在 [下拉框](/s/dropdown-taxonomy)。斜向穿越不该换项，在 [多级菜单](/s/intent-cascade)。问题怎么串，见 [图谱](/graph)。

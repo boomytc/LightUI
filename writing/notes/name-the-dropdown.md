@@ -21,4 +21,4 @@ related: dropdown-taxonomy
 
 最容易混的一对是分组和级联。一个是把名单归档，一个是一层一层走到叶子。
 
-斜向穿越不该换项，是另一件事，见 [菜单意图预测](/s/intent-cascade)。问题怎么串，见 [图谱](/graph)。
+斜向穿越不该换项，是另一件事，见 [多级菜单](/s/intent-cascade)。问题怎么串，见 [图谱](/graph)。

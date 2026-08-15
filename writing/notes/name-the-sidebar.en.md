@@ -19,4 +19,4 @@ Ask three things first: the name, the scene, and whether expand changes width or
 
 The pairs people mix up: collapse is not off-canvas; multi-level is not a wheel.
 
-What a downward panel commits is [Name the dropdown](/s/dropdown-taxonomy). A diagonal that must not steal a hover submenu is [Menu intent](/s/intent-cascade). How the questions chain is on the [map](/graph).
+What a downward panel commits is [Dropdown](/s/dropdown-taxonomy). A diagonal that must not steal a hover submenu is [Cascade menu](/s/intent-cascade). How the questions chain is on the [map](/graph).

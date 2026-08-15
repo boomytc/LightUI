@@ -14,7 +14,7 @@ Adding a study does not require editing a registry.
 ```json
 {
   "slug": "intent-cascade",
-  "title": "菜单意图预测",
+  "title": "多级菜单",
   "eyebrow": "Cursor intent · Safe triangle",
   "summary": "One or two sentences. The transferable rule, not the demo skin.",
   "asks": "斜向穿越该不该换项？",

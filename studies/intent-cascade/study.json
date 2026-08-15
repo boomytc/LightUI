@@ -1,7 +1,7 @@
 {
   "slug": "intent-cascade",
-  "title": "菜单意图预测",
-  "titleEn": "Menu intent",
+  "title": "多级菜单",
+  "titleEn": "Cascade menu",
   "eyebrow": "Cursor intent · Safe triangle",
   "eyebrowEn": "Cursor intent · Safe triangle",
   "summary": "根据鼠标移动方向推测是不是要进子菜单，用安全三角保护斜向穿越，而不是给所有 hover 加一段 delay。",
