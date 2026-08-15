@@ -5,6 +5,7 @@
 
 STUDY ?= intent-cascade
 LAB_DIR := products/lab
+LIGHTWEAVER ?= $(abspath ../LightWeaver)
 
 help: ## 显示帮助信息
 	@echo "LightUI workspace commands"
@@ -40,16 +41,20 @@ typecheck: ## 类型检查全部 workspace
 	npm run typecheck --workspaces --if-present
 
 films-capture: ## 从运行中的 lab 截取 studies/*/references 截图
-	npm run capture --prefix tools/study-films
+	@test -d "$(LIGHTWEAVER)" || { echo "缺少 LightWeaver：$(LIGHTWEAVER)"; exit 1; }
+	$(MAKE) -C "$(LIGHTWEAVER)" films-capture LIGHTUI_ROOT="$(CURDIR)"
 
 films-tts: ## 用 VoxCPM2 合成讲解旁白
-	npm run tts --prefix tools/study-films
+	@test -d "$(LIGHTWEAVER)" || { echo "缺少 LightWeaver：$(LIGHTWEAVER)"; exit 1; }
+	$(MAKE) -C "$(LIGHTWEAVER)" films-tts
 
 films-render: ## Remotion 渲染并写回 references/*.mp4
-	npm run render --prefix tools/study-films
+	@test -d "$(LIGHTWEAVER)" || { echo "缺少 LightWeaver：$(LIGHTWEAVER)"; exit 1; }
+	$(MAKE) -C "$(LIGHTWEAVER)" films-render LIGHTUI_ROOT="$(CURDIR)"
 
-films: ## 截图 + 旁白 + 渲染（lab 需在 127.0.0.1:5173）
-	npm run films --prefix tools/study-films
+films: ## 截图 + 旁白 + 渲染（lab 需在 127.0.0.1:5173；管线在 LightWeaver）
+	@test -d "$(LIGHTWEAVER)" || { echo "缺少 LightWeaver：$(LIGHTWEAVER)"; exit 1; }
+	$(MAKE) -C "$(LIGHTWEAVER)" films LIGHTUI_ROOT="$(CURDIR)"
 
 clean: ## 清理构建缓存
 	@find products studies -type d \( -name dist -o -name .cache \) -exec rm -rf {} +

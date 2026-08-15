@@ -25,7 +25,7 @@ The lab mounts `StudyView` at `/s/intent-cascade`.
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/geometry.ts` — triangle / slope / intent tests (no DOM)
 - `src/intent/useIntentCascade.ts` — pointer sampling, protection, rest delay
-- `references/` — first-party lab stills and the Remotion film (`make films`)
+- `references/` — first-party lab stills and the Remotion film (`make films`, pipeline in LightWeaver)
 
 ## Rules
 

@@ -37,6 +37,6 @@ Do not invent a second copy of these rules. Follow the files:
 Copy the teaching surface and the rule (geometry, timing, state). Leave
 behind routers, auth, databases, PWA, preview bridges, and deploy
 adapters. `references/` should be first-party stills of the lab page and a
-Remotion film from `tools/study-films`. Do not keep sandbox screenshots
+Remotion film via sibling LightWeaver (`make films` from this repo). Do not keep sandbox screenshots
 or source clips. `SOURCE.md` is operator-only — do not surface it on
 the public site.

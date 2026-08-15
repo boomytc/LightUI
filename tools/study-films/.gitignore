@@ -1,7 +1,0 @@
-node_modules
-out
-public/stills
-public/voice
-config.local.yaml
-.DS_Store
-*.log
