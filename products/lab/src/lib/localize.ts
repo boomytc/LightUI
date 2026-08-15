@@ -17,3 +17,13 @@ export function studyEyebrow(meta: StudyMeta, locale: Locale): string | undefine
   const value = localized(meta.eyebrow ?? "", meta.eyebrowEn, locale);
   return value || undefined;
 }
+
+export function studyAsks(meta: StudyMeta, locale: Locale): string | undefined {
+  const value = localized(meta.asks ?? "", meta.asksEn, locale);
+  return value || undefined;
+}
+
+export function linkWhen(when: string | undefined, whenEn: string | undefined, locale: Locale): string | undefined {
+  const value = localized(when ?? "", whenEn, locale);
+  return value || undefined;
+}

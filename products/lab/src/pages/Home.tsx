@@ -31,6 +31,12 @@ export function Home() {
             {copy.homeSeeWorks}
           </Link>
           <Link
+            href="/graph"
+            className="inline-flex h-9 items-center rounded-lg border border-border px-3.5 text-[13px] font-medium text-fg no-underline hover:bg-surface-2"
+          >
+            {copy.homeSeeGraph}
+          </Link>
+          <Link
             href="/notes"
             className="inline-flex h-9 items-center rounded-lg border border-border px-3.5 text-[13px] font-medium text-fg no-underline hover:bg-surface-2"
           >

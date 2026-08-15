@@ -6,6 +6,8 @@
   "eyebrowEn": "Cursor intent · Safe triangle",
   "summary": "根据鼠标移动方向推测是不是要进子菜单，用安全三角保护斜向穿越，而不是给所有 hover 加一段 delay。",
   "summaryEn": "Guess from the pointer path whether you are heading into the submenu. A safe triangle protects a diagonal instead of delaying every hover.",
+  "asks": "斜向穿越该不该换项？",
+  "asksEn": "Should a diagonal crossing switch the item?",
   "status": "active",
   "created": "2026-08-15",
   "updated": "2026-08-15",

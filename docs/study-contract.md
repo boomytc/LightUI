@@ -15,6 +15,11 @@ three files. Adding a study does not require editing a registry.
   "title": "菜单意图预测",
   "eyebrow": "Cursor intent · Safe triangle",
   "summary": "One or two sentences. The transferable rule, not the demo skin.",
+  "asks": "斜向穿越该不该换项？",
+  "asksEn": "Should a diagonal crossing switch the item?",
+  "links": [
+    { "slug": "other-slug", "rel": "after", "when": "若改成 hover 跟手", "whenEn": "if it became hover-tracking" }
+  ],
   "status": "active",
   "created": "2026-08-15",
   "updated": "2026-08-15",
@@ -28,10 +33,14 @@ three files. Adding a study does not require editing a registry.
 | `title` | Short Chinese or English title for the catalog card. |
 | `eyebrow` | Optional kicker above the title. |
 | `summary` | What the user should remember. |
+| `asks` | The question this study answers. The node in the judgment graph. |
+| `links` | Outbound edges. `after` is the next question; `contrast` is a mix-up. `when` is the condition. |
 | `status` | `active` \| `draft` \| `retired` |
 | `created` | First day the study existed. `YYYY-MM-DD`. |
 | `updated` | Last day the idea or playground changed. Bump it when you edit. `YYYY-MM-DD`. |
 | `tags` | Lowercase behavior tags, not product names. |
+
+Do not keep a neighbor census in `idea.md` (“和另外 N 则”). The lab assembles the graph from `asks` + `links`. An edge names the next question, not a headcount.
 
 The lab sorts `active` first, then `updated` descending, then `created`, then slug. Use the calendar day, not a clock time.
 

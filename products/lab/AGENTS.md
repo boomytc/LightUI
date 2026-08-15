@@ -18,6 +18,8 @@ From workspace root: `make dev`.
 
 - Discover studies via `src/lib/catalog.ts`. Discover notes via
   `src/lib/notes.ts` (`writing/notes/*.md`). No hand-written registries.
+- The judgment graph is assembled from `study.json` `asks` + `links`
+  (`src/lib/graph.ts`) and shown at `/graph`. Do not keep a second map.
 - Study playgrounds stay in `studies/<slug>/`. Writing stays in `writing/`.
 - Tokens come from `design/tokens.css`.
 - Bind to `127.0.0.1`.

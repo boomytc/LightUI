@@ -2,6 +2,7 @@ import type { Locale } from "./prefs";
 
 const zh = {
   navWorks: "作品",
+  navGraph: "图谱",
   navNotes: "笔记",
   navAbout: "关于",
   github: "在 GitHub 上查看",
@@ -14,6 +15,7 @@ const zh = {
   homeTitle: "一本可以点开的 UI/UX 笔记本。",
   homeLede: "作品是可以再摸一遍的交互。笔记写它为什么值得留下。不是组件库，也不是产品壳。",
   homeSeeWorks: "看作品",
+  homeSeeGraph: "看图谱",
   homeReadNotes: "读笔记",
   homeWorks: "作品",
   homeNotes: "笔记",
@@ -41,10 +43,23 @@ const zh = {
   statusActive: "可操作",
   statusDraft: "草稿",
   statusRetired: "已归档",
+  graphEyebrow: "判定",
+  graphTitle: "判定怎么串",
+  graphLede: "每则 study 是一个问题。边写的是下一个问题，不是邻居人数。",
+  graphAsks: "问的是",
+  graphBefore: "更早",
+  graphAfter: "后一步",
+  graphContrast: "不要混",
+  graphPageTitle: "判定图谱",
+  graphPageLede: "每则 study 是一个问题。箭头是后一步。点卡片打开 playground，悬停看这条边为什么在。",
+  graphOpenStudy: "打开这则",
+  graphHint: "悬停一张卡，相连的边会留下来；点「打开这则」进 playground。",
+  graphEmpty: "还没有判定连上。",
 };
 
 const en: typeof zh = {
   navWorks: "Work",
+  navGraph: "Map",
   navNotes: "Notes",
   navAbout: "About",
   github: "View on GitHub",
@@ -57,6 +72,7 @@ const en: typeof zh = {
   homeTitle: "A UI/UX notebook you can click into.",
   homeLede: "Work is an interaction you can try again. Notes say why it is worth keeping. Not a component library, not a product shell.",
   homeSeeWorks: "See work",
+  homeSeeGraph: "See the map",
   homeReadNotes: "Read notes",
   homeWorks: "Work",
   homeNotes: "Notes",
@@ -84,6 +100,18 @@ const en: typeof zh = {
   statusActive: "Live",
   statusDraft: "Draft",
   statusRetired: "Retired",
+  graphEyebrow: "Judgments",
+  graphTitle: "How the questions chain",
+  graphLede: "Each study is a question. An edge is the next question, not a headcount of neighbors.",
+  graphAsks: "Asks",
+  graphBefore: "Earlier",
+  graphAfter: "Next",
+  graphContrast: "Do not mix",
+  graphPageTitle: "Judgment map",
+  graphPageLede: "Each study is a question. An arrow is the next question. Open a card to try it; hover to see why the edge is there.",
+  graphOpenStudy: "Open this study",
+  graphHint: "Hover a card to keep its edges; open a card to go to the playground.",
+  graphEmpty: "No judgments are linked yet.",
 };
 
 export function messages(locale: Locale): typeof zh {

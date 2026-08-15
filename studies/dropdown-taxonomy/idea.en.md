@@ -44,10 +44,8 @@ To specify one of these, say three things:
 | Publish | Default action buried in a menu | Body publishes; chevron is schedule / draft |
 | Hotel dates | One `input type=date` | Two ends, past locked, nights shown |
 
-## Relation to menu intent
+## Machines
 
-[Menu intent](/s/intent-cascade) answers a later question: once you already have a *hover* cascade, a diagonal must not steal the submenu. This study is the earlier question — which machine is this downward panel. Whether a left-hand rail occupies space is a different study: [Name the sidebar](/s/sidebar-taxonomy). Where a site’s primary nav lives and how it opens is [Name the nav](/s/nav-taxonomy).
-
-The Cascader here is click-to-expand columns. The Mega Menu is click-to-toggle. Neither needs a safe triangle. If those surfaces became hover-tracking, that other study’s corridor applies.
+The Cascader here is click-to-expand columns. The Mega Menu is click-to-toggle. Neither tracks the pointer.
 
 The state machines live in DOM-free modules: `toggleMulti`, `pickCascade`, `pickRangeDay`.

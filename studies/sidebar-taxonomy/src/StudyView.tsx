@@ -97,23 +97,6 @@ export function StudyView() {
         </article>
       </section>
 
-      <section className="mt-14 rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-8">
-        <h2 className="text-[1.2rem] font-semibold tracking-tight">
-          {locale === "en" ? "Not a dropdown, not a safe triangle" : "这不是下拉，也不是安全三角"}
-        </h2>
-        <div className="mt-5 grid gap-6 text-[14px] leading-relaxed text-fg-muted md:grid-cols-2">
-          <p>
-            {locale === "en"
-              ? "Name the dropdown answers what a downward panel commits. Menu intent answers a later hover question. This page is earlier — whether this left-hand thing occupies space, and how it yields."
-              : "给下拉起对名字回答的是往下展开的面板提交什么。菜单意图预测回答的是后一步 hover。本页更早——这块靠左的东西到底占不占位、怎么让路。"}
-          </p>
-          <p>
-            {locale === "en"
-              ? "The multi-level fixture here is click-to-accordion. If it became hover-tracking, that other study’s corridor applies."
-              : "这里的多级是点击手风琴。若改成 hover 跟手，才用得上那则 study 的走廊。"}
-          </p>
-        </div>
-      </section>
     </div>
   );
 }

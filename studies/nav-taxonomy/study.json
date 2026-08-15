@@ -6,6 +6,34 @@
   "eyebrowEn": "Placement · Reveal · Scroll",
   "summary": "「做个导航栏」只说了有一排链接。先按放在哪、怎么打开、滚的时候干什么选模型（吸顶 / 侧栏 / 面包屑 / 下拉 / 巨型 / 抽屉 / 全屏 / 锚点 / 收缩），再谈外观。",
   "summaryEn": "“Make a navbar” only says there is a row of links. Pick the model by placement, reveal, and scroll — sticky, sidebar, breadcrumb, dropdown, mega, drawer, overlay, scrollspy, or shrink — then talk about the skin.",
+  "asks": "这块叫导航的东西住在哪、怎么开？",
+  "asksEn": "Where does this thing called the nav live, and how does it open?",
+  "links": [
+    {
+      "slug": "dropdown-taxonomy",
+      "rel": "after",
+      "when": "若它是往下展开的面板",
+      "whenEn": "if this is a downward panel"
+    },
+    {
+      "slug": "sidebar-taxonomy",
+      "rel": "after",
+      "when": "若它是靠左的一栏",
+      "whenEn": "if this is a left-hand rail"
+    },
+    {
+      "slug": "dropdown-taxonomy",
+      "rel": "contrast",
+      "when": "站点栏目不是表单下拉",
+      "whenEn": "a site section is not a form picker"
+    },
+    {
+      "slug": "sidebar-taxonomy",
+      "rel": "contrast",
+      "when": "汉堡抽屉不是隐藏式侧栏",
+      "whenEn": "a hamburger drawer is not an off-canvas rail"
+    }
+  ],
   "status": "active",
   "created": "2026-08-15",
   "updated": "2026-08-15",

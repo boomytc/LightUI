@@ -34,7 +34,8 @@ studies/<slug>/
 
 `study.json` is the machine catalog unit. The lab glob-loads it.
 Set `created` and `updated` (`YYYY-MM-DD`). Bump `updated` when the
-idea or playground changes.
+idea or playground changes. Set `asks` (the question) and `links`
+(next questions / mix-ups). Do not write “和另外 N 则” in `idea.md`.
 
 ## Runtime
 

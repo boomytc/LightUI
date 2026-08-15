@@ -50,6 +50,20 @@ const table = [
   }),
 ].join("\n");
 
+const questions = rows
+  .filter((m) => m.asks)
+  .map((m) => `- **${m.title}** (\`${m.slug}\`) — ${m.asks}`)
+  .join("\n");
+
+const edges = [];
+for (const m of rows) {
+  for (const link of Array.isArray(m.links) ? m.links : []) {
+    if (!link?.slug || !link.rel) continue;
+    const when = link.when ? ` — ${link.when}` : "";
+    edges.push(`- \`${m.slug}\` ${link.rel} \`${link.slug}\`${when}`);
+  }
+}
+
 const md = `# Study Catalog
 
 Generated from \`studies/*/study.json\`. Edit the JSON, then run \`make catalog\`.
@@ -59,10 +73,21 @@ Do not keep a second registry.
 
 ${table}
 
+## Questions
+
+Each study answers one question (\`asks\`). Edges live on the study as \`links\`.
+
+${questions || "_No questions yet._"}
+
+## Edges
+
+${edges.join("\n") || "_No edges yet._"}
+
 ## How to read a row
 
 - **Idea** is the transferable rule, not the demo skin.
 - **Updated** is the day to bump when the study changes. The lab sorts by it.
+- Do not keep a neighbor census in \`idea.md\`. The graph is \`asks\` + \`links\`.
 `;
 
 await writeFile(outFile, md);

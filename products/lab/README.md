@@ -14,6 +14,7 @@ make dev
 | --- | --- |
 | `/` | 首页：最近作品与笔记 |
 | `/studies` | 全部 study |
+| `/graph` | 判定图谱 |
 | `/s/<slug>` | 演示 / 理念 |
 | `/notes` | 笔记索引 |
 | `/notes/<slug>` | 一篇笔记 |

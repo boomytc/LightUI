@@ -95,23 +95,6 @@ export function StudyView() {
         </article>
       </section>
 
-      <section className="mt-14 rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-8">
-        <h2 className="text-[1.2rem] font-semibold tracking-tight">
-          {locale === "en" ? "Not a commit rule, not occupancy, not a corridor" : "这不是提交规则，也不是占位，也不是走廊"}
-        </h2>
-        <div className="mt-5 grid gap-6 text-[14px] leading-relaxed text-fg-muted md:grid-cols-2">
-          <p>
-            {locale === "en"
-              ? "Name the dropdown answers what a downward panel commits. Name the sidebar answers whether a left rail occupies. Menu intent answers a later hover question. This page is earlier — where this thing called “the nav” lives."
-              : "给下拉起对名字回答的是往下展开的面板提交什么。给侧栏起对名字回答的是靠左那一块占不占位。菜单意图预测回答的是后一步 hover。本页更早——这块叫「导航」的东西到底住在哪。"}
-          </p>
-          <p>
-            {locale === "en"
-              ? "The dropdown and mega fixtures here are site sections. If they became hover-tracking, that other study’s corridor applies. The sidebar fixture only says vertical is a kind of primary nav."
-              : "这里的下拉和巨型是站点栏目。若改成 hover 跟手，才用得上那则 study 的走廊。这里的侧栏只说明竖排是一种主导航。"}
-          </p>
-        </div>
-      </section>
     </div>
   );
 }

@@ -21,7 +21,9 @@ Do not invent a second copy of these rules. Follow the files:
 2. Write `idea.md` **before** scaffolding UI. Problem, rule, why not the
    naive alternative. Do not add lineage or a kept/dropped source diary.
 3. Add `study.json` matching the folder slug. Set `created` and
-   `updated` (`YYYY-MM-DD`). Bump `updated` on later edits.
+   `updated` (`YYYY-MM-DD`). Set `asks` (the question this study
+   answers) and `links` to the next question (`after`) or a mix-up
+   (`contrast`). Do not list neighbor studies in `idea.md`.
 4. Implement the playground in `studies/<slug>/`. Export
    `StudyView` from `src/StudyView.tsx`. Standalone chrome stays in
    `src/App.tsx` only.

@@ -54,10 +54,8 @@ To name a nav, say three things:
 | Phone | The mega panel becomes a slit | A hamburger drawer |
 | Long landing | You lose the section | Scrollspy follows |
 
-## Versus the other three studies
+## Machines
 
-[Name the dropdown](/s/dropdown-taxonomy) is about what a downward panel **commits**. [Name the sidebar](/s/sidebar-taxonomy) is about whether a left-hand thing **occupies**. [Menu intent](/s/intent-cascade) is the later hover question. This page is earlier — where this thing called “the nav” lives, and how it appears.
-
-The dropdown and mega fixtures here are site sections, not form fields. If they became hover-tracking, that other study’s corridor applies. The sidebar fixture here only says “vertical is a kind of primary nav.” The five space models live in that other study.
+The dropdown and mega fixtures here are site sections, not form fields. The sidebar fixture here only says “vertical is a kind of primary nav.”
 
 The machines live without DOM: `crumbTrail`, `pickActive`, `nextShrunk`.

@@ -44,10 +44,8 @@
 | 发布 | 默认动作藏进菜单 | 主体直接发布，箭头才是定时 / 草稿 |
 | 酒店日期 | 一个 input type=date | 两端、禁过去、显示晚数 |
 
-## 和菜单意图预测的关系
+## 机器
 
-[菜单意图预测](/s/intent-cascade) 处理的是：**已经**决定用 hover 多级菜单之后，斜向穿越不该误切换。本则处理的是更早一步——这块往下展开的东西到底是哪一种机器。靠左那一块占不占位，是另一则：[给侧栏起对名字](/s/sidebar-taxonomy)。站点主导航住在哪、怎么开，是另一则：[给导航起对名字](/s/nav-taxonomy)。
-
-这里的 Cascader 是点选列，Mega Menu 是点击展开。它们都不靠安全三角。若 Mega / 级联改成 hover 跟手，才需要那则 study 的走廊。
+这里的 Cascader 是点选列，Mega Menu 是点击展开。它们都不跟手。
 
 状态机在无 DOM 的模块里：`toggleMulti`、`pickCascade`、`pickRangeDay`。

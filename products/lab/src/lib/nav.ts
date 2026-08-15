@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 
 export function navigate(path: string) {
-  if (window.location.pathname === path) return;
-  window.history.pushState({}, "", path);
+  const url = new URL(path, window.location.origin);
+  const next = `${url.pathname}${url.search}${url.hash}`;
+  const here = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  if (here === next) return;
+  window.history.pushState({}, "", next);
   window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
@@ -18,6 +21,22 @@ export function usePath(): string {
   return path;
 }
 
+export function useHash(): string {
+  const [hash, setHash] = useState(() => window.location.hash.replace(/^#/, ""));
+
+  useEffect(() => {
+    const sync = () => setHash(window.location.hash.replace(/^#/, ""));
+    window.addEventListener("hashchange", sync);
+    window.addEventListener("popstate", sync);
+    return () => {
+      window.removeEventListener("hashchange", sync);
+      window.removeEventListener("popstate", sync);
+    };
+  }, []);
+
+  return hash;
+}
+
 export type Route =
   | { name: "home" }
   | { name: "studies" }
@@ -25,6 +44,7 @@ export type Route =
   | { name: "notes" }
   | { name: "note"; slug: string }
   | { name: "about" }
+  | { name: "graph" }
   | { name: "missing"; path: string };
 
 export function parseRoute(path: string): Route {
@@ -33,6 +53,7 @@ export function parseRoute(path: string): Route {
   if (clean === "/studies") return { name: "studies" };
   if (clean === "/notes") return { name: "notes" };
   if (clean === "/about") return { name: "about" };
+  if (clean === "/graph") return { name: "graph" };
 
   const study = /^\/s\/([^/]+)$/.exec(clean);
   if (study?.[1]) return { name: "study", slug: study[1] };

@@ -3,7 +3,7 @@ name: lightui-lab
 description: >
   Build or restyle the LightUI public site in products/lab: home, studies
   portfolio, notes/blog, about, study frame, routing. Use when changing
-  the presentable index, /studies, /notes, /about, /s/:slug, lab chrome,
+  the presentable index, /studies, /graph, /notes, /about, /s/:slug, lab chrome,
   or the user says lab UI / catalog / 作品集 / 博客 / LightUI site.
   Slash command: /lightui-lab.
 ---
@@ -27,7 +27,7 @@ Do not link out to sibling private repositories.
 
 ## Routes
 
-`/` home · `/studies` · `/s/<slug>` · `/notes` · `/notes/<slug>` · `/about`
+`/` home · `/studies` · `/graph` · `/s/<slug>` · `/notes` · `/notes/<slug>` · `/about`
 
 ## Verify
 

@@ -7,6 +7,7 @@ import { GITHUB_URL, usePrefs } from "../lib/prefs";
 
 const NAV = [
   { href: "/studies", key: "navWorks" as const, match: (p: string) => p === "/studies" || p.startsWith("/s/") },
+  { href: "/graph", key: "navGraph" as const, match: (p: string) => p === "/graph" },
   { href: "/notes", key: "navNotes" as const, match: (p: string) => p.startsWith("/notes") },
   { href: "/about", key: "navAbout" as const, match: (p: string) => p === "/about" },
 ];
