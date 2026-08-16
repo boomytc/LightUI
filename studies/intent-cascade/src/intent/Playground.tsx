@@ -115,7 +115,7 @@ export function Playground({ enabled, showTriangles, restDelay }: Props) {
               </p>
             ) : null}
 
-            <div ref={cascade.rootRef} className="relative inline-flex max-w-full overflow-x-auto pb-1">
+            <div ref={cascade.rootRef} className="relative w-full overflow-x-auto pb-1">
               <CascadeMenu
                 levels={cascade.levels}
                 open={cascade.snapshot.open}

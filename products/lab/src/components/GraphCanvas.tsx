@@ -190,12 +190,10 @@ export function GraphCanvas({
                         on ? "border-fg" : "border-border hover:border-border-strong",
                       )}
                     >
-                      <p className="font-mono text-[11px] text-fg-subtle">{meta.slug}</p>
-                      <h2 className="mt-1 text-[16px] font-semibold tracking-tight text-fg">
+                      <h2 className="text-[16px] font-semibold tracking-tight text-fg">
                         {studyTitle(meta, locale)}
                       </h2>
                       {asks ? <p className="mt-1.5 text-[13px] leading-relaxed text-fg-muted">{asks}</p> : null}
-                      <p className="mt-3 text-[13px] font-medium text-accent">{copy.graphOpenStudy}</p>
                     </Link>
                   </div>
                 );

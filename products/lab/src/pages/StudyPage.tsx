@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import { DateStamp } from "../components/DateStamp";
 import { Link } from "../components/Link";
 import { Page } from "../components/Page";
 import { Markdown } from "../lib/Markdown";
 import { loadStudy, studyIdea } from "../lib/catalog";
 import { messages } from "../lib/i18n";
-import { studyEyebrow, studyTitle } from "../lib/localize";
+import { studyTitle } from "../lib/localize";
 import { usePrefs } from "../lib/prefs";
 
 export function StudyPage({ slug }: { slug: string }) {
@@ -25,7 +24,6 @@ export function StudyPage({ slug }: { slug: string }) {
   }
 
   const { meta, StudyView } = study;
-  const eyebrow = studyEyebrow(meta, locale);
 
   return (
     <div>
@@ -33,13 +31,7 @@ export function StudyPage({ slug }: { slug: string }) {
         <div className="page-width flex flex-wrap items-center justify-between gap-3 py-3">
           <div className="flex min-w-0 items-center gap-3">
             <BackLink label={copy.backWorks} />
-            <div className="min-w-0">
-              <p className="truncate text-[14px] font-semibold tracking-tight">{studyTitle(meta, locale)}</p>
-              <p className="truncate text-[12px] text-fg-subtle">
-                {eyebrow ? `${eyebrow} · ` : null}
-                <DateStamp created={meta.created} updated={meta.updated} locale={locale} />
-              </p>
-            </div>
+            <p className="truncate text-[14px] font-semibold tracking-tight">{studyTitle(meta, locale)}</p>
           </div>
           <div className="flex rounded-lg border border-border p-0.5">
             <TabButton active={tab === "play"} onClick={() => setTab("play")}>

@@ -1,4 +1,4 @@
-# Name the nav
+# Navbar
 
 “Make a navbar” only says there is a row of links. First decide **where it lives, how it opens, and what it does on scroll**.
 

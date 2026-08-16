@@ -51,6 +51,7 @@
 .page-width {
   box-sizing: border-box;
   width: 100%;
+  min-width: 0;
   padding-inline: clamp(1.25rem, 3.5vw, 4rem);
 }
 

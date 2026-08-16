@@ -1,4 +1,4 @@
-# Name the dropdown
+# Dropdown
 
 Opening downward is only the look. Name the **commit model** first.
 

@@ -10,13 +10,10 @@ export function StudyView() {
   const [restDelay, setRestDelay] = useState(280);
 
   return (
-    <div className="page-width pb-20">
-      <section className="grid gap-10 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
-        <div>
-          <p className="mb-3 text-[12px] font-medium uppercase tracking-[0.14em] text-fg-subtle">
-            Cursor intent · Safe triangle
-          </p>
-          <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg break-keep sm:text-[2.6rem]">
+    <div className="page-width min-w-0 pb-20">
+      <section className="grid min-w-0 gap-10 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
+        <div className="min-w-0">
+          <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
             {locale === "en"
               ? "Guess from the pointer path whether you are heading into the submenu."
               : "根据鼠标移动方向，推测你是不是要进子菜单。"}
@@ -94,8 +91,8 @@ export function StudyView() {
         })}
       </section>
 
-      <section className="mt-14 grid gap-10 lg:grid-cols-2">
-        <article>
+      <section className="mt-14 grid min-w-0 gap-10 lg:grid-cols-2">
+        <article className="min-w-0">
           <h2 className="text-[1.35rem] font-semibold tracking-tight">
             {locale === "en" ? "How it decides" : "算法怎么判"}
           </h2>
@@ -130,7 +127,7 @@ export function StudyView() {
           </ol>
         </article>
 
-        <article className="rounded-2xl border border-border bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
+        <article className="min-w-0 overflow-hidden rounded-2xl border border-border bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
           <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-surface/45">
             predictsIntent
           </p>

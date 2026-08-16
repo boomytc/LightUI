@@ -4,8 +4,8 @@
   "titleEn": "Dropdown",
   "eyebrow": "Commit model · Overlay taxonomy",
   "eyebrowEn": "Commit model · Overlay taxonomy",
-  "summary": "往下展开的面板不是同一种东西。先按提交规则选模型（单选 / 多选 / 分组 / 级联 / 分割按钮 / 巨型导航 / 日期），再谈外观。",
-  "summaryEn": "A panel that opens downward is not one widget. Pick the model by what it commits — single, multi, grouped, cascader, split button, mega nav, or dates — then talk about the skin.",
+  "summary": "往下展开只是外观。先定提交的是一个值、一组、一条路径，还是一次动作。",
+  "summaryEn": "Opening downward is only the look. First decide whether it commits a value, a set, a path, or an action.",
   "asks": "往下展开的面板提交什么？",
   "asksEn": "What does this downward panel commit?",
   "links": [

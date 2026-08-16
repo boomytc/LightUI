@@ -1,4 +1,4 @@
-# Name the sidebar
+# Sidebar
 
 Flush-left is only the skin. First decide the **space model**.
 

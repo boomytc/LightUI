@@ -1,4 +1,4 @@
-# Menu intent · Safe triangle
+# Cascade menu
 
 Guess from the pointer path whether you are heading into the submenu. A safe triangle protects the diagonal.
 
