@@ -27,7 +27,9 @@ The lab mounts `StudyView` at `/s/intent-cascade`.
 - `src/intent/useIntentCascade.ts` — pointer sampling, protection, rest delay
 - `src/StageView.tsx` — one locked menu state, no teaching chrome
 - `src/lib/stage-fixtures.ts` — `status` / `diagonal` / `project` / `third`
-- `references/` — optional local stills from `make stills` (not committed)
+- `references/` — optional local stills from `make stills`, plus
+  explainer films `cursor-movement.mp4` / `cursor-movement.en.mp4`
+  (not committed)
 
 ## Rules
 

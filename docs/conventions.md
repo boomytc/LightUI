@@ -41,9 +41,9 @@ studies/<slug>/
 ```
 
 Do not commit stills. `studies/<slug>/references/` is optional local
-output (gitignored except `SOURCE.md`). Capture from the stage with
-`make stills`. The study itself is the idea, the machines, the
-playground, and the stage.
+output and is gitignored. Capture from the stage with `make stills`.
+The study itself is the idea, the machines, the playground, and the
+stage.
 
 `idea.md` is the human catalog unit. It should answer:
 

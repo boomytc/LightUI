@@ -46,5 +46,5 @@ Copy the teaching surface and the rule (geometry, timing, state). Leave
 behind routers, auth, databases, PWA, preview bridges, and deploy
 adapters. Do not copy sandbox screenshots or source clips. Do not commit
 stills into `references/` — those are generated from the stage
-(`make stills`) and gitignored. `SOURCE.md` is operator-only if
-present. Do not screenshot `/s/<slug>` teaching pages.
+(`make stills`) and gitignored. Do not screenshot `/s/<slug>`
+teaching pages.
