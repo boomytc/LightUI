@@ -12,7 +12,7 @@ The letters are transparent. What you see is two backgrounds clipped to the glyp
 
 - The band sits at 50% of a 3×-wide gradient. At the animation endpoints the highlight is fully off-canvas.
 - Half-width offset is `spread × 0.5ch`, so the beam tracks type size.
-- Duration = character count × speed. Short words finish sooner; long lines stay in step visually. `50%, 100%` hold so the beam rests off-screen before looping.
+- Duration = character count × speed. Short words finish sooner; long lines stay in step visually. After the pass, the beam rests off-screen briefly before looping.
 - Park mode stops the animation and binds Position so you can sit the beam on a cell, then tune spread and angle.
 
 ## Versus sweeping the box

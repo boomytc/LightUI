@@ -66,7 +66,7 @@ export function Playground() {
               : "悬停锁标，孔跟着长。分解视图里斜纹是被裁掉的角。"}
           </p>
         </div>
-        <div className="flex justify-center rounded-2xl border border-border bg-bg-warm px-6 py-14">
+        <div className="inotch-well flex justify-center rounded-2xl border border-border px-6 py-14">
           <InvertedCard
             technique={technique}
             exploded={exploded}

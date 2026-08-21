@@ -2,6 +2,7 @@
   --offset: calc(var(--gsweep-spread, 3) * 0.5ch);
   --gsweep-angle: calc(var(--gsweep-deg, 295) * 1deg);
   --gsweep-duration: calc((var(--gsweep-len, 10) * var(--gsweep-speed, 0.12)) * 1s);
+  --gsweep-unlit: color-mix(in oklab, var(--color-fg) 22%, transparent);
   --gsweep-band: linear-gradient(
     var(--gsweep-angle),
     #0000 calc(50% - var(--offset)),
@@ -20,7 +21,7 @@
   color: transparent;
   background:
     var(--gsweep-band) 0 0 / 300% 100% no-repeat,
-    linear-gradient(var(--color-fg-muted), var(--color-fg-muted));
+    linear-gradient(var(--gsweep-unlit), var(--gsweep-unlit));
   -webkit-background-clip: text;
   background-clip: text;
   display: inline-block;
@@ -65,7 +66,9 @@
   0% {
     background-position: 100% 0, 0 0;
   }
-  50%,
+  72% {
+    background-position: 0% 0, 0 0;
+  }
   100% {
     background-position: 0% 0, 0 0;
   }

@@ -1,3 +1,11 @@
+.inotch-well {
+  background-color: var(--color-bg-warm);
+  background-image:
+    linear-gradient(var(--color-border-strong) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border-strong) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
 .inotch-stage {
   perspective: 1600px;
   perspective-origin: 50% 48%;

@@ -96,9 +96,11 @@ export function InvertedCard({
             )}
             style={{ clipPath: usingScoop ? undefined : clip }}
           />
-          <div className="inotch-hatch">
-            <div className="inotch-hatch-fill" />
-          </div>
+          {usingScoop ? null : (
+            <div className="inotch-hatch">
+              <div className="inotch-hatch-fill" />
+            </div>
+          )}
         </div>
         <div className="inotch-plane inotch-plane-chip">
           <button

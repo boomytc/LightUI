@@ -29,8 +29,9 @@ export function bandStops(style: ShimmerStyle): string {
 
 export function keyframes(): string {
   return `@keyframes glyph-sweep {
-  0%       { background-position: 100% 0, 0 0; }
-  50%, 100%{ background-position: 0 0, 0 0; }
+  0%   { background-position: 100% 0, 0 0; }
+  72%  { background-position: 0 0, 0 0; }
+  100% { background-position: 0 0, 0 0; }
 }`;
 }
 
@@ -45,7 +46,7 @@ export function buildSnippet(cfg: { style: ShimmerStyle; spread: number; angle: 
   background:
     linear-gradient(var(--angle), ${bandStops(cfg.style)})
       0 0 / ${GRADIENT_SIZE} no-repeat,
-    linear-gradient(var(--color-fg-muted), var(--color-fg-muted));
+    linear-gradient(color-mix(in oklab, var(--color-fg) 22%, transparent), color-mix(in oklab, var(--color-fg) 22%, transparent));
   -webkit-background-clip: text;
   background-clip: text;
   animation: glyph-sweep calc(var(--len) * var(--speed) * 1s)
