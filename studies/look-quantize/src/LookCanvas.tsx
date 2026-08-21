@@ -90,9 +90,6 @@ export function LookCanvas({
       ctx.imageSmoothingQuality = "high";
       const left = x - displaySize / 2;
       const top = y - displaySize / 2;
-      ctx.beginPath();
-      ctx.arc(x, y, displaySize / 2, 0, Math.PI * 2);
-      ctx.clip();
       ctx.drawImage(atlas, col * CELL, srcRow * CELL, CELL, CELL, left, top, displaySize, displaySize);
       ctx.restore();
     };
@@ -151,9 +148,7 @@ export function LookCanvas({
         ctx.save();
         ctx.strokeStyle = "#3b6cff";
         ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(origin.x, origin.y, displaySize / 2 + 2, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.strokeRect(origin.x - displaySize / 2, origin.y - displaySize / 2, displaySize, displaySize);
         ctx.font = "600 12px ui-sans-serif, system-ui, sans-serif";
         ctx.fillStyle = "#3b6cff";
         ctx.textAlign = "center";
