@@ -1,0 +1,79 @@
+.gsweep-line {
+  --offset: calc(var(--gsweep-spread, 3) * 0.5ch);
+  --gsweep-angle: calc(var(--gsweep-deg, 295) * 1deg);
+  --gsweep-duration: calc((var(--gsweep-len, 10) * var(--gsweep-speed, 0.12)) * 1s);
+  --gsweep-band: linear-gradient(
+    var(--gsweep-angle),
+    #0000 calc(50% - var(--offset)),
+    var(--color-fg),
+    #0000 calc(50% + var(--offset))
+  );
+  margin: 0;
+  padding: 0.08em 0.12em;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  white-space: nowrap;
+  line-height: 1.2;
+  font-weight: 500;
+  font-size: clamp(1.35rem, 1.1rem + 1.6vw, 2.35rem);
+  letter-spacing: -0.01em;
+  color: transparent;
+  background:
+    var(--gsweep-band) 0 0 / 300% 100% no-repeat,
+    linear-gradient(var(--color-fg-muted), var(--color-fg-muted));
+  -webkit-background-clip: text;
+  background-clip: text;
+  display: inline-block;
+  outline: none;
+  caret-color: var(--color-fg);
+  animation: glyph-sweep var(--gsweep-duration) infinite both ease-in-out;
+  max-width: 100%;
+}
+
+.gsweep-line[data-style="aurora"] {
+  --gsweep-band: linear-gradient(
+    var(--gsweep-angle),
+    #0000 calc(50% - var(--offset)),
+    #a960ee,
+    #ff333d,
+    #ffcb57,
+    #90e0ff,
+    #0000 calc(50% + var(--offset))
+  );
+}
+
+.gsweep-line[data-style="flame"] {
+  --gsweep-band: linear-gradient(
+    var(--gsweep-angle),
+    #0000 calc(50% - var(--offset)),
+    hsl(45 100% 60%) calc(50% - (var(--offset) - 0.5ch)),
+    hsl(0 100% 50%),
+    #0000 calc(50% + var(--offset))
+  );
+}
+
+.gsweep-line:focus {
+  border-color: color-mix(in oklab, var(--color-accent) 55%, transparent);
+}
+
+.gsweep-line[data-park="true"] {
+  animation: none;
+  background-position: calc(var(--gsweep-position, 50) * 1%) 0, 0 0;
+}
+
+@keyframes glyph-sweep {
+  0% {
+    background-position: 100% 0, 0 0;
+  }
+  50%,
+  100% {
+    background-position: 0% 0, 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gsweep-line {
+    animation: none;
+    background-position: 42% 0, 0 0;
+  }
+}
