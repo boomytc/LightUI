@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Glyph sweep: band follows type, duration is length times speed",
+  "description": "Glyph sweep: band follows type, duration is length times seconds per glyph",
   "engines": {
     "node": ">=20"
   },

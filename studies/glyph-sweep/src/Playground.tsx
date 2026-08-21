@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { ShimmerLine } from "./ShimmerLine";
-import { STYLES, type ShimmerStyle } from "./lib/shimmer";
+import {
+  PER_CHAR_DEFAULT,
+  STYLES,
+  paceFromSecondsPerChar,
+  secondsPerCharFromPace,
+  type ShimmerStyle,
+} from "./lib/shimmer";
 import { useLocale } from "./lib/site-locale";
 import { cn } from "./lib/utils";
 
@@ -15,7 +21,7 @@ const STYLE_LABEL: Record<ShimmerStyle, { zh: string; en: string }> = {
 export function Playground() {
   const locale = useLocale();
   const [style, setStyle] = useState<ShimmerStyle>("classic");
-  const [speed, setSpeed] = useState(0.12);
+  const [pace, setPace] = useState(() => paceFromSecondsPerChar(PER_CHAR_DEFAULT));
   const [spread, setSpread] = useState(3);
   const angle = 295;
   const [park, setPark] = useState(false);
@@ -50,16 +56,27 @@ export function Playground() {
           <input type="checkbox" checked={park} onChange={(e) => setPark(e.target.checked)} className="accent-accent" />
         </label>
         <label className="block rounded-xl border border-border bg-surface px-3 py-2.5 text-[12px] text-fg-muted">
-          {locale === "en" ? "Speed" : "速度"}
+          <span className="flex items-baseline justify-between gap-2">
+            <span>{locale === "en" ? "Speed" : "速度"}</span>
+            <span className="font-mono text-[11px] text-fg-subtle">
+              {locale === "en"
+                ? `${secondsPerCharFromPace(pace).toFixed(2)}s / glyph`
+                : `每字 ${secondsPerCharFromPace(pace).toFixed(2)}s`}
+            </span>
+          </span>
           <input
             type="range"
-            min={0.05}
-            max={0.2}
+            min={0}
+            max={1}
             step={0.01}
-            value={speed}
-            onChange={(e) => setSpeed(Number(e.target.value))}
+            value={pace}
+            onChange={(e) => setPace(Number(e.target.value))}
             className="mt-2 w-full accent-accent"
           />
+          <span className="mt-1.5 flex justify-between text-[11px] text-fg-subtle">
+            <span>{locale === "en" ? "Slow" : "慢"}</span>
+            <span>{locale === "en" ? "Fast" : "快"}</span>
+          </span>
         </label>
         <label className="block rounded-xl border border-border bg-surface px-3 py-2.5 text-[12px] text-fg-muted">
           {locale === "en" ? "Spread (ch)" : "宽度（ch）"}
@@ -99,7 +116,7 @@ export function Playground() {
               key={i}
               text={line}
               style={style}
-              speed={speed}
+              secondsPerChar={secondsPerCharFromPace(pace)}
               spread={spread}
               angle={angle}
               park={park}

@@ -9,7 +9,7 @@ export function StageView() {
         <ShimmerLine
           text="CSS is awesome"
           style={kind}
-          speed={0.12}
+          secondsPerChar={0.12}
           spread={3}
           angle={295}
           park={state === "park"}

@@ -1,6 +1,6 @@
 # Glyph sweep
 
-The sweep follows the glyphs. Band width is in `ch`; duration is length times speed — not a box-level sheen.
+The sweep follows the glyphs. Band width is in `ch`; duration is length times seconds per glyph — not a box-level sheen.
 
 ## The problem
 
@@ -12,7 +12,7 @@ The letters are transparent. What you see is two backgrounds clipped to the glyp
 
 - The band sits at 50% of a 3×-wide gradient. At the animation endpoints the highlight is fully off-canvas.
 - Half-width offset is `spread × 0.5ch`, so the beam tracks type size.
-- Duration = character count × speed. Short words finish sooner; long lines stay in step visually. After the pass, the beam rests off-screen briefly before looping.
+- Duration = character count × seconds per glyph. Short words finish sooner; long lines stay in step visually. After the pass, the beam rests off-screen briefly before looping. The speed slider to the right is faster (fewer seconds per glyph).
 - Park mode stops the animation and binds Position so you can sit the beam on a cell, then tune spread and angle.
 
 ## Versus sweeping the box

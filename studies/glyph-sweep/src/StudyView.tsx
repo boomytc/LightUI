@@ -4,7 +4,7 @@ import { useLocale } from "./lib/site-locale";
 
 export function StudyView() {
   const locale = useLocale();
-  const snippet = buildSnippet({ style: "classic", spread: 3, angle: 295, speed: 0.12 });
+  const snippet = buildSnippet({ style: "classic", spread: 3, angle: 295, secondsPerChar: 0.12 });
 
   return (
     <div className="page-width min-w-0 pb-20">
@@ -17,8 +17,8 @@ export function StudyView() {
           </h1>
           <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
             {locale === "en"
-              ? "Clip the band to the letters. Width is in ch. Duration is length times speed."
-              : "把光带裁进字形。宽度用 ch。时长等于字数乘速度。"}
+              ? "Clip the band to the letters. Width is in ch. Duration is length times seconds per glyph."
+              : "把光带裁进字形。宽度用 ch。时长等于字数乘每字秒数。"}
           </p>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
@@ -51,8 +51,8 @@ export function StudyView() {
               </span>
               <br />
               {locale === "en"
-                ? "spread × 0.5ch tracks type size. Duration = characters × speed."
-                : "spread × 0.5ch 跟着字号。时长 = 字数 × 速度。"}
+                ? "spread × 0.5ch tracks type size. Duration = characters × seconds per glyph."
+                : "spread × 0.5ch 跟着字号。时长 = 字数 × 每字秒数。"}
             </li>
             <li>
               <span className="font-medium text-fg">

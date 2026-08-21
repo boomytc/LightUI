@@ -5,7 +5,7 @@ import "./sweep.css";
 type Props = {
   text: string;
   style: ShimmerStyle;
-  speed: number;
+  secondsPerChar: number;
   spread: number;
   angle: number;
   park: boolean;
@@ -17,7 +17,7 @@ type Props = {
 export function ShimmerLine({
   text,
   style,
-  speed,
+  secondsPerChar,
   spread,
   angle,
   park,
@@ -37,7 +37,7 @@ export function ShimmerLine({
 
   const vars = {
     "--gsweep-len": String(len),
-    "--gsweep-speed": String(speed),
+    "--gsweep-per-char": String(secondsPerChar),
     "--gsweep-spread": String(spread),
     "--gsweep-deg": String(angle),
     "--gsweep-position": String(position),

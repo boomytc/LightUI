@@ -4,8 +4,28 @@ export type ShimmerStyle = (typeof STYLES)[number];
 export const GRADIENT_SIZE = "300% 100%";
 export const SPREAD_UNIT = "ch";
 
-export function durationSeconds(charCount: number, speed: number): number {
-  return Math.max(1, charCount) * speed;
+/** Seconds per character. Larger = slower sweep. */
+export const PER_CHAR_SLOW = 0.2;
+export const PER_CHAR_FAST = 0.05;
+export const PER_CHAR_DEFAULT = 0.12;
+
+export function durationSeconds(charCount: number, secondsPerChar: number): number {
+  return Math.max(1, charCount) * secondsPerChar;
+}
+
+/**
+ * UI pace: 0 = slow, 1 = fast.
+ * Maps onto seconds-per-character so the speed slider is not inverted.
+ */
+export function secondsPerCharFromPace(pace: number): number {
+  const t = Math.min(1, Math.max(0, pace));
+  const raw = PER_CHAR_SLOW + (PER_CHAR_FAST - PER_CHAR_SLOW) * t;
+  return Math.round(raw * 100) / 100;
+}
+
+export function paceFromSecondsPerChar(secondsPerChar: number): number {
+  const span = PER_CHAR_FAST - PER_CHAR_SLOW;
+  return (secondsPerChar - PER_CHAR_SLOW) / span;
 }
 
 /** Half-width of the band, in `ch`, so it tracks type size. */
@@ -35,11 +55,16 @@ export function keyframes(): string {
 }`;
 }
 
-export function buildSnippet(cfg: { style: ShimmerStyle; spread: number; angle: number; speed: number }): string {
+export function buildSnippet(cfg: {
+  style: ShimmerStyle;
+  spread: number;
+  angle: number;
+  secondsPerChar: number;
+}): string {
   return `.glyph-sweep {
   --spread: ${cfg.spread};
   --angle: ${cfg.angle}deg;
-  --speed: ${cfg.speed};
+  --per-char: ${cfg.secondsPerChar}s;
   --len: 24;
   --offset: ${spreadOffsetCss(cfg.spread)};
   color: transparent;
@@ -49,7 +74,7 @@ export function buildSnippet(cfg: { style: ShimmerStyle; spread: number; angle: 
     linear-gradient(color-mix(in oklab, var(--color-fg) 22%, transparent), color-mix(in oklab, var(--color-fg) 22%, transparent));
   -webkit-background-clip: text;
   background-clip: text;
-  animation: glyph-sweep calc(var(--len) * var(--speed) * 1s)
+  animation: glyph-sweep calc(var(--len) * var(--per-char))
     infinite both ease-in-out;
 }
 ${keyframes()}`;

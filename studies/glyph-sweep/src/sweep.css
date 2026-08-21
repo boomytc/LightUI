@@ -1,7 +1,7 @@
 .gsweep-line {
   --offset: calc(var(--gsweep-spread, 3) * 0.5ch);
   --gsweep-angle: calc(var(--gsweep-deg, 295) * 1deg);
-  --gsweep-duration: calc((var(--gsweep-len, 10) * var(--gsweep-speed, 0.12)) * 1s);
+  --gsweep-duration: calc((var(--gsweep-len, 10) * var(--gsweep-per-char, 0.12)) * 1s);
   --gsweep-unlit: color-mix(in oklab, var(--color-fg) 22%, transparent);
   --gsweep-band: linear-gradient(
     var(--gsweep-angle),

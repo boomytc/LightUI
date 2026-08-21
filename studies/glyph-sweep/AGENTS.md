@@ -22,7 +22,7 @@ The lab mounts `StudyView` at `/s/glyph-sweep`.
 ## Layout
 
 - `idea.md` / `study.json` — follow glyphs, not the box
-- `src/lib/shimmer.ts` — duration = length × speed, spread in `ch` (no DOM)
+- `src/lib/shimmer.ts` — duration = length × seconds per glyph, spread in `ch` (no DOM)
 - `src/StageView.tsx` — `kind=classic|aurora|flame`, `state=run|park`
 
 ## Rules
