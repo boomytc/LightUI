@@ -5,14 +5,10 @@ import {
   PITCH_ROWS,
   YAW_COLS,
   blinkSourceRow,
-  cellsEqual,
   clamp,
   lookToCell,
   smoothToward,
-  snapCellBlend,
-  stepCellBlend,
   targetFromOffset,
-  type CellBlend,
   type LookVec,
 } from "./lib/look";
 
@@ -52,7 +48,6 @@ export function LookCanvas({
 
     const pointer = { x: 0, y: 0, has: false };
     const look: LookVec = { x: 0, y: 0 };
-    let blend: CellBlend = snapCellBlend(lookToCell(0, 0));
     const origin = { x: 0, y: 0 };
     let displaySize = 220;
     let dpr = 1;
@@ -110,12 +105,10 @@ export function LookCanvas({
         look.x = p.locked.x;
         look.y = p.locked.y;
         blinking = p.locked.blink;
-        blend = snapCellBlend(lookToCell(look.x, look.y));
       } else {
         const target = targetFromOffset(pointer.x - origin.x, pointer.y - origin.y, p.radius, p.lookY);
         look.x = smoothToward(look.x, target.x, p.smoothing, dt);
         look.y = smoothToward(look.y, target.y, p.smoothing, dt);
-        blend = stepCellBlend(blend, lookToCell(look.x, look.y), dt);
         if (blinking && now >= blinkUntil) blinking = false;
         if (p.autoBlink && !blinking && now >= nextBlink) {
           blinking = true;
@@ -124,7 +117,7 @@ export function LookCanvas({
         }
       }
 
-      const { col, row } = blend.to;
+      const { col, row } = lookToCell(look.x, look.y);
       const cssW = canvas.width / dpr;
       const cssH = canvas.height / dpr;
       ctx.clearRect(0, 0, cssW, cssH);
@@ -149,12 +142,7 @@ export function LookCanvas({
         ctx.restore();
       }
 
-      if (blend.t >= 1 || cellsEqual(blend.from, blend.to)) {
-        drawCell(col, row, blinking, origin.x, origin.y, 1);
-      } else {
-        drawCell(blend.from.col, blend.from.row, blinking, origin.x, origin.y, 1 - blend.t);
-        drawCell(blend.to.col, blend.to.row, blinking, origin.x, origin.y, blend.t);
-      }
+      drawCell(col, row, blinking, origin.x, origin.y, 1);
 
       if (p.showGrid) {
         ctx.save();

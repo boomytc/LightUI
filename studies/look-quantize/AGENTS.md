@@ -22,8 +22,8 @@ The lab mounts `StudyView` at `/s/look-quantize`.
 ## Layout
 
 - `idea.md` / `study.json` — quantize, do not invent a continuous turn
-- `src/lib/look.ts` — clamp, smooth, lookToCell, unique-cell hop fade, blink row (no DOM)
-- `src/assets/look-atlas.png` — 7×3 look cells plus 7×3 blink rows
+- `src/lib/look.ts` — clamp, smooth, lookToCell, blink row (no DOM)
+- `src/assets/look-atlas.png` — 13×3 look cells plus 13×3 blink rows
 - `src/StageView.tsx` — `kind=center|left|right|up|blink`
 
 ## Rules

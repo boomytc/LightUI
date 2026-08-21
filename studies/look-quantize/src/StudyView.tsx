@@ -15,8 +15,8 @@ export function StudyView() {
           </h1>
           <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
             {locale === "en"
-              ? "Offset over radius, smooth, then quantize to 7×3. A blink is the other row of the same cell."
-              : "偏移除以半径，平滑，再量化到 7×3。眨眼是同一格的另一行。"}
+              ? "Offset over radius, smooth, then quantize to 13×3. A blink is the other row of the same cell."
+              : "偏移除以半径，平滑，再量化到 13×3。眨眼是同一格的另一行。"}
           </p>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
@@ -49,21 +49,12 @@ export function StudyView() {
               </span>
               <br />
               {locale === "en"
-                ? "Exponential smoothing, then round onto 7 columns and 3 rows."
-                : "指数平滑，再四舍五入到 7 列 3 行。"}
+                ? "Exponential smoothing, then round onto 13 columns and 3 rows."
+                : "指数平滑，再四舍五入到 13 列 3 行。"}
             </li>
             <li>
               <span className="font-medium text-fg">
-                {locale === "en" ? "3. Dissolve between cells" : "3. 换格时叠化"}
-              </span>
-              <br />
-              {locale === "en"
-                ? "A hop crossfades the last unique pose into the next. Overlap is the transition, not a look."
-                : "落到新格子时，上一格叠化到这一格。重叠只是过渡，不是一格看向。"}
-            </li>
-            <li>
-              <span className="font-medium text-fg">
-                {locale === "en" ? "4. Blink is the other row" : "4. 眨眼是另一行"}
+                {locale === "en" ? "3. Blink is the other row" : "3. 眨眼是另一行"}
               </span>
               <br />
               {locale === "en"
@@ -75,14 +66,14 @@ export function StudyView() {
         <article className="min-w-0 overflow-hidden rounded-2xl border border-border bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
           <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-surface/45">lookToCell</p>
           <pre className="mt-3 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">{`function lookToCell(lookX, lookY) {
-  const col = round((clamp(lookX, -1, 1) * 0.5 + 0.5) * 6)
+  const col = round((clamp(lookX, -1, 1) * 0.5 + 0.5) * 12)
   const row = round((clamp(lookY, -1, 1) * 0.5 + 0.5) * 2)
   return { col, row }
 }`}</pre>
           <p className="mt-4 text-[13px] leading-relaxed text-surface/55">
             {locale === "en"
-              ? "Center is column 3, row 1. Extremes are atlas corners. No blended snout is stored as a cell."
-              : "中心是第 3 列第 1 行。两端是图集角。重叠的鼻子不进图集。"}
+              ? "Center is column 6, row 1. Each cell is a unique pose. Hops cut; they do not dissolve."
+              : "中心是第 6 列第 1 行。每格都是独立姿势。换格硬切，不叠化。"}
           </p>
         </article>
       </section>
