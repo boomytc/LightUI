@@ -4,8 +4,11 @@ import {
   PITCH_ROWS,
   YAW_COLS,
   blinkSourceRow,
+  cellsEqual,
   lookToCell,
   smoothToward,
+  snapCellBlend,
+  stepCellBlend,
   targetFromOffset,
 } from "./look";
 
@@ -56,5 +59,43 @@ describe("smoothToward", () => {
     const next = smoothToward(0, 1, 0.6, 1 / 60);
     assert.ok(next > 0);
     assert.ok(next < 1);
+  });
+});
+
+describe("stepCellBlend", () => {
+  const a = { col: 3, row: 1 };
+  const b = { col: 4, row: 1 };
+  const c = { col: 5, row: 1 };
+
+  it("stays on one unique cell when the look does not hop", () => {
+    const held = stepCellBlend(snapCellBlend(a), a, 0.05, 0.14);
+    assert.equal(held.t, 1);
+    assert.ok(cellsEqual(held.from, a));
+    assert.ok(cellsEqual(held.to, a));
+  });
+
+  it("starts a hop at t=0 and reaches the next unique cell", () => {
+    let blend = stepCellBlend(snapCellBlend(a), b, 0, 0.14);
+    assert.equal(blend.t, 0);
+    assert.deepEqual(blend.from, a);
+    assert.deepEqual(blend.to, b);
+
+    blend = stepCellBlend(blend, b, 0.07, 0.14);
+    assert.ok(blend.t > 0.4 && blend.t < 0.6);
+
+    blend = stepCellBlend(blend, b, 0.2, 0.14);
+    assert.equal(blend.t, 1);
+    assert.ok(cellsEqual(blend.from, b));
+    assert.ok(cellsEqual(blend.to, b));
+  });
+
+  it("retargets from the dominant unique cell, not a half-mix", () => {
+    let blend = stepCellBlend(snapCellBlend(a), b, 0, 0.14);
+    blend = stepCellBlend(blend, b, 0.08, 0.14);
+    assert.ok(blend.t > 0.5);
+    blend = stepCellBlend(blend, c, 0, 0.14);
+    assert.equal(blend.t, 0);
+    assert.deepEqual(blend.from, b);
+    assert.deepEqual(blend.to, c);
   });
 });

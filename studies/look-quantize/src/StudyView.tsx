@@ -54,7 +54,16 @@ export function StudyView() {
             </li>
             <li>
               <span className="font-medium text-fg">
-                {locale === "en" ? "3. Blink is the other row" : "3. 眨眼是另一行"}
+                {locale === "en" ? "3. Dissolve between cells" : "3. 换格时叠化"}
+              </span>
+              <br />
+              {locale === "en"
+                ? "A hop crossfades the last unique pose into the next. Overlap is the transition, not a look."
+                : "落到新格子时，上一格叠化到这一格。重叠只是过渡，不是一格看向。"}
+            </li>
+            <li>
+              <span className="font-medium text-fg">
+                {locale === "en" ? "4. Blink is the other row" : "4. 眨眼是另一行"}
               </span>
               <br />
               {locale === "en"
@@ -72,8 +81,8 @@ export function StudyView() {
 }`}</pre>
           <p className="mt-4 text-[13px] leading-relaxed text-surface/55">
             {locale === "en"
-              ? "Center is column 3, row 1. Extremes are the atlas corners, not interpolated yaw."
-              : "中心是第 3 列第 1 行。两端是图集角，不是插值出来的偏航。"}
+              ? "Center is column 3, row 1. Extremes are atlas corners. No blended snout is stored as a cell."
+              : "中心是第 3 列第 1 行。两端是图集角。重叠的鼻子不进图集。"}
           </p>
         </article>
       </section>
