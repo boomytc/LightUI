@@ -19,8 +19,11 @@ Do not invent a second copy of these rules. Follow the files:
 
 1. Decide **kind vs new study**. Same question, new skin → add a kind
    to the existing study. A new first question → new `studies/<slug>/`.
-   See `docs/conventions.md`. Name the **behavior** (`intent-cascade`,
-   not `grok-demo`).
+   The question may be a machine/taxonomy, a construction (cut vs stitch),
+   a motion that follows type/scroll, or continuous input quantized to
+   discrete state. See `docs/conventions.md`. Name the **behavior**
+   (`intent-cascade`, `inverted-notch`, not `grok-demo`). Do not add a
+   lab nav module or a workspace component library to “make room”.
 2. Write `idea.md` **before** scaffolding UI. Problem, rule, why not the
    naive alternative. Do not add lineage or a kept/dropped source diary.
 3. Add `study.json` matching the folder slug. Set `created` and
@@ -30,8 +33,10 @@ Do not invent a second copy of these rules. Follow the files:
 4. Implement the playground in `studies/<slug>/`. Export
    `StudyView` from `src/StudyView.tsx` and `StageView` from
    `src/StageView.tsx` (one kind, one locked state, no chrome).
-   Standalone chrome stays in `src/App.tsx` only (`?stage=1` mounts
-   the stage).
+   `StudyView` follows the question — not a mandatory seven-kind
+   switcher. Stage query is per-study; do not force `closed|open` on
+   ideas that are not open/closed widgets. Standalone chrome stays in
+   `src/App.tsx` only (`?stage=1` mounts the stage).
 5. Relative imports only. Tokens from `design/tokens.css`. Bind
    `127.0.0.1`. Give the study its own port (lab is 5173; next free is
    in `docs/conventions.md`).

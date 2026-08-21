@@ -45,7 +45,13 @@ Adding a study does not require editing a registry.
 Do not keep a neighbor census in `idea.md` (“和另外 N 则”). The lab assembles the graph from `asks` + `links`. An edge names the next question, not a headcount.
 
 Same question, new skin → add a kind. New question → new study, then `links`.
-Do not fold nav / sidebar / dropdown into one catalog because the fixtures look alike.
+Do not fold nav / sidebar / dropdown / notch / sweep / look into one catalog
+because the fixtures look alike.
+
+A study’s first question may be a machine (taxonomy), a construction
+(cut vs stitch), a motion that follows type or scroll, or continuous
+input quantized to discrete state. `StudyView` follows that question;
+it is not required to be a kind switcher.
 
 The lab sorts `active` first, then `updated` descending, then `created`, then slug. Use the calendar day, not a clock time.
 
@@ -73,14 +79,18 @@ export function StageView() {
 
 The stage is how this repo presents a fixture: one kind, one complete
 state, no site header, no「说清楚」, no sibling modules. Lab mounts it at
-`/s/<slug>/stage?kind=<id>&state=closed|open` and does not put that URL
+`/s/<slug>/stage` with that study’s query and does not put that URL
 in the site nav. Standalone playgrounds use `?stage=1` with the same
 query. Stills are captured from this URL (`make stills`), not from the
 teaching page.
 
-`src/lib/stage-query.ts` is an eight-line helper copied into each study
-that has kinds. Do not import it across studies. If you change the
-query contract (`kind`, `state=closed|open`), update every copy.
+Lock is per-study. Taxonomy widgets often use `kind` + `state=closed|open`.
+A construction may lock `exploded`. A sweep may lock a parked beam. A look
+map may lock a cell. Do not freeze the global contract to `closed|open`.
+
+`src/lib/stage-query.ts` is a small helper copied into each study that
+reads query params. Do not import it across studies. If you change a
+study’s own query, update that copy and `scripts/capture-stage.py`.
 
 ## Discovery paths (from `products/lab/src/lib/catalog.ts`)
 
