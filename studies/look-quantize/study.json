@@ -1,0 +1,13 @@
+{
+  "slug": "look-quantize",
+  "title": "视线",
+  "titleEn": "Gaze",
+  "summary": "指针偏了，视线落到图集格子。半径里平滑，格子外夹紧，眨眼走另一行。",
+  "summaryEn": "Pointer offset becomes a discrete atlas cell. Smooth inside the radius, clamp outside, blink on the other row.",
+  "asks": "视线该连续转还是落到格子？",
+  "asksEn": "Should gaze rotate continuously, or land on a cell?",
+  "status": "active",
+  "created": "2026-08-21",
+  "updated": "2026-08-21",
+  "tags": ["pointer", "quantize", "atlas"]
+}
