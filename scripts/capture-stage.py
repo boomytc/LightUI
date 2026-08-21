@@ -44,6 +44,26 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("scrollspy", "closed", "scrollspy.png"),
         ("shrink", "closed", "shrink.png"),
     ],
+    "inverted-notch": [
+        ("shape", "closed", "shape-closed.png"),
+        ("shape", "open", "shape-open.png"),
+        ("shape", "exploded", "shape-exploded.png"),
+        ("path", "closed", "path-closed.png"),
+        ("scoop", "closed", "scoop-closed.png"),
+    ],
+    "glyph-sweep": [
+        ("classic", "run", "classic-run.png"),
+        ("classic", "park", "classic-park.png"),
+        ("aurora", "run", "aurora-run.png"),
+        ("flame", "run", "flame-run.png"),
+    ],
+    "look-quantize": [
+        ("center", "locked", "center.png"),
+        ("left", "locked", "left.png"),
+        ("right", "locked", "right.png"),
+        ("up", "locked", "up.png"),
+        ("blink", "locked", "blink.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:
