@@ -8,10 +8,10 @@ A face that looks at the pointer cannot rotate continuously if the art is an atl
 
 ## The rule
 
-Divide the pointer offset from the origin by the radius to get a look vector in `[-1, 1]`. If the length is over 1, clamp it onto the circle. Each frame exponentially smooths toward that vector, then quantizes to a 13×3 grid (one unique yaw in-between between each 7×3 key):
+Divide the pointer offset from the origin by the radius to get a look vector in `[-1, 1]`. If the length is over 1, clamp it onto the circle. Each frame exponentially smooths toward that vector, then quantizes to a 12×3 grid:
 
 ```
-col = round((lookX * 0.5 + 0.5) * 12)
+col = round((lookX * 0.5 + 0.5) * 11)
 row = round((lookY * 0.5 + 0.5) * 2)
 ```
 

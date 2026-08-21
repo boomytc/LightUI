@@ -38,8 +38,8 @@ describe("lookToCell", () => {
   });
 
   it("lands on the in-between yaw between center and a neighbor key", () => {
-    assert.deepEqual(lookToCell(-1 / 6, 0), { col: 5, row: 1 });
-    assert.deepEqual(lookToCell(1 / 6, 0), { col: 7, row: 1 });
+    assert.deepEqual(lookToCell(-1 / 11, 0), { col: 5, row: 1 });
+    assert.deepEqual(lookToCell(3 / 11, 0), { col: 7, row: 1 });
   });
 
   it("clamps look vectors beyond [-1, 1] to the same extreme cells", () => {

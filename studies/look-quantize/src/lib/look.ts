@@ -1,4 +1,4 @@
-export const YAW_COLS = 13;
+export const YAW_COLS = 12;
 export const PITCH_ROWS = 3;
 export const CELL = 256;
 
