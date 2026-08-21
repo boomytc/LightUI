@@ -1,0 +1,158 @@
+.inotch-stage {
+  perspective: 1600px;
+  perspective-origin: 50% 48%;
+  transform-style: preserve-3d;
+}
+
+.inotch-assembly {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.inotch-assembly.is-exploded {
+  transform: rotateX(54deg) rotateZ(-24deg) scale(1.08);
+}
+
+.inotch-plane {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.inotch-assembly.is-exploded .inotch-plane-face {
+  transform: translate3d(12px, -28px, var(--spread));
+}
+
+.inotch-assembly.is-exploded .inotch-plane-chip {
+  transform: translate3d(calc(var(--spread) * -0.7), 8px, calc(var(--spread) * 0.15));
+}
+
+.inotch-assembly.is-exploded .inotch-plane-base {
+  transform: translate3d(-8px, 20px, calc(var(--spread) * -1));
+}
+
+.inotch-card-face {
+  position: absolute;
+  inset: 0;
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  clip-path: var(--card-clip);
+  transition:
+    clip-path 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms ease;
+}
+
+.inotch-card-face.is-scoop {
+  clip-path: none;
+  border-radius: var(--r);
+  corner-shape: scoop round round round;
+}
+
+.inotch-card-face.is-path {
+  clip-path: var(--card-clip-path);
+}
+
+.inotch-hatch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--nw);
+  height: var(--nh);
+  opacity: 0;
+  pointer-events: none;
+  clip-path: var(--hatch-clip);
+  transition:
+    opacity 400ms ease,
+    width 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.inotch-assembly.is-exploded .inotch-hatch {
+  opacity: 1;
+}
+
+.inotch-hatch-fill {
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    var(--hatch-angle),
+    transparent 0 5px,
+    var(--color-accent) 5px 7px
+  );
+}
+
+.inotch-ghost {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r);
+  background: color-mix(in oklab, var(--color-surface) 55%, transparent);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+
+.inotch-assembly.is-exploded .inotch-ghost {
+  opacity: 0.9;
+}
+
+.inotch-chip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--chip-h);
+  width: var(--chip-w);
+  padding: 0 12px;
+  border: 0;
+  border-radius: calc(var(--r) - 2px);
+  background: var(--color-surface-2);
+  color: var(--color-fg);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  overflow: hidden;
+  transition:
+    width 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms ease;
+}
+
+.inotch-chip:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 3px;
+}
+
+.inotch-chip-label {
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 200ms ease,
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.inotch-chip.is-open .inotch-chip-label {
+  opacity: 0.86;
+  transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inotch-assembly,
+  .inotch-plane,
+  .inotch-card-face,
+  .inotch-chip,
+  .inotch-chip-label,
+  .inotch-hatch,
+  .inotch-ghost {
+    transition: none;
+  }
+}

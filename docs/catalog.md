@@ -7,6 +7,7 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [inverted-notch](../studies/inverted-notch/) | 内凹角该在父级挖孔。同色补丁缝回去，背景一变缝就露馅。 | active | 2026-08-21 | 2026-08-21 |
 | [dropdown-taxonomy](../studies/dropdown-taxonomy/) | 往下展开只是外观。先定提交的是一个值、一组、一条路径，还是一次动作。 | active | 2026-08-15 | 2026-08-15 |
 | [intent-cascade](../studies/intent-cascade/) | 斜着滑进子菜单时，途经的项不该抢走展开。 | active | 2026-08-15 | 2026-08-15 |
 | [nav-taxonomy](../studies/nav-taxonomy/) | 一排链接只说了有入口。先定住在哪、怎么开、滚的时候干什么。 | active | 2026-08-15 | 2026-08-15 |
@@ -16,6 +17,7 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **内凹角** (`inverted-notch`) — 内凹角该挖孔还是缝回去？
 - **下拉框** (`dropdown-taxonomy`) — 往下展开的面板提交什么？
 - **多级菜单** (`intent-cascade`) — 斜向穿越该不该换项？
 - **导航栏** (`nav-taxonomy`) — 这块叫导航的东西住在哪、怎么开？

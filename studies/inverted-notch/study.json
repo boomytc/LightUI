@@ -1,0 +1,13 @@
+{
+  "slug": "inverted-notch",
+  "title": "内凹角",
+  "titleEn": "Inverted corner",
+  "summary": "内凹角该在父级挖孔。同色补丁缝回去，背景一变缝就露馅。",
+  "summaryEn": "Punch the inverted corner out of the parent. A matching-color patch shows a seam the moment the background changes.",
+  "asks": "内凹角该挖孔还是缝回去？",
+  "asksEn": "Should an inverted corner be cut, or stitched back?",
+  "status": "active",
+  "created": "2026-08-21",
+  "updated": "2026-08-21",
+  "tags": ["clip-path", "geometry", "construction"]
+}
