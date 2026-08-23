@@ -1,0 +1,35 @@
+{
+  "slug": "notify-taxonomy",
+  "title": "提示",
+  "titleEn": "Notice",
+  "eyebrow": "Weight · Persist",
+  "eyebrowEn": "Weight · Persist",
+  "summary": "报一条消息只说了要出声。先定打断到哪一档：瞄一眼、自动消失、还能撤销、留档、还是必须处理。",
+  "summaryEn": "Naming a notice only says it should speak. First pick the interruption weight: a glance, auto-dismiss, an undo, a log, or must-handle.",
+  "asks": "这条提示该打断到哪一档？",
+  "asksEn": "How loudly should this notice interrupt?",
+  "links": [
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "after",
+      "when": "若必须先处理才能继续",
+      "whenEn": "if they must handle it before they can continue"
+    },
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "提示不打断当前任务，弹窗才打断",
+      "whenEn": "a notice does not interrupt the task; a dialog does"
+    },
+    {
+      "slug": "progress-taxonomy",
+      "rel": "contrast",
+      "when": "结果提示不是进度",
+      "whenEn": "a result notice is not progress"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["notify", "feedback", "taxonomy"]
+}

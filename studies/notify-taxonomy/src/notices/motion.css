@@ -1,0 +1,23 @@
+@keyframes notify-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.notify-marquee-track {
+  animation: notify-marquee 22s linear infinite;
+}
+
+.notify-marquee:hover .notify-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notify-marquee-track {
+    animation: none;
+    transform: none;
+  }
+}
