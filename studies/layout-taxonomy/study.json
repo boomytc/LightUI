@@ -1,0 +1,47 @@
+{
+  "slug": "layout-taxonomy",
+  "title": "布局",
+  "titleEn": "Layout",
+  "eyebrow": "Skeleton · Page",
+  "eyebrowEn": "Skeleton · Page",
+  "summary": "「做个页面」只说了有块。先定是单栏、落地、瀑布、全屏、分栏、仪表盘还是模块拼贴。",
+  "summaryEn": "“Make a page” only says there are blocks. First pick single column, landing, masonry, full-screen, splitter, dashboard, or modular cards.",
+  "asks": "这一页的骨架是哪一种？",
+  "asksEn": "Which skeleton is this page?",
+  "links": [
+    {
+      "slug": "sidebar-taxonomy",
+      "rel": "after",
+      "when": "若靠左那一栏才是问题",
+      "whenEn": "if the problem is that left-hand rail"
+    },
+    {
+      "slug": "nav-taxonomy",
+      "rel": "after",
+      "when": "若问的是顶栏去哪",
+      "whenEn": "if the question is where the top bar lives"
+    },
+    {
+      "slug": "sidebar-taxonomy",
+      "rel": "contrast",
+      "when": "整页骨架不是侧栏占位",
+      "whenEn": "the page skeleton is not whether a rail occupies space"
+    },
+    {
+      "slug": "nav-taxonomy",
+      "rel": "contrast",
+      "when": "这一页怎么铺不是顶栏去哪",
+      "whenEn": "how this page is laid out is not where the top bar goes"
+    },
+    {
+      "slug": "carousel-taxonomy",
+      "rel": "contrast",
+      "when": "瀑布骨架不是切画面",
+      "whenEn": "a masonry skeleton is not advancing frames"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["layout", "page", "taxonomy"]
+}
