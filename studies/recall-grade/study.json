@@ -1,0 +1,35 @@
+{
+  "slug": "recall-grade",
+  "title": "复习",
+  "titleEn": "Recall",
+  "eyebrow": "Flip · Grade",
+  "eyebrowEn": "Flip · Grade",
+  "summary": "翻开之后提交的是记得程度，用来排下次间隔。不是滑走下一张，也不是确认弹窗。",
+  "summaryEn": "After the flip, commit how well you remembered — that sets the next interval. Not a swipe to the next card, and not a confirm dialog.",
+  "asks": "翻开之后提交的是记得程度，还是只是下一张？",
+  "asksEn": "After the flip, does this commit how well you remembered, or just the next card?",
+  "links": [
+    {
+      "slug": "carousel-taxonomy",
+      "rel": "contrast",
+      "when": "翻面打分不是切下一张画面",
+      "whenEn": "grading after a flip is not advancing to the next frame"
+    },
+    {
+      "slug": "pending-taxonomy",
+      "rel": "contrast",
+      "when": "今日无到期不是一条空提示",
+      "whenEn": "nothing due today is not an empty notice"
+    },
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "三个记得程度不是确认弹窗",
+      "whenEn": "three recall grades are not a confirm dialog"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["recall", "grade", "flip", "schedule"]
+}
