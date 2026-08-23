@@ -9,8 +9,8 @@ export function StageView() {
   const id = isKindId(kind) ? kind : "layered";
   const locked = stageState(state, id);
   return (
-    <div data-stage="root" className="grid min-h-dvh place-items-center overflow-x-hidden bg-bg px-4 py-10 sm:px-8">
-      <div data-stage="fixture" className="w-[390px] max-w-full min-w-0 overflow-x-hidden">
+    <div data-stage="root" className="grid min-h-dvh place-items-center overflow-x-auto bg-bg px-4 py-10 sm:px-8">
+      <div data-stage="fixture" className="w-[390px] max-w-[calc(100vw-2rem)] shrink-0 overflow-x-hidden">
         <KindDemo id={id} state={locked} />
       </div>
     </div>
