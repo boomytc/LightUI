@@ -168,6 +168,16 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("beam", "park", "beam-park.png"),
         ("fill", "run", "fill-run.png"),
     ],
+    "timer-taxonomy": [
+        ("stopwatch", "running", "stopwatch-running.png"),
+        ("focus", "running", "focus-running.png"),
+        ("focus", "done", "focus-done.png"),
+    ],
+    "recall-grade": [
+        ("deck", "question", "question.png"),
+        ("deck", "answer", "answer.png"),
+        ("deck", "empty", "empty.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:

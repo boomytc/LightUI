@@ -20,6 +20,12 @@
       "rel": "contrast",
       "when": "进度是工作正在发生，不是布局占位",
       "whenEn": "progress is work happening, not a layout placeholder"
+    },
+    {
+      "slug": "timer-taxonomy",
+      "rel": "contrast",
+      "when": "进度能不能算不是这一段往上还是往下",
+      "whenEn": "whether progress is measurable is not whether a session counts up or down"
     }
   ],
   "status": "active",

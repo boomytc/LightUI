@@ -56,6 +56,8 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another AI chat shell | Where the assistant lives in `assistant-chrome` | Page skeleton → `layout-taxonomy` |
 | Another loading spinner | Layout placeholder in `pending-taxonomy` | Measurable wait → `progress-taxonomy` |
 | Another card glow | Border path in `border-beam` | Glyph-follow → `glyph-sweep` |
+| Another study timer | Count-up vs count-down in `timer-taxonomy` | Measurable work → `progress-taxonomy` |
+| Another flashcard | Recall grade after flip in `recall-grade` | Advancing frames → `carousel-taxonomy` |
 
 Do not merge these into one encyclopedia because the fixtures look alike.
 The graph keeps the questions apart. Isolated nodes are allowed; only add
@@ -107,8 +109,8 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5188` carousel-taxonomy, `5189` layout-taxonomy, `5190` button-taxonomy,
   `5191` hero-taxonomy, `5192` login-taxonomy, `5193` align-craft,
   `5194` dashboard-layers, `5195` assistant-chrome, `5196` pending-taxonomy,
-  `5197` border-beam.
-  Next free: `5198`.
+  `5197` border-beam, `5198` timer-taxonomy, `5199` recall-grade.
+  Next free: `5200`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

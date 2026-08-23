@@ -20,6 +20,12 @@
       "rel": "contrast",
       "when": "切画面不是瀑布骨架",
       "whenEn": "advancing frames is not a masonry skeleton"
+    },
+    {
+      "slug": "recall-grade",
+      "rel": "contrast",
+      "when": "切下一张不是提交记得程度",
+      "whenEn": "advancing a frame is not committing how well you remembered"
     }
   ],
   "status": "active",

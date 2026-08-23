@@ -25,8 +25,10 @@ Do not keep a second registry.
 | [overlay-taxonomy](../studies/overlay-taxonomy/) | 浮在页面上只是外观。先定打不打断当前任务，以及是否贴着触发点。 | active | 2026-08-23 | 2026-08-23 |
 | [pending-taxonomy](../studies/pending-taxonomy/) | 内容还没到，屏幕上该留什么？骨架占布局位子；空状态给人话和下一步。不要转圈，不要「暂无数据」。 | active | 2026-08-23 | 2026-08-23 |
 | [progress-taxonomy](../studies/progress-taxonomy/) | 转圈只说了在等。先定进度能不能算：能算就走到 100 停住；不能算就循环，不要假百分比。 | active | 2026-08-23 | 2026-08-23 |
+| [recall-grade](../studies/recall-grade/) | 翻开之后提交的是记得程度，用来排下次间隔。不是滑走下一张，也不是确认弹窗。 | active | 2026-08-23 | 2026-08-23 |
 | [sidebar-taxonomy](../studies/sidebar-taxonomy/) | 靠左只是外观。先定占不占位，展开改的是宽度还是图层。 | active | 2026-08-15 | 2026-08-23 |
 | [tab-taxonomy](../studies/tab-taxonomy/) | 一排标签只说了能切。先定选中态是短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。 | active | 2026-08-23 | 2026-08-23 |
+| [timer-taxonomy](../studies/timer-taxonomy/) | 这一段时间是正数累计，还是倒数专注？先定会话的方向。累计没有上限；专注到 0 自己停住，不要变成负数，也不要弹一条 toast。 | active | 2026-08-23 | 2026-08-23 |
 | [validation-taxonomy](../studies/validation-taxonomy/) | 「做个表单校验」只说了会报错。先定是失焦就说、这一栏立刻说，还是提交时一次说完。 | active | 2026-08-23 | 2026-08-23 |
 | [inverted-notch](../studies/inverted-notch/) | 内凹角该在父级挖孔。同色补丁缝回去，背景一变缝就露馅。 | active | 2026-08-21 | 2026-08-21 |
 | [look-quantize](../studies/look-quantize/) | 指针偏了，视线落到图集格子。半径里平滑，格子外夹紧，眨眼走另一行。 | active | 2026-08-21 | 2026-08-21 |
@@ -54,8 +56,10 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **浮层** (`overlay-taxonomy`) — 这块浮层打不打断、贴不贴触发点？
 - **等待** (`pending-taxonomy`) — 内容还没到，屏幕上该留什么？
 - **进度** (`progress-taxonomy`) — 进度能不能算？
+- **复习** (`recall-grade`) — 翻开之后提交的是记得程度，还是只是下一张？
 - **侧边栏** (`sidebar-taxonomy`) — 靠左那一块占不占位、怎么让路？
 - **页签** (`tab-taxonomy`) — 这一排标签，选中态是哪种模型？
+- **计时** (`timer-taxonomy`) — 这一段时间是正数累计，还是倒数专注？
 - **校验** (`validation-taxonomy`) — 错误该在什么时候说？
 - **内凹角** (`inverted-notch`) — 内凹角该挖孔还是缝回去？
 - **视线** (`look-quantize`) — 视线该连续转还是落到格子？
@@ -70,6 +74,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `button-taxonomy` contrast `control-taxonomy` — 按钮重量不是填还是选
 - `carousel-taxonomy` contrast `notify-taxonomy` — 切画面不是通知跑马灯
 - `carousel-taxonomy` contrast `layout-taxonomy` — 切画面不是瀑布骨架
+- `carousel-taxonomy` contrast `recall-grade` — 切下一张不是提交记得程度
 - `chart-taxonomy` after `dashboard-layers` — 若数字要对着结果往下钻
 - `chart-taxonomy` contrast `dashboard-layers` — 选对图不是下钻
 - `control-taxonomy` after `dropdown-taxonomy` — 若答案是往下展开的固定短列表
@@ -113,9 +118,15 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `pending-taxonomy` contrast `notify-taxonomy` — 空状态不是一条提示
 - `progress-taxonomy` contrast `notify-taxonomy` — 进度不是一条 toast
 - `progress-taxonomy` contrast `pending-taxonomy` — 进度是工作正在发生，不是布局占位
+- `progress-taxonomy` contrast `timer-taxonomy` — 进度能不能算不是这一段往上还是往下
+- `recall-grade` contrast `carousel-taxonomy` — 翻面打分不是切下一张画面
+- `recall-grade` contrast `pending-taxonomy` — 今日无到期不是一条空提示
+- `recall-grade` contrast `overlay-taxonomy` — 三个记得程度不是确认弹窗
 - `sidebar-taxonomy` after `intent-cascade` — 若多级改成 hover 跟手
 - `sidebar-taxonomy` contrast `overlay-taxonomy` — 隐藏式侧栏不是右侧内容抽屉
 - `tab-taxonomy` contrast `nav-taxonomy` — 页签切的是这一页里的面板，不是顶栏去哪
+- `timer-taxonomy` contrast `progress-taxonomy` — 计时的方向不是进度能不能算
+- `timer-taxonomy` contrast `notify-taxonomy` — 专注到点不是一条 toast
 - `validation-taxonomy` contrast `control-taxonomy` — 何时报错不是填还是选
 - `validation-taxonomy` contrast `notify-taxonomy` — 行内报错不是一条 toast
 - `validation-taxonomy` contrast `overlay-taxonomy` — 提交一次标出不是 modal 确认
