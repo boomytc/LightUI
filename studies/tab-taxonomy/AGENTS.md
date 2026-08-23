@@ -23,14 +23,14 @@ The lab mounts `StudyView` at `/s/tab-taxonomy`.
 
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
-- `src/lib/machines.ts` — text bar, equal pill, step kinds, card radius, folder z (no DOM)
+- `src/lib/machines.ts` — text bar, step kinds, card radius, folder z, 30° bevel (no DOM)
 - `src/tabs/` — the six fixtures
 - `src/StageView.tsx` — one kind, one locked tab, no chrome
 - `src/lib/stage-query.ts` — `kind=linear|card|chevron|segmented|folder|image`, `state=<tab id>`
 
 ## Rules
 
-- Keep the five machines free of React.
+- Keep the geometry machines free of React.
 - Relative imports only (`../lib/...`). The lab compiles this tree from
   outside this folder.
 - Linear measures the text span, not the cell. Chevron is a sequence, not

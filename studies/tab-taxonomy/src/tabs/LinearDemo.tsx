@@ -21,14 +21,10 @@ export function LinearDemo({ defaultTab }: { defaultTab?: string } = {}) {
   return (
     <Window title={locale === "en" ? "Orbit · site refresh" : "Orbit · 官网改版"}>
       <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-fg-subtle">
-        {locale === "en" ? "Project" : "项目概览"}
+        {locale === "en" ? "Orbit · project" : "Orbit · 项目"}
       </p>
-      <h3 className="mt-1 text-[1.15rem] font-semibold tracking-tight">
-        {locale === "en" ? "Delivery files" : "交付文件"}
-      </h3>
-      <p className="mt-1 text-[13px] text-fg-muted">
-        {locale === "en" ? "Status and the archive" : "项目当前状态与近期进度"}
-      </p>
+      <h3 className="mt-1 text-[1.15rem] font-semibold tracking-tight">{linearHeading(tab, locale).title}</h3>
+      <p className="mt-1 text-[13px] text-fg-muted">{linearHeading(tab, locale).sub}</p>
 
       <div
         ref={listRef}
@@ -76,6 +72,27 @@ export function LinearDemo({ defaultTab }: { defaultTab?: string } = {}) {
       </div>
     </Window>
   );
+}
+
+function linearHeading(tab: string, locale: "zh" | "en"): { title: string; sub: string } {
+  if (tab === "tasks") {
+    return locale === "en"
+      ? { title: "Tasks", sub: "12 open this week" }
+      : { title: "任务", sub: "本周 12 项待办" };
+  }
+  if (tab === "files") {
+    return locale === "en"
+      ? { title: "Delivery files", sub: "Design files and the archive" }
+      : { title: "交付文件", sub: "设计稿与交付归档" };
+  }
+  if (tab === "activity") {
+    return locale === "en"
+      ? { title: "Activity", sub: "Who changed what" }
+      : { title: "动态", sub: "谁改了什么" };
+  }
+  return locale === "en"
+    ? { title: "Overview", sub: "Status and the week ahead" }
+    : { title: "项目概览", sub: "项目当前状态与近期进度" };
 }
 
 function Overview({ locale }: { locale: "zh" | "en" }) {

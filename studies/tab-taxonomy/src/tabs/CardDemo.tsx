@@ -32,8 +32,8 @@ export function CardDemo({ defaultTab }: { defaultTab?: string } = {}) {
               aria-selected={on}
               onClick={() => setTab(item.id)}
               className={cn(
-                "relative z-[1] -mb-px px-3.5 py-2 text-[13px] transition-colors",
-                on ? "rounded-t-xl" : "rounded-xl",
+                "relative z-[1] px-3.5 py-2 text-[13px] transition-colors",
+                on ? "-mb-px rounded-t-xl" : "rounded-xl",
                 on
                   ? "border border-b-transparent border-border bg-surface font-medium text-fg"
                   : "border border-border bg-surface-2 text-fg-muted hover:text-fg",

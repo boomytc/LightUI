@@ -45,7 +45,7 @@ export const KINDS: KindMeta[] = [
     index: "02",
     name: "Card tabs",
     zh: loc("卡片式", "Card tabs"),
-    oneLiner: loc("选中项变白、去底边，和面板连成一块", "Current tab turns white, drops its bottom edge, and joins the panel"),
+    oneLiner: loc("选中项与面板同色、去底边，连成一块", "Current tab matches the panel, drops its bottom edge, and joins it"),
     scenes: [
       loc("成员与权限", "Members and roles"),
       loc("订单分区", "Order sections"),
@@ -57,11 +57,11 @@ export const KINDS: KindMeta[] = [
       loc("第一项选中时去掉面板左上圆角", "Drop the panel’s top-left radius when the first tab is current"),
     ],
     spec: loc(
-      "做卡片式标签页。未选中项保留浅色卡片轮廓；选中项变成白色，并去掉底边，与下方内容面板无缝连成一体。",
-      "Card tabs: idle items keep a light outline. The current one turns white, loses its bottom edge, and joins the panel with no seam.",
+      "做卡片式标签页。未选中项保留浅色卡片轮廓；选中项变成与面板同色，并去掉底边，与下方内容面板无缝连成一体。",
+      "Card tabs: idle items keep a light outline. The current one matches the panel, loses its bottom edge, and joins it with no seam.",
     ),
     note: loc("卡片去底边连面板。文件夹才是斜切叠纸。", "Card joins the panel. Folder is stacked, beveled paper."),
-    tells: loc("选中项和面板是同一块底", "The current tab and the panel share one fill"),
+    tells: loc("选中项和面板同一块底，未选中仍是独立卡片", "Current tab shares the panel fill; idle tabs stay independent cards"),
     defaultTab: "members",
   },
   {
@@ -69,7 +69,7 @@ export const KINDS: KindMeta[] = [
     index: "03",
     name: "Chevron steps",
     zh: loc("鱼骨步骤", "Chevron steps"),
-    oneLiner: loc("箭头首尾相接，完成 / 当前 / 未开始三态", "Arrows bite; done / current / todo"),
+    oneLiner: loc("箭头首尾相接；当前之前是完成，之后是未开始", "Arrows bite; before current is done, after is todo"),
     scenes: [
       loc("结账", "Checkout"),
       loc("开户", "Onboarding"),
@@ -77,14 +77,14 @@ export const KINDS: KindMeta[] = [
     ],
     rules: [
       loc("clip-path 切出箭头，后一项负 margin 咬合", "clip-path arrows; the next item bites with negative margin"),
-      loc("完成 / 当前 / 未开始三态", "Done / current / todo"),
-      loc("当前用强调色铺满", "Current is filled with the accent"),
+      loc("点到哪一步，它之前是完成、之后是未开始", "Land on a step: before it is done, after it is todo"),
+      loc("当前铺满，完成次之，未开始浅底", "Current is filled, done quieter, todo light"),
     ],
     spec: loc(
-      "做鱼骨式步骤标签。各步骤用首尾衔接的箭头块排列，区分已完成、当前和未开始状态；点击步骤时高亮并切换对应内容。",
-      "Chevron step tabs: arrow blocks that bite. Mark done, current, and todo. A click highlights the step and swaps its panel.",
+      "做鱼骨式步骤标签。各步骤用首尾衔接的箭头块排列。点到哪一步，它之前是完成、它是当前、之后是未开始，并切换对应内容。",
+      "Chevron step tabs: arrow blocks that bite. Wherever you land, earlier steps are done, that step is current, later ones are todo, and the panel follows.",
     ),
-    note: loc("鱼骨是顺序。四个互斥视图不该用箭头咬合。", "Chevron is a sequence. Four sibling views should not bite with arrows."),
+    note: loc("鱼骨的完成态是「在当前之前」，不是四个互斥视图。", "Done means before the current step, not four exclusive views."),
     tells: loc("看得见做完了哪一步", "You can see which step is done"),
     defaultTab: "cart",
   },

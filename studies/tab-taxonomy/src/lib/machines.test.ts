@@ -3,8 +3,8 @@ import { describe, it } from "node:test";
 import {
   bevelInset,
   cardPanelRadius,
-  equalPill,
   folderLayer,
+  folderPanelZ,
   indicatorTransition,
   stepKind,
   textIndicator,
@@ -31,22 +31,6 @@ describe("indicatorTransition", () => {
   });
 });
 
-describe("equalPill", () => {
-  it("splits the track into equal cells", () => {
-    assert.deepEqual(equalPill(0, 3, 300), { left: 0, width: 100 });
-    assert.deepEqual(equalPill(2, 3, 300), { left: 200, width: 100 });
-  });
-
-  it("honours a gap between items", () => {
-    assert.deepEqual(equalPill(1, 3, 320, 10), { left: 110, width: 100 });
-  });
-
-  it("clamps a wild index", () => {
-    assert.deepEqual(equalPill(-2, 4, 200), { left: 0, width: 50 });
-    assert.deepEqual(equalPill(9, 4, 200), { left: 150, width: 50 });
-  });
-});
-
 describe("stepKind", () => {
   it("is done before current, todo after", () => {
     assert.equal(stepKind(0, 2), "done");
@@ -64,10 +48,16 @@ describe("cardPanelRadius", () => {
 });
 
 describe("folderLayer", () => {
-  it("raises the selected tab above the paper stack", () => {
-    assert.deepEqual(folderLayer(0, 1, 3), { z: 1, raised: false });
-    assert.deepEqual(folderLayer(1, 1, 3), { z: 4, raised: true });
-    assert.deepEqual(folderLayer(2, 1, 3), { z: 3, raised: false });
+  it("keeps idle paper under the panel, current tab above it", () => {
+    const panel = folderPanelZ(3);
+    const idle = folderLayer(0, 1, 3);
+    const current = folderLayer(1, 1, 3);
+    const later = folderLayer(2, 1, 3);
+    assert.equal(idle.raised, false);
+    assert.equal(current.raised, true);
+    assert.ok(idle.z < panel);
+    assert.ok(later.z < panel);
+    assert.ok(current.z > panel);
   });
 });
 

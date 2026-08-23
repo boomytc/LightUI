@@ -71,8 +71,8 @@ export function StudyView() {
               </span>
               <br />
               {locale === "en"
-                ? "Done / current / todo is a sequence. Four mutually exclusive views should not bite with arrows."
-                : "完成 / 当前 / 未开始是顺序。四个互斥视图不该用箭头咬合。"}
+                ? "Done means before the step you are on. Four sibling sections should not bite with arrows."
+                : "完成态是「在当前之前」。四个同级栏目不该用箭头咬合。"}
             </li>
           </ol>
         </article>

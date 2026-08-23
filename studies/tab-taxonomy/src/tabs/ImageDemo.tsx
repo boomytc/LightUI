@@ -9,32 +9,44 @@ export function ImageDemo({ defaultTab }: { defaultTab?: string } = {}) {
   const allowed = new Set(ROOMS.map((r) => r.id));
   const initial = (defaultTab && allowed.has(defaultTab as RoomId) ? defaultTab : "living") as RoomId;
   const [tab, setTab] = useState<RoomId>(initial);
-  const room = ROOMS.find((r) => r.id === tab) ?? ROOMS[0];
-  const index = ROOMS.findIndex((r) => r.id === tab) + 1;
 
   return (
     <Window title={locale === "en" ? "Mori Studio · case" : "Mori Studio · 项目案例"} dark>
       <div className="relative min-h-[320px]">
-        <div className="tab-swap" key={tab}>
-          <RoomArt id={room.id} tone={room.tone} />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/20" />
-        <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5">
-          <div>
-            <p className="text-[11px] text-white/55">
-              {locale === "en" ? "Residence / Shanghai · 128㎡" : "住宅设计 / 上海 · 128㎡"}
-            </p>
-            <h3 className="mt-2 font-serif text-[1.6rem] leading-tight tracking-tight">{pick(room.title, locale)}</h3>
-            <p className="mt-0.5 text-[11px] uppercase tracking-[0.16em] text-white/45">{pick(room.kicker, locale)}</p>
-            <p className="mt-3 text-[13px] text-white/80">{pick(room.caption, locale)}</p>
-            <p className="mt-1 text-[12px] text-white/45">{pick(room.meta, locale)}</p>
-          </div>
-          <p className="text-[12px] tabular-nums text-white/45">0{index} / 04</p>
-        </div>
+        {ROOMS.map((item, i) => {
+          const on = item.id === tab;
+          return (
+            <div
+              key={item.id}
+              className="absolute inset-0 transition-opacity duration-300"
+              style={{ opacity: on ? 1 : 0, pointerEvents: on ? "auto" : "none" }}
+              aria-hidden={!on}
+            >
+              <RoomArt id={item.id} tone={item.tone} />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/20" />
+              <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5">
+                <div>
+                  <p className="text-[11px] text-white/55">
+                    {locale === "en" ? "Residence / Shanghai · 128㎡" : "住宅设计 / 上海 · 128㎡"}
+                  </p>
+                  <h3 className="mt-2 font-serif text-[1.6rem] leading-tight tracking-tight">
+                    {pick(item.title, locale)}
+                  </h3>
+                  <p className="mt-0.5 text-[11px] uppercase tracking-[0.16em] text-white/45">
+                    {pick(item.kicker, locale)}
+                  </p>
+                  <p className="mt-3 text-[13px] text-white/80">{pick(item.caption, locale)}</p>
+                  <p className="mt-1 text-[12px] text-white/45">{pick(item.meta, locale)}</p>
+                </div>
+                <p className="text-[12px] tabular-nums text-white/45">0{i + 1} / 04</p>
+              </div>
+            </div>
+          );
+        })}
         <div
           role="tablist"
           aria-label={locale === "en" ? "Rooms" : "空间"}
-          className="absolute inset-x-0 bottom-0 grid grid-cols-4 gap-2 p-3"
+          className="absolute inset-x-0 bottom-0 z-10 grid grid-cols-4 gap-2 p-3"
         >
           {ROOMS.map((item) => {
             const on = item.id === tab;

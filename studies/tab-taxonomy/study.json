@@ -6,15 +6,9 @@
   "eyebrowEn": "Selection · Switch",
   "summary": "一排标签只说了能切。先定选中态是短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。",
   "summaryEn": "A row of labels only says you can switch. First decide whether selection is a short bar, a joined panel, three-state steps, a sliding pill, stacked paper, or the thumbnail itself.",
-  "asks": "切页签时，选中态该怎么告诉你？",
-  "asksEn": "How should the selected tab tell you it is current?",
+  "asks": "这一排标签，选中态是哪种模型？",
+  "asksEn": "Which selection model is this tab row?",
   "links": [
-    {
-      "slug": "nav-taxonomy",
-      "rel": "after",
-      "when": "若它其实是站点入口而不是页内切内容",
-      "whenEn": "if this is site nav, not an in-page panel"
-    },
     {
       "slug": "nav-taxonomy",
       "rel": "contrast",

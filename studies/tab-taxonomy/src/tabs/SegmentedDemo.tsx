@@ -14,8 +14,24 @@ export function SegmentedDemo({ defaultTab }: { defaultTab?: string } = {}) {
   const { box, transition } = useBox(listRef, tab, "button");
   const slice = SALES[tab] ?? SALES.today;
 
+  const range =
+    tab === "month"
+      ? locale === "en"
+        ? "This month"
+        : "本月"
+      : tab === "year"
+        ? locale === "en"
+          ? "This year"
+          : "全年"
+        : locale === "en"
+          ? "Today"
+          : "今日";
   const stats = [
-    { n: slice.revenue, l: locale === "en" ? "Revenue" : "今日收入", d: slice.revenueDelta },
+    {
+      n: slice.revenue,
+      l: locale === "en" ? `${range} · revenue` : `${range}收入`,
+      d: slice.revenueDelta,
+    },
     { n: slice.orders, l: locale === "en" ? "Orders" : "支付订单", d: slice.ordersDelta },
     { n: slice.pending, l: locale === "en" ? "To ship" : "待发货", d: slice.pendingDelta },
     { n: slice.conv, l: locale === "en" ? "Conv." : "转化率", d: slice.convDelta },
@@ -86,7 +102,7 @@ export function SegmentedDemo({ defaultTab }: { defaultTab?: string } = {}) {
         <div className="mt-4 grid gap-4 sm:grid-cols-[1.4fr_0.8fr]">
           <div>
             <p className="text-[12px] text-fg-muted">
-              {locale === "en" ? "By hour" : "今日分时销售"}
+              {locale === "en" ? `${range} by hour` : `${range}分时销售`}
             </p>
             <div className="mt-2 flex h-24 items-end gap-1">
               {slice.bars.map((h, i) => (

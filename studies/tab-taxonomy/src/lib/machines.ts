@@ -4,10 +4,6 @@ export type StepKind = "done" | "current" | "todo";
 
 export type FolderLayer = { z: number; raised: boolean };
 
-export function clamp(n: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, n));
-}
-
 /** Indicator is the text span, not the equal-width cell. */
 export function textIndicator(
   listLeft: number,
@@ -29,15 +25,6 @@ export function indicatorTransition(prev: Box | null): "none" | "left, width" {
   return "left, width";
 }
 
-/** Equal-width pill inside one track. `gap` is the space between items. */
-export function equalPill(index: number, count: number, trackWidth: number, gap = 0): Box {
-  const n = Math.max(1, count);
-  const i = clamp(index, 0, n - 1);
-  const inner = Math.max(0, trackWidth - gap * (n - 1));
-  const width = inner / n;
-  return { left: i * (width + gap), width };
-}
-
 export function stepKind(index: number, current: number): StepKind {
   if (index < current) return "done";
   if (index === current) return "current";
@@ -55,12 +42,19 @@ export function cardPanelRadius(
   };
 }
 
-/** Selected folder sits above the stack; others keep their paper order. */
+/**
+ * Idle paper stays under the panel. The current tab sits above the panel
+ * so it can share the list fill without being clipped.
+ */
 export function folderLayer(index: number, selected: number, count: number): FolderLayer {
   return {
-    z: index === selected ? count + 1 : index + 1,
+    z: index === selected ? count + 2 : index + 1,
     raised: index === selected,
   };
+}
+
+export function folderPanelZ(count: number): number {
+  return count + 1;
 }
 
 export function bevelInset(height: number, degrees: number): number {

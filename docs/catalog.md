@@ -21,7 +21,7 @@ Do not keep a second registry.
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
 - **导航栏** (`nav-taxonomy`) — 这块叫导航的东西住在哪、怎么开？
-- **页签** (`tab-taxonomy`) — 切页签时，选中态该怎么告诉你？
+- **页签** (`tab-taxonomy`) — 这一排标签，选中态是哪种模型？
 - **扫光** (`glyph-sweep`) — 扫光该跟字走还是跟块走？
 - **内凹角** (`inverted-notch`) — 内凹角该挖孔还是缝回去？
 - **视线** (`look-quantize`) — 视线该连续转还是落到格子？
@@ -37,7 +37,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `nav-taxonomy` contrast `sidebar-taxonomy` — 汉堡抽屉不是隐藏式侧栏
 - `nav-taxonomy` after `tab-taxonomy` — 若它是页内切内容的一排标签
 - `nav-taxonomy` contrast `tab-taxonomy` — 顶栏去哪不是页里切面板
-- `tab-taxonomy` after `nav-taxonomy` — 若它其实是站点入口而不是页内切内容
 - `tab-taxonomy` contrast `nav-taxonomy` — 页签切的是这一页里的面板，不是顶栏去哪
 - `dropdown-taxonomy` after `intent-cascade` — 若改成 hover 跟手
 - `sidebar-taxonomy` after `intent-cascade` — 若多级改成 hover 跟手

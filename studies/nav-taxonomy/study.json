@@ -43,7 +43,7 @@
       "slug": "tab-taxonomy",
       "rel": "contrast",
       "when": "顶栏去哪不是页里切面板",
-      "whenEn": "site nav is not an in-page panel switch"
+      "whenEn": "going somewhere in the top bar is not switching a panel on this page"
     }
   ],
   "status": "active",
