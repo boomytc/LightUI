@@ -1,0 +1,29 @@
+{
+  "slug": "hero-taxonomy",
+  "title": "首屏",
+  "titleEn": "Hero",
+  "eyebrow": "First glance · Job",
+  "eyebrowEn": "First glance · Job",
+  "summary": "「做个高级首屏」只说了要花哨。先定第一眼回答什么：能解决什么、你是谁、为什么现在、卖什么、发生了什么、能学到什么、能帮我做什么，还是谁在这里。",
+  "summaryEn": "“Make a fancy hero” only says it should look expensive. First decide what the first glance must answer: what it solves, who you are, why now, what is for sale, what happened, what you will learn, what it can do, or who is here.",
+  "asks": "打开第一眼要回答什么？",
+  "asksEn": "What must the first glance answer?",
+  "links": [
+    {
+      "slug": "layout-taxonomy",
+      "rel": "after",
+      "when": "若骨架已经是落地页",
+      "whenEn": "if the skeleton is already a landing page"
+    },
+    {
+      "slug": "login-taxonomy",
+      "rel": "contrast",
+      "when": "首屏不是登录卡",
+      "whenEn": "the first fold is not a login card"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["hero", "first-fold", "taxonomy"]
+}
