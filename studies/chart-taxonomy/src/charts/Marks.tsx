@@ -241,7 +241,7 @@ function PieMark({ locale }: { locale: Locale }) {
 
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-4">
-      <div className="chart-frame mx-auto w-[184px] shrink-0">
+      <div className="chart-pie mx-auto shrink-0">
         <svg
           viewBox="0 0 180 180"
           role="img"
@@ -263,14 +263,14 @@ function PieMark({ locale }: { locale: Locale }) {
           </text>
         </svg>
       </div>
-      <ul className="min-w-0 flex-1 space-y-1.5">
+      <ul className="min-w-0 space-y-1.5">
         {PIE_DATA.map((d, i) => (
           <li key={d.name.zh} className="flex items-center gap-2 text-[12px]">
             <span
-              className="size-2.5 shrink-0 rounded-sm"
+              className="chart-swatch shrink-0 rounded-sm"
               style={{ background: CHART_COLORS[i % CHART_COLORS.length] }}
             />
-            <span className="min-w-0 flex-1 truncate text-fg">{pick(d.name, locale)}</span>
+            <span className="min-w-0 truncate text-fg">{pick(d.name, locale)}</span>
             <span className="tabular-nums text-fg-subtle">{d.value}%</span>
           </li>
         ))}

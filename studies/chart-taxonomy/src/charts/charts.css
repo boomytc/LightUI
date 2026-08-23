@@ -4,6 +4,17 @@
   overflow: hidden;
 }
 
+.chart-pie {
+  width: 184px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.chart-swatch {
+  width: 10px;
+  height: 10px;
+}
+
 .chart-svg {
   display: block;
   width: 100%;
