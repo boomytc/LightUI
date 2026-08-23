@@ -72,6 +72,14 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("folder", "req", "folder-req.png"),
         ("image", "living", "image-living.png"),
     ],
+    "control-taxonomy": [
+        ("text-field", "error", "text-field-error.png"),
+        ("textarea", "filled", "textarea-filled.png"),
+        ("select", "open", "select-open.png"),
+        ("combobox", "open", "combobox-open.png"),
+        ("radio", "express", "radio-express.png"),
+        ("checkbox", "max", "checkbox-max.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:

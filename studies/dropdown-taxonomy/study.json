@@ -14,10 +14,16 @@
       "rel": "after",
       "when": "若改成 hover 跟手",
       "whenEn": "if it became hover-tracking"
+    },
+    {
+      "slug": "control-taxonomy",
+      "rel": "contrast",
+      "when": "往下展开的提交模型，不是先问填还是选",
+      "whenEn": "a downward panel’s commit model is not fill-versus-pick"
     }
   ],
   "status": "active",
   "created": "2026-08-15",
-  "updated": "2026-08-15",
+  "updated": "2026-08-23",
   "tags": ["overlay", "select", "taxonomy"]
 }

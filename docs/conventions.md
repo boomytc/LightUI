@@ -23,7 +23,7 @@ The first question is not only “which widget machine is this.” It may be:
 
 | Kind of question | What the user hits | Example |
 | --- | --- | --- |
-| Machine / taxonomy | Looks the same, commits / occupies / opens differently | 下拉框、导航栏、侧边栏 |
+| Machine / taxonomy | Looks the same, commits / occupies / opens differently | 下拉框、导航栏、侧边栏、页签、控件 |
 | Construction | Naive assembly shows a seam | 内凹角：挖孔还是缝回去 |
 | Motion-follow | The motion is tied to the wrong property or unit | 扫光跟字走还是跟块走 |
 | Continuous → discrete | Pointer / scroll maps onto the wrong grain | 视线落到格子；斜向穿越该不该换项 |
@@ -40,6 +40,7 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another text shine | Glyph-follow in `glyph-sweep` | A box-level sheen → new study |
 | Another look-at-pointer face | Quantize in `look-quantize` | A mascot / game product → leave it out |
 | Another in-page tab row | Selection model in `tab-taxonomy` | Site nav placement → `nav-taxonomy` |
+| Another form field | Fill vs pick in `control-taxonomy` | What a downward panel **commits** → `dropdown-taxonomy` |
 
 Do not merge these into one encyclopedia because the fixtures look alike.
 The graph keeps the questions apart. Isolated nodes are allowed; only add
@@ -85,8 +86,9 @@ idea or playground changes. Set `asks` (the question) and `links`
 - Bind playgrounds to `127.0.0.1` and give each Vite study a unique port.
   Lab is `5173`. Taken: `5174` intent-cascade, `5175` dropdown-taxonomy,
   `5176` sidebar-taxonomy, `5177` nav-taxonomy, `5178` inverted-notch,
-  `5179` glyph-sweep, `5180` look-quantize, `5181` tab-taxonomy.
-  Next free: `5182`.
+  `5179` glyph-sweep, `5180` look-quantize, `5181` tab-taxonomy,
+  `5182` control-taxonomy.
+  Next free: `5183`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

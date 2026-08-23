@@ -45,7 +45,7 @@ Adding a study does not require editing a registry.
 Do not keep a neighbor census in `idea.md` (“和另外 N 则”). The lab assembles the graph from `asks` + `links`. An edge names the next question, not a headcount.
 
 Same question, new skin → add a kind. New question → new study, then `links`.
-Do not fold nav / sidebar / dropdown / notch / sweep / look / tab into one catalog
+Do not fold nav / sidebar / dropdown / notch / sweep / look / tab / control into one catalog
 because the fixtures look alike.
 
 A study’s first question may be a machine (taxonomy), a construction
