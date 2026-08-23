@@ -135,7 +135,7 @@ export function KindDemo({ id, defaultOpen }: { id: KindId; defaultOpen?: boolea
     case "multilevel":
       return <MultiLevelDemo />;
     case "collapsible":
-      return <CollapsibleDemo />;
+      return <CollapsibleDemo defaultOpen={defaultOpen} />;
     case "offcanvas":
       return <OffCanvasDemo defaultOpen={defaultOpen} />;
   }

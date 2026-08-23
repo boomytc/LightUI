@@ -135,15 +135,15 @@ export function MultiLevelDemo() {
           <p className="text-[12px] text-fg-subtle">
             {locale === "en" ? "Parent files. Child is the page." : "父级归类。子级才是页。"}
           </p>
-          <h3 className="mt-2 text-[1.2rem] font-semibold tracking-tight">{currentLabel}</h3>
+          <h3 className="mt-2 truncate text-[1.2rem] font-semibold tracking-tight">{currentLabel}</h3>
           <div className="mt-4 space-y-2">
             {["LMP-226", "BAG-114", "TBL-052"].map((sku) => (
               <div
                 key={sku}
-                className="flex items-center justify-between rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-[13px]"
+                className="flex min-w-0 items-center justify-between gap-2 rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-[13px]"
               >
-                <span className="font-mono text-[12px]">{sku}</span>
-                <span className="text-fg-muted">{locale === "en" ? "In stock" : "在库"}</span>
+                <span className="min-w-0 truncate font-mono text-[12px]">{sku}</span>
+                <span className="shrink-0 text-fg-muted">{locale === "en" ? "In stock" : "在库"}</span>
               </div>
             ))}
           </div>

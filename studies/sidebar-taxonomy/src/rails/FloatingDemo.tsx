@@ -66,19 +66,18 @@ export function FloatingDemo() {
         </aside>
 
         <section className="min-w-0 flex-1 rounded-xl bg-surface px-4 py-4">
-          <p className="text-[12px] text-fg-subtle">
+          <p className="truncate text-[12px] text-fg-subtle">
             {locale === "en" ? "Site redesign / " : "网站改版 / "}
             {pick(current.label, locale)}
           </p>
-          <h3 className="mt-2 text-[1.2rem] font-semibold tracking-tight">{pick(current.label, locale)}</h3>
+          <h3 className="mt-2 truncate text-[1.2rem] font-semibold tracking-tight">
+            {pick(current.label, locale)}
+          </h3>
           <ul className="mt-4 space-y-0">
             {ROWS.map((row) => (
-              <li
-                key={row[0].zh}
-                className="flex items-center justify-between gap-3 border-t border-border py-2.5 text-[13px]"
-              >
-                <span>{pick(row[0], locale)}</span>
-                <span className="text-fg-muted">{pick(row[1], locale)}</span>
+              <li key={row[0].zh} className="min-w-0 border-t border-border py-2.5 text-[13px]">
+                <p className="truncate">{pick(row[0], locale)}</p>
+                <p className="mt-0.5 truncate text-fg-muted">{pick(row[1], locale)}</p>
               </li>
             ))}
           </ul>

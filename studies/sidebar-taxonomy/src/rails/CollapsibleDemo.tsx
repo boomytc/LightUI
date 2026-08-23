@@ -22,9 +22,13 @@ const KPIS = [
 
 const TREND = [18, 22, 20, 28, 26, 34, 31, 38, 42];
 
-export function CollapsibleDemo() {
+export function CollapsibleDemo({ defaultOpen }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(() => {
+    if (defaultOpen !== undefined) return defaultOpen;
+    if (typeof window === "undefined") return true;
+    return !window.matchMedia("(max-width: 480px)").matches;
+  });
   const [page, setPage] = useState<(typeof NAV)[number]["id"]>("traffic");
   const current = NAV.find((item) => item.id === page) ?? NAV[2];
   const width = occupyPx("collapsible", open);
@@ -119,10 +123,10 @@ export function CollapsibleDemo() {
           <h3 className="mt-1 text-[1.2rem] font-semibold tracking-tight">{pick(current.label, locale)}</h3>
           <div className="mt-3 grid grid-cols-2 gap-2">
             {KPIS.map((kpi) => (
-              <div key={kpi.label.zh} className="rounded-lg border border-border bg-surface px-3 py-2.5">
-                <p className="text-[11px] text-fg-subtle">{pick(kpi.label, locale)}</p>
-                <p className="mt-0.5 text-[1.05rem] font-semibold tabular-nums">{kpi.value}</p>
-                <p className="text-[11px] text-accent tabular-nums">{kpi.delta}</p>
+              <div key={kpi.label.zh} className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5">
+                <p className="truncate text-[11px] text-fg-subtle">{pick(kpi.label, locale)}</p>
+                <p className="mt-0.5 truncate text-[1.05rem] font-semibold tabular-nums">{kpi.value}</p>
+                <p className="truncate text-[11px] text-accent tabular-nums">{kpi.delta}</p>
               </div>
             ))}
           </div>
