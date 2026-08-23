@@ -1,0 +1,29 @@
+{
+  "slug": "login-taxonomy",
+  "title": "登录",
+  "titleEn": "Login",
+  "eyebrow": "Staging · Gate",
+  "eyebrowEn": "Staging · Gate",
+  "summary": "「做个登录页」只说了有表单。先定是居中卡片、左右分栏、沉浸背景、角色入口，还是分步。",
+  "summaryEn": "“Make a login page” only says there is a form. First pick a centered card, a split, immersive, a role gate, or steps.",
+  "asks": "登录是一张卡、分栏、沉浸、角色入口，还是分步？",
+  "asksEn": "Is login a card, a split, immersive, a role gate, or steps?",
+  "links": [
+    {
+      "slug": "layout-taxonomy",
+      "rel": "contrast",
+      "when": "登录卡怎么摆不是整页骨架",
+      "whenEn": "how the login card sits is not the page skeleton"
+    },
+    {
+      "slug": "hero-taxonomy",
+      "rel": "contrast",
+      "when": "登录不是卖点首屏",
+      "whenEn": "login is not a selling hero"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["login", "staging", "taxonomy"]
+}
