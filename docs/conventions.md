@@ -39,6 +39,7 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another inverted corner | Cut vs stitch in `inverted-notch` | A different hole (not a card chip) → new study |
 | Another text shine | Glyph-follow in `glyph-sweep` | A box-level sheen → new study |
 | Another look-at-pointer face | Quantize in `look-quantize` | A mascot / game product → leave it out |
+| Another in-page tab row | Selection model in `tab-taxonomy` | Site nav placement → `nav-taxonomy` |
 
 Do not merge these into one encyclopedia because the fixtures look alike.
 The graph keeps the questions apart. Isolated nodes are allowed; only add
@@ -84,7 +85,8 @@ idea or playground changes. Set `asks` (the question) and `links`
 - Bind playgrounds to `127.0.0.1` and give each Vite study a unique port.
   Lab is `5173`. Taken: `5174` intent-cascade, `5175` dropdown-taxonomy,
   `5176` sidebar-taxonomy, `5177` nav-taxonomy, `5178` inverted-notch,
-  `5179` glyph-sweep, `5180` look-quantize. Next free: `5181`.
+  `5179` glyph-sweep, `5180` look-quantize, `5181` tab-taxonomy.
+  Next free: `5182`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

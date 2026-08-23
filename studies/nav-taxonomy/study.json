@@ -32,10 +32,22 @@
       "rel": "contrast",
       "when": "汉堡抽屉不是隐藏式侧栏",
       "whenEn": "a hamburger drawer is not an off-canvas rail"
+    },
+    {
+      "slug": "tab-taxonomy",
+      "rel": "after",
+      "when": "若它是页内切内容的一排标签",
+      "whenEn": "if this is an in-page tab row"
+    },
+    {
+      "slug": "tab-taxonomy",
+      "rel": "contrast",
+      "when": "顶栏去哪不是页里切面板",
+      "whenEn": "site nav is not an in-page panel switch"
     }
   ],
   "status": "active",
   "created": "2026-08-15",
-  "updated": "2026-08-15",
+  "updated": "2026-08-23",
   "tags": ["nav", "layout", "taxonomy"]
 }

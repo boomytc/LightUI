@@ -64,6 +64,14 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("up", "locked", "up.png"),
         ("blink", "locked", "blink.png"),
     ],
+    "tab-taxonomy": [
+        ("linear", "files", "linear-files.png"),
+        ("card", "invites", "card-invites.png"),
+        ("chevron", "pay", "chevron-pay.png"),
+        ("segmented", "today", "segmented-today.png"),
+        ("folder", "req", "folder-req.png"),
+        ("image", "living", "image-living.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:
