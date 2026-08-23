@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@import "../../../design/tokens.css";
+@import "../../../design/base.css";
+@import "./tabs.css";
+
+.tab-swap {
+  animation: tab-fade 220ms ease;
+}
+
+@keyframes tab-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

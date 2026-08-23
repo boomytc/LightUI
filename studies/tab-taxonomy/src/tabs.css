@@ -1,0 +1,39 @@
+.tab-chevron {
+  --notch: 14px;
+}
+
+.tab-chevron-item {
+  position: relative;
+  margin-left: calc(var(--notch) * -0.72);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--notch)) 0,
+    100% 50%,
+    calc(100% - var(--notch)) 100%,
+    0 100%,
+    var(--notch) 50%
+  );
+}
+
+.tab-chevron-item:first-child {
+  margin-left: 0;
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--notch)) 0,
+    100% 50%,
+    calc(100% - var(--notch)) 100%,
+    0 100%
+  );
+}
+
+.tab-chevron-item:last-child {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, var(--notch) 50%);
+}
+
+.tab-folder {
+  --bevel: 18px;
+}
+
+.tab-folder-item {
+  clip-path: polygon(0 0, calc(100% - var(--bevel)) 0, 100% 100%, 0 100%);
+}
