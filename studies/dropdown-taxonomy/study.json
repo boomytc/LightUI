@@ -20,6 +20,12 @@
       "rel": "contrast",
       "when": "往下展开的提交模型，不是先问填还是选",
       "whenEn": "a downward panel’s commit model is not fill-versus-pick"
+    },
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "往下提交一个值不是打断式浮层",
+      "whenEn": "committing a downward value is not an interrupting overlay"
     }
   ],
   "status": "active",

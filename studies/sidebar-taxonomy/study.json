@@ -14,10 +14,16 @@
       "rel": "after",
       "when": "若多级改成 hover 跟手",
       "whenEn": "if the tree became hover-tracking"
+    },
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "隐藏式侧栏不是右侧内容抽屉",
+      "whenEn": "an off-canvas rail is not a right-hand content drawer"
     }
   ],
   "status": "active",
   "created": "2026-08-15",
-  "updated": "2026-08-15",
+  "updated": "2026-08-23",
   "tags": ["sidebar", "layout", "taxonomy"]
 }

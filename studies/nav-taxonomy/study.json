@@ -44,6 +44,12 @@
       "rel": "contrast",
       "when": "顶栏去哪不是页里切面板",
       "whenEn": "going somewhere in the top bar is not switching a panel on this page"
+    },
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "汉堡抽屉不是这一页的内容抽屉",
+      "whenEn": "a hamburger drawer is not a content drawer on this page"
     }
   ],
   "status": "active",

@@ -41,6 +41,10 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another look-at-pointer face | Quantize in `look-quantize` | A mascot / game product → leave it out |
 | Another in-page tab row | Selection model in `tab-taxonomy` | Site nav placement → `nav-taxonomy` |
 | Another form field | Fill vs pick in `control-taxonomy` | What a downward panel **commits** → `dropdown-taxonomy` |
+| Another centered dialog | Interrupt / attach in `overlay-taxonomy` | Small-screen hamburger → `nav-taxonomy`; off-canvas rail → `sidebar-taxonomy` |
+| Another toast | Notice weight in `notify-taxonomy` | A blocking dialog → `overlay-taxonomy` |
+| Another error message | When to speak in `validation-taxonomy` | Fill vs pick → `control-taxonomy` |
+| Another spinner | Measurable or not in `progress-taxonomy` | A result toast → `notify-taxonomy` |
 
 Do not merge these into one encyclopedia because the fixtures look alike.
 The graph keeps the questions apart. Isolated nodes are allowed; only add
@@ -87,8 +91,9 @@ idea or playground changes. Set `asks` (the question) and `links`
   Lab is `5173`. Taken: `5174` intent-cascade, `5175` dropdown-taxonomy,
   `5176` sidebar-taxonomy, `5177` nav-taxonomy, `5178` inverted-notch,
   `5179` glyph-sweep, `5180` look-quantize, `5181` tab-taxonomy,
-  `5182` control-taxonomy.
-  Next free: `5183`.
+  `5182` control-taxonomy, `5183` overlay-taxonomy, `5184` notify-taxonomy,
+  `5185` validation-taxonomy, `5186` progress-taxonomy.
+  Next free: `5187`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

@@ -20,6 +20,18 @@
       "rel": "contrast",
       "when": "可见的单选和复选不是下拉面板",
       "whenEn": "visible radios and checkboxes are not a downward panel"
+    },
+    {
+      "slug": "validation-taxonomy",
+      "rel": "after",
+      "when": "若格子已经定了，下一步是错误何时说",
+      "whenEn": "if the field is named, the next question is when the error speaks"
+    },
+    {
+      "slug": "validation-taxonomy",
+      "rel": "contrast",
+      "when": "填还是选不是何时报错",
+      "whenEn": "fill versus pick is not when the error speaks"
     }
   ],
   "status": "active",

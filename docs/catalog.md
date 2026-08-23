@@ -10,12 +10,16 @@ Do not keep a second registry.
 | [control-taxonomy](../studies/control-taxonomy/) | 「做个输入框」只说了能填。先定是自己填一行或一段，还是从答案里选：可见比较、短列表、边搜边选，或同时多个。 | active | 2026-08-23 | 2026-08-23 |
 | [dropdown-taxonomy](../studies/dropdown-taxonomy/) | 往下展开只是外观。先定提交的是一个值、一组、一条路径，还是一次动作。 | active | 2026-08-15 | 2026-08-23 |
 | [nav-taxonomy](../studies/nav-taxonomy/) | 一排链接只说了有入口。先定住在哪、怎么开、滚的时候干什么。 | active | 2026-08-15 | 2026-08-23 |
+| [notify-taxonomy](../studies/notify-taxonomy/) | 报一条消息只说了要出声。先定打断到哪一档：瞄一眼、自动消失、还能撤销、留档、还是必须处理。 | active | 2026-08-23 | 2026-08-23 |
+| [overlay-taxonomy](../studies/overlay-taxonomy/) | 浮在页面上只是外观。先定打不打断当前任务，以及是否贴着触发点。 | active | 2026-08-23 | 2026-08-23 |
+| [progress-taxonomy](../studies/progress-taxonomy/) | 转圈只说了在等。先定进度能不能算：能算就走到 100 停住；不能算就循环，不要假百分比。 | active | 2026-08-23 | 2026-08-23 |
+| [sidebar-taxonomy](../studies/sidebar-taxonomy/) | 靠左只是外观。先定占不占位，展开改的是宽度还是图层。 | active | 2026-08-15 | 2026-08-23 |
 | [tab-taxonomy](../studies/tab-taxonomy/) | 一排标签只说了能切。先定选中态是短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。 | active | 2026-08-23 | 2026-08-23 |
+| [validation-taxonomy](../studies/validation-taxonomy/) | 「做个表单校验」只说了会报错。先定是失焦就说、这一栏立刻说，还是提交时一次说完。 | active | 2026-08-23 | 2026-08-23 |
 | [glyph-sweep](../studies/glyph-sweep/) | 扫光跟字形走。光带宽度用 ch，时长等于字数乘每字秒数，不要去扫整块盒子。 | active | 2026-08-21 | 2026-08-21 |
 | [inverted-notch](../studies/inverted-notch/) | 内凹角该在父级挖孔。同色补丁缝回去，背景一变缝就露馅。 | active | 2026-08-21 | 2026-08-21 |
 | [look-quantize](../studies/look-quantize/) | 指针偏了，视线落到图集格子。半径里平滑，格子外夹紧，眨眼走另一行。 | active | 2026-08-21 | 2026-08-21 |
 | [intent-cascade](../studies/intent-cascade/) | 斜着滑进子菜单时，途经的项不该抢走展开。 | active | 2026-08-15 | 2026-08-15 |
-| [sidebar-taxonomy](../studies/sidebar-taxonomy/) | 靠左只是外观。先定占不占位，展开改的是宽度还是图层。 | active | 2026-08-15 | 2026-08-15 |
 
 ## Questions
 
@@ -24,27 +28,47 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **控件** (`control-taxonomy`) — 这一格是自己填还是从答案里选？
 - **下拉框** (`dropdown-taxonomy`) — 往下展开的面板提交什么？
 - **导航栏** (`nav-taxonomy`) — 这块叫导航的东西住在哪、怎么开？
+- **提示** (`notify-taxonomy`) — 这条提示该打断到哪一档？
+- **浮层** (`overlay-taxonomy`) — 这块浮层打不打断、贴不贴触发点？
+- **进度** (`progress-taxonomy`) — 进度能不能算？
+- **侧边栏** (`sidebar-taxonomy`) — 靠左那一块占不占位、怎么让路？
 - **页签** (`tab-taxonomy`) — 这一排标签，选中态是哪种模型？
+- **校验** (`validation-taxonomy`) — 错误该在什么时候说？
 - **扫光** (`glyph-sweep`) — 扫光该跟字走还是跟块走？
 - **内凹角** (`inverted-notch`) — 内凹角该挖孔还是缝回去？
 - **视线** (`look-quantize`) — 视线该连续转还是落到格子？
 - **多级菜单** (`intent-cascade`) — 斜向穿越该不该换项？
-- **侧边栏** (`sidebar-taxonomy`) — 靠左那一块占不占位、怎么让路？
 
 ## Edges
 
 - `control-taxonomy` after `dropdown-taxonomy` — 若答案是往下展开的固定短列表
 - `control-taxonomy` contrast `dropdown-taxonomy` — 可见的单选和复选不是下拉面板
+- `control-taxonomy` after `validation-taxonomy` — 若格子已经定了，下一步是错误何时说
+- `control-taxonomy` contrast `validation-taxonomy` — 填还是选不是何时报错
 - `dropdown-taxonomy` after `intent-cascade` — 若改成 hover 跟手
 - `dropdown-taxonomy` contrast `control-taxonomy` — 往下展开的提交模型，不是先问填还是选
+- `dropdown-taxonomy` contrast `overlay-taxonomy` — 往下提交一个值不是打断式浮层
 - `nav-taxonomy` after `dropdown-taxonomy` — 若它是往下展开的面板
 - `nav-taxonomy` after `sidebar-taxonomy` — 若它是靠左的一栏
 - `nav-taxonomy` contrast `dropdown-taxonomy` — 站点栏目不是表单下拉
 - `nav-taxonomy` contrast `sidebar-taxonomy` — 汉堡抽屉不是隐藏式侧栏
 - `nav-taxonomy` after `tab-taxonomy` — 若它是页内切内容的一排标签
 - `nav-taxonomy` contrast `tab-taxonomy` — 顶栏去哪不是页里切面板
-- `tab-taxonomy` contrast `nav-taxonomy` — 页签切的是这一页里的面板，不是顶栏去哪
+- `nav-taxonomy` contrast `overlay-taxonomy` — 汉堡抽屉不是这一页的内容抽屉
+- `notify-taxonomy` after `overlay-taxonomy` — 若必须先处理才能继续
+- `notify-taxonomy` contrast `overlay-taxonomy` — 提示不打断当前任务，弹窗才打断
+- `notify-taxonomy` contrast `progress-taxonomy` — 结果提示不是进度
+- `overlay-taxonomy` after `dropdown-taxonomy` — 若它是往下展开且提交一个值
+- `overlay-taxonomy` contrast `nav-taxonomy` — 内容抽屉不是汉堡主导航
+- `overlay-taxonomy` contrast `sidebar-taxonomy` — 右侧抽屉不是隐藏式侧栏
+- `overlay-taxonomy` contrast `notify-taxonomy` — 必须先处理的弹窗不是一条提示
+- `progress-taxonomy` contrast `notify-taxonomy` — 进度不是一条 toast
 - `sidebar-taxonomy` after `intent-cascade` — 若多级改成 hover 跟手
+- `sidebar-taxonomy` contrast `overlay-taxonomy` — 隐藏式侧栏不是右侧内容抽屉
+- `tab-taxonomy` contrast `nav-taxonomy` — 页签切的是这一页里的面板，不是顶栏去哪
+- `validation-taxonomy` contrast `control-taxonomy` — 何时报错不是填还是选
+- `validation-taxonomy` contrast `notify-taxonomy` — 行内报错不是一条 toast
+- `validation-taxonomy` contrast `overlay-taxonomy` — 提交一次标出不是 modal 确认
 
 ## How to read a row
 
