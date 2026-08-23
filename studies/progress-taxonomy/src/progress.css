@@ -1,0 +1,81 @@
+.meter-spin {
+  transform-origin: center;
+  animation: meter-spin-arc 0.95s linear infinite;
+}
+
+.meter-radar {
+  transform-origin: center;
+  animation: meter-radar 2.4s linear infinite;
+}
+
+.meter-dot {
+  animation: meter-dot 1.15s ease-in-out infinite;
+}
+
+.meter-eq {
+  transform-origin: center;
+  animation: meter-eq 0.9s ease-in-out infinite;
+}
+
+.meter-wave {
+  transform-origin: left center;
+  animation: meter-wave-x 1.8s linear infinite;
+}
+
+.meter-wave-slow {
+  transform-origin: left center;
+  animation: meter-wave-x 2.6s linear infinite reverse;
+}
+
+@keyframes meter-spin-arc {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes meter-radar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes meter-dot {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-9px);
+  }
+}
+
+@keyframes meter-eq {
+  0%,
+  100% {
+    transform: scaleY(0.38);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes meter-wave-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meter-spin,
+  .meter-radar,
+  .meter-dot,
+  .meter-eq,
+  .meter-wave,
+  .meter-wave-slow {
+    animation: none;
+  }
+}

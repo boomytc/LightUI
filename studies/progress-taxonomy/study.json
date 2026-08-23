@@ -1,0 +1,23 @@
+{
+  "slug": "progress-taxonomy",
+  "title": "进度",
+  "titleEn": "Progress",
+  "eyebrow": "Determinate · Loop",
+  "eyebrowEn": "Determinate · Loop",
+  "summary": "转圈只说了在等。先定进度能不能算：能算就走到 100 停住；不能算就循环，不要假百分比。",
+  "summaryEn": "A spinner only says you are waiting. First decide whether progress can be measured: if it can, walk to 100 and stop; if it cannot, loop — never a fake percent.",
+  "asks": "进度能不能算？",
+  "asksEn": "Can this progress be measured?",
+  "links": [
+    {
+      "slug": "notify-taxonomy",
+      "rel": "contrast",
+      "when": "进度不是一条 toast",
+      "whenEn": "progress is not a toast"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["progress", "motion", "taxonomy"]
+}
