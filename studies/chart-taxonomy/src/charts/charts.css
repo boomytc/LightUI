@@ -1,0 +1,17 @@
+.chart-frame {
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.chart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.chart-funnel-band {
+  clip-path: polygon(0 0, 100% 0, 92% 100%, 8% 100%);
+}

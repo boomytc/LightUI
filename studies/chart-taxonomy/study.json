@@ -1,0 +1,16 @@
+{
+  "slug": "chart-taxonomy",
+  "title": "图表",
+  "titleEn": "Chart",
+  "eyebrow": "Intent · Mark",
+  "eyebrowEn": "Intent · Mark",
+  "summary": "「做个图表」只说了有数。先定要看变化、大小、占比、关系、流程还是能力，再选痕迹。",
+  "summaryEn": "“Make a chart” only says there are numbers. First decide whether this data is for change, size, share, relation, flow, or ability — then pick the mark.",
+  "asks": "这组数据要看什么？",
+  "asksEn": "What is this data for seeing?",
+  "links": [],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["chart", "data", "taxonomy"]
+}
