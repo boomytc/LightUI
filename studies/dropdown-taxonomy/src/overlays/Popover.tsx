@@ -20,6 +20,15 @@ type Props = {
   className?: string;
 };
 
+const HIDDEN: CSSProperties = {
+  position: "fixed",
+  visibility: "hidden",
+  left: 0,
+  top: 0,
+  zIndex: 50,
+  width: "max-content",
+};
+
 export function Popover({
   open,
   onClose,
@@ -30,50 +39,56 @@ export function Popover({
   className,
 }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
-  const [style, setStyle] = useState<CSSProperties>({});
+  const [style, setStyle] = useState<CSSProperties>(HIDDEN);
 
   useLayoutEffect(() => {
-    if (!open) return;
-    const update = () => {
+    if (!open) {
+      setStyle(HIDDEN);
+      return;
+    }
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    const place = () => {
       const trigger = triggerRef.current;
-      const panel = panelRef.current;
       if (!trigger) return;
       const rect = trigger.getBoundingClientRect();
       const pad = 8;
       const avail = Math.max(160, window.innerWidth - pad * 2);
-      const minW = matchWidth ? rect.width : 12 * 16;
-      const next: CSSProperties = {
-        position: "fixed",
-        zIndex: 50,
-        minWidth: Math.min(minW, avail),
-        maxWidth: avail,
-      };
-      if (matchWidth) next.width = Math.min(rect.width, avail);
-      const width = matchWidth
-        ? Math.min(rect.width, avail)
-        : Math.min(panel?.offsetWidth || minW, avail);
-      let left =
-        align === "end" ? rect.right - width : rect.left;
+      // Size to the trigger or to content. Never measure an unpositioned
+      // block on body — that reads as the viewport and clamps left to 8px.
+      panel.style.width = matchWidth ? `${Math.min(rect.width, avail)}px` : "max-content";
+      panel.style.maxWidth = `${avail}px`;
+      panel.style.minWidth = matchWidth ? `${Math.min(rect.width, avail)}px` : "";
+      panel.style.position = "fixed";
+      const width = Math.min(panel.getBoundingClientRect().width || 12 * 16, avail);
+      let left = align === "end" ? rect.right - width : rect.left;
       if (left + width > window.innerWidth - pad) {
         left = Math.max(pad, window.innerWidth - pad - width);
       }
       if (left < pad) left = pad;
-      next.left = left;
-      const height = panel?.offsetHeight || 0;
-      let top = rect.bottom + 6;
-      if (height && top + height > window.innerHeight - pad) {
-        const above = rect.top - 6 - height;
-        if (above >= pad) top = above;
-      }
-      next.top = top;
-      setStyle(next);
+      setStyle({
+        position: "fixed",
+        zIndex: 50,
+        visibility: "visible",
+        left,
+        // Stay under the field. Flipping up covers the spec card on the work page.
+        top: rect.bottom + 6,
+        width: matchWidth ? Math.min(rect.width, avail) : "max-content",
+        minWidth: matchWidth ? Math.min(rect.width, avail) : undefined,
+        maxWidth: avail,
+      });
     };
-    update();
-    window.addEventListener("resize", update);
-    window.addEventListener("scroll", update, true);
+
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(panel);
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
     return () => {
-      window.removeEventListener("resize", update);
-      window.removeEventListener("scroll", update, true);
+      ro.disconnect();
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
     };
   }, [align, matchWidth, open, triggerRef]);
 
