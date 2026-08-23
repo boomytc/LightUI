@@ -1,0 +1,78 @@
+.pending-window {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 390px;
+  overflow-x: hidden;
+}
+
+.pending-window-body {
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.pending-bone {
+  background-color: color-mix(in oklab, var(--color-fg) 8%, var(--color-surface-2));
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--color-surface) 78%, transparent) 48%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  background-position: 100% 0;
+  animation: pending-shimmer 1.35s linear infinite;
+}
+
+.pending-bone[data-static="true"] {
+  animation: none;
+  background-image: none;
+}
+
+@keyframes pending-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -120% 0;
+  }
+}
+
+.pending-fade-in {
+  animation: pending-fade-in 180ms ease;
+}
+
+.pending-fade-out {
+  animation: pending-fade-out 180ms ease forwards;
+}
+
+@keyframes pending-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pending-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pending-bone {
+    animation: none;
+    background-image: none;
+  }
+
+  .pending-fade-in,
+  .pending-fade-out {
+    animation: none;
+  }
+}

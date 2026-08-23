@@ -1,0 +1,29 @@
+{
+  "slug": "pending-taxonomy",
+  "title": "等待",
+  "titleEn": "Pending",
+  "eyebrow": "Skeleton · Empty",
+  "eyebrowEn": "Skeleton · Empty",
+  "summary": "内容还没到，屏幕上该留什么？骨架占布局位子；空状态给人话和下一步。不要转圈，不要「暂无数据」。",
+  "summaryEn": "While content is missing, what should occupy the screen? A skeleton holds layout; an empty state offers a human line and a next step. Not a spinner. Not “no data”.",
+  "asks": "内容还没到，屏幕上该留什么？",
+  "asksEn": "While content is missing, what should occupy the screen?",
+  "links": [
+    {
+      "slug": "progress-taxonomy",
+      "rel": "contrast",
+      "when": "骨架不是转圈进度",
+      "whenEn": "a skeleton is not a looping spinner"
+    },
+    {
+      "slug": "notify-taxonomy",
+      "rel": "contrast",
+      "when": "空状态不是一条提示",
+      "whenEn": "an empty state is not a notice"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["pending", "skeleton", "empty", "taxonomy"]
+}
