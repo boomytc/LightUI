@@ -1,0 +1,35 @@
+{
+  "slug": "validation-taxonomy",
+  "title": "校验",
+  "titleEn": "Validation",
+  "eyebrow": "Timing · Error",
+  "eyebrowEn": "Timing · Error",
+  "summary": "「做个表单校验」只说了会报错。先定是失焦就说、这一栏立刻说，还是提交时一次说完。",
+  "summaryEn": "“Add form validation” only says an error will appear. First decide whether it speaks on blur, in that column at once, or all at once on submit.",
+  "asks": "错误该在什么时候说？",
+  "asksEn": "When should the error be spoken?",
+  "links": [
+    {
+      "slug": "control-taxonomy",
+      "rel": "contrast",
+      "when": "何时报错不是填还是选",
+      "whenEn": "when to speak is not fill versus pick"
+    },
+    {
+      "slug": "notify-taxonomy",
+      "rel": "contrast",
+      "when": "行内报错不是一条 toast",
+      "whenEn": "an inline field error is not a toast"
+    },
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "提交一次标出不是 modal 确认",
+      "whenEn": "marking every miss on submit is not a confirm modal"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["form", "validation", "taxonomy"]
+}
