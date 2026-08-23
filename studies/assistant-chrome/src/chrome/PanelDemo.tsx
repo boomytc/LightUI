@@ -67,7 +67,7 @@ export function PanelDemo() {
           })}
         </div>
 
-        <aside className="flex w-[38%] min-w-0 shrink-0 flex-col overflow-x-hidden border-l border-border p-2.5">
+        <aside className="chrome-panel-rail flex min-w-0 shrink-0 flex-col overflow-x-hidden border-l border-border p-2.5">
           <p className="text-[11px] font-medium text-accent">{locale === "en" ? "Assist" : "AI 协作"}</p>
           {!range ? (
             <p className="mt-2 text-[11px] leading-relaxed text-fg-muted">

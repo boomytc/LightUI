@@ -85,7 +85,7 @@ export function FloatDemo() {
         </article>
 
         {open ? (
-          <div className="absolute right-3 bottom-16 z-20 w-[min(100%-1.5rem,16.5rem)] min-w-0 rounded-2xl border border-border bg-surface p-2.5 shadow-card">
+          <div className="chrome-float-composer min-w-0 rounded-2xl border border-border bg-surface p-2.5 shadow-card">
             <div className="mb-2 flex items-center justify-between gap-2">
               <p className="text-[11px] font-medium text-accent">{locale === "en" ? "Ask one thing" : "问一句"}</p>
               <button
@@ -138,7 +138,7 @@ export function FloatDemo() {
           }}
           style={{ transform: `translate(${pos.x}px, ${pos.y}px)` }}
           className={cn(
-            "absolute right-3 bottom-3 z-30 grid size-12 place-items-center rounded-full bg-accent text-[12px] font-semibold text-accent-fg shadow-card",
+            "chrome-float-ball grid place-items-center rounded-full bg-accent text-[12px] font-semibold text-accent-fg shadow-card",
             open && "opacity-90",
           )}
         >

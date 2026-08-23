@@ -125,10 +125,8 @@ export function PluginDemo({ open = false }: { open?: boolean }) {
         {showBar ? (
           <div
             data-plugin-bar
-            className={cn(
-              "absolute z-10 -translate-x-1/2",
-              (open ? lockPos.below : toolbar?.below) ? "" : "-translate-y-full",
-            )}
+            className="chrome-plugin-bar"
+            data-above={(open ? lockPos.below : toolbar?.below) ? "false" : "true"}
             style={
               open
                 ? { left: lockPos.x, top: lockPos.below ? lockPos.y : lockPos.y - 8 }
