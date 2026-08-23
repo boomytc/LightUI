@@ -1,0 +1,36 @@
+.board-window {
+  min-width: 0;
+  max-width: 390px;
+  overflow-x: hidden;
+}
+
+.board-window-body {
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.board-kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.board-table {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr) minmax(0, 0.8fr);
+  min-width: 0;
+}
+
+.board-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 64px;
+}
+
+.board-bars > span {
+  min-width: 0;
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  background: color-mix(in oklab, var(--color-accent) 70%, transparent);
+}

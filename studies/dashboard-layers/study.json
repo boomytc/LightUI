@@ -1,0 +1,29 @@
+{
+  "slug": "dashboard-layers",
+  "title": "层递",
+  "titleEn": "Layers",
+  "eyebrow": "Drill · Platter",
+  "eyebrowEn": "Drill · Platter",
+  "summary": "看板该从结果往下钻。一盘端上 KPI、图、表，扫得到皮，钻不到因。",
+  "summaryEn": "The board should drill from the result. Serve KPI, chart, and table on one platter and you can scan the skin, not the cause.",
+  "asks": "看板从结果往下钻，还是一盘端上来？",
+  "asksEn": "Does the board drill from the result, or serve everything on one platter?",
+  "links": [
+    {
+      "slug": "chart-taxonomy",
+      "rel": "contrast",
+      "when": "下钻不是换图种",
+      "whenEn": "drilling is not switching the mark"
+    },
+    {
+      "slug": "layout-taxonomy",
+      "rel": "contrast",
+      "when": "层递不是仪表盘皮",
+      "whenEn": "layers are not a dashboard skin"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["dashboard", "layers", "data"]
+}
