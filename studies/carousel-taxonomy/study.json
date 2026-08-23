@@ -1,0 +1,29 @@
+{
+  "slug": "carousel-taxonomy",
+  "title": "轮播",
+  "titleEn": "Carousel",
+  "eyebrow": "Advance · Motion",
+  "eyebrowEn": "Advance · Motion",
+  "summary": "一组画面只说了会换。先定是平移、淡入、木马、叠卡、翻页、手风琴、360 还是视差。",
+  "summaryEn": "A set of frames only says it will change. First decide whether the cut is a slide, a fade, a coverflow, a stack, a page turn, an accordion, a 360 spin, or parallax.",
+  "asks": "这一组画面怎么切？",
+  "asksEn": "How does this set of frames advance?",
+  "links": [
+    {
+      "slug": "notify-taxonomy",
+      "rel": "contrast",
+      "when": "切画面不是通知跑马灯",
+      "whenEn": "advancing frames is not a notice marquee"
+    },
+    {
+      "slug": "layout-taxonomy",
+      "rel": "contrast",
+      "when": "切画面不是瀑布骨架",
+      "whenEn": "advancing frames is not a masonry skeleton"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["carousel", "motion", "taxonomy"]
+}

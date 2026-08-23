@@ -1,0 +1,207 @@
+.slide-art {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.slide-orb,
+.slide-slash,
+.slide-chip {
+  pointer-events: none;
+  position: absolute;
+}
+
+.slide-orb {
+  top: 10%;
+  right: -10%;
+  width: 48%;
+  height: 48%;
+  border-radius: 9999px;
+  background: color-mix(in oklab, currentColor 18%, transparent);
+}
+
+.slide-slash {
+  top: 22%;
+  left: 8%;
+  width: 44%;
+  height: 3px;
+  transform: rotate(-18deg);
+  background: color-mix(in oklab, currentColor 30%, transparent);
+}
+
+.slide-chip {
+  right: 14%;
+  bottom: 30%;
+  width: 22%;
+  height: 22%;
+  border-radius: 12px;
+  transform: rotate(16deg);
+  background: color-mix(in oklab, currentColor 12%, transparent);
+}
+
+.slide-tone-0 {
+  background:
+    radial-gradient(120% 80% at 100% 0%, var(--color-accent) 0%, transparent 55%),
+    linear-gradient(160deg, var(--color-fg) 0%, #242833 100%);
+  color: var(--color-accent-fg);
+}
+
+.slide-tone-1 {
+  background:
+    radial-gradient(90% 70% at 0% 100%, var(--color-accent-soft) 0%, transparent 52%),
+    linear-gradient(145deg, var(--color-accent) 0%, #2f54d0 100%);
+  color: var(--color-accent-fg);
+}
+
+.slide-tone-2 {
+  background:
+    radial-gradient(70% 60% at 90% 10%, var(--color-accent) 0%, transparent 46%),
+    linear-gradient(160deg, var(--color-accent-soft) 0%, var(--color-surface) 58%, var(--color-bg-warm) 100%);
+  color: var(--color-fg);
+}
+
+.slide-tone-3 {
+  background:
+    radial-gradient(80% 70% at 10% 0%, var(--color-surface) 0%, transparent 50%),
+    linear-gradient(160deg, var(--color-fg-muted) 0%, var(--color-fg) 100%);
+  color: var(--color-surface);
+}
+
+.slide-tween {
+  transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.slide-fade-layer {
+  transition: opacity 800ms ease-in-out;
+}
+
+.coverflow-scene {
+  perspective: 1400px;
+  perspective-origin: 50% 46%;
+}
+
+.coverflow-card {
+  transform-style: preserve-3d;
+  transition:
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 360ms ease;
+  will-change: transform;
+}
+
+.coverflow-card.is-jump {
+  transition: none;
+}
+
+.stack-card {
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.stack-card.is-drag {
+  transition: none;
+}
+
+.book-scene {
+  perspective: 2200px;
+  perspective-origin: 50% 50%;
+}
+
+.book-leaf {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 820ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.book-leaf.is-jump {
+  transition: none;
+}
+
+.book-leaf.is-flipped {
+  transform: rotateY(-180deg);
+}
+
+.book-leaf-left {
+  transform-origin: right center;
+}
+
+.book-leaf-left.is-flipped-left {
+  transform: rotateY(180deg);
+}
+
+.book-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.book-face-back {
+  transform: rotateY(180deg);
+}
+
+.spine-shadow {
+  background: linear-gradient(
+    to right,
+    rgb(23 24 28 / 0.08),
+    transparent 42%,
+    transparent 58%,
+    rgb(23 24 28 / 0.08)
+  );
+}
+
+.curl-edge {
+  background: linear-gradient(to left, rgb(23 24 28 / 0.12), transparent);
+}
+
+.acc-grid {
+  display: grid;
+  gap: 6px;
+  transition: grid-template-columns 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.acc-grid.is-jump {
+  transition: none;
+}
+
+.cube-scene {
+  perspective: 900px;
+}
+
+.cube {
+  transform-style: preserve-3d;
+  transition: transform 80ms linear;
+}
+
+.cube.is-ease {
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cube.is-jump {
+  transition: none;
+}
+
+.para-layer {
+  will-change: transform;
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.para-layer.is-jump {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide-tween,
+  .coverflow-card,
+  .stack-card,
+  .book-leaf,
+  .acc-grid,
+  .cube,
+  .cube.is-ease,
+  .para-layer {
+    transition: none;
+  }
+
+  .slide-fade-layer {
+    transition: opacity 200ms linear;
+  }
+}
