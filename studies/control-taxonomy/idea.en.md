@@ -41,6 +41,8 @@ To specify one of these, say three things:
 2. **Scene** — a short fill, a paragraph, three tiers to compare, or finding one person among two hundred
 3. **Rule** — fill it in / only one / type to find / several at once
 
+Those three, in one sentence, are the “Say it this way” card. Copy it and it is the spec; there is no second way to say it.
+
 A single “agree to terms” is still a checkbox: it is one boolean, not rival tiers.
 
 ## Versus “make it an input”
