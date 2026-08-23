@@ -1,0 +1,32 @@
+.timer-window {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 390px;
+  overflow-x: hidden;
+}
+
+.timer-window-body {
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.timer-chip-dot[data-running="true"] {
+  animation: timer-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes timer-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timer-chip-dot {
+    animation: none;
+  }
+}

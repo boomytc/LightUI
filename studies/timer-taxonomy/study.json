@@ -1,0 +1,29 @@
+{
+  "slug": "timer-taxonomy",
+  "title": "计时",
+  "titleEn": "Timer",
+  "eyebrow": "累计 · 专注",
+  "eyebrowEn": "Stopwatch · Focus",
+  "summary": "这一段时间是正数累计，还是倒数专注？先定会话的方向。累计没有上限；专注到 0 自己停住，不要变成负数，也不要弹一条 toast。",
+  "summaryEn": "Does this session count up, or count down? Name the direction first. A stopwatch has no cap; focus stops itself at 0 — never negative, never a toast.",
+  "asks": "这一段时间是正数累计，还是倒数专注？",
+  "asksEn": "Does this session count up, or count down?",
+  "links": [
+    {
+      "slug": "progress-taxonomy",
+      "rel": "contrast",
+      "when": "计时的方向不是进度能不能算",
+      "whenEn": "session direction is not whether progress can be measured"
+    },
+    {
+      "slug": "notify-taxonomy",
+      "rel": "contrast",
+      "when": "专注到点不是一条 toast",
+      "whenEn": "focus hitting zero is not a toast"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["timer", "stopwatch", "focus", "taxonomy"]
+}
