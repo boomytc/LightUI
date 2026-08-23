@@ -1,0 +1,113 @@
+@keyframes overlay-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlay-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes overlay-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes overlay-modal-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+}
+
+@keyframes overlay-drawer-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes overlay-drawer-out {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes overlay-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes overlay-pop-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.99) translateY(-2px);
+  }
+}
+
+.overlay-scrim-in {
+  animation: overlay-fade-in 250ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.overlay-scrim-out {
+  animation: overlay-fade-out 150ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.overlay-modal-in {
+  animation: overlay-modal-in 250ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.overlay-modal-out {
+  animation: overlay-modal-out 150ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.overlay-drawer-in {
+  animation: overlay-drawer-in 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.overlay-drawer-out {
+  animation: overlay-drawer-out 350ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.overlay-pop-in {
+  animation: overlay-pop-in 250ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: top right;
+}
+
+.overlay-pop-out {
+  animation: overlay-pop-out 150ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: top right;
+}

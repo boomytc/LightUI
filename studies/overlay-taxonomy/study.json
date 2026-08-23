@@ -1,0 +1,41 @@
+{
+  "slug": "overlay-taxonomy",
+  "title": "浮层",
+  "titleEn": "Overlay",
+  "eyebrow": "Interrupt · Attach",
+  "eyebrowEn": "Interrupt · Attach",
+  "summary": "浮在页面上只是外观。先定打不打断当前任务，以及是否贴着触发点。",
+  "summaryEn": "Floating is only the look. First decide whether it interrupts the current task, and whether it sticks to the trigger.",
+  "asks": "这块浮层打不打断、贴不贴触发点？",
+  "asksEn": "Does this overlay interrupt, and does it stick to the trigger?",
+  "links": [
+    {
+      "slug": "dropdown-taxonomy",
+      "rel": "after",
+      "when": "若它是往下展开且提交一个值",
+      "whenEn": "if it opens downward and commits a value"
+    },
+    {
+      "slug": "nav-taxonomy",
+      "rel": "contrast",
+      "when": "内容抽屉不是汉堡主导航",
+      "whenEn": "a content drawer is not a hamburger site nav"
+    },
+    {
+      "slug": "sidebar-taxonomy",
+      "rel": "contrast",
+      "when": "右侧抽屉不是隐藏式侧栏",
+      "whenEn": "a right-hand drawer is not an off-canvas rail"
+    },
+    {
+      "slug": "notify-taxonomy",
+      "rel": "contrast",
+      "when": "必须先处理的弹窗不是一条提示",
+      "whenEn": "a dialog that must be handled is not a notice"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["overlay", "interrupt", "taxonomy"]
+}
