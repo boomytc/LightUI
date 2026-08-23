@@ -8,7 +8,20 @@
   "summaryEn": "“Make a chart” only says there are numbers. First decide whether this data is for change, size, share, relation, flow, or ability — then pick the mark.",
   "asks": "这组数据要看什么？",
   "asksEn": "What is this data for seeing?",
-  "links": [],
+  "links": [
+    {
+      "slug": "dashboard-layers",
+      "rel": "after",
+      "when": "若数字要对着结果往下钻",
+      "whenEn": "if the numbers must drill from the result"
+    },
+    {
+      "slug": "dashboard-layers",
+      "rel": "contrast",
+      "when": "选对图不是下钻",
+      "whenEn": "picking the mark is not drilling"
+    }
+  ],
   "status": "active",
   "created": "2026-08-23",
   "updated": "2026-08-23",

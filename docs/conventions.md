@@ -49,6 +49,10 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another banner slider | How frames advance in `carousel-taxonomy` | A notice marquee → `notify-taxonomy` |
 | Another page grid | Page skeleton in `layout-taxonomy` | Rail occupancy → `sidebar-taxonomy` |
 | Another CTA | Action weight in `button-taxonomy` | Fill vs pick → `control-taxonomy` |
+| Another hero block | First-glance job in `hero-taxonomy` | Login staging → `login-taxonomy` |
+| Another login page | Staging in `login-taxonomy` | Page skeleton → `layout-taxonomy` |
+| Another alignment tweak | Baseline vs box in `align-craft` | Page skeleton → `layout-taxonomy` |
+| Another dashboard | Drill vs platter in `dashboard-layers` | Chart intent → `chart-taxonomy` |
 
 Do not merge these into one encyclopedia because the fixtures look alike.
 The graph keeps the questions apart. Isolated nodes are allowed; only add
@@ -97,8 +101,10 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5179` glyph-sweep, `5180` look-quantize, `5181` tab-taxonomy,
   `5182` control-taxonomy, `5183` overlay-taxonomy, `5184` notify-taxonomy,
   `5185` validation-taxonomy, `5186` progress-taxonomy, `5187` chart-taxonomy,
-  `5188` carousel-taxonomy, `5189` layout-taxonomy, `5190` button-taxonomy.
-  Next free: `5191`.
+  `5188` carousel-taxonomy, `5189` layout-taxonomy, `5190` button-taxonomy,
+  `5191` hero-taxonomy, `5192` login-taxonomy, `5193` align-craft,
+  `5194` dashboard-layers.
+  Next free: `5195`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

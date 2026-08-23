@@ -129,6 +129,29 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("outline", "ok", "outline-ok.png"),
         ("text", "ok", "text-ok.png"),
     ],
+    "hero-taxonomy": [
+        ("product", "default", "product.png"),
+        ("event", "default", "event.png"),
+        ("commerce", "default", "commerce.png"),
+        ("media", "default", "media.png"),
+    ],
+    "login-taxonomy": [
+        ("centered", "default", "centered.png"),
+        ("split", "default", "split.png"),
+        ("roles", "default", "roles.png"),
+        ("steps", "2", "steps-2.png"),
+    ],
+    "align-craft": [
+        ("baseline", "wrong", "baseline-wrong.png"),
+        ("baseline", "right", "baseline-right.png"),
+        ("cover", "right", "cover-right.png"),
+        ("optical", "right", "optical-right.png"),
+    ],
+    "dashboard-layers": [
+        ("layered", "kpi", "layered-kpi.png"),
+        ("layered", "dim", "layered-dim.png"),
+        ("platter", "all", "platter-all.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:
