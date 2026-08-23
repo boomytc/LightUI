@@ -13,7 +13,7 @@ export function Frame({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-2xl border border-border shadow-card",
+        "min-w-0 overflow-hidden rounded-2xl border border-border shadow-card",
         dark ? "bg-fg text-surface" : "bg-surface",
       )}
     >

@@ -27,7 +27,7 @@ export function FloatingDemo() {
 
   return (
     <Frame title={locale === "en" ? "Morrow · workspace" : "Morrow · 工作台"}>
-      <div className="flex min-h-[22rem] gap-3 bg-surface-2 p-3">
+      <div className="flex min-h-[22rem] min-w-0 gap-3 bg-surface-2 p-3">
         <aside className="flex w-[13.5rem] shrink-0 flex-col rounded-xl bg-fg p-3 text-surface shadow-card">
           <div className="mb-3 flex items-center gap-2 px-1">
             <span className="grid size-7 place-items-center rounded-md bg-accent text-[11px] font-semibold text-accent-fg">

@@ -4,6 +4,7 @@ import { loc, pick, useLocale } from "../lib/site-locale";
 import { occupyPx } from "../lib/space";
 import { cn } from "../lib/utils";
 import { Frame } from "./Frame";
+import "./rail.css";
 
 const NAV = [
   { id: "home", label: loc("总览", "Overview"), icon: LayoutDashboard },
@@ -35,7 +36,7 @@ export function CollapsibleDemo({ defaultOpen }: { defaultOpen?: boolean } = {})
 
   return (
     <Frame title={locale === "en" ? "Northstar · analytics" : "Northstar · 分析"}>
-      <div className="flex min-h-[22rem] bg-surface-2">
+      <div className="flex min-h-[22rem] min-w-0 bg-surface-2">
         <aside
           className="flex shrink-0 flex-col bg-fg text-surface"
           style={{
@@ -114,19 +115,19 @@ export function CollapsibleDemo({ defaultOpen }: { defaultOpen?: boolean } = {})
           </nav>
         </aside>
 
-        <section className="min-w-0 flex-1 px-4 py-4">
+        <section className="collapsible-main min-w-0 flex-1 overflow-x-hidden px-4 py-4">
           <p className="text-[12px] text-fg-subtle">
             {locale === "en"
               ? `Width ${width}px · the chart eats the rest`
               : `宽度 ${width}px · 主区吃回剩下的`}
           </p>
           <h3 className="mt-1 text-[1.2rem] font-semibold tracking-tight">{pick(current.label, locale)}</h3>
-          <div className="mt-3 grid grid-cols-2 gap-2">
+          <div className="collapsible-kpis mt-3">
             {KPIS.map((kpi) => (
               <div key={kpi.label.zh} className="min-w-0 rounded-lg border border-border bg-surface px-3 py-2.5">
-                <p className="truncate text-[11px] text-fg-subtle">{pick(kpi.label, locale)}</p>
-                <p className="mt-0.5 truncate text-[1.05rem] font-semibold tabular-nums">{kpi.value}</p>
-                <p className="truncate text-[11px] text-accent tabular-nums">{kpi.delta}</p>
+                <p className="text-[11px] text-fg-subtle">{pick(kpi.label, locale)}</p>
+                <p className="mt-0.5 text-[1.05rem] font-semibold tabular-nums">{kpi.value}</p>
+                <p className="text-[11px] text-accent tabular-nums">{kpi.delta}</p>
               </div>
             ))}
           </div>

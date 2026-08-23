@@ -77,13 +77,15 @@ export function StudyView() {
           </ol>
         </article>
 
-        <article className="min-w-0 overflow-hidden rounded-2xl border border-border bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
+        <article className="min-w-0 overflow-x-auto rounded-2xl border border-border bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
           <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-surface/45">occupyPx</p>
-          <pre className="mt-3 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">
+          <pre className="mt-3 max-w-full min-w-0 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">
 {`function occupyPx(kind, expanded) {
   if (kind === "offcanvas") return 0
   if (kind === "collapsible") return expanded ? 240 : 72
-  return kind === "floating" ? 216 : 208
+  if (kind === "floating") return 216
+  if (kind === "wheel") return 176
+  return 208
 }`}
           </pre>
           <p className="mt-4 text-[13px] leading-relaxed text-surface/55">
