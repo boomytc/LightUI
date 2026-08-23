@@ -1,0 +1,29 @@
+{
+  "slug": "control-taxonomy",
+  "title": "控件",
+  "titleEn": "Controls",
+  "eyebrow": "Fill vs pick · Field taxonomy",
+  "eyebrowEn": "Fill vs pick · Field taxonomy",
+  "summary": "「做个输入框」只说了能填。先定是自己写、从短列表选、可见比较，还是边搜边选。",
+  "summaryEn": "“Make an input” only says something can be typed. First decide whether this slot is filled in, picked from a short list, compared in view, or typed to find.",
+  "asks": "这一格是自己填还是从答案里选？",
+  "asksEn": "Is this slot filled in, or picked from answers?",
+  "links": [
+    {
+      "slug": "dropdown-taxonomy",
+      "rel": "after",
+      "when": "若答案是往下展开的固定短列表",
+      "whenEn": "if the answer is a short list that opens downward"
+    },
+    {
+      "slug": "dropdown-taxonomy",
+      "rel": "contrast",
+      "when": "可见的单选和复选不是下拉面板",
+      "whenEn": "visible radios and checkboxes are not a downward panel"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["form", "input", "taxonomy"]
+}
