@@ -1,0 +1,84 @@
+.align-baseline-guide {
+  pointer-events: none;
+  position: absolute;
+  right: -3.5rem;
+  left: 0;
+  bottom: 0.14em;
+  border-top: 1px dashed var(--color-intent);
+}
+
+.align-box-guide {
+  pointer-events: none;
+  position: absolute;
+  inset: 50% 0 auto 0;
+  border-top: 1px dashed var(--color-accent);
+  transform: translateY(-50%);
+}
+
+.align-hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-border-strong) 0 8px,
+    transparent 8px 16px
+  );
+}
+
+.align-hatch-accent {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-accent-soft) 0 8px,
+    transparent 8px 16px
+  );
+}
+
+.align-pad-right {
+  --inset: 1rem;
+  padding-top: calc(var(--inset) - (1lh - 1cap) / 2);
+  padding-inline: var(--inset);
+  padding-bottom: var(--inset);
+}
+
+@supports not (padding-top: 1cap) {
+  .align-pad-right {
+    padding-top: 0.65rem;
+  }
+}
+
+.align-cap-guide {
+  pointer-events: none;
+  position: absolute;
+  top: var(--inset);
+  right: var(--inset);
+  left: var(--inset);
+  border-top: 1px dashed var(--color-intent);
+}
+
+.align-inset-guess {
+  position: absolute;
+  top: 14px;
+  left: 22px;
+  right: 8px;
+  bottom: 28px;
+  transform: translate(6px, -4px);
+}
+
+.align-focus-mark {
+  pointer-events: none;
+  position: absolute;
+  top: 88%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--color-intent);
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 3px rgb(22 163 74 / 0.18);
+}
+
+.align-optical-circle {
+  transform: scale(1.06);
+}
+
+.align-optical-play {
+  transform: translateX(8%);
+}
