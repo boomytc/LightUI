@@ -45,6 +45,10 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another toast | Notice weight in `notify-taxonomy` | A blocking dialog → `overlay-taxonomy` |
 | Another error message | When to speak in `validation-taxonomy` | Fill vs pick → `control-taxonomy` |
 | Another spinner | Measurable or not in `progress-taxonomy` | A result toast → `notify-taxonomy` |
+| Another chart | What the data is for in `chart-taxonomy` | Dashboard drill → later layer study |
+| Another banner slider | How frames advance in `carousel-taxonomy` | A notice marquee → `notify-taxonomy` |
+| Another page grid | Page skeleton in `layout-taxonomy` | Rail occupancy → `sidebar-taxonomy` |
+| Another CTA | Action weight in `button-taxonomy` | Fill vs pick → `control-taxonomy` |
 
 Do not merge these into one encyclopedia because the fixtures look alike.
 The graph keeps the questions apart. Isolated nodes are allowed; only add
@@ -92,8 +96,9 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5176` sidebar-taxonomy, `5177` nav-taxonomy, `5178` inverted-notch,
   `5179` glyph-sweep, `5180` look-quantize, `5181` tab-taxonomy,
   `5182` control-taxonomy, `5183` overlay-taxonomy, `5184` notify-taxonomy,
-  `5185` validation-taxonomy, `5186` progress-taxonomy.
-  Next free: `5187`.
+  `5185` validation-taxonomy, `5186` progress-taxonomy, `5187` chart-taxonomy,
+  `5188` carousel-taxonomy, `5189` layout-taxonomy, `5190` button-taxonomy.
+  Next free: `5191`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

@@ -7,8 +7,12 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [button-taxonomy](../studies/button-taxonomy/) | 「做个按钮」只说了能点。先定这一区的主操作、次操作还是弱操作，一区只能有一个面状。 | active | 2026-08-23 | 2026-08-23 |
+| [carousel-taxonomy](../studies/carousel-taxonomy/) | 一组画面只说了会换。先定是平移、淡入、木马、叠卡、翻页、手风琴、360 还是视差。 | active | 2026-08-23 | 2026-08-23 |
+| [chart-taxonomy](../studies/chart-taxonomy/) | 「做个图表」只说了有数。先定要看变化、大小、占比、关系、流程还是能力，再选痕迹。 | active | 2026-08-23 | 2026-08-23 |
 | [control-taxonomy](../studies/control-taxonomy/) | 「做个输入框」只说了能填。先定是自己填一行或一段，还是从答案里选：可见比较、短列表、边搜边选，或同时多个。 | active | 2026-08-23 | 2026-08-23 |
 | [dropdown-taxonomy](../studies/dropdown-taxonomy/) | 往下展开只是外观。先定提交的是一个值、一组、一条路径，还是一次动作。 | active | 2026-08-15 | 2026-08-23 |
+| [layout-taxonomy](../studies/layout-taxonomy/) | 「做个页面」只说了有块。先定是单栏、落地、瀑布、全屏、分栏、仪表盘还是模块拼贴。 | active | 2026-08-23 | 2026-08-23 |
 | [nav-taxonomy](../studies/nav-taxonomy/) | 一排链接只说了有入口。先定住在哪、怎么开、滚的时候干什么。 | active | 2026-08-15 | 2026-08-23 |
 | [notify-taxonomy](../studies/notify-taxonomy/) | 报一条消息只说了要出声。先定打断到哪一档：瞄一眼、自动消失、还能撤销、留档、还是必须处理。 | active | 2026-08-23 | 2026-08-23 |
 | [overlay-taxonomy](../studies/overlay-taxonomy/) | 浮在页面上只是外观。先定打不打断当前任务，以及是否贴着触发点。 | active | 2026-08-23 | 2026-08-23 |
@@ -25,8 +29,12 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **按钮** (`button-taxonomy`) — 这个动作该有多重？
+- **轮播** (`carousel-taxonomy`) — 这一组画面怎么切？
+- **图表** (`chart-taxonomy`) — 这组数据要看什么？
 - **控件** (`control-taxonomy`) — 这一格是自己填还是从答案里选？
 - **下拉框** (`dropdown-taxonomy`) — 往下展开的面板提交什么？
+- **布局** (`layout-taxonomy`) — 这一页的骨架是哪一种？
 - **导航栏** (`nav-taxonomy`) — 这块叫导航的东西住在哪、怎么开？
 - **提示** (`notify-taxonomy`) — 这条提示该打断到哪一档？
 - **浮层** (`overlay-taxonomy`) — 这块浮层打不打断、贴不贴触发点？
@@ -41,13 +49,22 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `button-taxonomy` contrast `control-taxonomy` — 按钮重量不是填还是选
+- `carousel-taxonomy` contrast `notify-taxonomy` — 切画面不是通知跑马灯
+- `carousel-taxonomy` contrast `layout-taxonomy` — 切画面不是瀑布骨架
 - `control-taxonomy` after `dropdown-taxonomy` — 若答案是往下展开的固定短列表
 - `control-taxonomy` contrast `dropdown-taxonomy` — 可见的单选和复选不是下拉面板
 - `control-taxonomy` after `validation-taxonomy` — 若格子已经定了，下一步是错误何时说
 - `control-taxonomy` contrast `validation-taxonomy` — 填还是选不是何时报错
+- `control-taxonomy` contrast `button-taxonomy` — 填还是选不是按钮有多重
 - `dropdown-taxonomy` after `intent-cascade` — 若改成 hover 跟手
 - `dropdown-taxonomy` contrast `control-taxonomy` — 往下展开的提交模型，不是先问填还是选
 - `dropdown-taxonomy` contrast `overlay-taxonomy` — 往下提交一个值不是打断式浮层
+- `layout-taxonomy` after `sidebar-taxonomy` — 若靠左那一栏才是问题
+- `layout-taxonomy` after `nav-taxonomy` — 若问的是顶栏去哪
+- `layout-taxonomy` contrast `sidebar-taxonomy` — 整页骨架不是侧栏占位
+- `layout-taxonomy` contrast `nav-taxonomy` — 这一页怎么铺不是顶栏去哪
+- `layout-taxonomy` contrast `carousel-taxonomy` — 瀑布骨架不是切画面
 - `nav-taxonomy` after `dropdown-taxonomy` — 若它是往下展开的面板
 - `nav-taxonomy` after `sidebar-taxonomy` — 若它是靠左的一栏
 - `nav-taxonomy` contrast `dropdown-taxonomy` — 站点栏目不是表单下拉

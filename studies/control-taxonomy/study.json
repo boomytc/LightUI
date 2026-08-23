@@ -32,6 +32,12 @@
       "rel": "contrast",
       "when": "填还是选不是何时报错",
       "whenEn": "fill versus pick is not when the error speaks"
+    },
+    {
+      "slug": "button-taxonomy",
+      "rel": "contrast",
+      "when": "填还是选不是按钮有多重",
+      "whenEn": "fill versus pick is not how heavy the action is"
     }
   ],
   "status": "active",

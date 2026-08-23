@@ -104,6 +104,31 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("spin", "loop", "spin-loop.png"),
         ("dots", "loop", "dots-loop.png"),
     ],
+    "chart-taxonomy": [
+        ("change", "primary", "change-line.png"),
+        ("compare", "alt", "compare-bar.png"),
+        ("share", "primary", "share-pie.png"),
+        ("flow", "primary", "flow-funnel.png"),
+    ],
+    "carousel-taxonomy": [
+        ("classic", "1", "classic-1.png"),
+        ("fade", "1", "fade-1.png"),
+        ("coverflow", "1", "coverflow-1.png"),
+        ("stack", "0", "stack-0.png"),
+        ("spin", "1", "spin-1.png"),
+    ],
+    "layout-taxonomy": [
+        ("single", "default", "single.png"),
+        ("masonry", "default", "masonry.png"),
+        ("splitter", "default", "splitter.png"),
+        ("dashboard", "default", "dashboard.png"),
+    ],
+    "button-taxonomy": [
+        ("solid", "ok", "solid-ok.png"),
+        ("solid", "wrong", "solid-wrong.png"),
+        ("outline", "ok", "outline-ok.png"),
+        ("text", "ok", "text-ok.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:
