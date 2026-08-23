@@ -2,5 +2,6 @@
 @custom-variant dark (&:where(.dark, .dark *));
 @import "../../../design/tokens.css";
 @import "../../../design/base.css";
-@source "../../../studies/**/*.{ts,tsx}";
-@source "./**/*.{ts,tsx}";
+/* Directory scan: brace globs miss study playground utilities. */
+@source "../../../studies";
+@source "../src";
