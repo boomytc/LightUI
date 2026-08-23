@@ -6,28 +6,28 @@ export function StudyView() {
   const locale = useLocale();
 
   return (
-    <div className="page-width min-w-0 pb-20">
-      <section className="grid gap-8 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
-        <div className="min-w-0">
-          <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
-            {locale === "en"
-              ? "They all switch a panel. They do not tell you “here” the same way."
-              : "看起来都是一排标签，选中态却完全不同。"}
+    <div data-study-page="" className="page-width min-w-0 pb-20">
+      <section className="flex flex-wrap items-end justify-between gap-6 pb-6 pt-5">
+        <div className="min-w-0 max-w-2xl">
+          <h1 className="text-[1.55rem] font-semibold leading-[1.2] tracking-tight text-fg sm:text-[2.1rem]">
+            {locale === "en" ? "The selected tab is the page." : "页签选中态就是这一页。"}
           </h1>
-          <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
+          <p className="mt-3 max-w-xl text-[14px] leading-relaxed text-fg-muted">
             {locale === "en"
-              ? "“Make some tabs” describes the skin. The thing that breaks is the selection model: a short bar, a joined panel, three-state steps, a pill in a track, stacked paper, or the thumbnail itself."
-              : "「做个 Tab」说的是外观。真正会坏掉的是选中模型：短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。"}
+              ? "A tab row lives on a panel, not in a phone stamp. Name the selection model — bar, joined card, three-state steps, pill, stacked paper, or the thumbnail — then let the body take the leftover height."
+              : "页签长在一块面板上，不是 390 的图章。先定选中态：短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。面板身子吃掉剩下的高度。"}
           </p>
         </div>
-        <p className="text-[13px] leading-relaxed text-fg-subtle">
+        <p className="max-w-xs text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Name the model, name the scene, then name what selection changes. The six contrasts below are live."
-            : "先说模型，再说场景，再说选中态改什么。下面六个对照可以点。"}
+            ? "Kinds as chips. The model spans the panel. Six contrasts below are live."
+            : "种类是顶上的芯片。模型横跨整块面板。下面六个对照可以点。"}
         </p>
       </section>
 
-      <section className="mb-10 grid gap-3 sm:grid-cols-3">
+      <Playground />
+
+      <section className="mt-12 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
           <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
             <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
@@ -38,8 +38,6 @@ export function StudyView() {
           </div>
         ))}
       </section>
-
-      <Playground />
 
       <section className="mt-14 grid min-w-0 gap-10 lg:grid-cols-2">
         <article className="min-w-0">

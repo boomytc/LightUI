@@ -18,7 +18,7 @@ export function PanelDemo() {
   const [code, setCode] = useState(PANEL_CODE);
   const [range, setRange] = useState<Range | null>({ from: 0, to: 2 });
   const [dragging, setDragging] = useState<number | null>(null);
-  const [suggestion, setSuggestion] = useState(false);
+  const [suggestion, setSuggestion] = useState(true);
   const [undo, setUndo] = useState<string | null>(null);
   const lines = useMemo(() => code.split("\n"), [code]);
 
@@ -37,9 +37,10 @@ export function PanelDemo() {
 
   return (
     <Window title={pick(meta.window, locale)}>
-      <div className="flex h-full min-w-0 overflow-x-hidden">
+      <div className="chrome-panel-split min-w-0 overflow-x-hidden">
         <div
-          className="min-w-0 flex-1 overflow-auto py-2 font-mono text-[12px] leading-5"
+          data-panel-editor
+          className="min-w-0 overflow-auto py-2 font-mono text-[12px] leading-5"
           onMouseUp={() => setDragging(null)}
           onMouseLeave={() => setDragging(null)}
         >
@@ -61,13 +62,16 @@ export function PanelDemo() {
                 <span className="w-7 shrink-0 pr-1.5 text-right text-[10px] text-fg-subtle tabular-nums">
                   {i + 1}
                 </span>
-                <span className="min-w-0 flex-1 truncate pr-2 text-fg">{line || " "}</span>
+                <span className="min-w-0 flex-1 whitespace-pre pr-2 text-fg">{line || " "}</span>
               </button>
             );
           })}
         </div>
 
-        <aside className="chrome-panel-rail flex min-w-0 shrink-0 flex-col overflow-x-hidden border-l border-border p-2.5">
+        <aside
+          data-panel-rail
+          className="flex min-w-0 flex-col overflow-x-hidden overflow-y-auto border-l border-border p-3"
+        >
           <p className="text-[11px] font-medium text-accent">{locale === "en" ? "Assist" : "AI 协作"}</p>
           {!range ? (
             <p className="mt-2 text-[11px] leading-relaxed text-fg-muted">

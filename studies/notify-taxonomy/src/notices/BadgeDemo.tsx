@@ -34,14 +34,14 @@ export function BadgeDemo({ state }: { state?: string } = {}) {
         </AppNav>
       }
     >
-      <div className="px-5 py-5">
-        <h2 className="text-[1.15rem] font-semibold tracking-tight">
+      <div className="px-6 py-7">
+        <h2 className="text-[1.35rem] font-semibold tracking-tight">
           {locale === "en" ? "Morning, Sue" : "早上好，Sue"}
         </h2>
         <p className="mt-1 text-[12px] text-fg-muted">
           {locale === "en" ? "3 tasks waiting" : "今天有 3 个任务待处理"}
         </p>
-        <div className="mt-4 grid grid-cols-3 gap-2">
+        <div className="mt-5 grid grid-cols-3 gap-2.5">
           <Stat
             label={locale === "en" ? "New" : "新增"}
             value="128"
@@ -58,7 +58,7 @@ export function BadgeDemo({ state }: { state?: string } = {}) {
             hint={locale === "en" ? "Due today" : "今天到期"}
           />
         </div>
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="mt-5 flex flex-wrap items-center gap-2">
           <Action onClick={bump}>{locale === "en" ? "Add unread" : "增加未读"}</Action>
         </div>
         <p className="mt-3 text-[11px] leading-relaxed text-fg-subtle">

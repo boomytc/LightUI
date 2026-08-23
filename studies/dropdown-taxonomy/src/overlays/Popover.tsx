@@ -72,7 +72,7 @@ export function Popover({
         zIndex: 50,
         visibility: "visible",
         left,
-        // Stay under the field. Flipping up covers the spec card on the work page.
+        // Stay under the field so cascader / calendar have room in the well.
         top: rect.bottom + 6,
         width: matchWidth ? Math.min(rect.width, avail) : "max-content",
         minWidth: matchWidth ? Math.min(rect.width, avail) : undefined,

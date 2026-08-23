@@ -24,8 +24,8 @@ The lab mounts `StudyView` at `/s/timer-taxonomy`.
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — liveSeconds, remaining, start / pause / end (no DOM)
-- `src/timer/` — two leaves in a window frame
-- `src/StageView.tsx` — one kind, one locked snapshot, no chrome
+- `src/timer/` — two leaves in a full-width desk well; stage still uses a window frame
+- `src/StageView.tsx` — one kind, one locked snapshot, no chrome, 390 fixture
 - `src/lib/stage-query.ts` — `kind=stopwatch|focus`, `state=idle|running|paused|done`
 
 ## Rules
@@ -39,4 +39,6 @@ The lab mounts `StudyView` at `/s/timer-taxonomy`.
   still shows the session on another fake page. Do not replace the number
   with a spinner.
 - Bind the standalone server to `127.0.0.1:5198`.
-- 390px: stack, no horizontal scroll.
+- Work page: the clock is the idea — full-width well, kinds as 累计/专注
+  on top, occupancy chip in the remaining space (not a phone chrome).
+  Stage stays a 390 fixture. Stack, no horizontal scroll.

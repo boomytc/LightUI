@@ -24,8 +24,8 @@ The lab mounts `StudyView` at `/s/recall-grade`.
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — dueCards, canGrade, applyGrade (no DOM)
-- `src/recall/` — one deck in a window frame
-- `src/StageView.tsx` — one kind `deck`, one locked face, no chrome
+- `src/recall/` — one deck centered in a full-width desk well; stage still uses a window frame
+- `src/StageView.tsx` — one kind `deck`, one locked face, no chrome, 390 fixture
 - `src/lib/stage-query.ts` — `kind=deck`, `state=question|answer|empty` (default `answer`)
 
 ## Rules
@@ -39,4 +39,6 @@ The lab mounts `StudyView` at `/s/recall-grade`.
 - Empty copy is not 「暂无数据」. Grades are not a confirm dialog.
   Do not ship a live swipe carousel as a second product.
 - Bind the standalone server to `127.0.0.1:5199`.
-- 390px: stack, no horizontal scroll.
+- Work page: gradeable card at readable size, max ~28rem, centered in a
+  full-width well with side air. Grade buttons under the card at natural
+  size. Stage stays a 390 fixture. Stack, no horizontal scroll.

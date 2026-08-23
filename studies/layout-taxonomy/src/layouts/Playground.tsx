@@ -28,10 +28,10 @@ export function Playground() {
   }, []);
 
   return (
-    <div className="grid min-w-0 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+    <div className="min-w-0">
       <nav
         aria-label={locale === "en" ? "Layout kinds" : "布局种类"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
+        className="mb-5 flex flex-wrap gap-1.5"
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
@@ -42,25 +42,23 @@ export function Playground() {
               data-kind={kind.id}
               onClick={() => setActive(kind.id)}
               className={cn(
-                "flex min-w-40 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
+                "inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[12px] transition-colors",
                 on
                   ? "border-border-strong bg-surface shadow-card"
-                  : "border-transparent bg-transparent hover:bg-surface-2",
+                  : "border-transparent bg-surface-2 text-fg-muted hover:bg-surface hover:text-fg",
               )}
             >
               <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
                 {kind.index}
               </span>
-              <span className="min-w-0">
-                <span className="block truncate text-[13px] font-medium">{kind.name}</span>
-                <span className="block truncate text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
-              </span>
+              <span className="font-medium text-fg">{kind.name}</span>
+              <span className="text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
             </button>
           );
         })}
       </nav>
 
-      <section className="min-w-0 overflow-x-hidden">
+      <section className="min-w-0">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
             <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 07</p>

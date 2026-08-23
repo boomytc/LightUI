@@ -8,13 +8,23 @@
   position: absolute;
 }
 
-.slide-stage {
-  height: 14rem;
-}
-
+/* Playground fills the column. StageView wraps 390px for stills. */
 .slide-window {
   width: 100%;
-  max-width: 390px;
+  container-type: inline-size;
+  container-name: slide;
+}
+
+.slide-stage,
+.acc-grid {
+  height: 18rem;
+}
+
+@container slide (min-width: 640px) {
+  .slide-stage,
+  .acc-grid {
+    height: 20rem;
+  }
 }
 
 .slide-orb,
@@ -90,12 +100,23 @@
 }
 
 .coverflow-scene {
-  height: 252px;
+  --cover-w: clamp(132px, 28cqi, 18rem);
+  --cover-h: clamp(200px, 42cqi, 24rem);
+  height: calc(var(--cover-h) + 3.25rem);
   perspective: 1400px;
   perspective-origin: 50% 46%;
 }
 
+@container slide (min-width: 640px) {
+  .coverflow-scene {
+    perspective: 1800px;
+  }
+}
+
 .coverflow-card {
+  width: var(--cover-w);
+  height: var(--cover-h);
+  margin-left: calc(var(--cover-w) / -2);
   transform-style: preserve-3d;
   transition:
     transform 560ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -108,8 +129,9 @@
 }
 
 .stack-scene {
-  height: 236px;
-  max-width: 300px;
+  --stack-card-h: clamp(214px, 48cqi, 20rem);
+  width: min(36rem, 88%);
+  height: calc(var(--stack-card-h) + 1.75rem);
   margin-inline: auto;
 }
 
@@ -119,7 +141,7 @@
 }
 
 .stack-card .slide-art {
-  height: 214px;
+  height: var(--stack-card-h);
 }
 
 .stack-card.is-drag {
@@ -127,7 +149,7 @@
 }
 
 .book-scene {
-  height: 220px;
+  height: clamp(220px, 52cqi, 22rem);
   perspective: 2200px;
   perspective-origin: 50% 50%;
 }
@@ -180,7 +202,6 @@
 
 .acc-grid {
   display: grid;
-  height: 14rem;
   gap: 6px;
   transition: grid-template-columns 450ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -194,11 +215,15 @@
 }
 
 .cube-scene {
-  height: 188px;
-  perspective: 900px;
+  --cube: clamp(132px, 30cqi, 18rem);
+  height: calc(var(--cube) + 3.5rem);
+  perspective: calc(var(--cube) * 6.8);
 }
 
 .cube {
+  width: var(--cube);
+  height: var(--cube);
+  margin-left: calc(var(--cube) / -2);
   transform-style: preserve-3d;
   transition: transform 80ms linear;
 }
@@ -211,8 +236,46 @@
   transition: none;
 }
 
+.cube-face {
+  inset: 0;
+  box-shadow: inset 0 0 0 1px rgb(23 24 28 / 0.08);
+}
+
+.cube-face-0 {
+  transform: rotateY(0deg) translateZ(calc(var(--cube) / 2));
+}
+
+.cube-face-1 {
+  transform: rotateY(90deg) translateZ(calc(var(--cube) / 2));
+}
+
+.cube-face-2 {
+  transform: rotateY(180deg) translateZ(calc(var(--cube) / 2));
+}
+
+.cube-face-3 {
+  transform: rotateY(-90deg) translateZ(calc(var(--cube) / 2));
+}
+
+.cube-ground {
+  width: calc(var(--cube) * 0.85);
+  height: 0.75rem;
+}
+
 .para-scene {
-  height: 16rem;
+  height: 18rem;
+}
+
+@container slide (min-width: 520px) {
+  .para-scene {
+    height: 20rem;
+  }
+}
+
+@container slide (min-width: 720px) {
+  .para-scene {
+    height: 22rem;
+  }
 }
 
 .para-layer {
@@ -222,6 +285,10 @@
 
 .para-layer.is-jump {
   transition: none;
+}
+
+.para-card {
+  width: clamp(10.5rem, 36cqi, 20rem);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -6,19 +6,47 @@ import { ActionButton, Window } from "./Frame";
 
 export type SceneState = "ok" | "wrong";
 
-export function Scene({
+export function ActionRow({
   named,
-  state = "ok",
-  showWrongNote = false,
+  state,
 }: {
-  named: KindId;
-  state?: SceneState;
-  showWrongNote?: boolean;
+  named?: KindId;
+  state: SceneState;
 }) {
   const locale = useLocale();
   const wrong = state === "wrong";
   const leaves = wrong ? WRONG_BAR : TRIO;
   const crowded = tooManyPrimaries(primaryCount(leaves.map((leaf) => leaf.kind)));
+
+  return (
+    <div
+      className={cn(
+        "flex w-fit max-w-full flex-wrap items-center gap-2",
+        crowded && "rounded-xl border border-dashed border-border-strong bg-surface-2 px-2.5 py-2",
+      )}
+    >
+      {leaves.map((leaf, i) => (
+        <ActionButton
+          key={`${leaf.kind}-${leaf.label.zh}-${i}`}
+          kind={leaf.kind}
+          named={!wrong && named != null && leaf.kind === named}
+        >
+          {pick(leaf.label, locale)}
+        </ActionButton>
+      ))}
+    </div>
+  );
+}
+
+export function Scene({
+  named,
+  state = "ok",
+}: {
+  named: KindId;
+  state?: SceneState;
+}) {
+  const locale = useLocale();
+  const wrong = state === "wrong";
 
   return (
     <div className="w-full min-w-0 max-w-[390px] overflow-x-hidden">
@@ -33,21 +61,8 @@ export function Scene({
           {locale === "en" ? "12 pages · 3.2 MB" : "12 页 · 3.2 MB"}
         </p>
 
-        <div
-          className={cn(
-            "mt-5 flex flex-wrap items-center gap-2 overflow-x-hidden",
-            crowded && "rounded-xl border border-dashed border-border-strong bg-surface-2 px-2.5 py-2",
-          )}
-        >
-          {leaves.map((leaf, i) => (
-            <ActionButton
-              key={`${leaf.kind}-${leaf.label.zh}-${i}`}
-              kind={leaf.kind}
-              named={!wrong && leaf.kind === named}
-            >
-              {pick(leaf.label, locale)}
-            </ActionButton>
-          ))}
+        <div className="mt-5">
+          <ActionRow named={named} state={state} />
         </div>
 
         {wrong ? (
@@ -64,31 +79,6 @@ export function Scene({
           </p>
         )}
       </Window>
-
-      {showWrongNote && !wrong ? <WrongNote /> : null}
-    </div>
-  );
-}
-
-function WrongNote() {
-  const locale = useLocale();
-  return (
-    <div className="mt-3 min-w-0 overflow-x-hidden rounded-2xl border border-dashed border-border-strong bg-surface px-4 py-3">
-      <p className="text-[11px] font-medium tracking-wide text-accent">
-        {locale === "en" ? "Wrong" : "错"}
-      </p>
-      <p className="mt-1 text-[12px] leading-relaxed text-fg-muted">
-        {locale === "en"
-          ? "Two solids in one bar. Both shout; neither is the primary."
-          : "同一条里两个面状。两个都在喊，就没有主按钮。"}
-      </p>
-      <div className="mt-2.5 flex flex-wrap items-center gap-2 overflow-x-hidden">
-        {WRONG_BAR.map((leaf, i) => (
-          <ActionButton key={`${leaf.label.zh}-${i}`} kind={leaf.kind}>
-            {pick(leaf.label, locale)}
-          </ActionButton>
-        ))}
-      </div>
     </div>
   );
 }

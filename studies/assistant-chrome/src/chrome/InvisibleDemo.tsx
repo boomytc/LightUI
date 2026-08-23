@@ -37,23 +37,23 @@ export function InvisibleDemo() {
 
   return (
     <Window title={pick(meta.window, locale)}>
-      <div className="flex h-full min-w-0 flex-col overflow-x-hidden">
+      <div data-album className="flex h-full min-w-0 flex-col overflow-x-hidden">
         <div className="flex items-center justify-between gap-2 px-3 pt-3">
           <h2 className="text-[15px] font-semibold">{locale === "en" ? "Photos" : "时光相册"}</h2>
           <p className="text-[11px] text-fg-subtle">{locale === "en" ? "K to sort" : "按 K 整理"}</p>
         </div>
 
-        <div className="grid min-h-0 min-w-0 flex-1 grid-cols-3 gap-1.5 overflow-auto p-3">
+        <div className="chrome-album-grid min-h-0 min-w-0 flex-1 gap-1.5 overflow-auto p-3">
           {PHOTOS.map((p) => (
-            <figure key={p.id} className="min-w-0 overflow-hidden rounded-lg bg-surface-2">
-              <div className={cn("relative aspect-[4/3]", TONE[p.tone])}>
+            <figure key={p.id} className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-lg bg-surface-2">
+              <div className={cn("relative min-h-12 min-w-0 flex-1", TONE[p.tone])}>
                 {tagged ? (
                   <span className="absolute top-1.5 left-1.5 rounded-full bg-accent px-1.5 py-px text-[9px] text-accent-fg">
                     {pick(p.tag, locale)}
                   </span>
                 ) : null}
               </div>
-              <figcaption className="min-w-0 px-1.5 py-1.5">
+              <figcaption className="min-w-0 shrink-0 px-1.5 py-1.5">
                 <p className="truncate text-[11px] font-medium">{pick(p.title, locale)}</p>
                 <p className="truncate text-[10px] text-fg-subtle">{pick(p.date, locale)}</p>
               </figcaption>

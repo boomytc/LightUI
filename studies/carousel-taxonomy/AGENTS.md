@@ -40,4 +40,6 @@ The lab mounts `StudyView` at `/s/carousel-taxonomy`.
 - Advancing frames is not a notice marquee. A carousel is not masonry.
   List pagination is not a ninth kind.
 - Bind the standalone server to `127.0.0.1:5188`.
-- The window is 390px; do not introduce page-level horizontal scroll.
+- Playground window fills the content column. Kinds sit in a wrapping
+  chip row above the stage; spec sits in a compact strip under it.
+  StageView stays 390px for stills. No page-level horizontal scroll.

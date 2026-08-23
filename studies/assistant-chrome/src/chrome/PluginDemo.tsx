@@ -1,8 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { PLUGIN_ACTIONS, PLUGIN_FAKE, type PluginAction } from "../lib/fixtures";
+import { PLUGIN_ACTIONS, PLUGIN_DOC, PLUGIN_FAKE, type PluginAction } from "../lib/fixtures";
 import { KINDS } from "../lib/kinds";
 import { pick, useLocale } from "../lib/site-locale";
-import { cn } from "../lib/utils";
 import { Window } from "./Frame";
 
 type Toolbar = {
@@ -15,7 +14,7 @@ type Toolbar = {
 export function PluginDemo({ open = false }: { open?: boolean }) {
   const locale = useLocale();
   const meta = KINDS[2]!;
-  const rootRef = useRef<HTMLElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const [toolbar, setToolbar] = useState<Toolbar | null>(null);
   const [lockPos, setLockPos] = useState({ x: 120, y: 118, below: false });
 
@@ -27,7 +26,7 @@ export function PluginDemo({ open = false }: { open?: boolean }) {
     const rect = hit.getBoundingClientRect();
     const host = root.getBoundingClientRect();
     const localTop = rect.top - host.top;
-    const below = localTop <= 36;
+    const below = localTop <= 64;
     setLockPos({
       x: Math.min(Math.max(rect.left + rect.width / 2 - host.left, 64), Math.max(64, host.width - 64)),
       y: below ? rect.bottom - host.top + 8 : localTop,
@@ -40,7 +39,8 @@ export function PluginDemo({ open = false }: { open?: boolean }) {
     function onMouseUp(e: MouseEvent) {
       const root = rootRef.current;
       if (!root) return;
-      if ((e.target as HTMLElement | null)?.closest("[data-plugin-bar]")) return;
+      const target = e.target;
+      if (target instanceof Element && target.closest("[data-plugin-bar]")) return;
       const sel = window.getSelection();
       if (!sel || sel.isCollapsed || sel.rangeCount === 0) {
         setToolbar(null);
@@ -58,7 +58,7 @@ export function PluginDemo({ open = false }: { open?: boolean }) {
       const rect = range.getBoundingClientRect();
       const host = root.getBoundingClientRect();
       const localTop = rect.top - host.top;
-      const below = localTop <= 36;
+      const below = localTop <= 64;
       setToolbar({
         x: Math.min(Math.max(rect.left + rect.width / 2 - host.left, 64), Math.max(64, host.width - 64)),
         y: below ? rect.bottom - host.top + 8 : localTop,
@@ -92,35 +92,27 @@ export function PluginDemo({ open = false }: { open?: boolean }) {
 
   return (
     <Window title={pick(meta.window, locale)}>
-      <article ref={rootRef} className="relative h-full min-w-0 overflow-auto overflow-x-hidden px-4 py-4">
-        <p className="text-[10px] tracking-widest text-accent">
-          {locale === "en" ? "RELEASE NOTES" : "发布说明 · RELEASE NOTES"}
-        </p>
-        <h2 className="mt-2 text-[1.05rem] font-semibold tracking-tight">
-          {locale === "en" ? "How the team ships" : "团队发布节奏"}
-        </h2>
-        <p className="mt-0.5 text-[11px] text-fg-subtle">
-          {locale === "en" ? "Orbit · 19 Aug · 3 min" : "8 月 19 日更新 · 阅读 3 分钟"}
-        </p>
-        <hr className="my-3 border-border" />
-        <div className="space-y-3 text-[13px] leading-6 text-fg">
-          <p>
-            <span data-plugin-hit className={open ? "chrome-plugin-hit" : undefined}>
-              Our team ships every Friday to keep the rhythm steady.
-            </span>{" "}
-            Small releases make it easier to review and roll back.
-          </p>
-          <p>
-            {locale === "en"
-              ? "Tease the hook three days early. Ship the main film on the day. Recap Sunday night."
-              : "预热提前三天放出亮点。上线当天发主视频，周日晚上做公开复盘。"}
-          </p>
-          <p className="text-[11px] text-fg-subtle">
-            {locale === "en"
-              ? "Select a sentence — the toolbar appears. The page itself does not change."
-              : "划选上面任意句子 — 工具条会出现，页面本身不会变。"}
-          </p>
-        </div>
+      <div ref={rootRef} className="relative h-full min-w-0 overflow-hidden">
+        <article data-plugin-doc className="chrome-doc h-full min-w-0 overflow-auto overflow-x-hidden px-5 py-5">
+          <div className="max-w-2xl">
+            <p className="text-[10px] tracking-widest text-accent">{pick(PLUGIN_DOC.kicker, locale)}</p>
+            <h2 className="mt-2 text-[1.2rem] font-semibold tracking-tight">{pick(PLUGIN_DOC.title, locale)}</h2>
+            <p className="mt-0.5 text-[11px] text-fg-subtle">{pick(PLUGIN_DOC.meta, locale)}</p>
+            <hr className="my-3 border-border" />
+            <div className="space-y-3 text-[13px] leading-7 text-fg">
+              <p>
+                <span data-plugin-hit className={open ? "chrome-plugin-hit" : undefined}>
+                  {pick(PLUGIN_DOC.hit, locale)}
+                </span>{" "}
+                {pick(PLUGIN_DOC.afterHit, locale)}
+              </p>
+              {PLUGIN_DOC.paras.map((para) => (
+                <p key={para.zh}>{pick(para, locale)}</p>
+              ))}
+              <p className="text-[11px] text-fg-subtle">{pick(PLUGIN_DOC.hint, locale)}</p>
+            </div>
+          </div>
+        </article>
 
         {showBar ? (
           <div
@@ -148,7 +140,7 @@ export function PluginDemo({ open = false }: { open?: boolean }) {
             </div>
           </div>
         ) : null}
-      </article>
+      </div>
     </Window>
   );
 }

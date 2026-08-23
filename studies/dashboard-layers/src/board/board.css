@@ -1,25 +1,86 @@
 .board-window {
   min-width: 0;
   width: 100%;
-  max-width: 390px;
   overflow-x: hidden;
+  container-type: inline-size;
 }
 
 .board-window-body {
   min-width: 0;
   overflow-x: hidden;
+  padding: 12px;
+}
+
+@container (min-width: 520px) {
+  .board-window-body {
+    padding: 16px 18px 18px;
+  }
+}
+
+.board-pane {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.board-head,
+.board-kpi-col,
+.board-grain {
+  min-width: 0;
+}
+
+.board-kpi-col {
+  container-type: inline-size;
+}
+
+.board-grain {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.board-dim-slot {
+  min-width: 0;
+  container-type: inline-size;
 }
 
 .board-kpis {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
+}
+
+@container (min-width: 280px) {
+  .board-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 420px) {
+  .board-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .board-table {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr) minmax(0, 0.8fr);
   min-width: 0;
+}
+
+.board-table-extra {
+  display: none;
+}
+
+@container (min-width: 640px) {
+  .board-table {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.8fr) minmax(0, 0.55fr) minmax(0, 0.7fr);
+  }
+
+  .board-table-extra {
+    display: block;
+  }
 }
 
 .board-bars {
@@ -29,9 +90,61 @@
   height: 64px;
 }
 
+@container (min-width: 520px) {
+  .board-bars {
+    height: 88px;
+  }
+}
+
 .board-bars > span {
   min-width: 0;
   flex: 1;
   border-radius: 3px 3px 0 0;
   background: color-mix(in oklab, var(--color-accent) 70%, transparent);
+}
+
+/* Wide layered: KPI rail + current grain (dim / detail). */
+@container (min-width: 680px) {
+  .board-pane[data-kind="layered"][data-layer="dim"],
+  .board-pane[data-kind="layered"][data-layer="detail"] {
+    display: grid;
+    grid-template-columns: minmax(13rem, 16.5rem) minmax(0, 1fr);
+    grid-template-areas:
+      "head head"
+      "kpis grain";
+    gap: 16px;
+    align-items: start;
+  }
+
+  .board-pane[data-kind="layered"][data-layer="dim"] .board-head,
+  .board-pane[data-kind="layered"][data-layer="detail"] .board-head {
+    grid-area: head;
+  }
+
+  .board-pane[data-kind="layered"][data-layer="dim"] .board-kpi-col,
+  .board-pane[data-kind="layered"][data-layer="detail"] .board-kpi-col {
+    grid-area: kpis;
+  }
+
+  .board-pane[data-kind="layered"][data-layer="dim"] .board-grain,
+  .board-pane[data-kind="layered"][data-layer="detail"] .board-grain {
+    grid-area: grain;
+  }
+
+  .board-pane[data-kind="platter"] > .board-grain {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
+    gap: 16px;
+    align-items: start;
+  }
+}
+
+/* Extra width: detail is its own column, not a phone stamp under the table. */
+@container (min-width: 880px) {
+  .board-pane[data-kind="layered"][data-layer="detail"] > .board-grain {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 22rem);
+    gap: 16px;
+    align-items: start;
+  }
 }

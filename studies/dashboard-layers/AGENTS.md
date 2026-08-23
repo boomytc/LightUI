@@ -38,4 +38,6 @@ The lab mounts `StudyView` at `/s/dashboard-layers`.
 - Extra CSS is imported from a file in the `StudyView` tree (`board/board.css`).
 - Drilling is not switching the chart mark. Layers are not a dashboard skin.
 - Bind the standalone server to `127.0.0.1:5194`.
-- 390px: stack, no horizontal scroll.
+- Stage fixture is 390px: stack, no horizontal scroll.
+- Playground board fills the work pane. KPI grid and drill columns use
+  container queries on the board, not the viewport.

@@ -22,7 +22,7 @@ export function Window({
         </div>
         {action}
       </div>
-      <div className="board-window-body p-3">{children}</div>
+      <div className="board-window-body">{children}</div>
     </div>
   );
 }

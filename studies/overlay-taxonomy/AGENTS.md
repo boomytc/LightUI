@@ -24,8 +24,11 @@ The lab mounts `StudyView` at `/s/overlay-taxonomy`.
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — interrupt, backdrop, anchor, restore, presence (no DOM)
-- `src/overlays/` — the three fixtures
-- `src/StageView.tsx` — one kind, one locked state, no chrome
+- `src/overlays/` — the three fixtures. Playground is a full-width
+  document (list / settings) filling the pane; kinds are top chips.
+  Do not stamp a 390 phone in empty gray.
+- `src/StageView.tsx` — compact window fixture, one kind, one locked
+  state, no chrome
 - `src/lib/stage-query.ts` — `kind=modal|drawer|popover`, `state=open|closed`
 
 ## Rules

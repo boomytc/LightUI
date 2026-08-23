@@ -13,10 +13,10 @@ export function Playground() {
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0];
 
   return (
-    <div className="grid min-w-0 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+    <div className="min-w-0 overflow-x-hidden">
       <nav
         aria-label={locale === "en" ? "Overlay kinds" : "浮层种类"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
+        className="flex flex-wrap gap-2"
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
@@ -27,25 +27,25 @@ export function Playground() {
               data-kind={kind.id}
               onClick={() => setActive(kind.id)}
               className={cn(
-                "flex min-w-40 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
+                "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-left transition-colors",
                 on
-                  ? "border-border-strong bg-surface shadow-card"
-                  : "border-transparent bg-transparent hover:bg-surface-2",
+                  ? "border-fg bg-fg text-surface"
+                  : "border-border bg-surface text-fg-muted hover:bg-surface-2 hover:text-fg",
               )}
             >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
+              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-surface/70" : "text-fg-subtle")}>
                 {kind.index}
               </span>
-              <span className="min-w-0">
-                <span className="block truncate text-[13px] font-medium">{kind.name}</span>
-                <span className="block truncate text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
+              <span className="text-[13px] font-medium">{kind.name}</span>
+              <span className={cn("text-[11px]", on ? "text-surface/70" : "text-fg-subtle")}>
+                {pick(kind.zh, locale)}
               </span>
             </button>
           );
         })}
       </nav>
 
-      <section className="min-w-0">
+      <section className="mt-6 min-w-0">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
             <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 03</p>
@@ -70,9 +70,9 @@ export function Playground() {
 
         {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
 
-        <SpecCard text={pick(meta.spec, locale)} locale={locale} />
+        <KindDemo key={meta.id} id={meta.id} />
 
-        <KindDemo id={meta.id} />
+        <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
         <ul className="mt-4 flex flex-wrap gap-2">
           {meta.rules.map((rule) => (
@@ -103,7 +103,7 @@ function SpecCard({ text, locale }: { text: string; locale: "zh" | "en" }) {
   }
 
   return (
-    <div className="mb-5 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
+    <div className="mt-5 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
       <div className="flex items-start justify-between gap-3">
         <p className="text-[11px] font-medium tracking-wide text-surface/45">
           {locale === "en" ? "Say it this way" : "说清楚"}
@@ -122,13 +122,21 @@ function SpecCard({ text, locale }: { text: string; locale: "zh" | "en" }) {
   );
 }
 
-export function KindDemo({ id, open }: { id: KindId; open?: boolean }) {
+export function KindDemo({
+  id,
+  open,
+  compact = false,
+}: {
+  id: KindId;
+  open?: boolean;
+  compact?: boolean;
+}) {
   switch (id) {
     case "modal":
-      return <ModalDemo defaultOpen={open} />;
+      return <ModalDemo defaultOpen={open} compact={compact} />;
     case "drawer":
-      return <DrawerDemo defaultOpen={open} />;
+      return <DrawerDemo defaultOpen={open} compact={compact} />;
     case "popover":
-      return <PopoverDemo defaultOpen={open} />;
+      return <PopoverDemo defaultOpen={open} compact={compact} />;
   }
 }

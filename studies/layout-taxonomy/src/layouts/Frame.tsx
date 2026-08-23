@@ -5,11 +5,13 @@ export function Window({
   title,
   children,
   fill = false,
+  well = false,
   bodyClassName,
 }: {
   title: string;
   children: ReactNode;
   fill?: boolean;
+  well?: boolean;
   bodyClassName?: string;
 }) {
   return (
@@ -25,7 +27,8 @@ export function Window({
       <div
         className={cn(
           "layout-window-body",
-          fill ? "h-[420px] overflow-y-auto p-0" : "max-h-[480px] overflow-y-auto",
+          fill && "layout-window-fill",
+          well && "layout-window-well",
           bodyClassName,
         )}
       >

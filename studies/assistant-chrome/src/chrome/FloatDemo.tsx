@@ -1,5 +1,6 @@
 import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { Send, X } from "lucide-react";
+import { FLOAT_DOC } from "../lib/fixtures";
 import { KINDS } from "../lib/kinds";
 import { shouldSendOnEnter } from "../lib/machines";
 import { pick, useLocale } from "../lib/site-locale";
@@ -67,20 +68,20 @@ export function FloatDemo() {
 
   return (
     <Window title={pick(meta.window, locale)}>
-      <div ref={hostRef} className="relative h-full min-w-0 overflow-hidden">
-        <article className="h-full overflow-auto overflow-x-hidden px-4 py-4">
-          <h2 className="text-[1.05rem] font-semibold tracking-tight">
-            {locale === "en" ? "Q3 product recap" : "Q3 产品复盘纪要"}
-          </h2>
-          <p className="mt-0.5 text-[11px] text-fg-subtle">
-            {locale === "en" ? "18 Aug · Room B · Lin" : "8 月 18 日 14:00 · 会议室 B"}
-          </p>
-          <hr className="my-3 border-border" />
-          <div className="space-y-1.5 text-[13px] leading-6 text-fg">
-            <p>{locale === "en" ? "1. Weekly ship held; two early releases." : "一、周更节奏整体稳定，两次提前发布。"}</p>
-            <p>{locale === "en" ? "2. Recap moves to Friday afternoon." : "二、复盘会改成每周五下午，全员参加。"}</p>
-            <p>{locale === "en" ? "3. Checklist 12 → 6 items." : "三、发布清单从 12 项精简到 6 项。"}</p>
-            <p>{locale === "en" ? "4. P0 feedback closes the same day." : "四、用户反馈分级，P0 当天闭环。"}</p>
+      <div ref={hostRef} data-float-host className="relative h-full min-w-0 overflow-hidden">
+        <article data-float-doc className="chrome-doc h-full overflow-auto overflow-x-hidden px-5 py-5">
+          <div className="max-w-2xl">
+            <h2 className="text-[1.2rem] font-semibold tracking-tight">{pick(FLOAT_DOC.title, locale)}</h2>
+            <p className="mt-0.5 text-[11px] text-fg-subtle">{pick(FLOAT_DOC.meta, locale)}</p>
+            <hr className="my-3 border-border" />
+            <div className="space-y-4 text-[13px] leading-7 text-fg">
+              {FLOAT_DOC.sections.map((section) => (
+                <section key={section.heading.zh}>
+                  <h3 className="text-[13px] font-semibold">{pick(section.heading, locale)}</h3>
+                  <p className="mt-1 text-fg-muted">{pick(section.body, locale)}</p>
+                </section>
+              ))}
+            </div>
           </div>
         </article>
 

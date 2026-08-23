@@ -3,6 +3,7 @@ import { Check, Copy } from "lucide-react";
 import { KINDS, type KindMeta } from "../lib/kinds";
 import {
   category,
+  MID_PROGRESS,
   prefersStatic,
   resolveLock,
   type KindId,
@@ -13,35 +14,50 @@ import { useRunProgress } from "../lib/use-run-progress";
 import { cn } from "../lib/utils";
 import { Scene } from "./Scenes";
 
+const DETERMINATE = KINDS.filter((k) => k.category === "determinate");
+const LOOP = KINDS.filter((k) => k.category === "indeterminate");
+
 export function Playground() {
   const locale = useLocale();
-  const [active, setActive] = useState<KindId>("fill");
+  const [active, setActive] = useState<KindId>("liquid");
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0];
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && ["INPUT", "TEXTAREA"].includes(target.tagName)) return;
+      const n = Number(e.key);
+      if (n >= 1 && n <= KINDS.length) {
+        e.preventDefault();
+        setActive(KINDS[n - 1]!.id);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
-    <div className="grid min-w-0 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
-      <nav
-        aria-label={locale === "en" ? "Progress kinds" : "进度种类"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
-      >
+    <div data-playground="progress" className="min-w-0">
+      <nav aria-label={locale === "en" ? "Progress kinds" : "进度种类"} className="flex flex-col gap-2">
         <Group
-          label={locale === "en" ? "Determinate" : "确定进度"}
-          kinds={KINDS.filter((k) => k.category === "determinate")}
+          label={locale === "en" ? "Determinate" : "能算"}
+          kinds={DETERMINATE}
           active={active}
           locale={locale}
           onPick={setActive}
         />
         <Group
-          label={locale === "en" ? "Indeterminate" : "不确定进度"}
-          kinds={KINDS.filter((k) => k.category === "indeterminate")}
+          label={locale === "en" ? "Loop" : "循环"}
+          kinds={LOOP}
           active={active}
           locale={locale}
           onPick={setActive}
         />
       </nav>
 
-      <section className="min-w-0">
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+      <section className="mt-8 min-w-0">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
             <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 08</p>
             <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
@@ -52,33 +68,37 @@ export function Playground() {
           </p>
         </div>
 
-        <div className="mb-4 flex flex-wrap gap-1.5">
-          {meta.scenes.map((scene) => (
-            <span
-              key={scene.zh}
-              className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
-            >
-              {pick(scene, locale)}
-            </span>
-          ))}
+        <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(16rem,0.8fr)] lg:items-start">
+          <KindDemo key={meta.id} id={meta.id} />
+
+          <div className="min-w-0">
+            <div className="mb-4 flex flex-wrap gap-1.5">
+              {meta.scenes.map((scene) => (
+                <span
+                  key={scene.zh}
+                  className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
+                >
+                  {pick(scene, locale)}
+                </span>
+              ))}
+            </div>
+
+            {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
+
+            <SpecCard text={pick(meta.spec, locale)} locale={locale} />
+
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {meta.rules.map((rule) => (
+                <li
+                  key={rule.zh}
+                  className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+                >
+                  {pick(rule, locale)}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-
-        {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
-
-        <SpecCard text={pick(meta.spec, locale)} locale={locale} />
-
-        <KindDemo id={meta.id} />
-
-        <ul className="mt-4 flex flex-wrap gap-2">
-          {meta.rules.map((rule) => (
-            <li
-              key={rule.zh}
-              className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
-            >
-              {pick(rule, locale)}
-            </li>
-          ))}
-        </ul>
       </section>
     </div>
   );
@@ -98,35 +118,35 @@ function Group({
   onPick: (id: KindId) => void;
 }) {
   return (
-    <div className="flex gap-2 lg:flex-col">
-      <p className="hidden px-1 pt-2 font-mono text-[10px] tracking-[0.14em] text-fg-subtle uppercase lg:block">
+    <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+      <p className="shrink-0 font-mono text-[10px] tracking-[0.14em] text-fg-subtle uppercase sm:w-28">
         {label}
       </p>
-      {kinds.map((kind) => {
-        const on = kind.id === active;
-        return (
-          <button
-            key={kind.id}
-            type="button"
-            data-kind={kind.id}
-            onClick={() => onPick(kind.id)}
-            className={cn(
-              "flex min-w-40 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
-              on
-                ? "border-border-strong bg-surface shadow-card"
-                : "border-transparent bg-transparent hover:bg-surface-2",
-            )}
-          >
-            <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
-              {kind.index}
-            </span>
-            <span className="min-w-0">
-              <span className="block truncate text-[13px] font-medium">{kind.name}</span>
-              <span className="block truncate text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
-            </span>
-          </button>
-        );
-      })}
+      <div className="flex flex-wrap gap-1.5">
+        {kinds.map((kind) => {
+          const on = kind.id === active;
+          return (
+            <button
+              key={kind.id}
+              type="button"
+              data-kind={kind.id}
+              aria-pressed={on}
+              onClick={() => onPick(kind.id)}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[13px] transition-colors",
+                on
+                  ? "border-fg bg-fg text-surface"
+                  : "border-border bg-surface text-fg-muted hover:border-border-strong hover:text-fg",
+              )}
+            >
+              <span className={cn("font-mono text-[10px] tabular-nums", on ? "text-surface/70" : "text-fg-subtle")}>
+                {kind.index}
+              </span>
+              <span className="font-medium">{locale === "en" ? kind.name : pick(kind.zh, locale)}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -145,7 +165,7 @@ function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   }
 
   return (
-    <div className="mb-5 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
+    <div className="rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
       <div className="flex items-start justify-between gap-3">
         <p className="text-[11px] font-medium tracking-wide text-surface/45">
           {locale === "en" ? "Say it this way" : "说清楚"}
@@ -183,6 +203,7 @@ function LockedScene({ id, state }: { id: KindId; state: string }) {
       looping={looping}
       wave={false}
       locale={locale}
+      scale="compact"
     />
   );
 }
@@ -205,9 +226,9 @@ function LiveScene({ id }: { id: KindId }) {
   }, [done, phase]);
 
   const progress =
-    cat === "determinate" ? (phase === "idle" ? 0 : phase === "done" ? 1 : value) : 0;
+    cat === "determinate" ? (phase === "idle" ? MID_PROGRESS : phase === "done" ? 1 : value) : 0;
   const loop = cat === "indeterminate" && looping && !prefersStatic(reduced, id);
-  const wave = cat === "determinate" && !reduced && (phase === "run" || phase === "done");
+  const wave = cat === "determinate" && !reduced;
 
   function startDeterminate() {
     setRestartKey((n) => n + 1);
@@ -221,6 +242,7 @@ function LiveScene({ id }: { id: KindId }) {
       looping={loop}
       wave={wave}
       locale={locale}
+      scale="hero"
       action={
         cat === "determinate" ? (
           <ActionButton disabled={phase === "run"} onClick={startDeterminate}>
@@ -260,7 +282,7 @@ function ActionButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="rounded-full bg-fg px-2.5 py-1 text-[11px] font-medium text-surface disabled:opacity-40"
+      className="rounded-full bg-fg px-4 py-1.5 text-[13px] font-medium text-surface disabled:opacity-40"
     >
       {children}
     </button>

@@ -65,7 +65,7 @@ export function ChatDemo() {
 
   return (
     <Window title={pick(meta.window, locale)}>
-      <div className="flex h-full min-w-0 flex-col overflow-x-hidden">
+      <div data-chat className="flex h-full min-w-0 flex-col overflow-x-hidden">
         <div className="flex items-center gap-2 border-b border-border px-3 py-2">
           <span className="grid size-7 place-items-center rounded-full bg-accent text-[11px] font-semibold text-accent-fg">
             {locale === "en" ? "A" : "助"}
@@ -81,7 +81,7 @@ export function ChatDemo() {
             <div
               key={m.id}
               className={cn(
-                "max-w-[82%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-[13px] leading-relaxed",
+                "max-w-[min(82%,40rem)] whitespace-pre-wrap rounded-2xl px-3 py-2 text-[13px] leading-relaxed",
                 m.role === "user"
                   ? "ml-auto rounded-tr-md bg-accent text-accent-fg"
                   : "rounded-tl-md bg-surface-2 text-fg",

@@ -9,7 +9,7 @@ export function StageView() {
   const meta = KINDS.find((k) => k.id === kind);
   return (
     <div data-stage="root" className="grid min-h-dvh place-items-center bg-bg px-8 py-12">
-      <div data-stage="fixture" className="w-full max-w-2xl">
+      <div data-stage="fixture" className="w-full max-w-2xl min-w-0">
         <KindDemo id={kind as KindId} defaultTab={tab || meta?.defaultTab} />
       </div>
     </div>

@@ -14,7 +14,7 @@ export function Window({
   children: ReactNode;
 }) {
   return (
-    <div className="relative w-full max-w-[390px] min-w-0 overflow-x-hidden overflow-hidden rounded-2xl border border-border bg-surface shadow-card">
+    <div className="relative w-full min-w-0 overflow-x-hidden overflow-hidden rounded-2xl border border-border bg-surface shadow-card">
       <div className="flex h-10 shrink-0 items-center gap-3 border-b border-border px-3">
         <span className="flex gap-1" aria-hidden="true">
           <i className="size-2 rounded-full bg-[#ff5f57]" />

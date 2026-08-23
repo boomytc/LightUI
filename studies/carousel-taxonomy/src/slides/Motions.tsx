@@ -51,7 +51,7 @@ export function ClassicMotion({ index, next, prev, jump, locale }: MotionProps) 
       }}
     >
       <div
-        className={cn("flex", !jump && "slide-tween")}
+        className={cn("flex h-full", !jump && "slide-tween")}
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
         {SLIDES.map((slide) => (
@@ -59,7 +59,7 @@ export function ClassicMotion({ index, next, prev, jump, locale }: MotionProps) 
             key={slide.id}
             slide={slide}
             locale={locale}
-            className="h-56 w-full shrink-0"
+            className="h-full w-full shrink-0"
           />
         ))}
       </div>
@@ -88,7 +88,7 @@ export function FadeMotion({ index, locale }: MotionProps) {
 export function CoverflowMotion({ index, go, jump, locale }: MotionProps) {
   const count = SLIDES.length;
   return (
-    <div className="coverflow-scene relative h-[252px] overflow-hidden">
+    <div className="coverflow-scene relative overflow-hidden">
       {SLIDES.map((slide, i) => {
         const offset = shortestOffset(i, index, count);
         const hidden = coverflowHidden(offset);
@@ -102,9 +102,6 @@ export function CoverflowMotion({ index, go, jump, locale }: MotionProps) {
               jump && "is-jump",
             )}
             style={{
-              width: 132,
-              height: 200,
-              marginLeft: -66,
               transform: `translateX(${offset * 58}%) rotateY(${offset * -40}deg) scale(${offset === 0 ? 1 : 0.86})`,
               zIndex: 20 - Math.abs(offset),
               opacity: hidden ? 0 : 1,
@@ -195,7 +192,7 @@ export function StackMotion({ index, next, prev, jump, locale }: MotionProps) {
               transform: `translate(${x}px, ${y + layer.y}px) rotate(${rotating}deg) scale(${layer.scale})`,
             }}
           >
-            <SlideArt slide={slide} locale={locale} className="h-[214px] w-full" />
+            <SlideArt slide={slide} locale={locale} className="w-full" />
           </div>
         );
       })}
@@ -268,7 +265,7 @@ export function FlipMotion({ index, next, prev, jump, locale }: MotionProps) {
 
   return (
     <div className="px-3 pt-3">
-      <div className="book-scene relative mx-auto h-[220px] w-full">
+      <div className="book-scene relative mx-auto w-full">
         <div className="absolute inset-0 overflow-hidden rounded-xl border border-border bg-surface-2">
           <button
             type="button"
@@ -346,7 +343,7 @@ export function AccordionMotion({ index, go, jump, locale }: MotionProps) {
 
   return (
     <div
-      className={cn("acc-grid h-56 px-2 pt-2", jump && "is-jump")}
+      className={cn("acc-grid px-2 pt-2", jump && "is-jump")}
       style={{ gridTemplateColumns: columns }}
     >
       {SLIDES.map((slide, i) => {
@@ -384,8 +381,6 @@ export function AccordionMotion({ index, go, jump, locale }: MotionProps) {
 }
 
 export function SpinMotion({ index, go, jump, locale }: MotionProps) {
-  const size = 132;
-  const half = size / 2;
   const [angle, setAngle] = useState(() => spinAngle(index));
   const [dragging, setDragging] = useState(false);
   const lastX = useRef(0);
@@ -393,13 +388,6 @@ export function SpinMotion({ index, go, jump, locale }: MotionProps) {
   useEffect(() => {
     if (!dragging) setAngle(spinAngle(index));
   }, [index, dragging]);
-
-  const faces = [
-    { name: SPIN_FACES[0], transform: `rotateY(0deg) translateZ(${half}px)` },
-    { name: SPIN_FACES[1], transform: `rotateY(90deg) translateZ(${half}px)` },
-    { name: SPIN_FACES[2], transform: `rotateY(180deg) translateZ(${half}px)` },
-    { name: SPIN_FACES[3], transform: `rotateY(-90deg) translateZ(${half}px)` },
-  ];
 
   function onDown(e: PointerEvent<HTMLDivElement>) {
     lastX.current = e.clientX;
@@ -426,7 +414,7 @@ export function SpinMotion({ index, go, jump, locale }: MotionProps) {
 
   return (
     <div className="px-4 pt-3 pb-1">
-      <div className="cube-scene relative mx-auto h-[188px] w-full">
+      <div className="cube-scene relative mx-auto w-full">
         <div
           className="absolute inset-0 touch-none"
           onPointerDown={onDown}
@@ -436,32 +424,22 @@ export function SpinMotion({ index, go, jump, locale }: MotionProps) {
         >
           <div
             className={cn("cube absolute top-6 left-1/2", jump ? "is-jump" : dragging ? "" : "is-ease")}
-            style={{
-              width: size,
-              height: size,
-              marginLeft: -half,
-              transform: `rotateX(-16deg) rotateY(${angle}deg)`,
-            }}
+            style={{ transform: `rotateX(-16deg) rotateY(${angle}deg)` }}
           >
-            {faces.map((face, i) => (
+            {SPIN_FACES.map((name, i) => (
               <div
                 key={i}
                 className={cn(
-                  "absolute flex items-center justify-center text-[13px] font-medium tracking-widest",
+                  "cube-face absolute flex items-center justify-center text-[13px] font-medium tracking-widest",
                   FACE_BG[i],
+                  `cube-face-${i}`,
                 )}
-                style={{
-                  width: size,
-                  height: size,
-                  transform: face.transform,
-                  boxShadow: "inset 0 0 0 1px rgb(23 24 28 / 0.08)",
-                }}
               >
-                {pick(face.name, locale)}
+                {pick(name, locale)}
               </div>
             ))}
           </div>
-          <div className="absolute bottom-3 left-1/2 h-3 w-28 -translate-x-1/2 rounded-[100%] bg-fg/20 blur-[5px]" />
+          <div className="cube-ground absolute bottom-3 left-1/2 -translate-x-1/2 rounded-[100%] bg-fg/20 blur-[5px]" />
         </div>
       </div>
       <label className="mt-1 block px-1">
@@ -534,7 +512,7 @@ export function ParallaxMotion({ index, jump, locale }: MotionProps) {
       </div>
       <div
         className={cn(
-          "para-layer absolute top-1/2 left-1/2 z-20 w-[168px] rounded-2xl border border-border bg-surface p-4 shadow-card",
+          "para-layer para-card absolute top-1/2 left-1/2 z-20 rounded-2xl border border-border bg-surface p-4 shadow-card",
           jump && "is-jump",
         )}
         style={{

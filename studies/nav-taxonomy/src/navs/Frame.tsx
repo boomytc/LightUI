@@ -10,19 +10,25 @@ export function Frame({
 }) {
   return (
     <div
-      className="overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
+      data-nav-frame=""
+      className="@container min-w-0 overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
     >
-      <div className="border-b border-border px-4 py-2.5">
-        <p className="truncate text-[12px] text-fg-subtle">{title}</p>
+      <div className="flex items-center gap-3 border-b border-border px-3 py-2.5 @min-[32rem]:px-4">
+        <span className="flex gap-1" aria-hidden="true">
+          <i className="size-2 rounded-full bg-[#ff5f57]" />
+          <i className="size-2 rounded-full bg-[#febc2e]" />
+          <i className="size-2 rounded-full bg-[#28c840]" />
+        </span>
+        <p className="min-w-0 flex-1 truncate text-[12px] text-fg-subtle">{title}</p>
       </div>
-      <div className="relative h-[22rem]">{children}</div>
+      <div className="relative h-[28rem] min-h-[28rem] min-w-0">{children}</div>
     </div>
   );
 }
 
 export function FakeCards({ n = 4 }: { n?: number }) {
   return (
-    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+    <div className="grid grid-cols-2 gap-2 @min-[32rem]:grid-cols-4">
       {Array.from({ length: n }, (_, i) => (
         <div key={i} className="aspect-[4/3] rounded-lg bg-surface-2 ring-1 ring-border" />
       ))}
@@ -47,7 +53,7 @@ export function HeroWash({ compact, dusk }: { compact?: boolean; dusk?: boolean 
         dusk
           ? "bg-linear-to-br from-fg via-fg-muted to-accent"
           : "bg-linear-to-br from-accent-soft via-surface-2 to-bg-warm",
-        compact ? "h-24" : "h-36",
+        compact ? "h-24" : "h-40",
       )}
     />
   );

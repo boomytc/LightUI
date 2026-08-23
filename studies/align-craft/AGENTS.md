@@ -24,8 +24,8 @@ The lab mounts `StudyView` at `/s/align-craft`.
 - `idea.md` / `study.json` — baseline vs focus vs box
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — `aligns`, `objectFitFor`, `needsObjectPosition` (no DOM)
-- `src/craft/` — seven WRONG / RIGHT constructions
-- `src/StageView.tsx` — one kind, one locked wrong|right, no chrome
+- `src/craft/` — seven WRONG / RIGHT constructions; the pair is a full-width 2-up (stack at 390)
+- `src/StageView.tsx` — one kind, one locked wrong|right, compact, no chrome
 - `src/lib/stage-query.ts` — `kind=baseline|cover|axis|margin|padding|optical|inset`, `state=wrong|right` (default baseline/right)
 - `src/align.css` — imported from TSX so the lab picks it up
 

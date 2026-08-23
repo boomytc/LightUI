@@ -37,3 +37,7 @@
 .tab-folder-item {
   clip-path: polygon(0 0, calc(100% - var(--bevel)) 0, 100% 100%, 0 100%);
 }
+
+.tab-page-panel {
+  min-width: 0;
+}

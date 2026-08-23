@@ -1,7 +1,22 @@
+.align-pair {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .align-pair {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1rem;
+  }
+}
+
 .align-baseline-guide {
   pointer-events: none;
   position: absolute;
-  right: -3.5rem;
+  right: 0;
   left: 0;
   bottom: 0.14em;
   border-top: 1px dashed var(--color-intent);

@@ -13,7 +13,10 @@ export function Window({
   bodyClassName?: string;
 }) {
   return (
-    <div className="chrome-window overflow-hidden rounded-2xl border border-border bg-surface shadow-card">
+    <div
+      data-chrome-window
+      className="chrome-window overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
+    >
       <div className="flex h-10 shrink-0 items-center justify-between gap-2 border-b border-border px-3">
         <div className="flex min-w-0 items-center gap-2">
           <span className="flex gap-1" aria-hidden="true">

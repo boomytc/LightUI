@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useLayoutEffect, useRef, useState, type ReactNode, type Ref } from "react";
 import {
   AREA_DATA,
   BAR_DATA,
@@ -26,19 +26,46 @@ const FG = "var(--color-fg-muted)";
 
 const FUNNEL_WIDTHS = [100, 82, 64, 46, 30];
 
+/** viewBox tracks the pane in CSS pixels so a wide work page is not a scaled-up 360 fixture. */
+function useChartBox(ratio: number, minWidth = 160) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [box, setBox] = useState({ width: 360, height: Math.round(360 * ratio) });
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const apply = (width: number) => {
+      if (width <= 0) return;
+      const w = Math.max(minWidth, Math.round(width));
+      const h = Math.max(120, Math.round(w * ratio));
+      setBox((prev) => (prev.width === w && prev.height === h ? prev : { width: w, height: h }));
+    };
+
+    apply(el.getBoundingClientRect().width);
+    const ro = new ResizeObserver((entries) => apply(entries[0]?.contentRect.width ?? 0));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ratio, minWidth]);
+
+  return [ref, box] as const;
+}
+
 function ChartSvg({
+  boxRef,
   label,
-  width = 360,
-  height = 200,
+  width,
+  height,
   children,
 }: {
+  boxRef: Ref<HTMLDivElement>;
   label: string;
-  width?: number;
-  height?: number;
+  width: number;
+  height: number;
   children: ReactNode;
 }) {
   return (
-    <div className="chart-frame">
+    <div ref={boxRef} className="chart-frame">
       <svg
         viewBox={`0 0 ${width} ${height}`}
         role="img"
@@ -96,9 +123,10 @@ function SeriesLine({
   label: string;
   fill?: boolean;
 }) {
-  const pad = { l: 10, r: 12, t: 14, b: 28 };
-  const W = 360;
-  const H = 200;
+  const [boxRef, box] = useChartBox(0.55);
+  const pad = { l: 8, r: 12, t: 14, b: 28 };
+  const W = box.width;
+  const H = box.height;
   const innerW = W - pad.l - pad.r;
   const innerH = H - pad.t - pad.b;
   const max = Math.max(...data.map((d) => d.value), 1) * 1.12;
@@ -108,15 +136,18 @@ function SeriesLine({
   const area = `${line} L ${xs[xs.length - 1]} ${pad.t + innerH} L ${xs[0]} ${pad.t + innerH} Z`;
 
   return (
-    <ChartSvg label={label} width={W} height={H}>
+    <ChartSvg boxRef={boxRef} label={label} width={W} height={H}>
       {hGrid(pad.l, W - pad.r, pad.t, pad.t + innerH)}
       {fill ? <path d={area} fill={ACCENT} fillOpacity={0.22} /> : null}
-      <path d={line} fill="none" stroke={ACCENT} strokeWidth={2.4} strokeLinejoin="round" />
+      <path d={line} fill="none" stroke={ACCENT} strokeWidth={2} strokeLinejoin="round" />
       {xs.map((x, i) => (
         <circle key={data[i]!.name.zh} cx={x} cy={ys[i]} r={3} fill={ACCENT} />
       ))}
-      {data.map((d, i) =>
-        i % 2 === 0 || i === data.length - 1 ? (
+      {data.map((d, i) => {
+        const last = i === data.length - 1;
+        const show = i === 0 || last || (i % 2 === 0 && i < data.length - 2);
+        if (!show) return null;
+        return (
           <text
             key={`t-${d.name.zh}`}
             x={xs[i]}
@@ -127,16 +158,17 @@ function SeriesLine({
           >
             {pick(d.name, locale)}
           </text>
-        ) : null,
-      )}
+        );
+      })}
     </ChartSvg>
   );
 }
 
 function ColumnMark({ locale }: { locale: Locale }) {
+  const [boxRef, box] = useChartBox(0.55);
   const pad = { l: 8, r: 8, t: 18, b: 28 };
-  const W = 360;
-  const H = 200;
+  const W = box.width;
+  const H = box.height;
   const innerW = W - pad.l - pad.r;
   const innerH = H - pad.t - pad.b;
   const max = Math.max(...COLUMN_DATA.map((d) => d.value), 1) * 1.12;
@@ -144,7 +176,7 @@ function ColumnMark({ locale }: { locale: Locale }) {
   const barW = slot * 0.55;
 
   return (
-    <ChartSvg label={locale === "en" ? "Units by category" : "品类销量"} width={W} height={H}>
+    <ChartSvg boxRef={boxRef} label={locale === "en" ? "Units by category" : "品类销量"} width={W} height={H}>
       {hGrid(pad.l, W - pad.r, pad.t, pad.t + innerH)}
       {COLUMN_DATA.map((d, i) => {
         const h = (d.value / max) * innerH;
@@ -167,9 +199,10 @@ function ColumnMark({ locale }: { locale: Locale }) {
 }
 
 function BarMark({ locale }: { locale: Locale }) {
-  const pad = { l: 124, r: 28, t: 8, b: 8 };
-  const W = 360;
-  const H = 200;
+  const [boxRef, box] = useChartBox(0.58);
+  const W = box.width;
+  const H = box.height;
+  const pad = { l: Math.min(132, Math.max(104, Math.round(W * 0.28))), r: 36, t: 8, b: 8 };
   const innerW = W - pad.l - pad.r;
   const innerH = H - pad.t - pad.b;
   const max = Math.max(...BAR_DATA.map((d) => d.value), 1);
@@ -177,7 +210,7 @@ function BarMark({ locale }: { locale: Locale }) {
   const barH = slot * 0.46;
 
   return (
-    <ChartSvg label={locale === "en" ? "City ranking" : "城市订单榜"} width={W} height={H}>
+    <ChartSvg boxRef={boxRef} label={locale === "en" ? "City ranking" : "城市订单榜"} width={W} height={H}>
       {BAR_DATA.map((d, i) => {
         const w = (d.value / max) * innerW;
         const y = pad.t + i * slot + (slot - barH) / 2;
@@ -224,11 +257,30 @@ function donutSlice(
 }
 
 function PieMark({ locale }: { locale: Locale }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState(220);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const apply = (width: number) => {
+      if (width <= 0) return;
+      const next = Math.max(120, Math.round(width));
+      setSize((prev) => (prev === next ? prev : next));
+    };
+
+    apply(el.getBoundingClientRect().width);
+    const ro = new ResizeObserver((entries) => apply(entries[0]?.contentRect.width ?? 0));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const total = PIE_DATA.reduce((s, d) => s + d.value, 0);
-  const cx = 90;
-  const cy = 90;
-  const rOut = 78;
-  const rIn = 48;
+  const cx = size / 2;
+  const cy = size / 2;
+  const rOut = Math.max(48, size / 2 - 6);
+  const rIn = rOut * 0.62;
   const gap = 0.045;
   let cursor = -Math.PI / 2;
   const slices = PIE_DATA.map((d, i) => {
@@ -240,10 +292,10 @@ function PieMark({ locale }: { locale: Locale }) {
   });
 
   return (
-    <div className="flex min-w-0 flex-wrap items-center gap-4">
-      <div className="chart-pie mx-auto shrink-0">
+    <div className="chart-pie-layout">
+      <div ref={ref} className="chart-pie">
         <svg
-          viewBox="0 0 180 180"
+          viewBox={`0 0 ${size} ${size}`}
           role="img"
           aria-label={locale === "en" ? "Budget mix" : "预算构成"}
           className="chart-svg"
@@ -263,15 +315,15 @@ function PieMark({ locale }: { locale: Locale }) {
           </text>
         </svg>
       </div>
-      <ul className="min-w-0 space-y-1.5">
+      <ul className="chart-legend">
         {PIE_DATA.map((d, i) => (
-          <li key={d.name.zh} className="flex items-center gap-2 text-[12px]">
+          <li key={d.name.zh}>
             <span
               className="chart-swatch shrink-0 rounded-sm"
               style={{ background: CHART_COLORS[i % CHART_COLORS.length] }}
             />
-            <span className="min-w-0 truncate text-fg">{pick(d.name, locale)}</span>
-            <span className="tabular-nums text-fg-subtle">{d.value}%</span>
+            <span className="min-w-0 flex-1 truncate text-fg">{pick(d.name, locale)}</span>
+            <span className="shrink-0 tabular-nums text-fg-subtle">{d.value}%</span>
           </li>
         ))}
       </ul>
@@ -280,9 +332,10 @@ function PieMark({ locale }: { locale: Locale }) {
 }
 
 function ScatterMark({ locale }: { locale: Locale }) {
+  const [boxRef, box] = useChartBox(0.55);
   const pad = { l: 28, r: 12, t: 14, b: 28 };
-  const W = 360;
-  const H = 200;
+  const W = box.width;
+  const H = box.height;
   const innerW = W - pad.l - pad.r;
   const innerH = H - pad.t - pad.b;
   const xs = SCATTER_DATA.map((d) => d.x);
@@ -295,7 +348,7 @@ function ScatterMark({ locale }: { locale: Locale }) {
   const py = (y: number) => pad.t + innerH - ((y - yMin) / (yMax - yMin)) * innerH;
 
   return (
-    <ChartSvg label={locale === "en" ? "Spend vs sales" : "投放 vs 销量"} width={W} height={H}>
+    <ChartSvg boxRef={boxRef} label={locale === "en" ? "Spend vs sales" : "投放 vs 销量"} width={W} height={H}>
       {hGrid(pad.l, W - pad.r, pad.t, pad.t + innerH)}
       {SCATTER_DATA.map((d, i) => (
         <circle
@@ -324,18 +377,21 @@ function ScatterMark({ locale }: { locale: Locale }) {
 }
 
 function StackedMark({ locale }: { locale: Locale }) {
-  const pad = { l: 8, r: 8, t: 18, b: 44 };
-  const W = 360;
-  const H = 210;
+  const [boxRef, box] = useChartBox(0.58);
+  const pad = { l: 8, r: 8, t: 18, b: 56 };
+  const W = box.width;
+  const H = box.height;
   const innerW = W - pad.l - pad.r;
   const innerH = H - pad.t - pad.b;
   const totals = STACKED_DATA.map((d) => d.core + d.plus + d.gift);
   const max = Math.max(...totals, 1) * 1.08;
   const slot = innerW / STACKED_DATA.length;
   const barW = slot * 0.5;
+  const legendSlot = 72;
+  const legendX0 = Math.max(8, (W - STACK_SERIES.length * legendSlot) / 2);
 
   return (
-    <ChartSvg label={locale === "en" ? "Quarter mix" : "季度构成"} width={W} height={H}>
+    <ChartSvg boxRef={boxRef} label={locale === "en" ? "Quarter mix" : "季度构成"} width={W} height={H}>
       {hGrid(pad.l, W - pad.r, pad.t, pad.t + innerH)}
       {STACKED_DATA.map((d, i) => {
         const x = pad.l + i * slot + (slot - barW) / 2;
@@ -364,7 +420,7 @@ function StackedMark({ locale }: { locale: Locale }) {
         );
       })}
       {STACK_SERIES.map((s, i) => (
-        <g key={s.key} transform={`translate(${80 + i * 70} ${H - 12})`}>
+        <g key={s.key} transform={`translate(${legendX0 + i * legendSlot} ${H - 14})`}>
           <rect width={8} height={8} y={-8} rx={1} fill={s.color} />
           <text x={12} y={0} fill={FG} fontSize={10}>
             {pick(s.name, locale)}
@@ -376,9 +432,10 @@ function StackedMark({ locale }: { locale: Locale }) {
 }
 
 function HeatmapMark({ locale }: { locale: Locale }) {
+  const [boxRef, box] = useChartBox(0.55);
   const pad = { l: 22, r: 8, t: 18, b: 8 };
-  const W = 360;
-  const H = 200;
+  const W = box.width;
+  const H = box.height;
   const cols = HEAT_SLOTS.length;
   const rows = HEAT_DAYS.length;
   const innerW = W - pad.l - pad.r;
@@ -388,7 +445,7 @@ function HeatmapMark({ locale }: { locale: Locale }) {
   const max = Math.max(...HEAT_VALUES, 1);
 
   return (
-    <ChartSvg label={locale === "en" ? "Week × hour" : "周 × 时段"} width={W} height={H}>
+    <ChartSvg boxRef={boxRef} label={locale === "en" ? "Week × hour" : "周 × 时段"} width={W} height={H}>
       {HEAT_SLOTS.map((slot, c) => (
         <text
           key={slot.zh}
@@ -435,23 +492,23 @@ function HeatmapMark({ locale }: { locale: Locale }) {
 
 function FunnelMark({ locale }: { locale: Locale }) {
   return (
-    <div className="flex min-w-0 flex-col gap-1.5 overflow-x-hidden">
+    <div className="chart-funnel">
       {FUNNEL_DATA.map((d, i) => {
         const prev = i === 0 ? d.value : FUNNEL_DATA[i - 1]!.value;
         const rate = i === 0 ? 100 : Math.round((d.value / prev) * 100);
         const width = FUNNEL_WIDTHS[i] ?? 28;
         return (
-          <div key={d.name.zh} className="flex min-w-0 items-center gap-2.5">
-            <div className="flex h-9 min-w-0 flex-1 items-center justify-center overflow-hidden">
+          <div key={d.name.zh} className="chart-funnel-row">
+            <div className="chart-funnel-track">
               <div
-                className="chart-funnel-band h-9"
+                className="chart-funnel-band"
                 style={{
                   width: `${width}%`,
                   background: CHART_COLORS[i % CHART_COLORS.length],
                 }}
               />
             </div>
-            <div className="w-[4.8rem] shrink-0 leading-tight">
+            <div className="chart-funnel-meta">
               <p className="truncate text-[11px] text-fg">{pick(d.name, locale)}</p>
               <p className="text-[11px] tabular-nums text-fg-subtle">
                 {d.value.toLocaleString()}
@@ -466,11 +523,13 @@ function FunnelMark({ locale }: { locale: Locale }) {
 }
 
 function RadarMark({ locale }: { locale: Locale }) {
-  const W = 360;
-  const H = 220;
-  const cx = 180;
-  const cy = 112;
-  const r = 78;
+  const [boxRef, box] = useChartBox(0.78);
+  const W = box.width;
+  const H = box.height;
+  const cx = W / 2;
+  const cy = H / 2 + 2;
+  const labelR = Math.min(cx, cy) - 12;
+  const r = labelR / 1.14;
   const n = RADAR_DATA.length;
   const rings = [0.25, 0.5, 0.75, 1];
   const angle = (i: number) => -Math.PI / 2 + (i / n) * Math.PI * 2;
@@ -487,7 +546,7 @@ function RadarMark({ locale }: { locale: Locale }) {
     }).join(" ") + " Z";
 
   return (
-    <ChartSvg label={locale === "en" ? "Product scores" : "产品评测"} width={W} height={H}>
+    <ChartSvg boxRef={boxRef} label={locale === "en" ? "Product scores" : "产品评测"} width={W} height={H}>
       {rings.map((t) => (
         <path key={t} d={ringPath(t)} fill="none" stroke={GRID} strokeWidth={1} />
       ))}
@@ -497,7 +556,7 @@ function RadarMark({ locale }: { locale: Locale }) {
       })}
       <path d={valuePath} fill={ACCENT} fillOpacity={0.22} stroke={ACCENT} strokeWidth={2} />
       {RADAR_DATA.map((d, i) => {
-        const p = pt(i, 1.22);
+        const p = polar(cx, cy, labelR, angle(i));
         const anchor = p.x < cx - 8 ? "end" : p.x > cx + 8 ? "start" : "middle";
         return (
           <text key={d.name.zh} x={p.x} y={p.y + 4} textAnchor={anchor} fill={FG} fontSize={11}>

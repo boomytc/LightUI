@@ -23,6 +23,7 @@ The lab mounts `StudyView` at `/s/dropdown-taxonomy`.
 
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
+- Playground: kinds as wrapping chips; live field in a `min(100%, 36rem)` well; spec as a caption beside / under. Not a 390 stamp.
 - `src/lib/multi-select.ts` — toggle / max / remove (no DOM)
 - `src/lib/cascader.ts` — parent expands, leaf commits (no DOM)
 - `src/lib/date-range.ts` — from / to / nights / past lock (no DOM)

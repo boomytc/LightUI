@@ -108,6 +108,7 @@ export function CanvasDemo() {
     >
       <div
         ref={vpRef}
+        data-canvas
         className="relative h-full min-w-0 cursor-grab overflow-hidden touch-none active:cursor-grabbing"
         onPointerDown={(e) => {
           if ((e.target as HTMLElement).closest("[data-card]")) return;

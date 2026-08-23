@@ -1,8 +1,10 @@
+/* Stage wraps the fixture at 390. Do not cap the work-page playground. */
 .chrome-window {
   min-width: 0;
-  max-width: 390px;
   width: 100%;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .chrome-window-body {
@@ -10,6 +12,10 @@
   min-width: 0;
   overflow-x: hidden;
   height: 420px;
+}
+
+.chrome-play .chrome-window-body {
+  height: min(70dvh, 640px);
 }
 
 .chrome-canvas {
@@ -65,9 +71,21 @@
   transform: translate(-50%, -100%);
 }
 
-.chrome-panel-rail {
-  width: 38%;
-  min-width: 8.5rem;
+.chrome-panel-split {
+  display: grid;
+  grid-template-columns: minmax(0, 62%) minmax(0, 38%);
+  min-width: 0;
+  height: 100%;
+}
+
+.chrome-doc {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.chrome-album-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .chrome-photo-sea {

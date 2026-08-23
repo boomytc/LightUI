@@ -1,24 +1,32 @@
 import { useState } from "react";
-import { useLocale } from "../lib/site-locale";
-import { Btn, Window } from "./Frame";
+import { pick, useLocale } from "../lib/site-locale";
+import { Btn, DemoShell } from "./Frame";
 import { MenuItem, Modal, PopoverMenu } from "./Overlay";
 
-const CARDS = [
-  { zh: "本周灵感", en: "This week" },
-  { zh: "视频选题", en: "Video ideas" },
-  { zh: "知识卡片", en: "Notes" },
-  { zh: "创作计划", en: "Plan" },
+const SETTINGS = [
+  { zh: "个人资料", en: "Profile", hintZh: "显示名、头像", hintEn: "Name and avatar" },
+  { zh: "通知", en: "Notifications", hintZh: "邮件与推送", hintEn: "Mail and push" },
+  { zh: "语言", en: "Language", hintZh: "简体中文", hintEn: "English" },
+  { zh: "外观", en: "Appearance", hintZh: "跟随系统", hintEn: "Match system" },
+  { zh: "账单", en: "Billing", hintZh: "席位与发票", hintEn: "Seats and invoices" },
+  { zh: "团队", en: "Team", hintZh: "12 位成员", hintEn: "12 members" },
 ];
 
-export function PopoverDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
+export function PopoverDemo({
+  defaultOpen = false,
+  compact = false,
+}: { defaultOpen?: boolean; compact?: boolean } = {}) {
   const locale = useLocale();
   const [menuOpen, setMenuOpen] = useState(defaultOpen);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const rows = compact ? SETTINGS.slice(0, 4) : SETTINGS;
 
   return (
-    <Window title={locale === "en" ? "Orbit · studio" : "Orbit · 工作室"}>
-      <div className="flex h-12 items-center justify-between border-b border-border px-4">
-        <p className="text-[12px] font-semibold tracking-[0.14em]">{locale === "en" ? "STUDIO" : "工作室"}</p>
+    <DemoShell
+      compact={compact}
+      title={locale === "en" ? "Orbit · settings" : "Orbit · 设置"}
+      brand={locale === "en" ? "Settings" : "设置"}
+      action={
         <div className="relative">
           <button
             type="button"
@@ -52,35 +60,51 @@ export function PopoverDemo({ defaultOpen = false }: { defaultOpen?: boolean } =
             </MenuItem>
           </PopoverMenu>
         </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 p-4">
-        {CARDS.map((card) => (
-          <div key={card.zh} className="rounded-lg border border-border px-3 py-3">
-            <span className="mb-2 block h-0.5 w-6 rounded-full bg-accent" />
-            <p className="text-[13px] font-medium">{locale === "en" ? card.en : card.zh}</p>
-            <p className="mt-1 text-[11px] text-fg-subtle">{locale === "en" ? "Continue" : "继续整理"}</p>
+      }
+      overlay={
+        <Modal
+          open={deleteOpen}
+          onClose={() => setDeleteOpen(false)}
+          title={locale === "en" ? "Delete this account?" : "确认删除账号？"}
+          description={
+            locale === "en"
+              ? "The menu was the light action. This modal is the heavy decision — it does not close on the scrim."
+              : "气泡负责轻操作，居中弹窗负责重决策。点遮罩关不掉。"
+          }
+        >
+          <div className="flex justify-end gap-2">
+            <Btn tone="outline" onClick={() => setDeleteOpen(false)}>
+              {locale === "en" ? "Cancel" : "取消"}
+            </Btn>
+            <Btn onClick={() => setDeleteOpen(false)}>{locale === "en" ? "Delete" : "确认删除"}</Btn>
           </div>
-        ))}
+        </Modal>
+      }
+    >
+      <div className="px-4 pt-4 pb-3 sm:px-5">
+        <h3 className="text-[15px] font-medium">{locale === "en" ? "Workspace" : "工作区"}</h3>
+        <p className="text-[12px] text-fg-subtle">
+          {locale === "en"
+            ? "The page stays readable. Four actions stick to the avatar."
+            : "页面仍可扫读。四项动作贴着头像。"}
+        </p>
       </div>
-
-      <Modal
-        open={deleteOpen}
-        onClose={() => setDeleteOpen(false)}
-        title={locale === "en" ? "Delete this account?" : "确认删除账号？"}
-        description={
-          locale === "en"
-            ? "The menu was the light action. This modal is the heavy decision — it does not close on the scrim."
-            : "气泡负责轻操作，居中弹窗负责重决策。点遮罩关不掉。"
-        }
-      >
-        <div className="flex justify-end gap-2">
-          <Btn tone="outline" onClick={() => setDeleteOpen(false)}>
-            {locale === "en" ? "Cancel" : "取消"}
-          </Btn>
-          <Btn onClick={() => setDeleteOpen(false)}>{locale === "en" ? "Delete" : "确认删除"}</Btn>
-        </div>
-      </Modal>
-    </Window>
+      <ul>
+        {rows.map((row) => (
+          <li
+            key={row.zh}
+            className="flex min-w-0 items-center justify-between gap-3 border-t border-border px-4 py-3 sm:px-5"
+          >
+            <div className="min-w-0">
+              <p className="truncate text-[13px]">{pick({ zh: row.zh, en: row.en }, locale)}</p>
+              <p className="truncate text-[11px] text-fg-subtle">
+                {pick({ zh: row.hintZh, en: row.hintEn }, locale)}
+              </p>
+            </div>
+            <span className="shrink-0 text-[12px] text-fg-subtle">{locale === "en" ? "Edit" : "更改"}</span>
+          </li>
+        ))}
+      </ul>
+    </DemoShell>
   );
 }

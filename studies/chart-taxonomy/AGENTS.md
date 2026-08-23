@@ -30,6 +30,12 @@ The lab mounts `StudyView` at `/s/chart-taxonomy`.
 - `src/StageView.tsx` — one kind, one locked followup, no chrome
 - `src/lib/stage-query.ts` — `kind=change|compare|share|relate|flow|ability`, `state=primary|alt`
 
+Work page: kinds are a top intent row. Spec is a compact side caption
+(stacked under the chart at ~390). Charts fill the demo pane — do not wrap
+the work-page demo in `max-w-[390px]`. Pie + legend is a 2-col grid on a
+wide pane; at 390 the legend stacks under the donut. No horizontal scroll.
+`StageView` stays `max-w-[390px]`.
+
 ## Rules
 
 - Keep the taxonomy machines free of React.

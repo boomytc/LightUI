@@ -33,7 +33,7 @@ export function SplitButtonDemo({ defaultOpen = false }: { defaultOpen?: boolean
       <textarea
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
-        rows={5}
+        rows={3}
         className="w-full resize-none rounded-lg border border-border bg-surface-2 px-3 py-3 text-[14px] leading-relaxed text-fg outline-none focus:border-accent"
       />
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">

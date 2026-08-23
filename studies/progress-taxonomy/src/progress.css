@@ -9,7 +9,12 @@
 }
 
 .meter-dot {
+  --meter-bounce: 9px;
   animation: meter-dot 1.15s ease-in-out infinite;
+}
+
+.meter-dot-hero {
+  --meter-bounce: 16px;
 }
 
 .meter-eq {
@@ -46,7 +51,7 @@
     transform: translateY(0);
   }
   35% {
-    transform: translateY(-9px);
+    transform: translateY(calc(var(--meter-bounce, 9px) * -1));
   }
 }
 

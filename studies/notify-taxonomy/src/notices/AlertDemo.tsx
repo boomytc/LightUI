@@ -29,7 +29,7 @@ export function AlertDemo({ state }: { state?: string } = {}) {
         </AppNav>
       }
     >
-      <div className="px-5 py-5">
+      <div className="px-6 py-6">
         <h2 className="text-[13px] font-semibold">{locale === "en" ? "Security" : "安全中心"}</h2>
         <p className="mt-0.5 text-[11px] text-fg-muted">
           {locale === "en" ? "Scan keys on a schedule" : "定期扫描密钥安全"}
@@ -48,7 +48,10 @@ export function AlertDemo({ state }: { state?: string } = {}) {
         </div>
 
         {visible ? (
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-md bg-accent-soft px-3 py-2.5">
+          <div
+            data-alert
+            className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-md bg-accent-soft px-3 py-2.5"
+          >
             <div className="flex min-w-0 items-center gap-2 text-[13px] text-accent">
               <TriangleAlert className="size-4 shrink-0" />
               <span className="min-w-0">

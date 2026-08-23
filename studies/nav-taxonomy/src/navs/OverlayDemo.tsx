@@ -26,16 +26,16 @@ export function OverlayDemo({ defaultOpen = false }: { defaultOpen?: boolean } =
 
   return (
     <Frame title={locale === "en" ? "Show" : "作品集"}>
-      <div className="relative h-full overflow-hidden">
-        <div className="flex h-11 items-center justify-between px-3">
-          <span className="text-[13px] font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
+      <div className="relative h-full min-w-0 overflow-hidden">
+        <div className="flex h-11 min-w-0 items-center justify-between px-3">
+          <span className="truncate text-[13px] font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
           <button
             ref={btnRef}
             type="button"
             aria-expanded={open}
             aria-label={locale === "en" ? "Open overlay" : "打开全屏菜单"}
             onClick={() => setOpen(true)}
-            className="grid size-9 place-items-center rounded-md hover:bg-surface-2"
+            className="grid size-9 shrink-0 place-items-center rounded-md hover:bg-surface-2"
           >
             <Menu className="size-4" />
           </button>
@@ -72,7 +72,7 @@ export function OverlayDemo({ defaultOpen = false }: { defaultOpen?: boolean } =
                 type="button"
                 onClick={close}
                 className={cn(
-                  "text-[1.7rem] leading-snug tracking-tight",
+                  "min-h-11 px-4 text-[clamp(1.35rem,4vw,1.85rem)] leading-snug tracking-tight",
                   index === 0 ? "font-semibold text-accent" : "text-fg-muted hover:text-fg",
                 )}
               >

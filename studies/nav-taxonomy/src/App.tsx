@@ -7,7 +7,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-dvh bg-bg text-fg">
+    <div className="min-h-dvh overflow-x-hidden bg-bg text-fg">
       <header className="page-width flex items-center gap-3 py-4">
         <span className="grid size-8 place-items-center rounded-lg bg-fg text-surface" aria-hidden="true">
           <svg viewBox="0 0 24 24" className="size-4" fill="none">

@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Check, Copy } from "lucide-react";
 import { answersFor, chooseControl, nextStep, type Answers, type ControlId } from "../lib/machines";
-import { KINDS, type KindId } from "../lib/kinds";
-import { pick, useLocale } from "../lib/site-locale";
+import { KINDS, type KindId, type KindMeta } from "../lib/kinds";
+import { pick, useLocale, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { CheckboxDemo } from "./CheckboxDemo";
 import { Chooser } from "./Chooser";
 import { ComboboxDemo } from "./ComboboxDemo";
+import { LiveFill } from "./Frame";
 import { RadioDemo } from "./RadioDemo";
 import { SelectDemo } from "./SelectDemo";
 import { TextareaDemo } from "./TextareaDemo";
@@ -17,15 +18,14 @@ export function Playground() {
   const [answers, setAnswers] = useState<Answers>({});
   const active = chooseControl(answers);
   const meta = active ? (KINDS.find((k) => k.id === active) ?? KINDS[0]) : null;
+  const step = nextStep(answers);
 
   return (
-    <div className="grid min-w-0 gap-6 lg:grid-cols-[0.92fr_1.08fr]">
-      <Chooser answers={answers} onChange={setAnswers} />
-
-      <section className="min-w-0">
+    <div data-grid="12" className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-12 lg:items-stretch">
+      <div data-col="kinds" className="flex min-w-0 flex-col gap-4 lg:col-span-4">
         <nav
           aria-label={locale === "en" ? "Control kinds" : "控件种类"}
-          className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0"
+          className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
         >
           {KINDS.map((kind) => {
             const on = kind.id === active;
@@ -36,7 +36,7 @@ export function Playground() {
                 data-kind={kind.id}
                 onClick={() => setAnswers(answersFor(kind.id))}
                 className={cn(
-                  "flex min-w-40 shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-left transition-colors",
+                  "flex min-w-40 shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-left transition-colors lg:min-w-0 lg:w-full",
                   on
                     ? "border-border-strong bg-surface shadow-card"
                     : "border-transparent bg-transparent hover:bg-surface-2",
@@ -54,55 +54,81 @@ export function Playground() {
           })}
         </nav>
 
+        <Chooser answers={answers} onChange={setAnswers} />
+
+        {meta ? <Lesson meta={meta} locale={locale} /> : null}
+      </div>
+
+      <section data-col="live" className="flex min-h-0 min-w-0 flex-col lg:col-span-8">
         {meta ? (
-          <>
-            <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 06</p>
-                <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
-                <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
-              </div>
-              <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
-                {pick(meta.tells, locale)}
-              </p>
-            </div>
-
-            <div className="mb-4 flex flex-wrap gap-1.5">
-              {meta.scenes.map((scene) => (
-                <span
-                  key={scene.zh}
-                  className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
-                >
-                  {pick(scene, locale)}
-                </span>
-              ))}
-            </div>
-
-            {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
-
-            <SpecCard text={pick(meta.spec, locale)} locale={locale} />
-
+          <LiveFill>
             <KindDemo id={meta.id} />
-
-            <ul className="mt-4 flex flex-wrap gap-2">
-              {meta.rules.map((rule) => (
-                <li
-                  key={rule.zh}
-                  className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
-                >
-                  {pick(rule, locale)}
-                </li>
-              ))}
-            </ul>
-          </>
-        ) : nextStep(answers) === "demand" ? (
-          <DemandSplit locale={locale} onPick={(id) => setAnswers(answersFor(id))} />
+          </LiveFill>
+        ) : step === "demand" ? (
+          <LiveSlot>
+            <DemandSplit locale={locale} onPick={(id) => setAnswers(answersFor(id))} />
+          </LiveSlot>
         ) : (
-          <p className="rounded-2xl border border-dashed border-border px-4 py-8 text-[14px] text-fg-subtle">
-            {locale === "en" ? "Finish the tree first." : "先走完判断树。"}
-          </p>
+          <LiveSlot dashed>
+            <p className="text-[14px] text-fg-subtle">
+              {locale === "en" ? "Finish the tree first." : "先走完判断树。"}
+            </p>
+          </LiveSlot>
         )}
       </section>
+    </div>
+  );
+}
+
+function LiveSlot({ children, dashed }: { children: ReactNode; dashed?: boolean }) {
+  return (
+    <div
+      data-live="pane"
+      className={cn(
+        "flex h-full min-h-[20rem] flex-1 flex-col rounded-2xl border bg-surface p-5 sm:p-6 lg:min-h-[32rem]",
+        dashed ? "items-center justify-center border-dashed border-border" : "border-border shadow-card",
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
+function Lesson({ meta, locale }: { meta: KindMeta; locale: Locale }) {
+  return (
+    <div className="min-w-0">
+      <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 06</p>
+      <h2 className="mt-1 text-[1.35rem] font-semibold tracking-tight">{meta.name}</h2>
+      <p className="mt-1 text-[13px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
+      <p className="mt-2 text-[12px] leading-relaxed text-fg-subtle">{pick(meta.tells, locale)}</p>
+
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        {meta.scenes.map((scene) => (
+          <span
+            key={scene.zh}
+            className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
+          >
+            {pick(scene, locale)}
+          </span>
+        ))}
+      </div>
+
+      {meta.note ? <p className="mt-3 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
+
+      <div className="mt-4">
+        <SpecCard text={pick(meta.spec, locale)} locale={locale} />
+      </div>
+
+      <ul className="mt-3 flex flex-wrap gap-2">
+        {meta.rules.map((rule) => (
+          <li
+            key={rule.zh}
+            className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+          >
+            {pick(rule, locale)}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -117,7 +143,7 @@ function DemandSplit({
   const fill = KINDS.filter((k) => k.id === "text-field" || k.id === "textarea");
   const pickKind = KINDS.filter((k) => k.id !== "text-field" && k.id !== "textarea");
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
+    <div className="grid h-full min-h-0 flex-1 gap-3 sm:grid-cols-2">
       <Column
         title={locale === "en" ? "Fill it in" : "自己填写"}
         items={fill}
@@ -149,7 +175,7 @@ function Column({
   accent?: boolean;
 }) {
   return (
-    <div className={cn("rounded-2xl border bg-surface-2 p-4", accent ? "border-accent/40" : "border-border")}>
+    <div className={cn("flex h-full min-h-0 flex-col rounded-2xl border bg-surface-2 p-4", accent ? "border-accent/40" : "border-border")}>
       <h3 className={cn("text-[15px] font-semibold", accent ? "text-accent" : "text-fg")}>{title}</h3>
       <div className="mt-3 flex flex-col gap-2">
         {items.map((item) => (
@@ -183,7 +209,7 @@ function SpecCard({ text, locale }: { text: string; locale: "zh" | "en" }) {
   }
 
   return (
-    <div className="mb-5 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
+    <div className="rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
       <div className="flex items-start justify-between gap-3">
         <p className="text-[11px] font-medium tracking-wide text-surface/45">
           {locale === "en" ? "Say it this way" : "说清楚"}

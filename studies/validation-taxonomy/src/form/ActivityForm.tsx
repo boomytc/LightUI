@@ -120,6 +120,7 @@ export function ActivityForm({
     <form
       ref={formRef}
       noValidate
+      data-field="form"
       className="min-w-0"
       onSubmit={(event) => {
         event.preventDefault();
@@ -149,6 +150,7 @@ export function ActivityForm({
           <input
             id={nameId}
             name="name"
+            data-field="name"
             autoComplete="off"
             spellCheck={false}
             placeholder={pick({ zh: "请输入活动名称", en: "Activity name" }, locale)}
@@ -257,6 +259,7 @@ export function ActivityForm({
           <button
             id={dateId}
             type="button"
+            data-field="date"
             aria-expanded={dateOpen}
             aria-invalid={Boolean(errors.date)}
             aria-describedby={errors.date ? `${dateId}-error` : undefined}
@@ -349,6 +352,7 @@ export function ActivityForm({
 
       <button
         type="button"
+        data-field="submit"
         aria-disabled={!ready}
         onClick={handleSubmit}
         data-highlight={lesson === "submit" ? "true" : "false"}

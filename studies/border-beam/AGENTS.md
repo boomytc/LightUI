@@ -23,8 +23,8 @@ The lab mounts `StudyView` at `/s/border-beam`.
 
 - `idea.md` / `study.json` — travel the border, do not flood the card
 - `src/lib/machines.ts` — `pathOf` is `border` | `fill`; `shouldAnimate` is false when reduced (no DOM)
-- `src/beam.css` — imported from the card TSX (`@property` angle + conic-gradient)
-- `src/StageView.tsx` — `kind=beam|fill`, `state=run|park`
+- `src/beam.css` — imported from the card TSX (`@property` angle + conic-gradient). Work page compare grid is two slots of `min(100%, 22rem)`.
+- `src/StageView.tsx` — `kind=beam|fill`, `state=run|park`. Fixture stays 390.
 
 ## Rules
 
@@ -32,3 +32,5 @@ The lab mounts `StudyView` at `/s/border-beam`.
 - Relative imports only. Tokens from `design/tokens.css`.
 - Bind the standalone server to `127.0.0.1:5197`.
 - Brand accent only. No rainbow. Reduced motion is a static stroke.
+- Work page: desktop shows two cards side by side (边框光束 | 铺满错), each ~min(100%, 22rem). Not a 390 stamp.
+- Stage stays 390.

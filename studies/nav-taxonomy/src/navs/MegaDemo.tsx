@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useFinePointer } from "../lib/pointer";
 import { loc, pick, useLocale } from "../lib/site-locale";
@@ -16,35 +16,44 @@ export function MegaDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}
   const fine = useFinePointer();
   const [open, setOpen] = useState(defaultOpen);
   const [picked, setPicked] = useState(MEGA[0].items[1]);
+  const closeTimer = useRef(0);
+
+  useEffect(() => () => window.clearTimeout(closeTimer.current), []);
+
+  function arm() {
+    if (!fine) return;
+    window.clearTimeout(closeTimer.current);
+    setOpen(true);
+  }
+
+  function disarm() {
+    if (!fine) return;
+    window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => setOpen(false), 80);
+  }
 
   return (
     <Frame title={locale === "en" ? "Catalog" : "分类"}>
-      <div className="flex h-full flex-col">
-        <div
-          className="relative z-20"
-          onMouseEnter={() => {
-            if (fine) setOpen(true);
-          }}
-          onMouseLeave={() => {
-            if (fine) setOpen(false);
-          }}
-        >
-          <div className="flex h-11 shrink-0 items-center gap-4 border-b border-border px-4 text-[13px]">
-            <span className="font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
-            <span className="text-fg-muted">{locale === "en" ? "Home" : "首页"}</span>
+      <div className="flex h-full min-w-0 flex-col">
+        <div className="relative z-20">
+          <div className="flex h-11 min-w-0 shrink-0 items-center gap-3 border-b border-border px-3 text-[13px] @min-[32rem]:gap-4 @min-[32rem]:px-4">
+            <span className="shrink-0 font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
+            <span className="shrink-0 text-fg-muted">{locale === "en" ? "Home" : "首页"}</span>
             <button
               type="button"
               aria-expanded={open}
+              onMouseEnter={arm}
+              onMouseLeave={disarm}
               onClick={() => {
                 if (fine) return;
                 setOpen((v) => !v);
               }}
-              className="flex items-center gap-0.5 font-medium text-accent"
+              className="flex shrink-0 items-center gap-0.5 font-medium text-accent"
             >
               {locale === "en" ? "Catalog" : "分类"}
               <ChevronDown className={cn("size-3.5 transition-transform", open && "rotate-180")} />
             </button>
-            <span className="text-fg-muted">{locale === "en" ? "About" : "关于"}</span>
+            <span className="shrink-0 text-fg-muted">{locale === "en" ? "About" : "关于"}</span>
           </div>
           <div
             className={cn(
@@ -53,8 +62,10 @@ export function MegaDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}
                 ? "pointer-events-auto translate-y-0 opacity-100"
                 : "pointer-events-none invisible -translate-y-1 opacity-0",
             )}
+            onMouseEnter={arm}
+            onMouseLeave={disarm}
           >
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-3 @min-[32rem]:grid-cols-3 @min-[32rem]:gap-4">
               {MEGA.map((col) => (
                 <div key={col.title.zh}>
                   <p className="mb-2 text-[11px] font-medium tracking-wide text-accent">{pick(col.title, locale)}</p>
@@ -79,7 +90,7 @@ export function MegaDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}
             </div>
           </div>
         </div>
-        <div className="relative min-h-0 flex-1">
+        <div className="relative min-h-0 min-w-0 flex-1">
           <HeroWash />
           <p className="absolute bottom-3 left-4 text-[12px] text-fg-subtle">
             {locale === "en" ? "Current: " : "当前："}

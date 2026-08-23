@@ -25,8 +25,8 @@ The lab mounts `StudyView` at `/s/assistant-chrome`.
 - `idea.md` / `study.json` — where the assistant lives
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — occupiesPage, needsSelection, chromeVisible, shouldSendOnEnter (no DOM)
-- `src/chrome/` — six miniature windows
-- `src/StageView.tsx` — one kind, one locked state, no chrome
+- `src/chrome/` — six occupancy demos; kinds are top chips
+- `src/StageView.tsx` — one kind, one locked state, no chrome; fixture stays 390
 - `src/lib/stage-query.ts` — `kind=chat|panel|plugin|float|canvas|invisible`, `state=default` (`plugin` uses `state=open` for the toolbar)
 
 ## Rules
@@ -39,4 +39,5 @@ The lab mounts `StudyView` at `/s/assistant-chrome`.
   is not a dialog. A suggestion card is not a chat stream.
 - Enter must not send while IME is composing (`isComposing` / keyCode 229).
 - Bind the standalone server to `127.0.0.1:5195`.
-- 390px: no horizontal scroll.
+- Work-page playground fills the pane. Do not put `max-width: 390px` on `.chrome-window`.
+- StageView stays 390. No horizontal scroll.

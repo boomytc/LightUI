@@ -24,8 +24,10 @@ The lab mounts `StudyView` at `/s/button-taxonomy`.
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — weight, fill, primary cap, role (no DOM)
-- `src/buttons/` — one scene: the trio, plus a two-solid wrong bar
-- `src/StageView.tsx` — one kind, one locked state, no chrome
+- `src/buttons/` — work page: 2-col 对/错 filling the pane, kinds as a
+  small switch, spec as a caption, buttons at natural size. Do not wrap
+  the work page in a 390 Frame/Scene. Stage still uses the 390 Window.
+- `src/StageView.tsx` — one kind, one locked state, no chrome, 390 wide
 - `src/lib/stage-query.ts` — `kind=solid|outline|text`, `state=ok|wrong`
 
 ## Rules

@@ -18,17 +18,23 @@ export function BreadcrumbDemo() {
 
   return (
     <Frame title={locale === "en" ? "Docs" : "文档"}>
-      <div className="flex h-full flex-col">
-        <div className="flex h-11 shrink-0 items-center gap-4 border-b border-border px-4 text-[13px]">
-          <span className="font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
+      <div className="flex h-full min-w-0 flex-col">
+        <div className="flex h-11 min-w-0 shrink-0 items-center gap-3 border-b border-border px-3 text-[13px] @min-[32rem]:gap-4 @min-[32rem]:px-4">
+          <span className="shrink-0 font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
           {LINKS.map((item, index) => (
-            <span key={item.id} className={index === 1 ? "font-medium text-accent" : "text-fg-muted"}>
+            <span
+              key={item.id}
+              className={index === 1 ? "shrink-0 font-medium text-accent" : "shrink-0 text-fg-muted"}
+            >
               {pick(item.label, locale)}
             </span>
           ))}
         </div>
-        <nav aria-label="breadcrumb" className="shrink-0 px-4 py-2.5">
-          <ol className="flex flex-wrap items-center gap-1 text-[12px]">
+        <nav
+          aria-label="breadcrumb"
+          className="flex min-w-0 shrink-0 items-center justify-between gap-3 border-b border-border bg-surface-2 px-3 py-2.5 @min-[32rem]:px-4"
+        >
+          <ol className="flex min-w-0 flex-wrap items-center gap-1 text-[12px]">
             {trail.map((item, index) => {
               const last = isCurrent(index, trail.length);
               return (
@@ -55,8 +61,17 @@ export function BreadcrumbDemo() {
               );
             })}
           </ol>
+          {depth < TREE.length ? (
+            <button
+              type="button"
+              onClick={() => setDepth(TREE.length)}
+              className="shrink-0 text-[12px] text-accent hover:underline"
+            >
+              {locale === "en" ? "Restore" : "恢复路径"}
+            </button>
+          ) : null}
         </nav>
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
+        <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-4 pb-4 pt-3">
           <p className="mb-3 text-[12px] text-fg-subtle">
             {locale === "en" ? "A path under the primary nav. The last item is the page." : "主导航下面的路径。最后一项是当前页。"}
           </p>
@@ -64,15 +79,6 @@ export function BreadcrumbDemo() {
           <div className="mt-4">
             <FakeCards />
           </div>
-          {depth < TREE.length ? (
-            <button
-              type="button"
-              onClick={() => setDepth(TREE.length)}
-              className="mt-4 text-[12px] text-accent hover:underline"
-            >
-              {locale === "en" ? "Restore the full path" : "恢复完整路径"}
-            </button>
-          ) : null}
         </div>
       </div>
     </Frame>

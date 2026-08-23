@@ -26,9 +26,9 @@ export function DrawerDemo({ defaultOpen = false }: { defaultOpen?: boolean } = 
 
   return (
     <Frame title={locale === "en" ? "Phone" : "小屏"}>
-      <div className="relative h-full overflow-hidden">
-        <div className="flex h-11 items-center justify-between border-b border-border px-3">
-          <span className="text-[13px] font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
+      <div className="relative h-full min-w-0 overflow-hidden">
+        <div className="flex h-11 min-w-0 items-center justify-between border-b border-border px-3">
+          <span className="truncate text-[13px] font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
           <button
             ref={btnRef}
             type="button"
@@ -36,7 +36,7 @@ export function DrawerDemo({ defaultOpen = false }: { defaultOpen?: boolean } = 
             aria-controls="nav-drawer"
             aria-label={open ? (locale === "en" ? "Close menu" : "关闭菜单") : locale === "en" ? "Open menu" : "打开菜单"}
             onClick={() => setOpen((v) => !v)}
-            className="grid size-9 place-items-center rounded-md hover:bg-surface-2"
+            className="grid size-9 shrink-0 place-items-center rounded-md hover:bg-surface-2"
           >
             <Menu className="size-4" />
           </button>
@@ -57,7 +57,7 @@ export function DrawerDemo({ defaultOpen = false }: { defaultOpen?: boolean } = 
         <aside
           id="nav-drawer"
           className={cn(
-            "absolute inset-y-0 right-0 z-40 flex w-[70%] max-w-56 flex-col bg-surface shadow-card transition-transform duration-200",
+            "absolute inset-y-0 right-0 z-40 flex w-[min(18rem,80%)] max-w-[80%] flex-col bg-surface shadow-card transition-transform duration-200",
             open ? "translate-x-0" : "translate-x-full",
           )}
           aria-hidden={!open}

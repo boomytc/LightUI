@@ -78,7 +78,7 @@ export function OffCanvasDemo({ defaultOpen = false }: { defaultOpen?: boolean }
 
   return (
     <Frame title={locale === "en" ? "Design Notes · essay" : "Design Notes · 长文"}>
-      <div className="relative min-h-[22rem] overflow-hidden bg-surface">
+      <div className="relative min-h-[28rem] w-full min-w-0 flex-1 overflow-hidden bg-surface">
         <div
           className={cn(
             "absolute inset-0 z-[1] bg-fg/25 transition-opacity duration-300",
@@ -149,7 +149,7 @@ export function OffCanvasDemo({ defaultOpen = false }: { defaultOpen?: boolean }
           </span>
         </button>
 
-        <article className="h-full px-5 py-5">
+        <article className="h-full min-h-[28rem] min-w-0 px-5 py-5">
           <div className="mb-4 flex h-10 items-center pl-12">
             <p className="text-[11px] tracking-[0.16em] text-fg-subtle uppercase">Design Notes · 08</p>
           </div>

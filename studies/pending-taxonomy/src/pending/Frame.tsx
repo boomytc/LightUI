@@ -22,7 +22,9 @@ export function Window({
         </div>
         {action}
       </div>
-      <div className="pending-window-body p-3">{children}</div>
+      <div className="pending-window-body p-3" data-region="list">
+        {children}
+      </div>
     </div>
   );
 }

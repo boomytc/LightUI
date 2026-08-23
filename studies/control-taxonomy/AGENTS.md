@@ -24,7 +24,7 @@ The lab mounts `StudyView` at `/s/control-taxonomy`.
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — the fill/pick tree, member filter, capped toggle (no DOM)
-- `src/fields/` — chooser + the six fixtures
+- `src/fields/` — chooser + the six fixtures. Playground is a 12-col: kinds/chooser ~4, live pane ~8 filling height (not a phone). Stage stays compact.
 - `src/StageView.tsx` — one kind, one locked state, no chrome
 - `src/lib/stage-query.ts` — `kind=text-field|textarea|select|combobox|radio|checkbox`, `state=<fixture>`
 

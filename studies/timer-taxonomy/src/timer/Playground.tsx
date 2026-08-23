@@ -22,7 +22,7 @@ import {
 } from "../lib/machines";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
-import { InnerNav, TimeChip, Window } from "./Frame";
+import { InnerNav, KindPair, TimeChip, Well, Window } from "./Frame";
 import "./timer.css";
 
 export function Playground() {
@@ -46,78 +46,47 @@ export function Playground() {
   }, []);
 
   return (
-    <div className="grid min-w-0 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
-      <nav
-        aria-label={locale === "en" ? "Timer kinds" : "计时种类"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
-      >
-        {KINDS.map((kind) => {
-          const on = kind.id === active;
-          return (
-            <button
-              key={kind.id}
-              type="button"
-              data-kind={kind.id}
-              onClick={() => setActive(kind.id)}
-              className={cn(
-                "flex min-w-40 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
-                on
-                  ? "border-border-strong bg-surface shadow-card"
-                  : "border-transparent bg-transparent hover:bg-surface-2",
-              )}
-            >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
-                {kind.index}
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate text-[13px] font-medium">{kind.name}</span>
-                <span className="block truncate text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
-              </span>
-            </button>
-          );
-        })}
-      </nav>
-
-      <section className="min-w-0 overflow-x-hidden">
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-          <div className="min-w-0">
-            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 02</p>
-            <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
-            <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
-          </div>
-          <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
-            {pick(meta.tells, locale)}
-          </p>
+    <div className="min-w-0 overflow-x-hidden">
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 02</p>
+          <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
+          <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
         </div>
+        <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
+          {pick(meta.tells, locale)}
+        </p>
+      </div>
 
-        <div className="mb-4 flex flex-wrap gap-1.5">
-          {meta.scenes.map((scene) => (
-            <span
-              key={scene.zh}
-              className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
-            >
-              {pick(scene, locale)}
-            </span>
-          ))}
-        </div>
+      <KindDemo key={meta.id} id={meta.id} onKind={setActive} layout="desk" />
 
-        {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
+      <div className="mt-5 flex flex-wrap gap-1.5">
+        {meta.scenes.map((scene) => (
+          <span
+            key={scene.zh}
+            className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
+          >
+            {pick(scene, locale)}
+          </span>
+        ))}
+      </div>
 
+      {meta.note ? <p className="mt-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
+
+      <div className="mt-5">
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
+      </div>
 
-        <KindDemo key={meta.id} id={meta.id} />
-
-        <ul className="mt-4 flex flex-wrap gap-2">
-          {meta.rules.map((rule) => (
-            <li
-              key={rule.zh}
-              className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
-            >
-              {pick(rule, locale)}
-            </li>
-          ))}
-        </ul>
-      </section>
+      <ul className="mt-4 flex flex-wrap gap-2">
+        {meta.rules.map((rule) => (
+          <li
+            key={rule.zh}
+            className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+          >
+            {pick(rule, locale)}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -136,7 +105,7 @@ function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   }
 
   return (
-    <div className="mb-5 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
+    <div className="rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
       <div className="flex items-start justify-between gap-3">
         <p className="text-[11px] font-medium tracking-wide text-surface/45">
           {locale === "en" ? "Say it this way" : "说清楚"}
@@ -161,16 +130,21 @@ function nowSeconds() {
 
 export function KindDemo({
   id,
+  onKind,
   state,
   lock,
+  layout = "stage",
 }: {
   id: KindId;
+  onKind?: (id: KindId) => void;
   state?: StageState;
   lock?: StageSnapshot;
+  layout?: "desk" | "stage";
 }) {
   const locale = useLocale();
   const snap = lock ?? (state !== undefined ? stageSnapshot(id, stageState(state, id)) : null);
   const locked = snap !== null;
+  const desk = layout === "desk";
   const meta = KINDS.find((k) => k.id === id) ?? KINDS[0]!;
 
   const [live, setLive] = useState(() => emptyTimer(id, PLAYGROUND_FOCUS_MINUTES));
@@ -215,51 +189,84 @@ export function KindDemo({
     setLive((cur) => end(cur));
   }
 
+  const pageLabels = {
+    timer: locale === "en" ? "Timer" : "计时",
+    plan: locale === "en" ? "Plan" : "计划",
+  };
+
+  const chip = occupying ? (
+    <TimeChip
+      label={shown}
+      running={timer.running}
+      onClick={locked ? undefined : () => setPage("timer")}
+    />
+  ) : undefined;
+
+  const body =
+    pane === "plan" ? (
+      <PlanPane locale={locale} layout={layout} />
+    ) : (
+      <TimerPane
+        id={id}
+        locale={locale}
+        layout={layout}
+        shown={shown}
+        status={status}
+        progress={progress}
+        caption={pick(meta.caption, locale)}
+        hint={
+          id === "focus"
+            ? locale === "en"
+              ? `Focus · ${timer.focusMinutes} min`
+              : `专注 ${timer.focusMinutes} 分钟`
+            : pick(meta.hint, locale)
+        }
+        onStart={handleStart}
+        onPause={handlePause}
+        onEnd={handleEnd}
+      />
+    );
+
+  if (desk) {
+    return (
+      <Well>
+        <div className="flex flex-wrap items-center gap-3 border-b border-border px-4 py-3">
+          <KindPair
+            value={id}
+            labels={{
+              stopwatch: pick(KINDS[0]!.zh, locale),
+              focus: pick(KINDS[1]!.zh, locale),
+            }}
+            onPick={locked ? undefined : onKind}
+          />
+          <div className="ml-auto flex min-w-0 items-center gap-2">
+            {chip}
+            <InnerNav
+              compact
+              page={pane}
+              labels={pageLabels}
+              onPick={locked ? undefined : setPage}
+            />
+          </div>
+        </div>
+        {body}
+      </Well>
+    );
+  }
+
   return (
     <Window
       title={pick(meta.window, locale)}
-      chip={
-        occupying ? (
-          <TimeChip
-            label={shown}
-            running={timer.running}
-            onClick={locked ? undefined : () => setPage("timer")}
-          />
-        ) : undefined
-      }
+      chip={chip}
       nav={
         <InnerNav
           page={pane}
-          labels={{
-            timer: locale === "en" ? "Timer" : "计时",
-            plan: locale === "en" ? "Plan" : "计划",
-          }}
+          labels={pageLabels}
           onPick={locked ? undefined : setPage}
         />
       }
     >
-      {pane === "plan" ? (
-        <PlanPane locale={locale} />
-      ) : (
-        <TimerPane
-          id={id}
-          locale={locale}
-          shown={shown}
-          status={status}
-          progress={progress}
-          caption={pick(meta.caption, locale)}
-          hint={
-            id === "focus"
-              ? locale === "en"
-                ? `Focus · ${timer.focusMinutes} min`
-                : `专注 ${timer.focusMinutes} 分钟`
-              : pick(meta.hint, locale)
-          }
-          onStart={handleStart}
-          onPause={handlePause}
-          onEnd={handleEnd}
-        />
-      )}
+      {body}
     </Window>
   );
 }
@@ -278,6 +285,7 @@ function sessionFace(t: TimerState, now: number): Face {
 function TimerPane({
   id,
   locale,
+  layout,
   shown,
   status,
   progress,
@@ -289,6 +297,7 @@ function TimerPane({
 }: {
   id: KindId;
   locale: Locale;
+  layout: "desk" | "stage";
   shown: string;
   status: Face;
   progress: number | null;
@@ -298,6 +307,7 @@ function TimerPane({
   onPause: () => void;
   onEnd: () => void;
 }) {
+  const desk = layout === "desk";
   const statusLabel =
     status === "running"
       ? locale === "en"
@@ -325,7 +335,7 @@ function TimerPane({
         : "开始";
 
   return (
-    <div className="min-w-0 overflow-x-hidden px-3 py-5">
+    <div className={cn("min-w-0 overflow-x-hidden", desk ? "px-6 py-10 sm:px-10 sm:py-12" : "px-3 py-5")}>
       <div className="mb-4 flex items-center justify-between gap-3">
         <p className="text-[12px] text-fg-muted">{hint}</p>
         <span
@@ -338,18 +348,24 @@ function TimerPane({
         </span>
       </div>
 
-      <div className="flex flex-col items-center">
+      <div className={cn("flex flex-col items-center", desk && "min-h-[18rem] justify-center")}>
         {progress == null ? (
-          <p className="text-[2.75rem] font-semibold tracking-tight tabular-nums sm:text-[3.1rem]" aria-live="polite">
+          <p
+            className={cn(
+              "font-semibold tracking-tight tabular-nums",
+              desk ? "text-[4.5rem] leading-none sm:text-[5.5rem]" : "text-[2.75rem] sm:text-[3.1rem]",
+            )}
+            aria-live="polite"
+          >
             {shown}
           </p>
         ) : (
-          <FocusRing progress={progress} label={shown} />
+          <FocusRing progress={progress} label={shown} size={desk ? 240 : 176} />
         )}
-        <p className="mt-2 text-[12px] text-fg-muted">{caption}</p>
+        <p className={cn("text-[12px] text-fg-muted", desk ? "mt-4" : "mt-2")}>{caption}</p>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+      <div className={cn("flex flex-wrap items-center justify-center gap-2", desk ? "mt-8" : "mt-6")}>
         {status === "running" ? (
           <FaceButton tone="solid" onClick={onPause}>
             <Pause className="size-3.5" />
@@ -384,9 +400,8 @@ function TimerPane({
   );
 }
 
-function FocusRing({ progress, label }: { progress: number; label: string }) {
-  const size = 176;
-  const stroke = 7;
+function FocusRing({ progress, label, size }: { progress: number; label: string; size: number }) {
+  const stroke = size >= 224 ? 9 : 7;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const offset = c * (1 - progress);
@@ -414,7 +429,13 @@ function FocusRing({ progress, label }: { progress: number; label: string }) {
         />
       </svg>
       <div className="absolute inset-0 grid place-items-center">
-        <p className="text-[2.35rem] font-semibold tracking-tight tabular-nums" aria-live="polite">
+        <p
+          className={cn(
+            "font-semibold tracking-tight tabular-nums",
+            size >= 224 ? "text-[2.75rem]" : "text-[2.35rem]",
+          )}
+          aria-live="polite"
+        >
           {label}
         </p>
       </div>
@@ -450,7 +471,8 @@ function FaceButton({
   );
 }
 
-function PlanPane({ locale }: { locale: Locale }) {
+function PlanPane({ locale, layout }: { locale: Locale; layout: "desk" | "stage" }) {
+  const desk = layout === "desk";
   const rows =
     locale === "en"
       ? [
@@ -465,7 +487,12 @@ function PlanPane({ locale }: { locale: Locale }) {
         ];
 
   return (
-    <div className="min-w-0 overflow-x-hidden px-3 py-4">
+    <div
+      className={cn(
+        "min-w-0 overflow-x-hidden",
+        desk ? "mx-auto max-w-lg px-6 py-8 sm:px-8" : "px-3 py-4",
+      )}
+    >
       <p className="text-[11px] font-medium tracking-[0.14em] text-fg-subtle uppercase">
         {locale === "en" ? "Plan" : "计划"}
       </p>

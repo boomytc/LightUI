@@ -54,7 +54,7 @@ export function MultiLevelDemo() {
 
   return (
     <Frame title={locale === "en" ? "Field Supply · admin" : "Field Supply · 后台"}>
-      <div className="flex min-h-[22rem] bg-surface">
+      <div className="flex min-h-[28rem] w-full min-w-0 flex-1 bg-surface">
         <aside className="flex w-52 shrink-0 flex-col border-r border-border bg-surface-2">
           <div className="flex items-center gap-2 px-4 py-3.5">
             <span className="grid size-7 place-items-center rounded-md bg-accent text-[10px] font-semibold text-accent-fg">
@@ -131,7 +131,7 @@ export function MultiLevelDemo() {
             })}
           </nav>
         </aside>
-        <section className="min-w-0 flex-1 px-5 py-5">
+        <section className="min-w-0 flex-1 overflow-x-hidden px-5 py-5">
           <p className="text-[12px] text-fg-subtle">
             {locale === "en" ? "Parent files. Child is the page." : "父级归类。子级才是页。"}
           </p>

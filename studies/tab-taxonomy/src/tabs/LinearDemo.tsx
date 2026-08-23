@@ -10,7 +10,10 @@ import { cn } from "../lib/utils";
 import { TableHead, TableRow, Window } from "./Frame";
 import { useBox } from "./useBox";
 
-export function LinearDemo({ defaultTab }: { defaultTab?: string } = {}) {
+export function LinearDemo({
+  defaultTab,
+  fill = false,
+}: { defaultTab?: string; fill?: boolean } = {}) {
   const locale = useLocale();
   const listRef = useRef<HTMLDivElement>(null);
   const allowed = new Set(LINEAR_TABS.map((t) => t.id));
@@ -19,56 +22,63 @@ export function LinearDemo({ defaultTab }: { defaultTab?: string } = {}) {
   const { box, transition } = useBox(listRef, tab, "label");
 
   return (
-    <Window title={locale === "en" ? "Orbit · site refresh" : "Orbit · 官网改版"}>
-      <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-fg-subtle">
-        {locale === "en" ? "Orbit · project" : "Orbit · 项目"}
-      </p>
-      <h3 className="mt-1 text-[1.15rem] font-semibold tracking-tight">{linearHeading(tab, locale).title}</h3>
-      <p className="mt-1 text-[13px] text-fg-muted">{linearHeading(tab, locale).sub}</p>
+    <Window title={locale === "en" ? "Orbit · site refresh" : "Orbit · 官网改版"} fill={fill}>
+      <div className={fill ? "flex h-full min-h-0 flex-1 flex-col" : undefined}>
+        <div className={fill ? "shrink-0 px-5 pt-4" : undefined}>
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-fg-subtle">
+            {locale === "en" ? "Orbit · project" : "Orbit · 项目"}
+          </p>
+          <h3 className="mt-1 text-[1.15rem] font-semibold tracking-tight">{linearHeading(tab, locale).title}</h3>
+          <p className="mt-1 text-[13px] text-fg-muted">{linearHeading(tab, locale).sub}</p>
+        </div>
 
-      <div
-        ref={listRef}
-        role="tablist"
-        aria-label={locale === "en" ? "Project sections" : "项目栏目"}
-        className="relative mt-5 grid grid-cols-4 border-b border-border"
-      >
-        {LINEAR_TABS.map((item) => {
-          const on = item.id === tab;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              data-tab={item.id}
-              aria-selected={on}
-              onClick={() => setTab(item.id)}
-              className={cn(
-                "flex min-h-11 items-center justify-center px-2 py-3 text-[13px] transition-colors",
-                on ? "font-medium text-fg" : "text-fg-muted hover:text-fg",
-              )}
-            >
-              <span data-tab-label>{pick(item.label, locale)}</span>
-            </button>
-          );
-        })}
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-0 h-0.5 bg-fg"
-          style={{
-            left: box.left,
-            width: box.width,
-            transition,
-            transitionDuration: transition === "none" ? "0ms" : "200ms",
-            transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-          }}
-        />
-      </div>
+        <div
+          ref={listRef}
+          role="tablist"
+          aria-label={locale === "en" ? "Project sections" : "项目栏目"}
+          className={cn(
+            "relative grid grid-cols-4 border-b border-border",
+            fill ? "mt-4 shrink-0 px-2 sm:px-5" : "mt-5",
+          )}
+        >
+          {LINEAR_TABS.map((item) => {
+            const on = item.id === tab;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                data-tab={item.id}
+                aria-selected={on}
+                onClick={() => setTab(item.id)}
+                className={cn(
+                  "flex min-h-11 items-center justify-center px-2 py-3 text-[13px] transition-colors",
+                  on ? "font-medium text-fg" : "text-fg-muted hover:text-fg",
+                )}
+              >
+                <span data-tab-label>{pick(item.label, locale)}</span>
+              </button>
+            );
+          })}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-0 h-0.5 bg-fg"
+            style={{
+              left: box.left,
+              width: box.width,
+              transition,
+              transitionDuration: transition === "none" ? "0ms" : "200ms",
+              transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+            }}
+          />
+        </div>
 
-      <div className="tab-swap mt-4" key={tab}>
-        {tab === "overview" ? <Overview locale={locale} /> : null}
-        {tab === "tasks" ? <Tasks locale={locale} /> : null}
-        {tab === "files" ? <Files locale={locale} /> : null}
-        {tab === "activity" ? <Activity locale={locale} /> : null}
+        <div className={cn("tab-swap", fill ? "min-h-0 flex-1 overflow-auto px-5 py-4" : "mt-4")} key={tab}>
+          {tab === "overview" ? <Overview locale={locale} /> : null}
+          {tab === "tasks" ? <Tasks locale={locale} /> : null}
+          {tab === "files" ? <Files locale={locale} /> : null}
+          {tab === "activity" ? <Activity locale={locale} /> : null}
+        </div>
       </div>
     </Window>
   );
@@ -103,7 +113,7 @@ function Overview({ locale }: { locale: "zh" | "en" }) {
     { n: locale === "en" ? "Tue" : "周二", l: locale === "en" ? "Next review" : "下次评审", s: "14:30" },
   ];
   return (
-    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+    <div className="grid h-full grid-cols-2 content-start gap-2 sm:grid-cols-4">
       {cells.map((c) => (
         <div key={c.l} className="rounded-xl border border-border bg-surface-2 px-3 py-3">
           <p className="text-[1.35rem] font-semibold tabular-nums">{c.n}</p>

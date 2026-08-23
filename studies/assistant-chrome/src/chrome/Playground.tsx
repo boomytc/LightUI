@@ -17,10 +17,11 @@ export function Playground() {
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0]!;
 
   return (
-    <div className="grid min-w-0 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+    <div className="min-w-0">
       <nav
+        data-kind-nav
         aria-label={locale === "en" ? "Where the assistant lives" : "助手住哪"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
+        className="mb-5 flex flex-wrap gap-2"
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
@@ -31,19 +32,13 @@ export function Playground() {
               data-kind={kind.id}
               onClick={() => setActive(kind.id)}
               className={cn(
-                "flex min-w-40 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
+                "rounded-full border px-3 py-1.5 text-[13px] font-medium transition-colors",
                 on
-                  ? "border-border-strong bg-surface shadow-card"
-                  : "border-transparent bg-transparent hover:bg-surface-2",
+                  ? "border-fg bg-fg text-surface"
+                  : "border-border bg-surface text-fg-muted hover:border-border-strong hover:text-fg",
               )}
             >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
-                {kind.index}
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate text-[13px] font-medium">{kind.name}</span>
-                <span className="block truncate text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
-              </span>
+              {pick(kind.zh, locale)}
             </button>
           );
         })}
@@ -76,7 +71,9 @@ export function Playground() {
 
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
-        <KindDemo key={meta.id} id={meta.id} />
+        <div data-playground="pane" className="chrome-play min-w-0 w-full">
+          <KindDemo key={meta.id} id={meta.id} />
+        </div>
 
         <ul className="mt-4 flex flex-wrap gap-2">
           {meta.rules.map((rule) => (

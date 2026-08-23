@@ -14,10 +14,10 @@ export function Playground() {
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0]!;
 
   return (
-    <div className="grid min-w-0 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+    <div className="grid min-w-0 gap-5">
       <nav
         aria-label={locale === "en" ? "Alignment spells" : "对齐咒语"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
+        className="flex flex-wrap gap-2"
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
@@ -28,7 +28,7 @@ export function Playground() {
               data-kind={kind.id}
               onClick={() => setActive(kind.id)}
               className={cn(
-                "flex min-w-44 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
+                "inline-flex min-w-0 items-center gap-2 rounded-xl border px-2.5 py-2 text-left transition-colors sm:px-3",
                 on
                   ? "border-border-strong bg-surface shadow-card"
                   : "border-transparent bg-transparent hover:bg-surface-2",
@@ -37,11 +37,16 @@ export function Playground() {
               <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
                 {kind.index}
               </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-[13px] font-medium">{kind.name}</span>
-                <span className="block truncate text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
+              <span className="min-w-0">
+                <span className="block text-[13px] font-medium">{kind.name}</span>
+                <span className="block text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
               </span>
-              <span className={cn("shrink-0 font-mono text-[10px]", on ? "text-accent" : "text-fg-subtle")}>
+              <span
+                className={cn(
+                  "hidden font-mono text-[10px] sm:inline",
+                  on ? "text-accent" : "text-fg-subtle",
+                )}
+              >
                 {aligns(kind.id)}
               </span>
             </button>
@@ -49,14 +54,14 @@ export function Playground() {
         })}
       </nav>
 
-      <section className="min-w-0 overflow-x-hidden">
+      <section className="min-w-0">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
             <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 07</p>
             <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           </div>
-          <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
+          <p className="max-w-xs text-[12px] leading-relaxed text-fg-subtle sm:text-right">
             {pick(meta.tells, locale)}
           </p>
         </div>
@@ -74,9 +79,9 @@ export function Playground() {
 
         {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
 
-        <SpecCard text={pick(meta.spec, locale)} locale={locale} />
-
         <KindDemo id={meta.id} />
+
+        <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
         <ul className="mt-4 flex flex-wrap gap-2">
           {meta.rules.map((rule) => (
@@ -107,7 +112,7 @@ function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   }
 
   return (
-    <div className="mb-5 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
+    <div className="mt-5 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
       <div className="flex items-start justify-between gap-3">
         <p className="text-[11px] font-medium tracking-wide text-surface/45">
           {locale === "en" ? "Say it this way" : "说清楚"}
@@ -135,7 +140,11 @@ export function KindDemo({
 }) {
   const both = state == null;
   return (
-    <div className={both ? "grid gap-3 sm:grid-cols-2" : "grid"}>
+    <div
+      data-align-kind={id}
+      data-align-pair={both ? "pair" : "single"}
+      className={both ? "align-pair" : "grid w-full min-w-0"}
+    >
       {(both || state === "wrong") && (
         <ComparePane state="wrong">
           <SpellFigure id={id} state="wrong" />

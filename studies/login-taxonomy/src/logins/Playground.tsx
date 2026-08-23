@@ -28,10 +28,10 @@ export function Playground() {
   }, []);
 
   return (
-    <div className="grid min-w-0 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+    <div className="min-w-0">
       <nav
         aria-label={locale === "en" ? "Login kinds" : "登录种类"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
+        className="flex flex-wrap gap-1.5"
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
@@ -42,66 +42,58 @@ export function Playground() {
               data-kind={kind.id}
               onClick={() => setActive(kind.id)}
               className={cn(
-                "flex min-w-40 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
+                "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] transition-colors",
                 on
-                  ? "border-border-strong bg-surface shadow-card"
-                  : "border-transparent bg-transparent hover:bg-surface-2",
+                  ? "border-fg bg-fg text-surface"
+                  : "border-border bg-surface text-fg-muted hover:border-border-strong hover:text-fg",
               )}
             >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
+              <span className={cn("font-mono text-[10px] tabular-nums", on ? "text-surface/65" : "text-fg-subtle")}>
                 {kind.index}
               </span>
-              <span className="min-w-0">
-                <span className="block truncate text-[13px] font-medium">{kind.name}</span>
-                <span className="block truncate text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
-              </span>
+              <span className="font-medium">{kind.name}</span>
             </button>
           );
         })}
       </nav>
 
-      <section className="min-w-0 overflow-x-hidden">
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-          <div className="min-w-0">
-            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 05</p>
-            <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
-            <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
-          </div>
-          <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
-            {pick(meta.tells, locale)}
-          </p>
+      <div className="mt-4 mb-3 flex min-w-0 flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <div className="min-w-0">
+          <p className="font-mono text-[11px] tabular-nums text-accent">{meta.index} / 05</p>
+          <h2 className="mt-0.5 text-[1.25rem] font-semibold tracking-tight">{meta.name}</h2>
         </div>
+        <p className="max-w-xl text-[13px] leading-snug text-fg-muted">
+          {pick(meta.oneLiner, locale)}
+          <span className="text-fg-subtle"> · {pick(meta.tells, locale)}</span>
+        </p>
+      </div>
 
-        <div className="mb-4 flex flex-wrap gap-1.5">
-          {meta.scenes.map((scene) => (
-            <span
-              key={scene.zh}
-              className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
-            >
-              {pick(scene, locale)}
-            </span>
-          ))}
-        </div>
+      <div className="login-playground w-full min-w-0 overflow-x-hidden">
+        <KindDemo key={meta.id} id={meta.id} />
+      </div>
 
-        {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
+      <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
-        <SpecCard text={pick(meta.spec, locale)} locale={locale} />
+      {meta.note ? <p className="mt-2 text-[12px] text-accent">{pick(meta.note, locale)}</p> : null}
 
-        <div className="w-[390px] max-w-full min-w-0 overflow-x-hidden">
-          <KindDemo key={meta.id} id={meta.id} />
-        </div>
-
-        <ul className="mt-4 flex flex-wrap gap-2">
-          {meta.rules.map((rule) => (
-            <li
-              key={rule.zh}
-              className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
-            >
-              {pick(rule, locale)}
-            </li>
-          ))}
-        </ul>
-      </section>
+      <ul className="mt-3 flex flex-wrap gap-1.5">
+        {meta.scenes.map((scene) => (
+          <li
+            key={scene.zh}
+            className="rounded-full bg-accent-soft px-2.5 py-0.5 text-[11px] font-medium text-accent"
+          >
+            {pick(scene, locale)}
+          </li>
+        ))}
+        {meta.rules.map((rule) => (
+          <li
+            key={rule.zh}
+            className="rounded-full border border-border bg-surface px-2.5 py-0.5 text-[11px] text-fg-muted"
+          >
+            {pick(rule, locale)}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -120,21 +112,19 @@ function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   }
 
   return (
-    <div className="mb-5 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
-      <div className="flex items-start justify-between gap-3">
-        <p className="text-[11px] font-medium tracking-wide text-surface/45">
-          {locale === "en" ? "Say it this way" : "说清楚"}
-        </p>
-        <button
-          type="button"
-          onClick={copy}
-          className="inline-flex shrink-0 items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] text-surface/45 transition-colors hover:text-surface"
-        >
-          {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
-          {copied ? (locale === "en" ? "Copied" : "已复制") : locale === "en" ? "Copy" : "复制"}
-        </button>
-      </div>
-      <p className="mt-1.5 text-[14px] leading-relaxed text-surface/90">{text}</p>
+    <div className="mt-3 flex items-start gap-2 rounded-xl border border-border bg-surface px-3 py-2">
+      <p className="shrink-0 pt-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-fg-subtle">
+        {locale === "en" ? "Say it this way" : "说清楚"}
+      </p>
+      <p className="min-w-0 flex-1 text-[13px] leading-snug text-fg-muted">{text}</p>
+      <button
+        type="button"
+        onClick={copy}
+        className="inline-flex shrink-0 items-center gap-1 rounded-md px-1 py-0.5 text-[11px] text-fg-subtle transition-colors hover:text-fg"
+      >
+        {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
+        {copied ? (locale === "en" ? "Copied" : "已复制") : locale === "en" ? "Copy" : "复制"}
+      </button>
     </div>
   );
 }

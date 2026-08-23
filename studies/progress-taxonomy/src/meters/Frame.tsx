@@ -26,3 +26,15 @@ export function Window({
     </div>
   );
 }
+
+/** Desktop teaching pane — the meter is the fixture, not a 390 window. */
+export function Pane({ children }: { children: ReactNode }) {
+  return (
+    <div
+      data-pane="hero"
+      className="flex min-h-[22rem] flex-col justify-center overflow-hidden rounded-2xl border border-border bg-surface px-6 py-10 shadow-card sm:px-10 lg:min-h-[26rem] lg:py-12"
+    >
+      {children}
+    </div>
+  );
+}

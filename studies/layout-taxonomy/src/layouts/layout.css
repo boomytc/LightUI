@@ -1,4 +1,7 @@
 .layout-window {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   min-width: 0;
   max-width: 100%;
   /* Break on the phone fixture, not the stage viewport. */
@@ -8,10 +11,35 @@
 .layout-window-body {
   min-width: 0;
   overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.layout-window-fill {
+  display: flex;
+  flex-direction: column;
+  height: 36rem;
+  max-height: 36rem;
+  min-height: 0;
+}
+
+.layout-window-well {
+  background: var(--color-surface-2);
+  min-height: 28rem;
+}
+
+.layout-fill-page {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  height: 100%;
 }
 
 .layout-single {
   box-sizing: border-box;
+  width: 100%;
   max-width: 42rem;
   margin-inline: auto;
   display: flex;
@@ -25,6 +53,7 @@
   --layout-band: 80px;
   display: flex;
   flex-direction: column;
+  width: 100%;
   gap: var(--layout-band);
 }
 
@@ -76,6 +105,7 @@
 
 .layout-full {
   box-sizing: border-box;
+  width: 100%;
   min-height: 100%;
   height: 100%;
   display: grid;
@@ -86,9 +116,11 @@
 
 .layout-split {
   display: flex;
-  min-height: 280px;
-  height: 320px;
+  width: 100%;
   min-width: 0;
+  min-height: 22rem;
+  height: 100%;
+  flex: 1 1 auto;
 }
 
 .layout-split-pane {
@@ -112,6 +144,11 @@
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 12px;
+  width: 100%;
+  min-width: 0;
+  flex: 0 0 auto;
+  height: auto;
+  align-content: start;
 }
 
 .layout-dash-kpi,
@@ -120,10 +157,52 @@
   min-width: 0;
 }
 
+.layout-dash-chart,
+.layout-dash-table {
+  overflow: hidden;
+}
+
 @container (min-width: 420px) {
   .layout-dash-kpi {
     grid-column: span 4;
   }
+}
+
+@container (min-width: 640px) {
+  .layout-dash-chart {
+    grid-column: span 7;
+  }
+
+  .layout-dash-table {
+    grid-column: span 5;
+  }
+
+  .layout-window-fill .layout-dash {
+    flex: 1 1 auto;
+    min-height: 0;
+    grid-template-rows: auto minmax(0, 1fr);
+    align-content: stretch;
+  }
+
+  .layout-window-fill .layout-dash-chart,
+  .layout-window-fill .layout-dash-table {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .layout-window-fill .layout-dash-bars {
+    height: auto;
+    min-height: 8rem;
+    flex: 1 1 auto;
+  }
+}
+
+.layout-dash-bars {
+  display: flex;
+  height: 8rem;
+  flex: 0 0 auto;
+  align-items: flex-end;
+  gap: 4px;
 }
 
 .layout-modular {
@@ -131,4 +210,12 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.layout-window-fill .layout-modular {
+  grid-template-rows: repeat(2, minmax(0, 1fr));
 }

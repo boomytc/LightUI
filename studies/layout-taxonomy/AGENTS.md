@@ -24,8 +24,8 @@ The lab mounts `StudyView` at `/s/layout-taxonomy`.
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — measure, bleed, uneven height, pane count, split clamp (no DOM)
-- `src/layouts/` — seven miniature pages in a window frame
-- `src/StageView.tsx` — one kind, `state=default`, no chrome
+- `src/layouts/` — seven page skeletons in a full-width window (kind chips on top)
+- `src/StageView.tsx` — one kind, `state=default`, 390 fixture, no chrome
 - `src/lib/stage-query.ts` — `kind=single|landing|masonry|fullscreen|splitter|dashboard|modular`, `state=default`
 
 ## Rules

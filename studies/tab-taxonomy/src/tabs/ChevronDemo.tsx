@@ -6,7 +6,10 @@ import { pick, useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { Window } from "./Frame";
 
-export function ChevronDemo({ defaultTab }: { defaultTab?: string } = {}) {
+export function ChevronDemo({
+  defaultTab,
+  fill = false,
+}: { defaultTab?: string; fill?: boolean } = {}) {
   const locale = useLocale();
   const allowed = new Set(CHEVRON_TABS.map((t) => t.id));
   const initial = defaultTab && allowed.has(defaultTab) ? defaultTab : "cart";
@@ -16,70 +19,81 @@ export function ChevronDemo({ defaultTab }: { defaultTab?: string } = {}) {
   return (
     <Window
       title={locale === "en" ? "North Shop · checkout" : "North Shop · 结算"}
+      fill={fill}
       action={
         <span className="rounded-full border border-border px-2.5 py-1 text-[11px] text-fg-muted">
           {locale === "en" ? "Save and exit" : "保存并退出"}
         </span>
       }
     >
-      <h3 className="text-[1.15rem] font-semibold tracking-tight">{heading(tab, locale)}</h3>
+      <div className={fill ? "flex h-full min-h-0 flex-1 flex-col" : undefined}>
+        <h3 className={cn("text-[1.15rem] font-semibold tracking-tight", fill ? "shrink-0 px-5 pt-4" : undefined)}>
+          {heading(tab, locale)}
+        </h3>
 
-      <div
-        role="tablist"
-        aria-label={locale === "en" ? "Checkout steps" : "结算步骤"}
-        className="tab-chevron mt-4 flex"
-      >
-        {CHEVRON_TABS.map((item, index) => {
-          const kind = stepKind(index, current);
-          return (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={kind === "current"}
-              onClick={() => setTab(item.id)}
-              style={{ zIndex: index + 1 }}
-              className={cn(
-                "tab-chevron-item min-h-10 flex-1 px-4 text-[12px] font-medium tracking-tight",
-                kind === "current" && "bg-fg text-surface",
-                kind === "done" && "bg-fg/70 text-surface",
-                kind === "todo" && "bg-surface-2 text-fg-muted",
-              )}
-            >
-              {pick(item.label, locale)}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="tab-swap mt-5 grid gap-5 lg:grid-cols-[1fr_180px]" key={tab}>
-        <div>
-          {tab === "cart" ? <Cart locale={locale} /> : null}
-          {tab === "ship" ? <Ship locale={locale} /> : null}
-          {tab === "pay" ? <Pay locale={locale} /> : null}
-          {tab === "done" ? <Done locale={locale} /> : null}
+        <div
+          role="tablist"
+          aria-label={locale === "en" ? "Checkout steps" : "结算步骤"}
+          className={cn("tab-chevron flex", fill ? "mt-4 shrink-0" : "mt-4")}
+        >
+          {CHEVRON_TABS.map((item, index) => {
+            const kind = stepKind(index, current);
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={kind === "current"}
+                onClick={() => setTab(item.id)}
+                style={{ zIndex: index + 1 }}
+                className={cn(
+                  "tab-chevron-item min-h-10 flex-1 px-2 text-[11px] font-medium tracking-tight whitespace-nowrap sm:px-4 sm:text-[12px]",
+                  kind === "current" && "bg-fg text-surface",
+                  kind === "done" && "bg-fg/70 text-surface",
+                  kind === "todo" && "bg-surface-2 text-fg-muted",
+                )}
+              >
+                {pick(item.label, locale)}
+              </button>
+            );
+          })}
         </div>
-        <aside className="rounded-xl border border-border bg-surface-2 p-3">
-          <p className="text-[12px] font-medium">{locale === "en" ? "Summary" : "订单摘要"}</p>
-          <ul className="mt-2 space-y-1.5 text-[12px] text-fg-muted">
-            {CART_ITEMS.map((item) => (
-              <li key={item.name.zh} className="flex justify-between gap-2">
-                <span className="truncate">{pick(item.name, locale)}</span>
-                <span className="tabular-nums">¥{item.price}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-3 flex justify-between text-[13px] font-semibold">
-            <span>{locale === "en" ? "Due" : "应付总额"}</span>
-            <span>¥699.00</span>
-          </p>
-          <button
-            type="button"
-            className="mt-3 w-full rounded-lg bg-fg py-2 text-[12px] font-medium text-surface"
-          >
-            {locale === "en" ? "Pay ¥699.00" : "确认支付 ¥699.00"}
-          </button>
-        </aside>
+
+        <div
+          className={cn(
+            "tab-swap grid gap-5 lg:grid-cols-[1fr_180px]",
+            fill ? "min-h-0 flex-1 content-start overflow-auto px-5 py-5" : "mt-5",
+          )}
+          key={tab}
+        >
+          <div>
+            {tab === "cart" ? <Cart locale={locale} /> : null}
+            {tab === "ship" ? <Ship locale={locale} /> : null}
+            {tab === "pay" ? <Pay locale={locale} /> : null}
+            {tab === "done" ? <Done locale={locale} /> : null}
+          </div>
+          <aside className="h-fit rounded-xl border border-border bg-surface-2 p-3">
+            <p className="text-[12px] font-medium">{locale === "en" ? "Summary" : "订单摘要"}</p>
+            <ul className="mt-2 space-y-1.5 text-[12px] text-fg-muted">
+              {CART_ITEMS.map((item) => (
+                <li key={item.name.zh} className="flex justify-between gap-2">
+                  <span className="truncate">{pick(item.name, locale)}</span>
+                  <span className="tabular-nums">¥{item.price}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 flex justify-between text-[13px] font-semibold">
+              <span>{locale === "en" ? "Due" : "应付总额"}</span>
+              <span>¥699.00</span>
+            </p>
+            <button
+              type="button"
+              className="mt-3 w-full rounded-lg bg-fg py-2 text-[12px] font-medium text-surface"
+            >
+              {locale === "en" ? "Pay ¥699.00" : "确认支付 ¥699.00"}
+            </button>
+          </aside>
+        </div>
       </div>
     </Window>
   );

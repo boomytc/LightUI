@@ -47,8 +47,8 @@ export function KindDemo({
 function CenteredPage() {
   const locale = useLocale();
   return (
-    <div className="login-centered" data-panes={paneCount("centered")}>
-      <div className="login-card grid gap-4">
+    <div className="login-centered" data-login-well data-panes={paneCount("centered")}>
+      <div className="login-card grid gap-4" data-login-card>
         <header className="grid gap-1.5">
           <span className="size-7 rounded-md bg-accent" aria-hidden="true" />
           <h3 className="text-[1.2rem] font-semibold tracking-tight">{pick(COPY.welcome, locale)}</h3>
@@ -71,12 +71,12 @@ function CenteredPage() {
 function SplitPage() {
   const locale = useLocale();
   return (
-    <div className="login-split" data-panes={paneCount("split")}>
-      <section className="login-split-brand">
+    <div className="login-split" data-login-well data-panes={paneCount("split")}>
+      <section className="login-split-brand" data-login-pane="brand">
         <p className="text-[10px] font-medium tracking-[0.16em] text-white/70 uppercase">
           {pick(COPY.brandKicker, locale)}
         </p>
-        <h3 className="mt-2 text-[15px] font-semibold leading-snug">
+        <h3 className="login-split-title">
           {locale === "en" ? (
             <>
               Turn a fuzzy spark
@@ -91,9 +91,9 @@ function SplitPage() {
             </>
           )}
         </h3>
-        <p className="mt-2 text-[11px] leading-relaxed text-white/75">{pick(COPY.brandBody, locale)}</p>
+        <p className="login-split-body">{pick(COPY.brandBody, locale)}</p>
       </section>
-      <section className="login-split-form grid gap-4">
+      <section className="login-split-form" data-login-pane="form">
         <header className="grid gap-1">
           <h3 className="text-[1.15rem] font-semibold tracking-tight">{pick(COPY.welcome, locale)}</h3>
           <p className="text-[12px] text-fg-muted">{pick(COPY.continueStudio, locale)}</p>
@@ -120,16 +120,16 @@ function SplitPage() {
 function ImmersivePage() {
   const locale = useLocale();
   return (
-    <div className="login-immersive" data-panes={paneCount("immersive")}>
-      <div className="min-w-0">
-        <h3 className="text-[1.45rem] font-semibold leading-tight tracking-tight">
+    <div className="login-immersive" data-login-well data-panes={paneCount("immersive")}>
+      <div className="login-immersive-copy">
+        <h3>
           {pick(COPY.trailTitle, locale)}
         </h3>
         <p className="mt-2 max-w-[16rem] text-[12px] leading-relaxed text-white/75">
           {pick(COPY.trailBody, locale)}
         </p>
       </div>
-      <form className="grid min-w-0 gap-4" onSubmit={(e) => e.preventDefault()}>
+      <form className="login-immersive-form" onSubmit={(e) => e.preventDefault()}>
         <header className="grid gap-1">
           <h4 className="text-[1.15rem] font-semibold tracking-tight">{pick(COPY.welcome, locale)}</h4>
           <p className="text-[12px] text-white/70">{pick(COPY.continueTrail, locale)}</p>
@@ -165,63 +165,65 @@ function RolesPage({
   const locale = useLocale();
   const personal = role === "personal";
   return (
-    <div className="login-roles" data-panes={paneCount("roles")} data-role={role}>
-      <div
-        role="tablist"
-        aria-label={locale === "en" ? "Sign-in role" : "登录身份"}
-        className="grid grid-cols-2 border-b border-border"
-      >
-        {ROLES.map((item) => {
-          const on = item.id === role;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={on}
-              onClick={() => onRole(item.id)}
-              className={cn(
-                "relative h-10 text-[13px] font-medium transition-colors",
-                on ? "text-accent" : "text-fg-subtle hover:text-fg",
-              )}
-            >
-              {pick(item.label, locale)}
-              <span
+    <div className="login-roles" data-login-well data-panes={paneCount("roles")} data-role={role}>
+      <div className="login-roles-surface">
+        <div
+          role="tablist"
+          aria-label={locale === "en" ? "Sign-in role" : "登录身份"}
+          className="grid grid-cols-2 border-b border-border"
+        >
+          {ROLES.map((item) => {
+            const on = item.id === role;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={on}
+                onClick={() => onRole(item.id)}
                 className={cn(
-                  "absolute inset-x-6 -bottom-px h-0.5 origin-center bg-accent transition-transform duration-200",
-                  on ? "scale-x-100" : "scale-x-0",
+                  "relative h-10 text-[13px] font-medium transition-colors",
+                  on ? "text-accent" : "text-fg-subtle hover:text-fg",
                 )}
+              >
+                {pick(item.label, locale)}
+                <span
+                  className={cn(
+                    "absolute inset-x-6 -bottom-px h-0.5 origin-center bg-accent transition-transform duration-200",
+                    on ? "scale-x-100" : "scale-x-0",
+                  )}
+                />
+              </button>
+            );
+          })}
+        </div>
+        <div className="mt-5 grid gap-4">
+          <header className="grid gap-1">
+            <h3 className="text-[1.15rem] font-semibold tracking-tight">
+              {pick(personal ? COPY.personalTitle : COPY.enterpriseTitle, locale)}
+            </h3>
+            <p className="text-[12px] text-fg-muted">
+              {pick(personal ? COPY.personalHint : COPY.enterpriseHint, locale)}
+            </p>
+          </header>
+          {personal ? (
+            <>
+              <FakeField id="role-phone" label={pick(COPY.phone, locale)} placeholder={PHONE_PLACEHOLDER} />
+              <FakeField id="role-code" label={pick(COPY.code, locale)} placeholder={CODE_PLACEHOLDER} />
+            </>
+          ) : (
+            <>
+              <FakeField id="role-email" label={pick(COPY.workEmail, locale)} placeholder={EMAIL_PLACEHOLDER} />
+              <FakeField
+                id="role-password"
+                label={pick(COPY.password, locale)}
+                placeholder={PASSWORD_PLACEHOLDER}
+                type="password"
               />
-            </button>
-          );
-        })}
-      </div>
-      <div className="mt-5 grid gap-4">
-        <header className="grid gap-1">
-          <h3 className="text-[1.15rem] font-semibold tracking-tight">
-            {pick(personal ? COPY.personalTitle : COPY.enterpriseTitle, locale)}
-          </h3>
-          <p className="text-[12px] text-fg-muted">
-            {pick(personal ? COPY.personalHint : COPY.enterpriseHint, locale)}
-          </p>
-        </header>
-        {personal ? (
-          <>
-            <FakeField id="role-phone" label={pick(COPY.phone, locale)} placeholder={PHONE_PLACEHOLDER} />
-            <FakeField id="role-code" label={pick(COPY.code, locale)} placeholder={CODE_PLACEHOLDER} />
-          </>
-        ) : (
-          <>
-            <FakeField id="role-email" label={pick(COPY.workEmail, locale)} placeholder={EMAIL_PLACEHOLDER} />
-            <FakeField
-              id="role-password"
-              label={pick(COPY.password, locale)}
-              placeholder={PASSWORD_PLACEHOLDER}
-              type="password"
-            />
-          </>
-        )}
-        <FakeButton>{pick(COPY.signIn, locale)}</FakeButton>
+            </>
+          )}
+          <FakeButton>{pick(COPY.signIn, locale)}</FakeButton>
+        </div>
       </div>
     </div>
   );
@@ -236,8 +238,8 @@ function StepsPage({
 }) {
   const locale = useLocale();
   return (
-    <div className="login-steps" data-panes={paneCount("steps")} data-step={step}>
-      <div className="login-card grid gap-5">
+    <div className="login-steps" data-login-well data-panes={paneCount("steps")} data-step={step}>
+      <div className="login-card grid gap-5" data-login-card>
         <div className="grid grid-cols-2 gap-2" aria-hidden="true">
           <span className="login-tick" data-on="true" />
           <span className="login-tick" data-on={step === 2 ? "true" : "false"} />

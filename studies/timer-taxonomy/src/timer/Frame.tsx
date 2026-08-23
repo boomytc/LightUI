@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { KindId } from "../lib/kinds";
 import { cn } from "../lib/utils";
 
 export function Window({
@@ -31,6 +32,17 @@ export function Window({
   );
 }
 
+export function Well({ children }: { children: ReactNode }) {
+  return (
+    <div
+      data-layout="desk"
+      className="timer-well overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
+    >
+      {children}
+    </div>
+  );
+}
+
 export function TimeChip({
   label,
   running,
@@ -56,15 +68,79 @@ export function TimeChip({
   );
 }
 
+export function KindPair({
+  value,
+  labels,
+  onPick,
+}: {
+  value: KindId;
+  labels: { stopwatch: string; focus: string };
+  onPick?: (id: KindId) => void;
+}) {
+  return (
+    <div
+      role="tablist"
+      aria-label={labels.stopwatch + " / " + labels.focus}
+      className="flex rounded-full bg-surface-2 p-0.5"
+    >
+      {(["stopwatch", "focus"] as const).map((id) => {
+        const on = value === id;
+        return (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            data-kind={id}
+            aria-selected={on}
+            onClick={() => onPick?.(id)}
+            className={cn(
+              "rounded-full px-3.5 py-1.5 text-[13px] font-medium",
+              on ? "bg-fg text-surface" : "text-fg-muted hover:text-fg",
+            )}
+          >
+            {labels[id]}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export function InnerNav({
   page,
   labels,
   onPick,
+  compact = false,
 }: {
   page: "timer" | "plan";
   labels: { timer: string; plan: string };
   onPick?: (page: "timer" | "plan") => void;
+  compact?: boolean;
 }) {
+  if (compact) {
+    return (
+      <div className="flex shrink-0 rounded-full bg-surface-2 p-0.5">
+        {(["timer", "plan"] as const).map((id) => {
+          const on = page === id;
+          return (
+            <button
+              key={id}
+              type="button"
+              data-page={id}
+              onClick={() => onPick?.(id)}
+              className={cn(
+                "rounded-full px-2.5 py-1 text-[12px] font-medium",
+                on ? "bg-surface text-fg shadow-card" : "text-fg-muted hover:text-fg",
+              )}
+            >
+              {labels[id]}
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
     <div className="flex gap-1 border-b border-border px-3 py-2">
       {(["timer", "plan"] as const).map((id) => {
@@ -73,6 +149,7 @@ export function InnerNav({
           <button
             key={id}
             type="button"
+            data-page={id}
             onClick={() => onPick?.(id)}
             className={cn(
               "min-w-0 flex-1 rounded-full px-2 py-1 text-[12px] font-medium",

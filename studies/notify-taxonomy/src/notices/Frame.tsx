@@ -14,7 +14,10 @@ export function Frame({
   children: ReactNode;
 }) {
   return (
-    <div className="relative w-full max-w-[390px] overflow-x-hidden overflow-hidden rounded-2xl border border-border bg-surface shadow-card">
+    <div
+      data-frame
+      className="relative flex w-full min-w-0 flex-col overflow-x-hidden overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
+    >
       <div className="flex h-10 shrink-0 items-center gap-3 border-b border-border px-3">
         <span className="flex gap-1" aria-hidden="true">
           <i className="size-2 rounded-full bg-[#ff5f57]" />
@@ -26,7 +29,7 @@ export function Frame({
       </div>
       {nav}
       {bar}
-      <div className="relative min-h-[280px]">{children}</div>
+      <div className="relative min-h-[320px] min-w-0 flex-1">{children}</div>
     </div>
   );
 }

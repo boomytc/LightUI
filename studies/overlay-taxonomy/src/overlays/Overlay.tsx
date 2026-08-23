@@ -115,7 +115,7 @@ export function Modal({
           aria-labelledby={titleId}
           aria-describedby={description ? descId : undefined}
           className={cn(
-            "pointer-events-auto w-[min(18rem,80%)] rounded-xl border border-border bg-surface p-5 shadow-menu",
+            "pointer-events-auto w-[min(20rem,calc(100%-2rem))] rounded-xl border border-border bg-surface p-5 shadow-menu",
             closing ? "overlay-modal-out" : "overlay-modal-in",
           )}
         >
@@ -166,7 +166,7 @@ export function Drawer({
         aria-modal="true"
         aria-labelledby={titleId}
         className={cn(
-          "absolute inset-y-0 right-0 z-50 flex w-72 max-w-[80%] flex-col overflow-hidden border-l border-border bg-surface shadow-menu",
+          "absolute inset-y-0 right-0 z-50 flex w-[min(22rem,80%)] flex-col overflow-hidden border-l border-border bg-surface shadow-menu",
           closing ? "overlay-drawer-out" : "overlay-drawer-in",
         )}
       >
@@ -230,7 +230,7 @@ export function PopoverMenu({
       ref={ref}
       role="menu"
       className={cn(
-        "absolute top-full right-0 z-50 mt-1.5 w-44 max-w-[80vw] overflow-hidden rounded-xl border border-border bg-surface py-1.5 shadow-menu",
+        "absolute top-full right-0 z-50 mt-1.5 w-44 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-border bg-surface py-1.5 shadow-menu",
         closing ? "overlay-pop-out" : "overlay-pop-in",
       )}
     >

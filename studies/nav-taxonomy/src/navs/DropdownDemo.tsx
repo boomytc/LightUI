@@ -15,12 +15,12 @@ export function DropdownDemo({ defaultOpen = false }: { defaultOpen?: boolean } 
 
   return (
     <Frame title={locale === "en" ? "Site" : "官网"}>
-      <div className="flex h-full flex-col">
-        <div className="relative z-20 flex h-11 shrink-0 items-center gap-4 border-b border-border px-4 text-[13px]">
-          <span className="font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
-          <span className="text-fg-muted">{locale === "en" ? "Home" : "首页"}</span>
+      <div className="flex h-full min-w-0 flex-col">
+        <div className="relative z-20 flex h-11 min-w-0 shrink-0 items-center gap-3 border-b border-border px-3 text-[13px] @min-[32rem]:gap-4 @min-[32rem]:px-4">
+          <span className="shrink-0 font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
+          <span className="shrink-0 text-fg-muted">{locale === "en" ? "Home" : "首页"}</span>
           <div
-            className="relative"
+            className="relative shrink-0"
             onMouseEnter={() => {
               if (fine) setOpen(true);
             }}
@@ -67,7 +67,7 @@ export function DropdownDemo({ defaultOpen = false }: { defaultOpen?: boolean } 
               ))}
             </div>
           </div>
-          <span className="text-fg-muted">{locale === "en" ? "About" : "关于"}</span>
+          <span className="shrink-0 text-fg-muted">{locale === "en" ? "About" : "关于"}</span>
         </div>
         <HeroWash />
         <p className="p-4 text-[12px] text-fg-subtle">

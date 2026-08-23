@@ -2,9 +2,7 @@ import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 
 export function Frame({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div
-      className="overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
-    >
+    <div className="min-w-0 overflow-hidden rounded-2xl border border-border bg-surface shadow-card">
       <div className="border-b border-border px-4 py-2.5">
         <p className="truncate text-[12px] text-fg-subtle">{title}</p>
       </div>

@@ -46,10 +46,34 @@ export const INITIAL_INBOX: InboxItem[] = [
     time: loc("昨天", "Yesterday"),
     unread: false,
   },
+  {
+    id: "n5",
+    title: loc("系统维护提醒", "Maintenance reminder"),
+    time: loc("3 天前", "3 days ago"),
+    unread: false,
+  },
 ];
 
 export const TEAM = [
-  { id: "u1", name: loc("Sue", "Sue"), role: loc("管理员", "Admin"), mark: "S" },
-  { id: "u2", name: loc("Mia", "Mia"), role: loc("编辑", "Editor"), mark: "M" },
-  { id: "u3", name: loc("Leo", "Leo"), role: loc("访客", "Guest"), mark: "L" },
+  {
+    id: "u1",
+    name: loc("Sue", "Sue"),
+    role: loc("管理员", "Admin"),
+    mark: "S",
+    email: "sue@orbit.studio",
+  },
+  {
+    id: "u2",
+    name: loc("Mia", "Mia"),
+    role: loc("编辑", "Editor"),
+    mark: "M",
+    email: "mia@orbit.studio",
+  },
+  {
+    id: "u3",
+    name: loc("Leo", "Leo"),
+    role: loc("访客", "Guest"),
+    mark: "L",
+    email: "leo@orbit.studio",
+  },
 ];

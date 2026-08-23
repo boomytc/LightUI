@@ -49,7 +49,7 @@ export function SnackbarDemo({ state }: { state?: string } = {}) {
         </AppNav>
       }
     >
-      <div className="px-5 py-5">
+      <div className="px-6 py-6">
         <h2 className="text-[13px] font-semibold">{locale === "en" ? "Drafts" : "草稿列表"}</h2>
         <p className="mt-0.5 text-[11px] text-fg-muted">
           {locale === "en"
@@ -85,7 +85,7 @@ export function SnackbarDemo({ state }: { state?: string } = {}) {
       </div>
 
       {snack ? (
-        <div className="absolute inset-x-3 top-3 z-30">
+        <div className="absolute inset-x-4 top-3 z-30">
           <div className="flex items-center justify-between gap-3 rounded-md bg-fg px-3 py-2 text-surface shadow-card">
             <span className="min-w-0 truncate text-[12px]">
               {locale === "en" ? "Draft deleted" : "草稿已删除"}

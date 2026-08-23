@@ -15,10 +15,10 @@ export function Playground() {
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0];
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+    <div className="min-w-0">
       <nav
         aria-label={locale === "en" ? "Sidebar kinds" : "侧栏种类"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
+        className="mb-6 flex flex-wrap gap-1.5"
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
@@ -27,21 +27,19 @@ export function Playground() {
               key={kind.id}
               type="button"
               data-kind={kind.id}
+              aria-pressed={on}
               onClick={() => setActive(kind.id)}
               className={cn(
-                "flex min-w-44 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
+                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] transition-colors",
                 on
                   ? "border-border-strong bg-surface shadow-card"
-                  : "border-transparent bg-transparent hover:bg-surface-2",
+                  : "border-border bg-transparent hover:bg-surface-2",
               )}
             >
               <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
                 {kind.index}
               </span>
-              <span className="min-w-0">
-                <span className="block truncate text-[13px] font-medium">{kind.name}</span>
-                <span className="block truncate text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
-              </span>
+              <span className="font-medium">{pick(kind.zh, locale)}</span>
             </button>
           );
         })}
@@ -49,12 +47,12 @@ export function Playground() {
 
       <section className="min-w-0">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-          <div>
+          <div className="min-w-0">
             <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 05</p>
             <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           </div>
-          <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
+          <p className="max-w-xs text-[12px] leading-relaxed text-fg-subtle sm:text-right">
             {pick(meta.occupies, locale)}
           </p>
         </div>
@@ -74,7 +72,7 @@ export function Playground() {
 
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
-        <div>
+        <div className="w-full min-w-0">
           <KindDemo id={meta.id} />
         </div>
 

@@ -7,39 +7,34 @@ export function StudyView() {
 
   return (
     <div className="page-width min-w-0 overflow-x-hidden pb-20">
-      <section className="grid gap-8 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
-        <div className="min-w-0">
-          <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
-            {locale === "en"
-              ? "They all change the frame. They do not advance the same way."
-              : "看起来都会换画面，切法却完全不同。"}
-          </h1>
-          <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
-            {locale === "en"
-              ? "“Make a banner” describes the skin. The thing that breaks is the cut: a slide, a fade, a coverflow, a stack, a page turn, an accordion, a 360, or parallax."
-              : "「做个 Banner」说的是外观。真正会坏掉的是切法：平移、淡入、木马、叠卡、翻页、手风琴、360，还是视差。"}
-          </p>
-        </div>
-        <p className="text-[13px] leading-relaxed text-fg-subtle">
+      <header className="flex flex-col gap-2 pb-6 pt-5 sm:flex-row sm:items-end sm:justify-between sm:gap-10">
+        <h1 className="max-w-2xl text-[1.45rem] font-semibold leading-[1.2] tracking-tight text-fg sm:text-[1.75rem]">
           {locale === "en"
-            ? "Name the model, name the scene, then name what the motion commits. The eight contrasts below are live."
-            : "先说模型，再说场景，再说运动提交的是什么。下面八个对照可以点。"}
+            ? "They all change the frame. They do not advance the same way."
+            : "看起来都会换画面，切法却完全不同。"}
+        </h1>
+        <p className="max-w-md text-[13px] leading-relaxed text-fg-muted">
+          {locale === "en"
+            ? "Name the cut first. The eight motions below are live — the stage is the page."
+            : "先给切法起名。下面八种运动是活的——舞台就是这一页。"}
         </p>
-      </section>
+      </header>
 
-      <section className="mb-10 grid gap-3 sm:grid-cols-3">
+      <Playground />
+
+      <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
-          <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
-            <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
+          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
+            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
               {item.n}
             </span>
-            <h2 className="mt-3 text-[15px] font-semibold">{pick(item.title, locale)}</h2>
-            <p className="mt-1 text-[13px] text-fg-muted">{pick(item.example, locale)}</p>
+            <div className="min-w-0">
+              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
+              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
+            </div>
           </div>
         ))}
       </section>
-
-      <Playground />
 
       <section className="mt-14 grid min-w-0 gap-10 lg:grid-cols-2">
         <article className="min-w-0">

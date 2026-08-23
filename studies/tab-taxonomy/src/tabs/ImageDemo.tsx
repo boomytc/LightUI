@@ -4,15 +4,18 @@ import { pick, useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { Window } from "./Frame";
 
-export function ImageDemo({ defaultTab }: { defaultTab?: string } = {}) {
+export function ImageDemo({
+  defaultTab,
+  fill = false,
+}: { defaultTab?: string; fill?: boolean } = {}) {
   const locale = useLocale();
   const allowed = new Set(ROOMS.map((r) => r.id));
   const initial = (defaultTab && allowed.has(defaultTab as RoomId) ? defaultTab : "living") as RoomId;
   const [tab, setTab] = useState<RoomId>(initial);
 
   return (
-    <Window title={locale === "en" ? "Mori Studio · case" : "Mori Studio · 项目案例"} dark>
-      <div className="relative min-h-[320px]">
+    <Window title={locale === "en" ? "Mori Studio · case" : "Mori Studio · 项目案例"} dark fill={fill}>
+      <div className={cn("relative", fill ? "min-h-0 flex-1" : "min-h-[320px]")}>
         {ROOMS.map((item, i) => {
           const on = item.id === tab;
           return (
@@ -22,7 +25,7 @@ export function ImageDemo({ defaultTab }: { defaultTab?: string } = {}) {
               style={{ opacity: on ? 1 : 0, pointerEvents: on ? "auto" : "none" }}
               aria-hidden={!on}
             >
-              <RoomArt id={item.id} tone={item.tone} />
+              <RoomArt id={item.id} tone={item.tone} fill={fill} />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/20" />
               <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5">
                 <div>
@@ -62,10 +65,10 @@ export function ImageDemo({ defaultTab }: { defaultTab?: string } = {}) {
                   on ? "-translate-y-1 ring-2 ring-white" : "opacity-80 hover:opacity-100",
                 )}
               >
-                <div className="h-16">
+                <div className={fill ? "h-20" : "h-16"}>
                   <RoomArt id={item.id} tone={item.tone} compact />
                 </div>
-                <span className="absolute inset-x-0 bottom-0 bg-black/45 px-2 py-1 text-[10px] uppercase tracking-wide text-white">
+                <span className="absolute inset-x-0 bottom-0 truncate bg-black/45 px-1.5 py-1 text-[9px] uppercase tracking-wide text-white sm:px-2 sm:text-[10px]">
                   {pick(item.kicker, locale)}
                 </span>
               </button>
@@ -77,12 +80,22 @@ export function ImageDemo({ defaultTab }: { defaultTab?: string } = {}) {
   );
 }
 
-function RoomArt({ id, tone, compact = false }: { id: RoomId; tone: string; compact?: boolean }) {
+function RoomArt({
+  id,
+  tone,
+  compact = false,
+  fill = false,
+}: {
+  id: RoomId;
+  tone: string;
+  compact?: boolean;
+  fill?: boolean;
+}) {
   return (
     <svg
       viewBox="0 0 320 180"
       preserveAspectRatio="xMidYMid slice"
-      className={compact ? "size-full" : "h-[320px] w-full"}
+      className={compact ? "size-full" : fill ? "size-full" : "h-[320px] w-full"}
       aria-hidden="true"
     >
       <rect width="320" height="180" fill={tone} />

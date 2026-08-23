@@ -36,7 +36,7 @@ export function CollapsibleDemo({ defaultOpen }: { defaultOpen?: boolean } = {})
 
   return (
     <Frame title={locale === "en" ? "Northstar · analytics" : "Northstar · 分析"}>
-      <div className="flex min-h-[22rem] min-w-0 bg-surface-2">
+      <div className="flex min-h-[28rem] w-full min-w-0 flex-1 overflow-x-hidden bg-surface-2">
         <aside
           className="flex shrink-0 flex-col bg-fg text-surface"
           style={{

@@ -1,23 +1,33 @@
+/* Playground: window is 100% of the work pane. Stage wraps at 390. */
 .login-window {
+  box-sizing: border-box;
   min-width: 0;
-  max-width: 390px;
   width: 100%;
+  max-width: 100%;
+  container-type: inline-size;
+  container-name: login;
 }
 
 .login-window-body {
   min-width: 0;
   overflow-x: hidden;
-  min-height: 420px;
+}
+
+.login-centered,
+.login-steps,
+.login-split,
+.login-immersive,
+.login-roles {
+  box-sizing: border-box;
+  min-height: 28rem;
+  min-width: 0;
 }
 
 .login-centered,
 .login-steps {
-  box-sizing: border-box;
-  min-height: 420px;
-  min-width: 0;
   display: grid;
   place-items: center;
-  padding: 1.15rem 0.9rem;
+  padding: 1.25rem 1rem;
   background: var(--color-bg-warm);
 }
 
@@ -25,18 +35,17 @@
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
-  max-width: 100%;
+  max-width: 22rem;
   border-radius: 16px;
   background: var(--color-surface);
   padding: 1.15rem 1.1rem 1.2rem;
   box-shadow: var(--shadow-card);
 }
 
+/* Stacked on a 390 fixture / phone; two real columns once the pane is wide. */
 .login-split {
   display: grid;
-  grid-template-columns: minmax(8.5rem, 3fr) minmax(0, 2fr);
-  min-height: 420px;
-  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .login-split-brand,
@@ -49,29 +58,75 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 0.9rem 0.75rem 1rem;
+  min-height: 9.5rem;
+  padding: 1rem 0.95rem 1.05rem;
   color: var(--color-accent-fg);
   background:
     radial-gradient(90% 70% at 18% 10%, color-mix(in oklab, var(--color-accent) 55%, white) 0%, transparent 58%),
     linear-gradient(165deg, var(--color-accent) 0%, var(--color-fg) 100%);
 }
 
+.login-split-title {
+  margin: 0.4rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.login-split-body {
+  margin-top: 0.4rem;
+  max-width: 22rem;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgb(255 255 255 / 0.75);
+}
+
 .login-split-form {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 1rem 0.85rem;
+  gap: 1rem;
+  padding: 1.15rem 1rem 1.25rem;
   background: var(--color-surface);
 }
 
+@container login (min-width: 36rem) {
+  .login-split {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+  }
+
+  .login-split-brand {
+    min-height: 0;
+    padding: 1.75rem 1.75rem 1.6rem;
+  }
+
+  .login-split-title {
+    margin-top: 0.65rem;
+    font-size: 1.55rem;
+    line-height: 1.25;
+  }
+
+  .login-split-body {
+    margin-top: 0.7rem;
+    font-size: 13px;
+  }
+
+  .login-split-form {
+    padding: 1.75rem 1.5rem;
+  }
+
+  .login-centered,
+  .login-steps {
+    padding: 2.5rem 1.5rem;
+  }
+}
+
 .login-immersive {
-  box-sizing: border-box;
-  min-height: 420px;
-  min-width: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  gap: 1.1rem;
+  justify-content: space-between;
+  gap: 1.25rem;
   padding: 1.35rem 1.05rem 1.2rem;
   color: var(--color-accent-fg);
   background:
@@ -80,12 +135,55 @@
     linear-gradient(165deg, var(--color-accent) 0%, var(--color-fg) 100%);
 }
 
-.login-roles {
-  box-sizing: border-box;
-  min-height: 420px;
+.login-immersive-copy {
   min-width: 0;
-  padding: 1.1rem 0.95rem 1.2rem;
+  max-width: 28rem;
+}
+
+.login-immersive-copy h3 {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.login-immersive-form {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  max-width: 22rem;
+  gap: 1rem;
+}
+
+@container login (min-width: 36rem) {
+  .login-immersive {
+    padding: 2.5rem 2rem 2rem;
+  }
+
+  .login-immersive-copy h3 {
+    font-size: 2rem;
+  }
+}
+
+.login-roles {
+  display: grid;
+  place-items: center;
+  padding: 1.25rem 1rem 1.4rem;
   background: var(--color-bg-warm);
+}
+
+.login-roles-surface {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 22rem;
+}
+
+@container login (min-width: 36rem) {
+  .login-roles {
+    padding: 2.25rem 1.5rem;
+  }
 }
 
 .login-field {

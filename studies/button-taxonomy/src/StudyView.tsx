@@ -22,24 +22,26 @@ export function StudyView() {
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Name the weight, name the scene, then name the chrome. The three contrasts below are live. The card always keeps the trio."
-            : "先说重量，再说场景，再说有没有铬。下面三个对照可以点。卡片始终是那三个一起。"}
+            ? "Name the weight. On desktop the two regions are right and wrong, buttons at natural size. Kinds are a small switch; the spec is a caption."
+            : "先说重量。桌面上左右是对和错，按钮是自然尺寸。种类是小开关，规格是一句说明。"}
         </p>
       </section>
 
-      <section className="mb-10 grid gap-3 sm:grid-cols-3">
+      <Playground />
+
+      <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
-          <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
-            <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
+          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
+            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
               {item.n}
             </span>
-            <h2 className="mt-3 text-[15px] font-semibold">{pick(item.title, locale)}</h2>
-            <p className="mt-1 text-[13px] text-fg-muted">{pick(item.example, locale)}</p>
+            <div className="min-w-0">
+              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
+              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
+            </div>
           </div>
         ))}
       </section>
-
-      <Playground />
 
       <section className="mt-14 grid min-w-0 gap-10 lg:grid-cols-2">
         <article className="min-w-0">

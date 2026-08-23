@@ -26,3 +26,14 @@ export function Window({
     </div>
   );
 }
+
+export function Well({ children }: { children: ReactNode }) {
+  return (
+    <div
+      data-layout="desk"
+      className="recall-well overflow-hidden rounded-2xl border border-border bg-surface-2 shadow-card"
+    >
+      {children}
+    </div>
+  );
+}

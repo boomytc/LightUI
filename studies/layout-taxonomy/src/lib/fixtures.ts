@@ -1,11 +1,11 @@
 import { loc, type Localized } from "./site-locale";
 
 export const MASONRY_TILES: { id: string; h: number; cat: Localized; author: string }[] = [
-  { id: "t1", h: 72, cat: loc("摄影", "Photo"), author: "Ayu" },
-  { id: "t2", h: 128, cat: loc("海报", "Poster"), author: "Mori" },
-  { id: "t3", h: 96, cat: loc("字体", "Type"), author: "Sue" },
-  { id: "t4", h: 148, cat: loc("包装", "Pack"), author: "Leo" },
-  { id: "t5", h: 84, cat: loc("插画", "Draw"), author: "Yuki" },
+  { id: "t1", h: 112, cat: loc("摄影", "Photo"), author: "Ayu" },
+  { id: "t2", h: 196, cat: loc("海报", "Poster"), author: "Mori" },
+  { id: "t3", h: 148, cat: loc("字体", "Type"), author: "Sue" },
+  { id: "t4", h: 228, cat: loc("包装", "Pack"), author: "Leo" },
+  { id: "t5", h: 128, cat: loc("插画", "Draw"), author: "Yuki" },
 ];
 
 export const SPLIT_FILES = [

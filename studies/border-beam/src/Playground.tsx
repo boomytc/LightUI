@@ -1,136 +1,101 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Check, Copy } from "lucide-react";
-import { Window } from "./Frame";
 import { MembershipCard } from "./MembershipCard";
 import { KINDS } from "./lib/kinds";
 import { isNaive, type KindId, type StageState } from "./lib/machines";
 import { pick, useLocale, type Locale } from "./lib/site-locale";
 import { useReducedMotion } from "./lib/use-reduced-motion";
 import { cn } from "./lib/utils";
+import "./beam.css";
 
 export function Playground() {
   const locale = useLocale();
   const reduced = useReducedMotion();
-  const [active, setActive] = useState<KindId>("beam");
   const [park, setPark] = useState(false);
-  const meta = KINDS.find((k) => k.id === active) ?? KINDS[0]!;
   const state: StageState = park ? "park" : "run";
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      const target = e.target as HTMLElement | null;
-      if (target && ["INPUT", "TEXTAREA"].includes(target.tagName)) return;
-      const n = Number(e.key);
-      if (n >= 1 && n <= KINDS.length) {
-        e.preventDefault();
-        setActive(KINDS[n - 1]!.id);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  const beam = KINDS.find((k) => k.id === "beam") ?? KINDS[0]!;
 
   return (
-    <div className="grid min-w-0 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
-      <nav
-        aria-label={locale === "en" ? "Beam kinds" : "光束种类"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
-      >
-        {KINDS.map((kind) => {
-          const on = kind.id === active;
-          return (
-            <button
-              key={kind.id}
-              type="button"
-              data-kind={kind.id}
-              onClick={() => setActive(kind.id)}
-              className={cn(
-                "flex min-w-40 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
-                on
-                  ? "border-border-strong bg-surface shadow-card"
-                  : "border-transparent bg-transparent hover:bg-surface-2",
-              )}
-            >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
-                {kind.index}
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate text-[13px] font-medium">{pick(kind.zh, locale)}</span>
-                <span className="block truncate text-[11px] text-fg-muted">{kind.name}</span>
-              </span>
-            </button>
-          );
-        })}
-        <label className="mt-1 flex min-w-40 shrink-0 items-center justify-between gap-3 rounded-xl border border-border bg-surface px-3 py-2.5 text-[13px] lg:min-w-0 lg:w-full">
-          <span>{locale === "en" ? "Park the beam" : "停住"}</span>
-          <input
-            type="checkbox"
-            checked={park}
-            onChange={(e) => setPark(e.target.checked)}
-            className="accent-accent"
-          />
-        </label>
-      </nav>
-
+    <div className="min-w-0">
       <section className="min-w-0 overflow-x-hidden">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
-            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 02</p>
-            <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{pick(meta.zh, locale)}</h2>
-            <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
+            <p className="font-mono text-[12px] tabular-nums text-accent">01 / 02</p>
+            <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">
+              {locale === "en" ? "Border beam vs flood" : "边框光束 | 铺满（错）"}
+            </h2>
+            <p className="mt-1 text-[14px] text-fg-muted">
+              {locale === "en"
+                ? "Same membership card. Contrast is the path: stroke, or fill."
+                : "同一张会员卡。对照的是路径：走边框，还是铺满。"}
+            </p>
           </div>
-          <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
-            {pick(meta.tells, locale)}
-          </p>
+          <label className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-[13px]">
+            <span>{locale === "en" ? "Park the beam" : "停住"}</span>
+            <input
+              type="checkbox"
+              checked={park}
+              onChange={(e) => setPark(e.target.checked)}
+              className="accent-accent"
+            />
+          </label>
         </div>
 
-        <div className="mb-4 flex flex-wrap gap-1.5">
-          {meta.scenes.map((scene) => (
-            <span
-              key={scene.zh}
-              className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
-            >
-              {pick(scene, locale)}
-            </span>
+        <SpecCard text={pick(beam.spec, locale)} locale={locale} />
+
+        <div className="beam-compare" data-layout="compare">
+          {KINDS.map((kind) => (
+            <KindColumn
+              key={kind.id}
+              id={kind.id}
+              state={state}
+              reduced={reduced}
+              locale={locale}
+            />
           ))}
         </div>
-
-        {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
-
-        <SpecCard text={pick(meta.spec, locale)} locale={locale} />
-
-        <div className="w-[390px] max-w-full min-w-0 overflow-x-hidden">
-          <Window
-            title={locale === "en" ? "MORI PLUS · membership" : "MORI PLUS · 会员中心"}
-            kicker={locale === "en" ? "MORI PLUS · membership" : "MORI PLUS · 会员中心"}
-            heading={locale === "en" ? "Membership" : "会员特权"}
-            footnote={
-              isNaive(meta.id)
-                ? locale === "en"
-                  ? "The whole card is lit. That is the wrong path."
-                  : "整张卡在亮。这是错的做法。"
-                : locale === "en"
-                  ? "The highlight travels the rounded border."
-                  : "高光沿卡片边框持续流动。"
-            }
-          >
-            <MembershipCard kind={meta.id} state={state} reduced={reduced} locale={locale} />
-          </Window>
-        </div>
-
-        <ul className="mt-4 flex flex-wrap gap-2">
-          {meta.rules.map((rule) => (
-            <li
-              key={rule.zh}
-              className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
-            >
-              {pick(rule, locale)}
-            </li>
-          ))}
-        </ul>
       </section>
     </div>
+  );
+}
+
+function KindColumn({
+  id,
+  state,
+  reduced,
+  locale,
+}: {
+  id: KindId;
+  state: StageState;
+  reduced: boolean;
+  locale: Locale;
+}) {
+  const meta = KINDS.find((k) => k.id === id) ?? KINDS[0]!;
+  const wrong = isNaive(id);
+
+  return (
+    <article className="beam-slot min-w-0" data-column={id}>
+      <p className={cn("font-mono text-[12px] tabular-nums", wrong ? "text-fg-subtle" : "text-accent")}>
+        {meta.index}
+        {wrong ? (locale === "en" ? " · wrong" : " · 错") : ""}
+      </p>
+      <h3 className="mt-1 text-[1.15rem] font-semibold tracking-tight">{pick(meta.zh, locale)}</h3>
+      <p className="mt-1 text-[13px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
+      <div className="mt-4 min-w-0">
+        <MembershipCard kind={id} state={state} reduced={reduced} locale={locale} />
+      </div>
+      <p className="mt-3 text-[12px] leading-relaxed text-fg-subtle">{pick(meta.tells, locale)}</p>
+      <ul className="mt-3 flex flex-wrap gap-1.5">
+        {meta.rules.map((rule) => (
+          <li
+            key={rule.zh}
+            className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+          >
+            {pick(rule, locale)}
+          </li>
+        ))}
+      </ul>
+    </article>
   );
 }
 

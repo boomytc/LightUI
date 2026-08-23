@@ -7,7 +7,10 @@ import { TableHead, TableRow, Window } from "./Frame";
 
 const RADIUS = 16;
 
-export function CardDemo({ defaultTab }: { defaultTab?: string } = {}) {
+export function CardDemo({
+  defaultTab,
+  fill = false,
+}: { defaultTab?: string; fill?: boolean } = {}) {
   const locale = useLocale();
   const allowed = new Set(CARD_TABS.map((t) => t.id));
   const initial = defaultTab && allowed.has(defaultTab) ? defaultTab : "members";
@@ -16,48 +19,54 @@ export function CardDemo({ defaultTab }: { defaultTab?: string } = {}) {
   const radius = cardPanelRadius(selected, RADIUS);
 
   return (
-    <Window title={locale === "en" ? "North · team" : "North · 团队管理"}>
-      <h3 className="text-[1.15rem] font-semibold tracking-tight">
-        {locale === "en" ? "Members and access" : "成员与权限"}
-      </h3>
+    <Window title={locale === "en" ? "North · team" : "North · 团队管理"} fill={fill}>
+      <div className={fill ? "flex h-full min-h-0 flex-1 flex-col px-5 pt-4" : undefined}>
+        <h3 className={cn("text-[1.15rem] font-semibold tracking-tight", fill && "shrink-0")}>
+          {locale === "en" ? "Members and access" : "成员与权限"}
+        </h3>
 
-      <div role="tablist" aria-label={locale === "en" ? "Access" : "成员与权限"} className="mt-4 flex gap-1.5">
-        {CARD_TABS.map((item) => {
-          const on = item.id === tab;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={on}
-              onClick={() => setTab(item.id)}
-              className={cn(
-                "relative z-[1] px-3.5 py-2 text-[13px] transition-colors",
-                on ? "-mb-px rounded-t-xl" : "rounded-xl",
-                on
-                  ? "border border-b-transparent border-border bg-surface font-medium text-fg"
-                  : "border border-border bg-surface-2 text-fg-muted hover:text-fg",
-              )}
-            >
-              {pick(item.label, locale)}
-            </button>
-          );
-        })}
-      </div>
+        <div
+          role="tablist"
+          aria-label={locale === "en" ? "Access" : "成员与权限"}
+          className={cn("mt-4 flex gap-1.5", fill && "shrink-0")}
+        >
+          {CARD_TABS.map((item) => {
+            const on = item.id === tab;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={on}
+                onClick={() => setTab(item.id)}
+                className={cn(
+                  "relative z-[1] px-3.5 py-2 text-[13px] transition-colors",
+                  on ? "-mb-px rounded-t-xl" : "rounded-xl",
+                  on
+                    ? "border border-b-transparent border-border bg-surface font-medium text-fg"
+                    : "border border-border bg-surface-2 text-fg-muted hover:text-fg",
+                )}
+              >
+                {pick(item.label, locale)}
+              </button>
+            );
+          })}
+        </div>
 
-      <div
-        className="relative border border-border bg-surface px-4 py-4"
-        style={{
-          borderTopLeftRadius: radius.topLeft,
-          borderTopRightRadius: radius.topRight,
-          borderBottomLeftRadius: RADIUS,
-          borderBottomRightRadius: RADIUS,
-        }}
-      >
-        <div className="tab-swap" key={tab}>
-          {tab === "members" ? <Members locale={locale} /> : null}
-          {tab === "roles" ? <Roles locale={locale} /> : null}
-          {tab === "invites" ? <Invites locale={locale} /> : null}
+        <div
+          className={cn("relative border border-border bg-surface px-4 py-4", fill && "min-h-0 flex-1 overflow-auto")}
+          style={{
+            borderTopLeftRadius: radius.topLeft,
+            borderTopRightRadius: radius.topRight,
+            borderBottomLeftRadius: RADIUS,
+            borderBottomRightRadius: RADIUS,
+          }}
+        >
+          <div className="tab-swap" key={tab}>
+            {tab === "members" ? <Members locale={locale} /> : null}
+            {tab === "roles" ? <Roles locale={locale} /> : null}
+            {tab === "invites" ? <Invites locale={locale} /> : null}
+          </div>
         </div>
       </div>
     </Window>

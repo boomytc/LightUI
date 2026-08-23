@@ -24,8 +24,8 @@ The lab mounts `StudyView` at `/s/progress-taxonomy`.
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — category, clamp 0..1, step kinds, circular offset (no DOM)
-- `src/meters/` — eight fixtures in window scenes
-- `src/StageView.tsx` — one kind, one locked state, no chrome
+- `src/meters/` — eight fixtures. StudyView: kinds as top chips, meter large in the pane (not a 390 phone).
+- `src/StageView.tsx` — one kind, one locked state, 390 fixture, no chrome
 - `src/lib/stage-query.ts` — `kind=fill|steps|circular|liquid|spin|radar|dots|wave`, `state=mid|done|loop`
 
 ## Rules

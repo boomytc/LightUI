@@ -37,3 +37,9 @@ The lab mounts `StudyView` at `/s/nav-taxonomy`.
   outside this folder.
 - A breadcrumb is not the primary nav. A drawer is not a full-screen overlay.
 - Bind the standalone server to `127.0.0.1:5177`.
+- Placement only reads on a page. The playground demo is a full-width page
+  mock filling the content column (`min-h` 28rem). Kinds are a top chip row.
+  Do not wrap the demo in a 390 phone sitting in a void.
+- At 390 the page mock is 100% of viewport-gutter. Hamburger models stay
+  usable. No page-level horizontal scroll.
+- `StageView` may stay a 390 fixture.

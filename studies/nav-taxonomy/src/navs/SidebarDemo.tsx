@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu } from "lucide-react";
+import { PanelLeft } from "lucide-react";
 import { LINKS } from "../lib/fixtures";
 import { pick, useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
@@ -12,9 +12,9 @@ export function SidebarDemo() {
 
   return (
     <Frame title={locale === "en" ? "Console" : "控制台"}>
-      <div className="flex h-full">
+      <div className="flex h-full min-w-0">
         <aside
-          className="flex shrink-0 flex-col border-r border-border bg-surface"
+          className="flex min-w-0 shrink-0 flex-col border-r border-border bg-surface"
           style={{
             width: collapsed ? 56 : 160,
             transition: "width 250ms cubic-bezier(0.22, 1, 0.36, 1)",
@@ -34,9 +34,9 @@ export function SidebarDemo() {
                     : "折叠侧栏"
               }
               onClick={() => setCollapsed((v) => !v)}
-              className="grid size-8 place-items-center rounded-md text-fg-muted hover:bg-surface-2"
+              className="grid size-8 shrink-0 place-items-center rounded-md text-fg-muted hover:bg-surface-2"
             >
-              <Menu className="size-4" />
+              <PanelLeft className="size-4" />
             </button>
             <span
               className={cn(
@@ -44,7 +44,7 @@ export function SidebarDemo() {
                 collapsed ? "w-0 opacity-0" : "opacity-100",
               )}
             >
-              {locale === "en" ? "Desk" : "台"}
+              {locale === "en" ? "Desk" : "控制台"}
             </span>
           </div>
           <nav className="flex flex-col gap-0.5 px-2" aria-label={locale === "en" ? "Console" : "控制台"}>
@@ -71,7 +71,7 @@ export function SidebarDemo() {
             })}
           </nav>
         </aside>
-        <section className="min-w-0 flex-1 overflow-y-auto">
+        <section className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
           <HeroWash compact />
           <div className="space-y-3 p-4">
             <p className="text-[12px] text-fg-subtle">

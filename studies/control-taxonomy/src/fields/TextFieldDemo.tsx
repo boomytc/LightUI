@@ -1,10 +1,11 @@
 import { useId, useState } from "react";
 import { pick, useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
-import { FieldLabel, Frame, fieldClass } from "./Frame";
+import { FieldLabel, Frame, fieldClass, useLiveFill } from "./Frame";
 
 export function TextFieldDemo({ state }: { state?: string } = {}) {
   const locale = useLocale();
+  const fill = useLiveFill();
   const id = useId();
   const filled = pick({ zh: "王敏", en: "Mina" }, locale);
   const [value, setValue] = useState(state === "filled" ? filled : "");
@@ -33,7 +34,7 @@ export function TextFieldDemo({ state }: { state?: string } = {}) {
           {locale === "en" ? "Enter a name" : "请填写姓名"}
         </p>
       ) : null}
-      <div className="mt-4 flex flex-wrap gap-1.5">
+      <div className={cn("mt-4 flex flex-wrap gap-1.5", fill && "mt-auto pt-6")}>
         <Chip on>{locale === "en" ? "Label" : "标签"}</Chip>
         <Chip on={empty}>{locale === "en" ? "Placeholder" : "占位文字"}</Chip>
         <Chip on={touched}>{locale === "en" ? "Required on blur" : "失焦校验"}</Chip>

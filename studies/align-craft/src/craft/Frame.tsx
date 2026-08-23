@@ -16,11 +16,11 @@ export function ComparePane({
     <div
       data-align={state}
       className={cn(
-        "overflow-hidden rounded-2xl border bg-surface shadow-card",
+        "flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border bg-surface shadow-card",
         right ? "border-intent/35" : "border-border",
       )}
     >
-      <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2">
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border px-3 py-2">
         <span
           className={cn(
             "rounded-full px-2 py-0.5 text-[11px] font-medium",
@@ -30,7 +30,7 @@ export function ComparePane({
           {right ? pick({ zh: "对", en: "Right" }, locale) : pick({ zh: "错", en: "Wrong" }, locale)}
         </span>
       </div>
-      <div className="grid min-h-56 place-items-center px-4 py-6 sm:px-5">{children}</div>
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-center p-4 sm:p-5">{children}</div>
     </div>
   );
 }

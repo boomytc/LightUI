@@ -32,8 +32,13 @@ export function useBox(
     read();
     const onResize = () => read();
     window.addEventListener("resize", onResize);
+    const ro = new ResizeObserver(read);
+    ro.observe(list);
     void document.fonts?.ready.then(read);
-    return () => window.removeEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      ro.disconnect();
+    };
   }, [listRef, selectedId, measure]);
 
   return { box, transition: indicatorTransition(prev.current) };

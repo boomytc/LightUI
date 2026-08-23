@@ -1,12 +1,41 @@
-import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { createContext, forwardRef, useContext, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { cn } from "../lib/utils";
+
+const LiveFillContext = createContext(false);
+
+export function LiveFill({ children }: { children: ReactNode }) {
+  return (
+    <LiveFillContext.Provider value={true}>
+      <div className="h-full min-h-0 flex-1">{children}</div>
+    </LiveFillContext.Provider>
+  );
+}
+
+export function useLiveFill() {
+  return useContext(LiveFillContext);
+}
 
 export function Frame({ title, children }: { title: string; children: ReactNode }) {
+  const fill = useLiveFill();
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-card">
-      <div className="border-b border-border px-4 py-2.5">
+    <div
+      data-live={fill ? "pane" : "compact"}
+      className={cn(
+        "overflow-hidden rounded-2xl border border-border bg-surface shadow-card",
+        fill && "flex h-full min-h-[20rem] flex-col lg:min-h-[32rem]",
+      )}
+    >
+      <div className="shrink-0 border-b border-border px-4 py-2.5">
         <p className="truncate text-[12px] text-fg-subtle">{title}</p>
       </div>
-      <div className="p-5 sm:p-6">{children}</div>
+      <div
+        className={cn(
+          "p-5 sm:p-6",
+          fill && "flex min-h-0 flex-1 flex-col p-6 sm:p-8 lg:px-10 lg:py-8",
+        )}
+      >
+        {children}
+      </div>
     </div>
   );
 }

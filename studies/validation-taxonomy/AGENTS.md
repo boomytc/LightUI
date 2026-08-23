@@ -24,8 +24,9 @@ The lab mounts `StudyView` at `/s/validation-taxonomy`.
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — validateField, visibleErrors, shownByLesson, month grid (no DOM)
-- `src/form/` — one activity form; the kind switcher changes *when* errors appear
-- `src/StageView.tsx` — one kind, one locked state, no chrome
+- `src/form/` — one activity form beside the when-to-speak lesson
+- `src/form/Playground.tsx` — desktop: form (~28–32rem) | blur / inline / submit, filling the pane. No 390 cap.
+- `src/StageView.tsx` — one kind, one locked state, no chrome; fixture stays `max-w-[390px]`
 - `src/lib/stage-query.ts` — `kind=blur|inline|submit`, `state=error|ok`
 
 ## Rules

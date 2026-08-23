@@ -1,50 +1,82 @@
 import { Inbox } from "lucide-react";
-import { EMPTY_COPY, type Brief } from "../lib/fixtures";
+import { BRIEFS, EMPTY_COPY, type Brief } from "../lib/fixtures";
 import { hasAction, shimmerMotion } from "../lib/machines";
 import { pick, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 
 export function BoneList({
-  count = 3,
+  briefs = BRIEFS,
+  locale,
   reduceMotion,
 }: {
-  count?: number;
+  briefs?: readonly Brief[];
+  locale: Locale;
   reduceMotion: boolean;
 }) {
   const shine = shimmerMotion(reduceMotion);
   return (
-    <ul className="grid min-w-0 gap-2" aria-hidden="true">
-      {Array.from({ length: count }, (_, i) => (
-        <li key={i}>
-          <BoneCard shine={shine} />
+    <ul className="grid min-w-0 gap-2" aria-hidden="true" data-region="skeleton">
+      {briefs.map((brief) => (
+        <li key={brief.id}>
+          <BoneCard brief={brief} locale={locale} shine={shine} />
         </li>
       ))}
     </ul>
   );
 }
 
-function BoneCard({ shine }: { shine: boolean }) {
+function BoneCard({
+  brief,
+  locale,
+  shine,
+}: {
+  brief: Brief;
+  locale: Locale;
+  shine: boolean;
+}) {
   return (
     <div className="flex min-w-0 items-start gap-3 rounded-xl border border-border bg-surface px-3 py-3">
       <Bone extra="size-10 shrink-0 rounded-lg" shine={shine} />
       <div className="min-w-0 flex-1">
-        <Bone extra="block h-3.5 w-[68%] rounded-sm" shine={shine} />
-        <Bone extra="mt-2 block h-2.5 w-[42%] rounded-sm" shine={shine} />
-        <Bone extra="mt-2.5 block h-5 w-11 rounded-full" shine={shine} />
+        <Bone extra="block h-3.5 rounded-sm" shine={shine} width={copyWidth(pick(brief.title, locale), locale)} />
+        <Bone extra="mt-2 block h-2.5 rounded-sm" shine={shine} width={copyWidth(pick(brief.meta, locale), locale)} />
+        <Bone extra="mt-2.5 block h-5 rounded-full" shine={shine} width={pillWidth(pick(brief.tag, locale), locale)} />
       </div>
     </div>
   );
 }
 
-function Bone({ extra, shine }: { extra: string; shine: boolean }) {
+function Bone({
+  extra,
+  shine,
+  width,
+}: {
+  extra: string;
+  shine: boolean;
+  width?: string;
+}) {
   return (
-    <span className={cn("pending-bone", extra)} data-static={shine ? undefined : "true"} />
+    <span
+      className={cn("pending-bone", extra)}
+      data-static={shine ? undefined : "true"}
+      style={width ? { width } : undefined}
+    />
   );
+}
+
+function copyWidth(text: string, locale: Locale): string {
+  const inner = locale === "en" ? `${Math.max(text.length, 4)}ch` : `${Math.max(text.length, 2)}em`;
+  return `min(100%, ${inner})`;
+}
+
+function pillWidth(text: string, locale: Locale): string {
+  const inner = locale === "en" ? `${Math.max(text.length, 2)}ch` : `${Math.max(text.length, 2)}em`;
+  return `min(100%, calc(${inner} + 1rem))`;
 }
 
 export function BriefList({ briefs, locale }: { briefs: readonly Brief[]; locale: Locale }) {
   return (
-    <ul className="grid min-w-0 gap-2">
+    <ul className="grid min-w-0 gap-2" data-region="content">
       {briefs.map((brief) => (
         <li key={brief.id}>
           <article className="flex min-w-0 items-start gap-3 rounded-xl border border-border bg-surface px-3 py-3">
@@ -77,7 +109,7 @@ export function EmptyPanel({
   onCreate?: () => void;
 }) {
   return (
-    <div className="flex min-w-0 flex-col items-center px-3 py-8 text-center">
+    <div className="pending-occupy px-3 py-8" data-region="empty">
       <span
         className="grid size-12 place-items-center rounded-2xl bg-accent-soft text-accent"
         aria-hidden="true"

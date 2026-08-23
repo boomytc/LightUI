@@ -53,13 +53,16 @@ function BaselineFigure({ state }: { state: StageState }) {
   const locale = useLocale();
   const right = state === "right";
   return (
-    <div className={cn("relative flex gap-2", right ? "items-baseline" : "items-center")}>
+    <div
+      className={cn(
+        "relative flex w-full min-w-0 gap-[0.35em] text-[3.25rem] font-semibold leading-none tracking-tight text-fg sm:text-[4.5rem]",
+        right ? "items-baseline" : "items-center",
+      )}
+    >
       {!right ? <span aria-hidden className="align-box-guide" /> : null}
-      <span className="relative text-[4.5rem] font-semibold leading-none tracking-tight text-fg">
-        128
-        {right ? <span aria-hidden className="align-baseline-guide" /> : null}
-      </span>
-      <span className="text-[1.25rem] leading-none text-accent">
+      {right ? <span aria-hidden className="align-baseline-guide" /> : null}
+      <span className="shrink-0">128</span>
+      <span className="text-[0.28em] font-normal leading-none text-accent">
         {locale === "en" ? "/mo" : "元/月"}
       </span>
     </div>
@@ -72,14 +75,14 @@ function CoverFigure({ state }: { state: StageState }) {
   return (
     <div
       className={cn(
-        "relative aspect-square w-full max-w-[220px] overflow-hidden rounded-xl border border-border",
+        "relative aspect-[4/3] w-full min-w-0 overflow-hidden rounded-xl border border-border",
         right ? "bg-fg/5" : "align-hatch",
       )}
     >
       <img
         src={SUBJECT_ART}
         alt={pick({ zh: "廊柱下的行人", en: "A walker under the colonnade" }, locale)}
-        className="size-full"
+        className="absolute inset-0 size-full"
         style={{
           objectFit: right ? objectFitFor("cover") : "contain",
           objectPosition: objectPositionFor("cover", state),
@@ -105,12 +108,27 @@ function AxisFigure({ state }: { state: StageState }) {
   const locale = useLocale();
   const right = state === "right";
   return (
-    <div className={cn("flex gap-3", right ? "items-center" : "items-start")}>
-      <span className={cn("grid size-10 place-items-center rounded-lg bg-accent text-accent-fg", !right && "mt-1")}>
+    <div
+      className={cn(
+        "flex w-full min-w-0 gap-3 rounded-xl border border-border bg-bg px-4 py-4 sm:px-5 sm:py-5",
+        right ? "items-center" : "items-start",
+      )}
+    >
+      <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-accent text-accent-fg">
         <LayoutGrid className="size-5" />
       </span>
-      <span className="text-[15px] font-medium">
-        {pick({ zh: "图标与文字对齐", en: "Icon and label" }, locale)}
+      <span className="min-w-0 flex-1">
+        <span className="block text-[15px] font-medium">
+          {pick({ zh: "图标与文字对齐", en: "Icon and label" }, locale)}
+        </span>
+        <span className="mt-0.5 block text-[12px] leading-5 text-fg-muted">
+          {pick(
+            right
+              ? { zh: "交叉轴居中，中线重合。", en: "Cross-axis center; midlines meet." }
+              : { zh: "没写交叉轴，图标贴着第一行顶。", en: "No cross axis; the icon hugs the first line." },
+            locale,
+          )}
+        </span>
       </span>
     </div>
   );
@@ -120,21 +138,21 @@ function MarginFigure({ state }: { state: StageState }) {
   const right = state === "right";
   if (right) {
     return (
-      <div className="flex w-full max-w-[220px] flex-col gap-4">
-        <div className="h-14 rounded-lg bg-surface-2" />
-        <div className="h-14 rounded-lg bg-surface-2" />
-        <div className="h-14 rounded-lg bg-surface-2" />
+      <div className="flex w-full min-w-0 flex-col gap-4">
+        <div className="h-16 rounded-lg bg-surface-2 sm:h-[4.5rem]" />
+        <div className="h-16 rounded-lg bg-surface-2 sm:h-[4.5rem]" />
+        <div className="h-16 rounded-lg bg-surface-2 sm:h-[4.5rem]" />
       </div>
     );
   }
   return (
-    <div className="w-full max-w-[220px]">
-      <div className="h-14 rounded-lg bg-surface-2" />
+    <div className="w-full min-w-0">
+      <div className="h-16 rounded-lg bg-surface-2 sm:h-[4.5rem]" />
       <div className="align-hatch-accent relative my-[18px] flex h-8 items-center justify-center">
         <span className="text-[11px] font-medium tracking-wide text-accent">margin 18px</span>
       </div>
-      <div className="h-14 rounded-lg bg-surface-2" />
-      <div className="mt-[7px] h-14 rounded-lg bg-surface-2" />
+      <div className="h-16 rounded-lg bg-surface-2 sm:h-[4.5rem]" />
+      <div className="mt-[7px] h-16 rounded-lg bg-surface-2 sm:h-[4.5rem]" />
     </div>
   );
 }
@@ -143,15 +161,17 @@ function PaddingFigure({ state }: { state: StageState }) {
   const locale = useLocale();
   const right = state === "right";
   return (
-    <div className="relative w-full max-w-sm overflow-hidden rounded-xl border border-border bg-bg">
-      <div className={cn("relative min-h-40", right ? "align-pad-right" : "px-4 pb-6 pt-1")}>
+    <div className="relative w-full min-w-0 overflow-hidden rounded-xl border border-border bg-bg">
+      <div className={cn("relative min-h-44 sm:min-h-52", right ? "align-pad-right" : "px-4 pb-6 pt-1")}>
         {right ? <span aria-hidden className="align-cap-guide" /> : null}
         <p className="text-[1.65rem] font-semibold leading-[1.15] tracking-tight">
           {pick({ zh: "关于我们", en: "About us" }, locale)}
         </p>
         <p className="mt-2 text-[13px] leading-relaxed text-fg-muted">
           {pick(
-            { zh: "第一行不再贴着顶边。", en: "The first line is no longer flush to the top." },
+            right
+              ? { zh: "第一行不再贴着顶边。", en: "The first line is no longer flush to the top." }
+              : { zh: "第一行贴着盒子顶。", en: "The first line is flush to the top." },
             locale,
           )}
         </p>
@@ -163,15 +183,15 @@ function PaddingFigure({ state }: { state: StageState }) {
 function OpticalFigure({ state }: { state: StageState }) {
   const right = state === "right";
   return (
-    <div className="flex items-center gap-3">
-      <span className="grid size-14 place-items-center rounded-lg bg-surface-2">
-        <span className={cn("size-8 rounded-full bg-fg", right && "align-optical-circle")} />
+    <div className="flex w-full min-w-0 items-center justify-evenly gap-3 rounded-2xl bg-surface-2 px-2 py-6 sm:px-4 sm:py-8">
+      <span className="grid size-14 place-items-center rounded-xl bg-surface sm:size-16">
+        <span className={cn("size-8 rounded-full bg-fg sm:size-9", right && "align-optical-circle")} />
       </span>
-      <span className="grid size-14 place-items-center rounded-lg bg-surface-2">
-        <span className="size-8 bg-fg" />
+      <span className="grid size-14 place-items-center rounded-xl bg-surface sm:size-16">
+        <span className="size-8 bg-fg sm:size-9" />
       </span>
-      <span className="relative grid size-14 place-items-center rounded-full bg-fg text-surface">
-        <Play className={cn("size-5", right && "align-optical-play")} fill="currentColor" stroke="none" />
+      <span className="relative grid size-14 place-items-center rounded-full bg-fg text-surface sm:size-16">
+        <Play className={cn("size-5 sm:size-6", right && "align-optical-play")} fill="currentColor" stroke="none" />
       </span>
     </div>
   );
@@ -180,15 +200,15 @@ function OpticalFigure({ state }: { state: StageState }) {
 function InsetFigure({ state }: { state: StageState }) {
   const right = state === "right";
   return (
-    <div className="relative h-36 w-64 overflow-hidden rounded-2xl bg-accent/80">
+    <div className="relative aspect-[16/10] w-full min-w-0 overflow-hidden rounded-2xl bg-accent/80">
       <div
         className={cn(
-          "flex flex-col justify-center gap-2 rounded-xl bg-fg/75 px-4 py-3",
+          "flex flex-col justify-center gap-2 rounded-xl bg-fg/75 px-4 py-3 sm:px-5",
           right ? "absolute inset-[10px]" : "align-inset-guess",
         )}
       >
-        <span className="h-2 w-20 rounded-full bg-surface/85" />
-        <span className="h-2 w-36 rounded-full bg-surface/50" />
+        <span className="h-2 w-20 rounded-full bg-surface/85 sm:w-24" />
+        <span className="h-2 w-[min(9rem,70%)] rounded-full bg-surface/50" />
       </div>
     </div>
   );

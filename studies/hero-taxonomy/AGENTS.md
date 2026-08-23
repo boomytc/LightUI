@@ -24,7 +24,10 @@ The lab mounts `StudyView` at `/s/hero-taxonomy`.
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — first-glance question, one primary, commerce banners (no DOM)
-- `src/heroes/` — eight miniature first-folds in a window frame
+- `src/heroes/` — eight first-folds. Playground fills the content column
+  (desktop min-height ~28rem; kinds are a chip row; spec is a caption
+  under the hero). Do not wrap the playground demo in `w-[390px]`.
+  StageView stays `w-[390px]`. Narrow containers stack; no horizontal scroll.
 - `src/StageView.tsx` — one kind, `state=default`, no chrome
 - `src/lib/stage-query.ts` — `kind=product|portfolio|event|commerce|media|education|tool|community`, `state=default`
 

@@ -42,33 +42,35 @@ export function ToastDemo({ state }: { state?: string } = {}) {
         </AppNav>
       }
     >
-      <div className="px-5 py-5">
-        <h2 className="text-[13px] font-semibold">{locale === "en" ? "Profile" : "个人资料"}</h2>
-        <p className="mt-0.5 text-[11px] text-fg-muted">
-          {locale === "en" ? "Shown to the team" : "公开信息展示给团队成员"}
-        </p>
-        <div className="mt-4 flex flex-col gap-3">
-          <Field
-            id={nickId}
-            label={locale === "en" ? "Name" : "昵称"}
-            value={nickname}
-            onChange={setNickname}
-          />
-          <Field
-            id={mailId}
-            label={locale === "en" ? "Email" : "邮箱"}
-            value={email}
-            onChange={setEmail}
-          />
+      <div className="px-6 py-7">
+        <div className="max-w-md">
+          <h2 className="text-[13px] font-semibold">{locale === "en" ? "Profile" : "个人资料"}</h2>
+          <p className="mt-0.5 text-[11px] text-fg-muted">
+            {locale === "en" ? "Shown to the team" : "公开信息展示给团队成员"}
+          </p>
+          <div className="mt-4 flex flex-col gap-3">
+            <Field
+              id={nickId}
+              label={locale === "en" ? "Name" : "昵称"}
+              value={nickname}
+              onChange={setNickname}
+            />
+            <Field
+              id={mailId}
+              label={locale === "en" ? "Email" : "邮箱"}
+              value={email}
+              onChange={setEmail}
+            />
+          </div>
+          <div className="mt-4">
+            <Action onClick={save}>{locale === "en" ? "Save profile" : "保存资料"}</Action>
+          </div>
+          <p className="mt-3 text-[11px] leading-relaxed text-fg-subtle">
+            {locale === "en"
+              ? "The toast does not freeze the form. Keep typing while it is up."
+              : "轻提示不冻结表单。它还在的时候也可以继续改。"}
+          </p>
         </div>
-        <div className="mt-4">
-          <Action onClick={save}>{locale === "en" ? "Save profile" : "保存资料"}</Action>
-        </div>
-        <p className="mt-3 text-[11px] leading-relaxed text-fg-subtle">
-          {locale === "en"
-            ? "The toast does not freeze the form. Keep typing while it is up."
-            : "轻提示不冻结表单。它还在的时候也可以继续改。"}
-        </p>
       </div>
 
       {toast ? (

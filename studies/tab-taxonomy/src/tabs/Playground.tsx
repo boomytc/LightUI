@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { KINDS, type KindId } from "../lib/kinds";
-import { pick, useLocale } from "../lib/site-locale";
+import { pick, useLocale, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { CardDemo } from "./CardDemo";
 import { ChevronDemo } from "./ChevronDemo";
@@ -15,11 +15,26 @@ export function Playground() {
   const [active, setActive] = useState<KindId>("linear");
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0];
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && ["INPUT", "TEXTAREA"].includes(target.tagName)) return;
+      const n = Number(e.key);
+      if (n >= 1 && n <= KINDS.length) {
+        e.preventDefault();
+        setActive(KINDS[n - 1]!.id);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
-    <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+    <div className="min-w-0">
       <nav
         aria-label={locale === "en" ? "Tab kinds" : "页签种类"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
+        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1"
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
@@ -30,69 +45,70 @@ export function Playground() {
               data-kind={kind.id}
               onClick={() => setActive(kind.id)}
               className={cn(
-                "flex min-w-44 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
+                "inline-flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-left transition-colors",
                 on
-                  ? "border-border-strong bg-surface shadow-card"
-                  : "border-transparent bg-transparent hover:bg-surface-2",
+                  ? "border-fg bg-fg text-surface shadow-card"
+                  : "border-border bg-surface text-fg-muted hover:border-border-strong hover:text-fg",
               )}
             >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
+              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-surface/55" : "text-fg-subtle")}>
                 {kind.index}
               </span>
-              <span className="min-w-0">
-                <span className="block truncate text-[13px] font-medium">{kind.name}</span>
-                <span className="block truncate text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
-              </span>
+              <span className="text-[13px] font-medium whitespace-nowrap">{pick(kind.zh, locale)}</span>
             </button>
           );
         })}
       </nav>
 
-      <section className="min-w-0">
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 06</p>
-            <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
-            <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
-          </div>
-          <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
-            {pick(meta.tells, locale)}
-          </p>
+      <div className="mt-5 mb-3 flex flex-wrap items-end justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 06</p>
+          <h2 className="mt-1 text-[1.45rem] font-semibold tracking-tight">{meta.name}</h2>
+          <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
         </div>
+        <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
+          {pick(meta.tells, locale)}
+        </p>
+      </div>
 
-        <div className="mb-4 flex flex-wrap gap-1.5">
-          {meta.scenes.map((scene) => (
-            <span
-              key={scene.zh}
-              className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
-            >
-              {pick(scene, locale)}
-            </span>
-          ))}
-        </div>
+      {meta.note ? <p className="mb-3 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
 
-        {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
+      <div
+        data-tab-panel=""
+        data-tab-model={meta.id}
+        className="tab-page-panel flex min-h-[28rem] w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-card lg:h-[min(40rem,calc(100dvh-12rem))] lg:min-h-[32rem]"
+      >
+        <KindDemo key={meta.id} id={meta.id} fill />
+      </div>
 
-        <SpecCard text={pick(meta.spec, locale)} locale={locale} />
+      <div className="mt-4 flex flex-wrap gap-1.5">
+        {meta.scenes.map((scene) => (
+          <span
+            key={scene.zh}
+            className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
+          >
+            {pick(scene, locale)}
+          </span>
+        ))}
+      </div>
 
-        <KindDemo id={meta.id} />
+      <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
-        <ul className="mt-4 flex flex-wrap gap-2">
-          {meta.rules.map((rule) => (
-            <li
-              key={rule.zh}
-              className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
-            >
-              {pick(rule, locale)}
-            </li>
-          ))}
-        </ul>
-      </section>
+      <ul className="mt-4 flex flex-wrap gap-2">
+        {meta.rules.map((rule) => (
+          <li
+            key={rule.zh}
+            className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+          >
+            {pick(rule, locale)}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-function SpecCard({ text, locale }: { text: string; locale: "zh" | "en" }) {
+function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
@@ -106,7 +122,7 @@ function SpecCard({ text, locale }: { text: string; locale: "zh" | "en" }) {
   }
 
   return (
-    <div className="mb-5 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
+    <div className="mt-4 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
       <div className="flex items-start justify-between gap-3">
         <p className="text-[11px] font-medium tracking-wide text-surface/45">
           {locale === "en" ? "Say it this way" : "说清楚"}
@@ -125,19 +141,27 @@ function SpecCard({ text, locale }: { text: string; locale: "zh" | "en" }) {
   );
 }
 
-export function KindDemo({ id, defaultTab }: { id: KindId; defaultTab?: string }) {
+export function KindDemo({
+  id,
+  defaultTab,
+  fill = false,
+}: {
+  id: KindId;
+  defaultTab?: string;
+  fill?: boolean;
+}) {
   switch (id) {
     case "linear":
-      return <LinearDemo defaultTab={defaultTab} />;
+      return <LinearDemo defaultTab={defaultTab} fill={fill} />;
     case "card":
-      return <CardDemo defaultTab={defaultTab} />;
+      return <CardDemo defaultTab={defaultTab} fill={fill} />;
     case "chevron":
-      return <ChevronDemo defaultTab={defaultTab} />;
+      return <ChevronDemo defaultTab={defaultTab} fill={fill} />;
     case "segmented":
-      return <SegmentedDemo defaultTab={defaultTab} />;
+      return <SegmentedDemo defaultTab={defaultTab} fill={fill} />;
     case "folder":
-      return <FolderDemo defaultTab={defaultTab} />;
+      return <FolderDemo defaultTab={defaultTab} fill={fill} />;
     case "image":
-      return <ImageDemo defaultTab={defaultTab} />;
+      return <ImageDemo defaultTab={defaultTab} fill={fill} />;
   }
 }

@@ -44,7 +44,7 @@ export function ActionButton({
       data-filled={filled(kind) ? "true" : "false"}
       data-named={named ? "true" : undefined}
       className={cn(
-        "inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap text-[13px] font-medium",
+        "inline-flex h-10 w-fit shrink-0 items-center justify-center whitespace-nowrap text-[13px] font-medium",
         kind === "solid" && "rounded-lg bg-fg px-4 text-surface",
         kind === "outline" && "rounded-lg border border-border-strong bg-transparent px-4 text-fg",
         kind === "text" && "rounded-md px-2 text-fg-muted",

@@ -37,39 +37,10 @@ export function Playground() {
   }, []);
 
   return (
-    <div className="grid min-w-0 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
-      <nav
-        aria-label={locale === "en" ? "Pending kinds" : "等待种类"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
-      >
-        {KINDS.map((kind) => {
-          const on = kind.id === active;
-          return (
-            <button
-              key={kind.id}
-              type="button"
-              data-kind={kind.id}
-              onClick={() => setActive(kind.id)}
-              className={cn(
-                "flex min-w-40 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
-                on
-                  ? "border-border-strong bg-surface shadow-card"
-                  : "border-transparent bg-transparent hover:bg-surface-2",
-              )}
-            >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
-                {kind.index}
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate text-[13px] font-medium">{kind.name}</span>
-                <span className="block truncate text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
-              </span>
-            </button>
-          );
-        })}
-      </nav>
-
+    <div className="min-w-0">
       <section className="min-w-0 overflow-x-hidden">
+        <KindSwitch active={active} locale={locale} onChange={setActive} />
+
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
             <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 02</p>
@@ -109,6 +80,44 @@ export function Playground() {
           ))}
         </ul>
       </section>
+    </div>
+  );
+}
+
+function KindSwitch({
+  active,
+  locale,
+  onChange,
+}: {
+  active: KindId;
+  locale: Locale;
+  onChange: (id: KindId) => void;
+}) {
+  return (
+    <div
+      role="tablist"
+      aria-label={locale === "en" ? "Pending kinds" : "等待种类"}
+      className="mb-5 inline-flex rounded-full border border-border bg-surface-2 p-1"
+    >
+      {KINDS.map((kind) => {
+        const on = kind.id === active;
+        return (
+          <button
+            key={kind.id}
+            type="button"
+            role="tab"
+            data-kind={kind.id}
+            aria-selected={on}
+            onClick={() => onChange(kind.id)}
+            className={cn(
+              "rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors",
+              on ? "bg-surface text-fg shadow-card" : "text-fg-muted hover:text-fg",
+            )}
+          >
+            {pick(kind.zh, locale)}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -265,7 +274,7 @@ function Workbench({
         aria-busy={seat === "skeleton"}
         aria-live="polite"
       >
-        {seat === "skeleton" ? <BoneList reduceMotion={reduced} /> : null}
+        {seat === "skeleton" ? <BoneList locale={locale} reduceMotion={reduced} /> : null}
         {seat === "content" ? (
           <div className={fadeIn ? "pending-fade-in" : undefined}>
             <BriefList briefs={BRIEFS} locale={locale} />
@@ -276,7 +285,7 @@ function Workbench({
         ) : null}
         {leaving && seat === "content" ? (
           <div className="pending-fade-out pointer-events-none absolute inset-x-0 top-0">
-            <BoneList reduceMotion={reduced} />
+            <BoneList locale={locale} reduceMotion={reduced} />
           </div>
         ) : null}
       </div>

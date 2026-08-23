@@ -6,28 +6,23 @@ export function StudyView() {
   const locale = useLocale();
 
   return (
-    <div className="page-width min-w-0 pb-20">
-      <section className="grid gap-8 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
-        <div className="min-w-0">
-          <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
-            {locale === "en"
-              ? "A spinner only says you are waiting. First ask whether progress can be measured."
-              : "转圈只说了在等。先问进度能不能算。"}
-          </h1>
-          <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
-            {locale === "en"
-              ? "“Make a progress bar” describes the skin. The thing that breaks is a fake percent on work with no ETA, or a spinner on work that already knows its bytes."
-              : "「做个进度条」说的是外观。真正会坏掉的是不能算却画假百分比，或能算却永远转圈。"}
-          </p>
-        </div>
-        <p className="text-[13px] leading-relaxed text-fg-subtle">
+    <div className="page-width min-w-0 overflow-x-hidden pb-20">
+      <section className="pb-8 pt-4 lg:pb-10 lg:pt-8">
+        <h1 className="max-w-4xl text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
           {locale === "en"
-            ? "If it can be measured, walk to 100 and stop. If it cannot, loop — never a fake percent. The eight leaves below are live."
+            ? "A spinner only says you are waiting. First ask whether progress can be measured."
+            : "转圈只说了在等。先问进度能不能算。"}
+        </h1>
+        <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-fg-muted">
+          {locale === "en"
+            ? "If it can, walk to 100 and stop. If it cannot, loop — never a fake percent. The eight leaves below are live."
             : "能算就走到 100 停住；不能算就循环，不要假百分比。下面八片叶子可以点。"}
         </p>
       </section>
 
-      <section className="mb-10 grid gap-3 sm:grid-cols-3">
+      <Playground />
+
+      <section className="mt-14 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
           <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
             <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
@@ -38,8 +33,6 @@ export function StudyView() {
           </div>
         ))}
       </section>
-
-      <Playground />
 
       <section className="mt-14 grid min-w-0 gap-10 lg:grid-cols-2">
         <article className="min-w-0">

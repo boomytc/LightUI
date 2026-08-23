@@ -24,8 +24,10 @@ The lab mounts `StudyView` at `/s/login-taxonomy`.
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — pane count, stepped, role gate (no DOM)
-- `src/logins/` — five miniature logins in a window frame
-- `src/StageView.tsx` — one kind, `state=default` (steps may use `1|2`), no chrome
+- `src/logins/` — five logins. Playground `.login-window` is 100% of the work
+  pane (occupancy). StageView wraps the same window at 390.
+- `src/StageView.tsx` — one kind, `state=default` (steps may use `1|2`), no chrome.
+  Fixture stays `w-[390px]`. Split may stack brand above form at that width.
 - `src/lib/stage-query.ts` — `kind=centered|split|immersive|roles|steps`, `state=default|1|2`
 
 ## Rules

@@ -35,7 +35,7 @@ export function KindDemo({ id }: { id: KindId }) {
   switch (id) {
     case "single":
       return (
-        <Window title={title} bodyClassName="bg-surface-2">
+        <Window title={title} well>
           <SinglePage />
         </Window>
       );
@@ -47,7 +47,7 @@ export function KindDemo({ id }: { id: KindId }) {
       );
     case "masonry":
       return (
-        <Window title={title}>
+        <Window title={title} fill>
           <MasonryPage />
         </Window>
       );
@@ -59,19 +59,19 @@ export function KindDemo({ id }: { id: KindId }) {
       );
     case "splitter":
       return (
-        <Window title={title}>
+        <Window title={title} fill>
           <SplitterPage />
         </Window>
       );
     case "dashboard":
       return (
-        <Window title={title}>
+        <Window title={title} fill>
           <DashboardPage />
         </Window>
       );
     case "modular":
       return (
-        <Window title={title}>
+        <Window title={title} fill>
           <ModularPage />
         </Window>
       );
@@ -172,7 +172,7 @@ function LandingPage() {
 function MasonryPage() {
   const locale = useLocale();
   return (
-    <div className="px-3 py-4">
+    <div className="layout-fill-page px-4 py-4">
       <p className="text-[11px] tracking-[0.14em] text-fg-subtle uppercase">
         {locale === "en" ? "Inspiration" : "灵感集"}
       </p>
@@ -205,7 +205,7 @@ function FullscreenPage() {
         <p className="text-[11px] font-medium tracking-[0.16em] text-accent uppercase">
           {locale === "en" ? "Autumn launch" : "秋季发布会"}
         </p>
-        <h3 className="mt-4 text-[2rem] font-semibold leading-tight tracking-tight">
+        <h3 className="mt-4 text-[2.25rem] font-semibold leading-tight tracking-tight">
           {locale === "en" ? "Toward the hills" : "向山野出发"}
         </h3>
         <span className="mt-6 inline-flex h-9 items-center rounded-full bg-fg px-5 text-[13px] font-medium text-surface">
@@ -295,8 +295,8 @@ function DashboardPage() {
   const locale = useLocale();
   const max = Math.max(...DASH_BARS);
   return (
-    <div className="p-3">
-      <header className="mb-3 flex items-end justify-between gap-2">
+    <div className="layout-fill-page p-4">
+      <header className="mb-3 flex shrink-0 items-end justify-between gap-2">
         <div>
           <p className="text-[11px] tracking-[0.14em] text-fg-subtle uppercase">
             {locale === "en" ? "Daily" : "经营日报"}
@@ -314,9 +314,9 @@ function DashboardPage() {
             <p className="mt-0.5 text-[11px] tabular-nums text-accent">{kpi.delta}</p>
           </article>
         ))}
-        <section className="layout-dash-wide rounded-xl border border-border p-3">
+        <section className="layout-dash-wide layout-dash-chart flex flex-col rounded-xl border border-border p-3">
           <p className="text-[12px] font-medium">{locale === "en" ? "7-day sales" : "近 7 天销售额"}</p>
-          <div className="mt-3 flex h-16 items-end gap-1">
+          <div className="layout-dash-bars mt-3">
             {DASH_BARS.map((n, i) => (
               <span
                 key={i}
@@ -326,7 +326,7 @@ function DashboardPage() {
             ))}
           </div>
         </section>
-        <section className="layout-dash-wide overflow-hidden rounded-xl border border-border">
+        <section className="layout-dash-wide layout-dash-table flex flex-col overflow-hidden rounded-xl border border-border">
           <div className="grid grid-cols-2 gap-2 border-b border-border bg-surface-2 px-3 py-1.5 text-[11px] text-fg-subtle">
             <span>{locale === "en" ? "Category" : "品类"}</span>
             <span className="text-right">{locale === "en" ? "Sold" : "销量"}</span>
@@ -349,18 +349,18 @@ function DashboardPage() {
 function ModularPage() {
   const locale = useLocale();
   return (
-    <div className="p-3">
-      <p className="text-[11px] tracking-[0.14em] text-fg-subtle uppercase">
+    <div className="layout-fill-page p-4">
+      <p className="shrink-0 text-[11px] tracking-[0.14em] text-fg-subtle uppercase">
         {locale === "en" ? "Desk" : "个人主页"}
       </p>
-      <h3 className="mt-1 mb-3 text-[1.15rem] font-semibold tracking-tight">
+      <h3 className="mt-1 mb-3 shrink-0 text-[1.15rem] font-semibold tracking-tight">
         {locale === "en" ? "One idea per card" : "一块一个主意"}
       </h3>
       <ul className="layout-modular">
         {MODULAR_CARDS.map((card) => (
           <li
             key={card.id}
-            className="flex h-full min-w-0 flex-col rounded-xl border border-border bg-surface p-3"
+            className="flex h-full min-h-0 min-w-0 flex-col rounded-xl border border-border bg-surface p-3"
           >
             <h4 className="text-[13px] font-semibold">{pick(card.title, locale)}</h4>
             <p className="mt-1 flex-1 text-[12px] leading-relaxed text-fg-muted">

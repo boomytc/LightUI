@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { KINDS, type KindId } from "../lib/kinds";
 import { pick, useLocale } from "../lib/site-locale";
@@ -18,11 +18,26 @@ export function Playground() {
   const [active, setActive] = useState<KindId>("floating");
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0];
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && ["INPUT", "TEXTAREA"].includes(target.tagName)) return;
+      const n = Number(e.key);
+      if (n >= 1 && n <= KINDS.length) {
+        e.preventDefault();
+        setActive(KINDS[n - 1]!.id);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
-    <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+    <div className="min-w-0 overflow-x-hidden">
       <nav
         aria-label={locale === "en" ? "Nav kinds" : "导航种类"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0"
+        className="flex flex-wrap gap-1.5"
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
@@ -31,29 +46,27 @@ export function Playground() {
               key={kind.id}
               type="button"
               data-kind={kind.id}
+              aria-pressed={on}
               onClick={() => setActive(kind.id)}
               className={cn(
-                "flex min-w-44 shrink-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors lg:min-w-0 lg:w-full",
+                "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] leading-none transition-colors",
                 on
                   ? "border-border-strong bg-surface shadow-card"
-                  : "border-transparent bg-transparent hover:bg-surface-2",
+                  : "border-transparent bg-surface-2 hover:bg-surface",
               )}
             >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
+              <span className={cn("font-mono text-[10px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
                 {kind.index}
               </span>
-              <span className="min-w-0">
-                <span className="block truncate text-[13px] font-medium">{kind.name}</span>
-                <span className="block truncate text-[11px] text-fg-muted">{pick(kind.zh, locale)}</span>
-              </span>
+              <span className="font-medium">{pick(kind.zh, locale)}</span>
             </button>
           );
         })}
       </nav>
 
-      <section className="min-w-0">
+      <section className="mt-6 min-w-0">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-          <div>
+          <div className="min-w-0">
             <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 09</p>
             <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
@@ -78,8 +91,8 @@ export function Playground() {
 
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
-        <div>
-          <KindDemo id={meta.id} />
+        <div className="min-w-0">
+          <KindDemo key={meta.id} id={meta.id} />
         </div>
 
         <ul className="mt-4 flex flex-wrap gap-2">

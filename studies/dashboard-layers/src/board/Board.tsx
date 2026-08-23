@@ -42,9 +42,9 @@ export function Board({
     <div
       data-kind={view}
       data-layer={layer}
-      className="flex min-w-0 flex-col gap-3 overflow-x-hidden"
+      className="board-pane overflow-x-hidden"
     >
-      <header className="min-w-0">
+      <header className="board-head">
         <p className="text-[11px] tracking-[0.14em] text-fg-subtle uppercase">
           {pick(BOARD.name, locale)}
         </p>
@@ -56,33 +56,39 @@ export function Board({
         <LayerStrip view={view} layer={layer} locale={locale} />
       </header>
 
-      <KpiGrid
-        selection={selection}
-        locale={locale}
-        interactive={interactive && canExpand(view)}
-        onSelect={onSelectKpi}
-      />
-
-      {showsChart(view) ? <MiniChart kpi={kpi} locale={locale} /> : null}
-
-      {showsDimTable(view, selection) ? (
-        <DimTable
+      <div className="board-kpi-col">
+        <KpiGrid
           selection={selection}
           locale={locale}
           interactive={interactive && canExpand(view)}
-          onSelect={onSelectDim}
+          onSelect={onSelectKpi}
         />
-      ) : (
-        <p className="rounded-xl border border-dashed border-border px-3 py-3 text-[12px] leading-relaxed text-fg-muted">
-          {locale === "en"
-            ? "Click a KPI. The channel table waits."
-            : "点一张 KPI。渠道表还没上场。"}
-        </p>
-      )}
+      </div>
 
-      {showsDetail(view, selection) ? (
-        <DetailCard id={selection.dim} locale={locale} />
-      ) : null}
+      <div className="board-grain">
+        {showsChart(view) ? <MiniChart kpi={kpi} locale={locale} /> : null}
+
+        <div className="board-dim-slot">
+          {showsDimTable(view, selection) ? (
+            <DimTable
+              selection={selection}
+              locale={locale}
+              interactive={interactive && canExpand(view)}
+              onSelect={onSelectDim}
+            />
+          ) : (
+            <p className="rounded-xl border border-dashed border-border px-3 py-3 text-[12px] leading-relaxed text-fg-muted">
+              {locale === "en"
+                ? "Click a KPI. The channel table waits."
+                : "点一张 KPI。渠道表还没上场。"}
+            </p>
+          )}
+        </div>
+
+        {showsDetail(view, selection) ? (
+          <DetailCard id={selection.dim} locale={locale} />
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -224,6 +230,9 @@ function DimTable({
       <div className="board-table border-b border-border bg-surface-2 px-3 py-1.5 text-[11px] text-fg-subtle">
         <span className="truncate">{pick(BOARD.dimension, locale)}</span>
         <span className="truncate text-right">{pick(BOARD.primaryLabel, locale)}</span>
+        <span className="board-table-extra truncate text-right">
+          {locale === "en" ? "Share" : "占比"}
+        </span>
         <span className="truncate text-right">
           {locale === "en" ? "MoM" : "环比"}
         </span>
@@ -279,6 +288,9 @@ function DimLine({
       </span>
       <span className="truncate text-right tabular-nums">
         {formatValue(row.primary, "number")}
+      </span>
+      <span className="board-table-extra truncate text-right tabular-nums text-fg-muted">
+        {row.share.toFixed(1)}%
       </span>
       <span className="justify-self-end">
         <Delta value={row.mom} />

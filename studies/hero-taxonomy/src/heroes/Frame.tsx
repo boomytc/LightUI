@@ -13,7 +13,7 @@ export function Window({
   return (
     <div
       className={cn(
-        "hero-window overflow-hidden rounded-2xl border shadow-card",
+        "hero-window @container w-full min-w-0 overflow-hidden rounded-2xl border shadow-card",
         dark ? "border-white/10 bg-[#161418] text-white" : "border-border bg-surface",
       )}
     >

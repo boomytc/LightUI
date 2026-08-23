@@ -5,20 +5,31 @@ import type { Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import "../progress.css";
 
-const RING = 120;
+export type MeterScale = "compact" | "hero";
+
+export function ringClass(scale: MeterScale) {
+  return scale === "hero" ? "size-[12rem] lg:size-[16rem]" : "size-[7.5rem]";
+}
 
 /** Fill uses scaleX, not width — stays on the compositor. */
 export function FillBar({
   progress,
+  scale = "compact",
   className,
 }: {
   progress: number;
+  scale?: MeterScale;
   className?: string;
 }) {
   const p = clampProgress(progress);
   return (
     <div
-      className={cn("h-2.5 w-full overflow-hidden rounded-full bg-surface-2", className)}
+      data-meter="fill"
+      className={cn(
+        "w-full overflow-hidden rounded-full bg-surface-2",
+        scale === "hero" ? "h-3.5 lg:h-4" : "h-2.5",
+        className,
+      )}
       role="progressbar"
       aria-valuemin={0}
       aria-valuemax={100}
@@ -32,20 +43,28 @@ export function FillBar({
 export function StageSteps({
   progress,
   locale,
+  scale = "compact",
   className,
 }: {
   progress: number;
   locale: Locale;
+  scale?: MeterScale;
   className?: string;
 }) {
   const p = clampProgress(progress);
   const current = p <= 0 ? -1 : stepCurrent(p);
   const complete = current >= PARSE_STEPS.length;
   const line = complete ? 1 : current <= 0 ? 0 : current / (PARSE_STEPS.length - 1);
+  const hero = scale === "hero";
 
   return (
-    <div className={cn("relative w-full", className)}>
-      <div className="absolute top-4 right-10 left-10 h-0.5 bg-surface-2">
+    <div data-meter="steps" className={cn("relative w-full", className)}>
+      <div
+        className={cn(
+          "absolute h-0.5 bg-surface-2",
+          hero ? "top-6 right-[16.67%] left-[16.67%]" : "top-4 right-10 left-10",
+        )}
+      >
         <span className="block h-full origin-left rounded-full bg-accent" style={{ transform: `scaleX(${line})` }} />
       </div>
       <ol className="relative grid grid-cols-3">
@@ -56,7 +75,8 @@ export function StageSteps({
             <li key={stage.zh} className="flex flex-col items-center gap-2">
               <span
                 className={cn(
-                  "relative z-10 grid size-8 place-items-center rounded-full",
+                  "relative z-10 grid place-items-center rounded-full",
+                  hero ? "size-12" : "size-8",
                   kind === "done" && "bg-accent text-accent-fg",
                   kind === "active" && "bg-surface text-accent",
                   kind === "todo" && "bg-surface-2 text-fg-subtle",
@@ -65,7 +85,7 @@ export function StageSteps({
                 aria-label={locale === "en" ? stage.en : stage.zh}
               >
                 {kind === "done" ? (
-                  <CheckIcon className="size-4" />
+                  <CheckIcon className={hero ? "size-5" : "size-4"} />
                 ) : kind === "active" ? (
                   <svg viewBox="0 0 32 32" className="size-[85%]" aria-hidden>
                     <g className="meter-spin">
@@ -82,12 +102,13 @@ export function StageSteps({
                     </g>
                   </svg>
                 ) : (
-                  <span className="text-xs font-medium tabular-nums">{index + 1}</span>
+                  <span className={cn("font-medium tabular-nums", hero ? "text-sm" : "text-xs")}>{index + 1}</span>
                 )}
               </span>
               <span
                 className={cn(
-                  "text-center text-[11px] leading-tight",
+                  "text-center leading-tight",
+                  hero ? "text-[13px]" : "text-[11px]",
                   kind === "todo" ? "text-fg-subtle" : "text-fg",
                 )}
               >
@@ -103,16 +124,18 @@ export function StageSteps({
 
 export function CircularPercent({
   progress,
+  scale = "compact",
   className,
 }: {
   progress: number;
+  scale?: MeterScale;
   className?: string;
 }) {
   const p = clampProgress(progress);
   const r = 40;
   const c = 2 * Math.PI * r;
   return (
-    <div className={cn("relative text-accent", className)} style={{ width: RING, height: RING }}>
+    <div data-meter="circular" className={cn("relative text-accent", ringClass(scale), className)}>
       <svg viewBox="0 0 100 100" className="size-full -rotate-90">
         <circle cx="50" cy="50" r={r} fill="none" stroke="var(--color-surface-2)" strokeWidth="8" />
         <circle
@@ -127,7 +150,12 @@ export function CircularPercent({
           strokeDashoffset={circularOffset(p, c)}
         />
       </svg>
-      <span className="absolute inset-0 grid place-items-center text-lg font-medium tabular-nums text-accent">
+      <span
+        className={cn(
+          "absolute inset-0 grid place-items-center font-medium tabular-nums text-accent",
+          scale === "hero" ? "text-3xl lg:text-4xl" : "text-lg",
+        )}
+      >
         {Math.round(p * 100)}%
       </span>
     </div>
@@ -137,10 +165,12 @@ export function CircularPercent({
 export function LiquidGauge({
   progress,
   wave = false,
+  scale = "compact",
   className,
 }: {
   progress: number;
   wave?: boolean;
+  scale?: MeterScale;
   className?: string;
 }) {
   const p = clampProgress(progress);
@@ -150,7 +180,7 @@ export function LiquidGauge({
   const lightText = p > 0.46;
 
   return (
-    <div className={cn("relative text-accent", className)} style={{ width: RING, height: RING }}>
+    <div data-meter="liquid" className={cn("relative text-accent", ringClass(scale), className)}>
       <svg viewBox="0 0 100 100" className="size-full">
         <defs>
           <clipPath id={clipId}>
@@ -176,7 +206,8 @@ export function LiquidGauge({
       </svg>
       <span
         className={cn(
-          "absolute inset-0 grid place-items-center text-lg font-medium tabular-nums",
+          "absolute inset-0 grid place-items-center font-medium tabular-nums",
+          scale === "hero" ? "text-3xl lg:text-4xl" : "text-lg",
           lightText ? "text-accent-fg" : "text-accent",
         )}
       >
@@ -186,11 +217,20 @@ export function LiquidGauge({
   );
 }
 
-export function LoopSpinner({ looping, className }: { looping: boolean; className?: string }) {
+export function LoopSpinner({
+  looping,
+  scale = "compact",
+  className,
+}: {
+  looping: boolean;
+  scale?: MeterScale;
+  className?: string;
+}) {
   return (
     <svg
+      data-meter="spin"
       viewBox="0 0 48 48"
-      className={cn("size-16 text-accent", className)}
+      className={cn("text-accent", scale === "hero" ? ringClass(scale) : "size-16", className)}
       aria-hidden
     >
       <g className={cn("origin-center", looping && "meter-spin")}>
@@ -209,9 +249,17 @@ export function LoopSpinner({ looping, className }: { looping: boolean; classNam
   );
 }
 
-export function RadarScan({ looping, className }: { looping: boolean; className?: string }) {
+export function RadarScan({
+  looping,
+  scale = "compact",
+  className,
+}: {
+  looping: boolean;
+  scale?: MeterScale;
+  className?: string;
+}) {
   return (
-    <div className={cn("relative text-accent", className)} style={{ width: RING, height: RING }}>
+    <div data-meter="radar" className={cn("relative text-accent", ringClass(scale), className)}>
       <div className="absolute inset-0 rounded-full border-2 border-accent/70" />
       <div className="absolute inset-[18%] rounded-full border border-accent/50" />
       <div className="absolute inset-[36%] rounded-full border border-accent/40" />
@@ -224,18 +272,37 @@ export function RadarScan({ looping, className }: { looping: boolean; className?
           }}
         />
       </div>
-      <div className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent" />
+      <div
+        className={cn(
+          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent",
+          scale === "hero" ? "size-2.5 lg:size-3" : "size-2",
+        )}
+      />
     </div>
   );
 }
 
-export function BounceDots({ looping, className }: { looping: boolean; className?: string }) {
+export function BounceDots({
+  looping,
+  scale = "compact",
+  className,
+}: {
+  looping: boolean;
+  scale?: MeterScale;
+  className?: string;
+}) {
+  const hero = scale === "hero";
   return (
-    <div className={cn("flex items-end gap-2.5", className)} aria-hidden>
+    <div data-meter="dots" className={cn("flex items-end", hero ? "gap-3" : "gap-2.5", className)} aria-hidden>
       {[0, 1, 2].map((i) => (
         <span
           key={i}
-          className={cn("size-3.5 rounded-full bg-accent", looping && "meter-dot")}
+          className={cn(
+            "rounded-full bg-accent",
+            hero ? "size-5 lg:size-6" : "size-3.5",
+            looping && "meter-dot",
+            hero && "meter-dot-hero",
+          )}
           style={{ animationDelay: looping ? `${i * 150}ms` : undefined }}
         />
       ))}
@@ -251,14 +318,40 @@ const WAVE_BARS = [
   { delay: "40ms", duration: "0.92s", rest: 0.7 },
 ];
 
-export function AudioWave({ looping, className }: { looping: boolean; className?: string }) {
-  const h = 44;
+const HERO_WAVE_BARS = [
+  { delay: "0ms", duration: "0.85s", rest: 0.42 },
+  { delay: "90ms", duration: "0.7s", rest: 0.68 },
+  { delay: "140ms", duration: "1.05s", rest: 1 },
+  { delay: "40ms", duration: "0.78s", rest: 0.55 },
+  { delay: "180ms", duration: "0.92s", rest: 0.82 },
+  { delay: "60ms", duration: "0.88s", rest: 0.48 },
+  { delay: "110ms", duration: "0.74s", rest: 0.64 },
+  { delay: "160ms", duration: "0.96s", rest: 0.72 },
+];
+
+export function AudioWave({
+  looping,
+  scale = "compact",
+  className,
+}: {
+  looping: boolean;
+  scale?: MeterScale;
+  className?: string;
+}) {
+  const hero = scale === "hero";
+  const h = hero ? 192 : 44;
+  const bars = hero ? HERO_WAVE_BARS : WAVE_BARS;
   return (
-    <div className={cn("flex items-center gap-1", className)} style={{ height: h }} aria-hidden>
-      {WAVE_BARS.map((bar, i) => (
+    <div
+      data-meter="wave"
+      className={cn("flex items-center", hero ? "gap-2" : "gap-1", className)}
+      style={{ height: h }}
+      aria-hidden
+    >
+      {bars.map((bar, i) => (
         <span
           key={i}
-          className={cn("w-2 origin-center rounded-full bg-accent", looping && "meter-eq")}
+          className={cn("origin-center rounded-full bg-accent", looping && "meter-eq", hero ? "w-5" : "w-2")}
           style={{
             height: h,
             transform: looping ? undefined : `scaleY(${bar.rest})`,

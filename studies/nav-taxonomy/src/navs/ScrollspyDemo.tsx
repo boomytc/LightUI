@@ -58,8 +58,8 @@ export function ScrollspyDemo() {
 
   return (
     <Frame title={locale === "en" ? "Landing" : "落地页"}>
-      <div className="flex h-full">
-        <nav className="flex w-[4.75rem] shrink-0 flex-col gap-0.5 border-r border-border bg-surface-2 py-3 pr-1 pl-2">
+      <div className="flex h-full min-w-0">
+        <nav className="flex w-[4.75rem] shrink-0 flex-col gap-0.5 overflow-x-hidden border-r border-border bg-surface-2 py-3 pr-1 pl-2 @min-[32rem]:w-36">
           {SECTIONS.map((item) => (
             <button
               key={item.id}
@@ -74,7 +74,7 @@ export function ScrollspyDemo() {
             </button>
           ))}
         </nav>
-        <div ref={rootRef} className="min-w-0 flex-1 overflow-y-auto">
+        <div ref={rootRef} className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
           {SECTIONS.map((item) => (
             <section key={item.id} id={item.id} className="scroll-mt-3 px-4 py-4">
               <h3 className="mb-3 text-[15px] font-semibold text-accent">{pick(item.label, locale)}</h3>

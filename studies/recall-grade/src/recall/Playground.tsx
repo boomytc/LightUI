@@ -13,7 +13,8 @@ import {
   type Grade,
 } from "../lib/machines";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
-import { Deck, type LastCommit } from "./Deck";
+import { Deck, type LastCommit, type RecallLayout } from "./Deck";
+import { Well } from "./Frame";
 
 export function Playground() {
   const locale = useLocale();
@@ -29,7 +30,13 @@ export function Playground() {
         </div>
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-1.5">
+      <KindDemo layout="desk" />
+
+      <p className="mt-4 max-w-xl text-[12px] leading-relaxed text-fg-subtle">
+        {pick(DECK.naive, locale)}
+      </p>
+
+      <div className="mt-5 flex flex-wrap gap-1.5">
         {DECK.scenes.map((scene) => (
           <span
             key={scene.zh}
@@ -40,13 +47,9 @@ export function Playground() {
         ))}
       </div>
 
-      <SpecCard text={pick(DECK.spec, locale)} locale={locale} />
-
-      <KindDemo />
-
-      <p className="mt-3 max-w-[390px] text-[12px] leading-relaxed text-fg-subtle">
-        {pick(DECK.naive, locale)}
-      </p>
+      <div className="mt-5">
+        <SpecCard text={pick(DECK.spec, locale)} locale={locale} />
+      </div>
 
       <ul className="mt-4 flex flex-wrap gap-2">
         {DECK.rules.map((rule) => (
@@ -64,8 +67,10 @@ export function Playground() {
 
 export function KindDemo({
   state,
+  layout = "stage",
 }: {
   state?: "question" | "answer" | "empty";
+  layout?: RecallLayout;
 }) {
   const locale = useLocale();
   const locked = state !== undefined;
@@ -127,23 +132,32 @@ export function KindDemo({
   const remaining = empty ? 0 : locked ? cards.length : pile.length;
   const shownFace: Face = locked && state === "answer" ? "answer" : empty ? "question" : face;
 
-  return (
-    <div className="w-[390px] max-w-full min-w-0 overflow-x-hidden">
-      <Deck
-        locale={locale}
-        today={today}
-        current={current}
-        face={shownFace}
-        remaining={remaining}
-        total={sessionTotal || cards.length}
-        lastCommit={locked ? null : lastCommit}
-        locked={locked}
-        onFlip={flip}
-        onGrade={grade}
-        onReset={reset}
-      />
-    </div>
+  const deck = (
+    <Deck
+      locale={locale}
+      today={today}
+      current={current}
+      face={shownFace}
+      remaining={remaining}
+      total={sessionTotal || cards.length}
+      lastCommit={locked ? null : lastCommit}
+      locked={locked}
+      layout={layout}
+      onFlip={flip}
+      onGrade={grade}
+      onReset={reset}
+    />
   );
+
+  if (layout === "desk") {
+    return (
+      <Well>
+        <div className="px-4 py-8 sm:px-10 sm:py-12">{deck}</div>
+      </Well>
+    );
+  }
+
+  return deck;
 }
 
 function SpecCard({ text, locale }: { text: string; locale: Locale }) {
@@ -160,7 +174,7 @@ function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   }
 
   return (
-    <div className="mb-5 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
+    <div className="rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface">
       <div className="flex items-start justify-between gap-3">
         <p className="text-[11px] font-medium tracking-wide text-surface/45">
           {locale === "en" ? "Say it this way" : "说清楚"}

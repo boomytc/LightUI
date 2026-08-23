@@ -27,8 +27,8 @@ export function FloatingDemo() {
 
   return (
     <Frame title={locale === "en" ? "Morrow · workspace" : "Morrow · 工作台"}>
-      <div className="flex min-h-[22rem] min-w-0 gap-3 bg-surface-2 p-3">
-        <aside className="flex w-[13.5rem] shrink-0 flex-col rounded-xl bg-fg p-3 text-surface shadow-card">
+      <div className="flex min-h-[28rem] w-full min-w-0 flex-1 gap-3 overflow-x-hidden bg-surface-2 p-3">
+        <aside className="flex w-[13.5rem] shrink-0 flex-col self-stretch rounded-xl bg-fg p-3 text-surface shadow-card">
           <div className="mb-3 flex items-center gap-2 px-1">
             <span className="grid size-7 place-items-center rounded-md bg-accent text-[11px] font-semibold text-accent-fg">
               M
@@ -65,7 +65,7 @@ export function FloatingDemo() {
           </nav>
         </aside>
 
-        <section className="min-w-0 flex-1 rounded-xl bg-surface px-4 py-4">
+        <section className="min-w-0 flex-1 self-stretch overflow-x-hidden rounded-xl bg-surface px-4 py-4">
           <p className="truncate text-[12px] text-fg-subtle">
             {locale === "en" ? "Site redesign / " : "网站改版 / "}
             {pick(current.label, locale)}
