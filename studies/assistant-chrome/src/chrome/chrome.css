@@ -1,0 +1,63 @@
+.chrome-window {
+  min-width: 0;
+  max-width: 390px;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.chrome-window-body {
+  box-sizing: border-box;
+  min-width: 0;
+  overflow-x: hidden;
+  height: 420px;
+}
+
+.chrome-canvas {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--color-fg) 14%, transparent) 1px,
+    transparent 1.2px
+  );
+  background-size: 16px 16px;
+}
+
+.chrome-card-note {
+  background: color-mix(in oklab, #e7c56a 42%, var(--color-surface));
+}
+
+.chrome-card-note-3 {
+  background: color-mix(in oklab, #7aa2e8 38%, var(--color-surface));
+}
+
+.chrome-card-chip {
+  background: var(--color-surface-2);
+}
+
+.chrome-plugin-hit {
+  background: color-mix(in oklab, var(--color-accent) 22%, transparent);
+  border-radius: 2px;
+}
+
+.chrome-photo-sea {
+  background: linear-gradient(135deg, #7eb6c9, #1d4e6e);
+}
+
+.chrome-photo-brunch {
+  background: linear-gradient(135deg, #f0c48a, #c4783a);
+}
+
+.chrome-photo-lake {
+  background: linear-gradient(135deg, #9ec9b8, #2d6a62);
+}
+
+.chrome-photo-mountain {
+  background: linear-gradient(135deg, #d9a078, #7a3d2a);
+}
+
+.chrome-photo-party {
+  background: linear-gradient(135deg, #c9a0d4, #5c3a78);
+}
+
+.chrome-photo-night {
+  background: linear-gradient(135deg, #6a7a9a, #1c2438);
+}

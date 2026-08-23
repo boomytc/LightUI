@@ -1,0 +1,29 @@
+{
+  "slug": "assistant-chrome",
+  "title": "助手",
+  "titleEn": "Assistant",
+  "eyebrow": "Chrome · Where",
+  "eyebrowEn": "Chrome · Where",
+  "summary": "助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。",
+  "summaryEn": "The assistant is not a default full-page chat. First decide whether it lives in chat, a side panel, a plugin, a float, a canvas, or nowhere visible.",
+  "asks": "助手住在对话、侧栏、插件、浮层、画布，还是看不见？",
+  "asksEn": "Does the assistant live in chat, a side panel, a plugin, a float, a canvas, or nowhere visible?",
+  "links": [
+    {
+      "slug": "layout-taxonomy",
+      "rel": "contrast",
+      "when": "助手住哪不是整页骨架",
+      "whenEn": "where the assistant lives is not the page skeleton"
+    },
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "选区工具条不是弹窗",
+      "whenEn": "a selection toolbar is not a dialog"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["assistant", "chrome", "taxonomy"]
+}
