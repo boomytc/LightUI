@@ -50,13 +50,13 @@ export function StudyView() {
             <li>
               <span className="font-medium text-fg">
                 {locale === "en"
-                  ? "1. A landing skeleton is not what the first fold answers"
-                  : "1. 落地骨架不是第一屏回答什么"}
+                  ? "1. A landing skeleton is not what the first glance answers"
+                  : "1. 落地骨架、全屏占满，都不是第一眼回答什么"}
               </span>
               <br />
               {locale === "en"
-                ? "How a landing is banded is the page skeleton. This study asks which question the un-scrolled glance must confirm."
-                : "落地页怎么铺是整页骨架。这一则问的是不滚动的那一眼要确认哪件事。"}
+                ? "How a landing is banded, and whether this fold fills the viewport, is the page skeleton. This study asks which question the un-scrolled glance must confirm."
+                : "落地页怎么铺、这一折占不占满视口，是整页骨架。这一则问的是不滚动的那一眼要确认哪件事。"}
             </li>
             <li>
               <span className="font-medium text-fg">

@@ -38,6 +38,24 @@
       "rel": "contrast",
       "when": "瀑布骨架不是切画面",
       "whenEn": "a masonry skeleton is not advancing frames"
+    },
+    {
+      "slug": "hero-taxonomy",
+      "rel": "after",
+      "when": "若问的是不滚动那一眼要确认什么",
+      "whenEn": "if the question is what the un-scrolled glance must confirm"
+    },
+    {
+      "slug": "hero-taxonomy",
+      "rel": "contrast",
+      "when": "一屏占满不是第一眼回答什么",
+      "whenEn": "filling the viewport is not what the first glance answers"
+    },
+    {
+      "slug": "login-taxonomy",
+      "rel": "contrast",
+      "when": "工作区分栏不是登录左右栏",
+      "whenEn": "two work panes are not a brand-and-form login split"
     }
   ],
   "status": "active",

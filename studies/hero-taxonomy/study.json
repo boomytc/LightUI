@@ -11,9 +11,9 @@
   "links": [
     {
       "slug": "layout-taxonomy",
-      "rel": "after",
-      "when": "若骨架已经是落地页",
-      "whenEn": "if the skeleton is already a landing page"
+      "rel": "contrast",
+      "when": "第一眼回答什么不是整页怎么铺",
+      "whenEn": "what the first glance answers is not how the page is banded"
     },
     {
       "slug": "login-taxonomy",

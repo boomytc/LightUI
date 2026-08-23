@@ -40,7 +40,7 @@ Ask whether progress can be measured, then pick a leaf.
 
 The pairs people mix up:
 
-- **Progress is not a skeleton.** Progress is work happening. A skeleton is layout placeholder — that question lives elsewhere.
+- **Progress is not a skeleton.** Progress is work happening. A skeleton holds layout until content arrives.
 - **Progress is not a toast.** A toast says the result is out. Progress says the work is still going.
 - **Stage steps are not tab chevrons.** A chevron row is a navigation selection model: land on a step, view that step. Here the nodes *are* the work: done is checked, active is working, later has not started.
 - **Indeterminate work does not get a fake percent.** Spin, radar, dots, and wave only promise “still here,” not “how much is left.”

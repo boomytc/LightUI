@@ -38,7 +38,7 @@ Commerce sets `allowsCarousel` to false: one featured product. `tooManyBanners` 
 
 The three pairs people mix up:
 
-- **A landing skeleton is not what the first fold answers.** How a landing is banded (promise, proof, CTA) is the page skeleton. This study asks **which question the un-scrolled glance must confirm**.
+- **A landing skeleton, or filling the viewport, is not what the first glance answers.** How a landing is banded, and whether this fold fills the view, is the page skeleton. This study asks **which question the un-scrolled glance must confirm**.
 - **The first fold is not a login card.** A login card asks who you are and whether you may enter. The first fold answers what the person who opened this page cares about right now.
 - **Commerce is not five posters; a course is not a syllabus.** A shop features one product. A course promises the work, then offers the outline.
 

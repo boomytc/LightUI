@@ -55,8 +55,8 @@ export function StudyView() {
               </span>
               <br />
               {locale === "en"
-                ? "First decide what this data is for seeing. Clicking into a finer grain is a later question."
-                : "先定这组数据要看什么。一层层点进去、换粒度，是另一则。"}
+                ? "First decide what this data is for seeing. Clicking in changes grain, not the mark."
+                : "先定这组数据要看什么。一层层点进去，换的是粒度，不是图种。"}
             </li>
             <li>
               <span className="font-medium text-fg">

@@ -24,8 +24,8 @@
     {
       "slug": "validation-taxonomy",
       "rel": "after",
-      "when": "若格子已经定了，下一步是错误何时说",
-      "whenEn": "if the field is named, the next question is when the error speaks"
+      "when": "若问题是错误何时开口",
+      "whenEn": "if the miss is when the error should speak"
     },
     {
       "slug": "validation-taxonomy",

@@ -74,7 +74,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `chart-taxonomy` contrast `dashboard-layers` — 选对图不是下钻
 - `control-taxonomy` after `dropdown-taxonomy` — 若答案是往下展开的固定短列表
 - `control-taxonomy` contrast `dropdown-taxonomy` — 可见的单选和复选不是下拉面板
-- `control-taxonomy` after `validation-taxonomy` — 若格子已经定了，下一步是错误何时说
+- `control-taxonomy` after `validation-taxonomy` — 若问题是错误何时开口
 - `control-taxonomy` contrast `validation-taxonomy` — 填还是选不是何时报错
 - `control-taxonomy` contrast `button-taxonomy` — 填还是选不是按钮有多重
 - `dashboard-layers` contrast `chart-taxonomy` — 下钻不是换图种
@@ -83,13 +83,16 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `dropdown-taxonomy` contrast `control-taxonomy` — 往下展开的提交模型，不是先问填还是选
 - `dropdown-taxonomy` contrast `overlay-taxonomy` — 往下提交一个值不是打断式浮层
 - `glyph-sweep` contrast `border-beam` — 扫光跟字走，不是沿卡片边框
-- `hero-taxonomy` after `layout-taxonomy` — 若骨架已经是落地页
+- `hero-taxonomy` contrast `layout-taxonomy` — 第一眼回答什么不是整页怎么铺
 - `hero-taxonomy` contrast `login-taxonomy` — 首屏不是登录卡
 - `layout-taxonomy` after `sidebar-taxonomy` — 若靠左那一栏才是问题
 - `layout-taxonomy` after `nav-taxonomy` — 若问的是顶栏去哪
 - `layout-taxonomy` contrast `sidebar-taxonomy` — 整页骨架不是侧栏占位
 - `layout-taxonomy` contrast `nav-taxonomy` — 这一页怎么铺不是顶栏去哪
 - `layout-taxonomy` contrast `carousel-taxonomy` — 瀑布骨架不是切画面
+- `layout-taxonomy` after `hero-taxonomy` — 若问的是不滚动那一眼要确认什么
+- `layout-taxonomy` contrast `hero-taxonomy` — 一屏占满不是第一眼回答什么
+- `layout-taxonomy` contrast `login-taxonomy` — 工作区分栏不是登录左右栏
 - `login-taxonomy` contrast `layout-taxonomy` — 登录卡怎么摆不是整页骨架
 - `login-taxonomy` contrast `hero-taxonomy` — 登录不是卖点首屏
 - `nav-taxonomy` after `dropdown-taxonomy` — 若它是往下展开的面板

@@ -45,7 +45,7 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another toast | Notice weight in `notify-taxonomy` | A blocking dialog → `overlay-taxonomy` |
 | Another error message | When to speak in `validation-taxonomy` | Fill vs pick → `control-taxonomy` |
 | Another spinner | Measurable or not in `progress-taxonomy` | A result toast → `notify-taxonomy` |
-| Another chart | What the data is for in `chart-taxonomy` | Dashboard drill → later layer study |
+| Another chart | What the data is for in `chart-taxonomy` | Dashboard drill → `dashboard-layers` |
 | Another banner slider | How frames advance in `carousel-taxonomy` | A notice marquee → `notify-taxonomy` |
 | Another page grid | Page skeleton in `layout-taxonomy` | Rail occupancy → `sidebar-taxonomy` |
 | Another CTA | Action weight in `button-taxonomy` | Fill vs pick → `control-taxonomy` |

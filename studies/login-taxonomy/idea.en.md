@@ -28,7 +28,7 @@ Pick the stage by *how arrival stands*. Skin comes after. The fields are fake �
 
 The four pairs people mix up:
 
-- **How the login card sits is not the page skeleton.** Floating card, split, immersive — that is the gate. How the rest of the page is laid out is a skeleton question.
+- **How the login card sits is not the page skeleton.** Floating card, split, immersive — that is the gate. How the rest of the page is laid out is a skeleton. A login split is brand beside the form, not two work panes.
 - **Login is not a selling hero.** A hero sells a promise. Login has to let people in.
 - **A split is not immersive.** A split is two panes: brand, then form. Immersive is one ground; the form sits on it.
 - **A role gate is not steps.** A role is pick an identity, then enter its form. Steps are one identity, one field per screen.

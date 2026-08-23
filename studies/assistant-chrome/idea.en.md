@@ -28,10 +28,11 @@ Ask where the assistant lives first. Skin comes after. This is not how the page 
 | Canvas | Nodes on an infinite canvas | `occupiesPage`; output is nodes, not a chat window |
 | Invisible | A shortcut; no resident chrome | `chromeVisible` is false |
 
-The three pairs people mix up:
+The pairs people mix up:
 
 - **Where the assistant lives is not the page skeleton.** The skeleton is how this page is laid out. Whether the assistant lives in chat, a rail, a plugin, a float, a canvas, or nowhere visible is a different question.
 - **A selection toolbar is not a dialog.** A plugin appears on the selection; the host page does not change. A dialog is about interrupt and whether it sticks to a trigger.
+- **A draggable assistant is not a must-handle dialog.** The float does not change the skeleton; the page can still be read. A dialog has to be finished before you continue.
 - **A suggestion card is not a chat stream.** The panel is one note plus apply / undo. A full-page message list is chat.
 
 To specify one of these, say three things:

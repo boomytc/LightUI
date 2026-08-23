@@ -107,8 +107,8 @@ export const KINDS: KindMeta[] = [
       loc("不要多段正文，不要侧栏", "No body copy, no rail"),
     ],
     spec: loc(
-      "做全屏首屏。一屏占满视口，只留一句主标题和一个按钮。不要多段正文，不要侧栏。",
-      "A full-screen first shot. It fills the viewport. One title, one button. No body copy, no rail.",
+      "做占满视口的一屏。只留一句主标题和一个按钮。不要多段正文，不要侧栏。",
+      "A viewport-filling shot. One title, one button. No body copy, no rail.",
     ),
     note: loc("一屏一句。不要塞三段介绍。", "One shot, one sentence. Do not stuff three paragraphs."),
     tells: loc("打开就是海报，不是文章", "It opens as a poster, not an article"),

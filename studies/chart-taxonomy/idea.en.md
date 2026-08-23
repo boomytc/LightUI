@@ -15,7 +15,7 @@
 
 One pie or one column for all of these either chops the trend, rotates the names, or invents a story between unrelated dots.
 
-Picking the mark is also not drilling a dashboard. First decide what this data is for seeing; clicking into a finer grain is a later question.
+Picking the mark is also not drilling a dashboard. First decide what this data is for seeing. Clicking in changes grain, not the mark.
 
 ## The rule
 
@@ -32,7 +32,7 @@ Ask the intent, then pick the mark. Skin, palette, and 3D come after.
 
 The three pairs people mix up:
 
-- **Picking a mark is not dashboard drill-down.** First decide whether this data is for change, size, share, relation, flow, or ability. Clicking into a finer grain is a later question.
+- **Picking a mark is not dashboard drill-down.** First decide whether this data is for change, size, share, relation, flow, or ability. Clicking in changes grain, not the mark.
 - **Do not pie a time trend.** A pie has no left-to-right. Months are time, not share.
 - **Do not stand long names up as columns.** They crowd and rotate. Rankings and full city names use bars, written across.
 

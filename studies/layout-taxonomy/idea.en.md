@@ -25,17 +25,19 @@ Pick the skeleton by *how this page is laid out*. Skin comes after. Landing and 
 | Single | Quiet reading | One axis; **max-width ≈ 42rem (672px)**; figures and quotes share that column |
 | Landing | Convert, download, book | Hero promise → proof bands → CTA; **not a dashboard**; 24px gutter, 64–96px bands |
 | Masonry | Pictures of uneven height | **Uneven**; `break-inside: avoid`; not a carousel |
-| Full-screen | One sentence, first glance | **One shot fills the viewport**; no body copy |
+| Full-screen | Poster, a launch | **One shot fills the viewport**; no body copy |
 | Splitter | Two workspaces | **Two panes**, a visible divide; resizable or fixed; not a drawer overlay |
 | Dashboard | Scan numbers, compare trends | KPI + chart + table grid; a left rail’s occupancy is a sidebar question |
 | Modular | One idea per card | Cards on a grid; stretch the row, `mt-auto` on the footer |
 
-The four pairs people mix up:
+The pairs people mix up:
 
 - **The page skeleton is not sidebar occupancy.** The skeleton is how this page is laid out. Whether the left rail occupies space is a sidebar.
 - **How the columns are laid is not where the top bar goes.** Where the top bar lives, and how it opens, is nav.
 - **Masonry is not a carousel.** Masonry drops cards down the shortest column. A carousel takes the whole view away.
 - **A splitter is not a drawer overlay.** Both panes live in normal flow. A drawer covers the current task and goes away.
+- **Filling the viewport is not what the first glance answers.** Full-screen is occupancy: this fold fills the view, no paragraphs. Which question that glance must confirm is the first-fold job.
+- **Two work panes are not a login split.** Both splitter panes are work. A login split is brand on one side and the gate on the other.
 
 To specify one of these, say three things:
 

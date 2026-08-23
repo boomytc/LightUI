@@ -73,8 +73,8 @@ export function StudyView() {
               </span>
               <br />
               {locale === "en"
-                ? "Masonry drops uneven cards down a column. A carousel swaps the view. A splitter keeps two panes in flow; a drawer covers the task."
-                : "瀑布让不等高卡片按列往下接。轮播会切走整块。分栏两格都在文档流里；抽屉盖在任务上。"}
+                ? "Masonry drops uneven cards down a column. A carousel swaps the view. A splitter keeps two work panes in flow; a drawer covers the task. Filling the viewport is not what the first glance answers."
+                : "瀑布让不等高卡片按列往下接。轮播会切走整块。分栏两格都在干活；抽屉盖在任务上。一屏占满也不是第一眼要确认哪件事。"}
             </li>
           </ol>
         </article>

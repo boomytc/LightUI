@@ -71,8 +71,8 @@ export function StudyView() {
               </span>
               <br />
               {locale === "en"
-                ? "A popover is a few actions stuck to the trigger. A dropdown opens downward and commits a value. Delete in the menu opens a modal."
-                : "气泡是贴着触发点的几项动作。下拉才是往下展开、点中交一个值。菜单里的删除再唤起弹窗。"}
+                ? "A popover is a few actions stuck to the trigger. A dropdown opens downward and commits a value. Delete in the menu opens a modal. A notice does not block the task."
+                : "气泡是贴着触发点的几项动作。下拉才是往下展开、点中交一个值。菜单里的删除再唤起弹窗。提示不挡住当前任务。"}
             </li>
           </ol>
         </article>
