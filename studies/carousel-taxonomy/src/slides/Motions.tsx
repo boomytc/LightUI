@@ -520,7 +520,10 @@ export function ParallaxMotion({ index, jump, locale }: MotionProps) {
       />
       <div
         className={cn("para-layer relative z-10 px-5 pt-6", jump && "is-jump")}
-        style={{ transform: `translate3d(${parallaxOffset(index, 0.7) + mx * 10}px, 0, 0)` }}
+        style={{
+          /* Short stride so kicker/title stay inside the 390 scene after index 0. */
+          transform: `translate3d(${parallaxOffset(index, 0.7, 16) + mx * 10}px, 0, 0)`,
+        }}
       >
         <span className="inline-flex rounded-full bg-surface/70 px-2.5 py-1 text-[11px] tracking-wider text-fg">
           {pick(slide.kicker, locale)}
