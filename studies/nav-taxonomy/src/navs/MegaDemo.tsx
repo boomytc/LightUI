@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { useFinePointer } from "../lib/pointer";
 import { loc, pick, useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { Frame, HeroWash } from "./Frame";
@@ -12,33 +13,42 @@ const MEGA = [
 
 export function MegaDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
+  const fine = useFinePointer();
   const [open, setOpen] = useState(defaultOpen);
   const [picked, setPicked] = useState(MEGA[0].items[1]);
 
   return (
     <Frame title={locale === "en" ? "Catalog" : "分类"}>
       <div className="flex h-full flex-col">
-        <div className="relative z-20 flex h-11 shrink-0 items-center gap-4 border-b border-border px-4 text-[13px]">
-          <span className="font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
-          <span className="text-fg-muted">{locale === "en" ? "Home" : "首页"}</span>
-          <div onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+        <div
+          className="relative z-20"
+          onMouseEnter={() => {
+            if (fine) setOpen(true);
+          }}
+          onMouseLeave={() => {
+            if (fine) setOpen(false);
+          }}
+        >
+          <div className="flex h-11 shrink-0 items-center gap-4 border-b border-border px-4 text-[13px]">
+            <span className="font-medium">{locale === "en" ? "Studio" : "工作室"}</span>
+            <span className="text-fg-muted">{locale === "en" ? "Home" : "首页"}</span>
             <button
               type="button"
               aria-expanded={open}
-              onClick={() => setOpen((v) => !v)}
+              onClick={() => {
+                if (fine) return;
+                setOpen((v) => !v);
+              }}
               className="flex items-center gap-0.5 font-medium text-accent"
             >
               {locale === "en" ? "Catalog" : "分类"}
               <ChevronDown className={cn("size-3.5 transition-transform", open && "rotate-180")} />
             </button>
+            <span className="text-fg-muted">{locale === "en" ? "About" : "关于"}</span>
           </div>
-          <span className="text-fg-muted">{locale === "en" ? "About" : "关于"}</span>
-        </div>
-        <div className="relative min-h-0 flex-1" onMouseEnter={() => open && setOpen(true)} onMouseLeave={() => setOpen(false)}>
-          <HeroWash />
           <div
             className={cn(
-              "absolute top-2 right-3 left-3 z-20 origin-top rounded-xl border border-border bg-surface p-4 shadow-card transition-[opacity,transform] duration-200",
+              "absolute top-full right-3 left-3 z-20 origin-top rounded-xl border border-border bg-surface p-4 shadow-card transition-[opacity,transform] duration-200",
               open
                 ? "pointer-events-auto translate-y-0 opacity-100"
                 : "pointer-events-none invisible -translate-y-1 opacity-0",
@@ -68,6 +78,9 @@ export function MegaDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}
               ))}
             </div>
           </div>
+        </div>
+        <div className="relative min-h-0 flex-1">
+          <HeroWash />
           <p className="absolute bottom-3 left-4 text-[12px] text-fg-subtle">
             {locale === "en" ? "Current: " : "当前："}
             {pick(picked, locale)}
