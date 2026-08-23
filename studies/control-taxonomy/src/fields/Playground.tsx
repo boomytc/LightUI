@@ -19,7 +19,7 @@ export function Playground() {
   const meta = active ? (KINDS.find((k) => k.id === active) ?? KINDS[0]) : null;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
+    <div className="grid min-w-0 gap-6 lg:grid-cols-[0.92fr_1.08fr]">
       <Chooser answers={answers} onChange={setAnswers} />
 
       <section className="min-w-0">

@@ -103,9 +103,9 @@ export function ComboboxDemo({ state }: { state?: string } = {}) {
         </ul>
       </Popover>
       {picked ? (
-        <p className="mt-3 rounded-lg bg-accent-soft px-3 py-2 text-[13px] text-accent">
-          {picked.name}
-          <span className="ml-2 text-fg-muted">{picked.email}</span>
+        <p className="mt-3 flex min-w-0 items-baseline gap-2 overflow-hidden rounded-lg bg-accent-soft px-3 py-2 text-[13px] text-accent">
+          <span className="shrink-0">{picked.name}</span>
+          <span className="min-w-0 truncate text-fg-muted">{picked.email}</span>
         </p>
       ) : null}
     </Frame>
