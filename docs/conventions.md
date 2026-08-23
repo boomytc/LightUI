@@ -53,6 +53,9 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another login page | Staging in `login-taxonomy` | Page skeleton → `layout-taxonomy` |
 | Another alignment tweak | Baseline vs box in `align-craft` | Page skeleton → `layout-taxonomy` |
 | Another dashboard | Drill vs platter in `dashboard-layers` | Chart intent → `chart-taxonomy` |
+| Another AI chat shell | Where the assistant lives in `assistant-chrome` | Page skeleton → `layout-taxonomy` |
+| Another loading spinner | Layout placeholder in `pending-taxonomy` | Measurable wait → `progress-taxonomy` |
+| Another card glow | Border path in `border-beam` | Glyph-follow → `glyph-sweep` |
 
 Do not merge these into one encyclopedia because the fixtures look alike.
 The graph keeps the questions apart. Isolated nodes are allowed; only add
@@ -103,8 +106,9 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5185` validation-taxonomy, `5186` progress-taxonomy, `5187` chart-taxonomy,
   `5188` carousel-taxonomy, `5189` layout-taxonomy, `5190` button-taxonomy,
   `5191` hero-taxonomy, `5192` login-taxonomy, `5193` align-craft,
-  `5194` dashboard-layers.
-  Next free: `5195`.
+  `5194` dashboard-layers, `5195` assistant-chrome, `5196` pending-taxonomy,
+  `5197` border-beam.
+  Next free: `5198`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

@@ -6,8 +6,16 @@
   "summaryEn": "The sweep follows the glyphs. Band width is in ch; duration is length times seconds per glyph — not a box-level sheen.",
   "asks": "扫光该跟字走还是跟块走？",
   "asksEn": "Should the sweep follow the glyphs, or the box?",
+  "links": [
+    {
+      "slug": "border-beam",
+      "rel": "contrast",
+      "when": "扫光跟字走，不是沿卡片边框",
+      "whenEn": "the sweep follows glyphs, not a card border"
+    }
+  ],
   "status": "active",
   "created": "2026-08-21",
-  "updated": "2026-08-21",
+  "updated": "2026-08-23",
   "tags": ["motion", "typography", "css"]
 }

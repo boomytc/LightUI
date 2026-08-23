@@ -152,6 +152,22 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("layered", "dim", "layered-dim.png"),
         ("platter", "all", "platter-all.png"),
     ],
+    "assistant-chrome": [
+        ("chat", "default", "chat.png"),
+        ("panel", "default", "panel.png"),
+        ("plugin", "open", "plugin-open.png"),
+        ("invisible", "default", "invisible.png"),
+    ],
+    "pending-taxonomy": [
+        ("skeleton", "loading", "skeleton-loading.png"),
+        ("skeleton", "ready", "skeleton-ready.png"),
+        ("empty", "empty", "empty.png"),
+    ],
+    "border-beam": [
+        ("beam", "run", "beam-run.png"),
+        ("beam", "park", "beam-park.png"),
+        ("fill", "run", "fill-run.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:

@@ -14,6 +14,12 @@
       "rel": "contrast",
       "when": "进度不是一条 toast",
       "whenEn": "progress is not a toast"
+    },
+    {
+      "slug": "pending-taxonomy",
+      "rel": "contrast",
+      "when": "进度是工作正在发生，不是布局占位",
+      "whenEn": "progress is work happening, not a layout placeholder"
     }
   ],
   "status": "active",
