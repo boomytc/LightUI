@@ -7,7 +7,7 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
-| [control-taxonomy](../studies/control-taxonomy/) | 「做个输入框」只说了能填。先定是自己写、从短列表选、可见比较，还是边搜边选。 | active | 2026-08-23 | 2026-08-23 |
+| [control-taxonomy](../studies/control-taxonomy/) | 「做个输入框」只说了能填。先定是自己填一行或一段，还是从答案里选：可见比较、短列表、边搜边选，或同时多个。 | active | 2026-08-23 | 2026-08-23 |
 | [dropdown-taxonomy](../studies/dropdown-taxonomy/) | 往下展开只是外观。先定提交的是一个值、一组、一条路径，还是一次动作。 | active | 2026-08-15 | 2026-08-23 |
 | [nav-taxonomy](../studies/nav-taxonomy/) | 一排链接只说了有入口。先定住在哪、怎么开、滚的时候干什么。 | active | 2026-08-15 | 2026-08-23 |
 | [tab-taxonomy](../studies/tab-taxonomy/) | 一排标签只说了能切。先定选中态是短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。 | active | 2026-08-23 | 2026-08-23 |

@@ -25,9 +25,9 @@ Ask what the person is doing, then land on a machine.
 | Fill it in | One line is enough | Text field |
 | Fill it in | A paragraph | Textarea |
 | Pick from answers | Several at once | Checkbox |
-| Only one | Few, must compare side by side | Radio group |
-| Only one | A fixed list of about 5–15, scan it | Select |
-| Only one | Many, type to find then pick | Combobox |
+| Pick from answers, only one | Few, must compare side by side | Radio group |
+| Pick from answers, only one | A fixed list of about 5–15, scan it | Select |
+| Pick from answers, only one | Many, type to find then pick | Combobox |
 
 The three pairs people mix up:
 
@@ -58,4 +58,4 @@ A single “agree to terms” is still a checkbox: it is one boolean, not rival 
 
 The tree lives in DOM-free modules: `nextStep`, `chooseControl`, `answersFor`. Filtering is `filterMembers`. The cap is `toggleCapped`.
 
-The Select leaf only shows a short fixed list that closes on pick. A panel can still commit a set, a path, or an action — that is the next question, not this one.
+The Select leaf only shows a short fixed list that closes on pick. A panel can still commit a set, a path, or an action — that is the next question, not this one. A combobox also opens downward, but the question here is how you find the option, not what the panel commits.

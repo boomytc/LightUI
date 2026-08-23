@@ -77,7 +77,7 @@ export function Chooser({
         >
           <Choice
             label={locale === "en" ? "Several at once" : "可以多选"}
-            hint={locale === "en" ? "Interests, tags, agree to terms" : "兴趣、标签、偏好、同意条款"}
+            hint={locale === "en" ? "Interests, tags. A single agree-to-terms is also a checkbox." : "兴趣、标签、偏好。单个同意条款也是勾选"}
             onClick={() => onChange(withCardinality("many"))}
           />
           <Choice
@@ -172,12 +172,12 @@ function Choice({ label, hint, onClick }: { label: string; hint?: string; onClic
 }
 
 const SCENES: { id: ControlId; zh: string; en: string }[] = [
-  { id: "text-field", zh: "注册页要填邮箱", en: "Sign-up needs an email" },
+  { id: "text-field", zh: "注册页要填姓名", en: "Sign-up needs a name" },
   { id: "textarea", zh: "意见反馈要写一段话", en: "Feedback needs a paragraph" },
+  { id: "checkbox", zh: "兴趣标签最多 3 个", en: "Interest tags, cap at 3" },
+  { id: "radio", zh: "三种配送要对比时效", en: "Compare three shipping options" },
   { id: "select", zh: "选择所在城市", en: "Pick a city" },
   { id: "combobox", zh: "从 200 个同事里找人", en: "Find one person among 200" },
-  { id: "radio", zh: "三种配送要对比时效", en: "Compare three shipping options" },
-  { id: "checkbox", zh: "兴趣标签最多 3 个", en: "Interest tags, cap at 3" },
 ];
 
 function Scenarios({ locale, onPick }: { locale: Locale; onPick: (id: ControlId) => void }) {

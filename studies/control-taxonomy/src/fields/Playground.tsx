@@ -99,7 +99,7 @@ export function Playground() {
           <DemandSplit locale={locale} onPick={(id) => setAnswers(answersFor(id))} />
         ) : (
           <p className="rounded-2xl border border-dashed border-border px-4 py-8 text-[14px] text-fg-subtle">
-            {locale === "en" ? "Finish the questions on the left." : "先走完左边的判断。"}
+            {locale === "en" ? "Finish the tree first." : "先走完判断树。"}
           </p>
         )}
       </section>
@@ -119,13 +119,13 @@ function DemandSplit({
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       <Column
-        title={locale === "en" ? "Fill it in" : "输入内容"}
+        title={locale === "en" ? "Fill it in" : "自己填写"}
         items={fill}
         locale={locale}
         onPick={onPick}
       />
       <Column
-        title={locale === "en" ? "Pick from answers" : "选择答案"}
+        title={locale === "en" ? "Pick from answers" : "从答案里选"}
         items={pickKind}
         locale={locale}
         onPick={onPick}

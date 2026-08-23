@@ -4,8 +4,8 @@
   "titleEn": "Controls",
   "eyebrow": "Fill vs pick · Field taxonomy",
   "eyebrowEn": "Fill vs pick · Field taxonomy",
-  "summary": "「做个输入框」只说了能填。先定是自己写、从短列表选、可见比较，还是边搜边选。",
-  "summaryEn": "“Make an input” only says something can be typed. First decide whether this slot is filled in, picked from a short list, compared in view, or typed to find.",
+  "summary": "「做个输入框」只说了能填。先定是自己填一行或一段，还是从答案里选：可见比较、短列表、边搜边选，或同时多个。",
+  "summaryEn": "“Make an input” only says something can be typed. First decide whether this slot is one line or a paragraph, or a pick: compared in view, a short list, type-to-find, or several at once.",
   "asks": "这一格是自己填还是从答案里选？",
   "asksEn": "Is this slot filled in, or picked from answers?",
   "links": [

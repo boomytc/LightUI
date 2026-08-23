@@ -16,14 +16,14 @@ export function StudyView() {
           </h1>
           <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
             {locale === "en"
-              ? "“Make an input” describes the skin. The thing that breaks is fill versus pick: one line, a paragraph, a short list, options compared in view, or type-to-find."
-              : "「做个输入框」说的是外观。真正会坏掉的是填还是选：一行、一段、短列表、可见比较，还是边搜边选。"}
+              ? "“Make an input” describes the skin. The thing that breaks is fill versus pick: one line or a paragraph, compared in view, a short list, type-to-find, or several at once."
+              : "「做个输入框」说的是外观。真正会坏掉的是填还是选：一行或一段，可见比较、短列表、边搜边选，或同时多个。"}
           </p>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Ask fill or pick first. The tree on the left is live; the six leaves on the right can be jumped."
-            : "先问是填还是选。左边的判断树可以走，右边六种叶子也可以直接点。"}
+            ? "Ask fill or pick first. Walk the tree, or jump a leaf."
+            : "先问是填还是选。判断树可以走，六种叶子也可以直接点。"}
         </p>
       </section>
 
@@ -71,8 +71,8 @@ export function StudyView() {
               </span>
               <br />
               {locale === "en"
-                ? "Hundreds of items need typing first. Five cities should not force a query. Stacking is checkbox; rival tiers are radios."
-                : "上百项要先打字。五个城市不该先强迫搜索。可叠的是复选，互斥档位才是单选组。"}
+                ? "Hundreds of items need typing first. Five cities should not force a query."
+                : "上百项要先打字。五个城市不该先强迫搜索。"}
             </li>
           </ol>
         </article>
@@ -83,6 +83,7 @@ export function StudyView() {
           </p>
           <pre className="mt-3 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">
 {`function chooseControl(a) {
+  if (nextStep(a) !== "result") return null
   if (a.demand === "fill")
     return a.length === "long" ? "textarea" : "text-field"
   if (a.cardinality === "many") return "checkbox"
@@ -93,8 +94,8 @@ export function StudyView() {
           </pre>
           <p className="mt-4 text-[13px] leading-relaxed text-surface/55">
             {locale === "en"
-              ? "Ask fill or pick first. Length splits the text box. Many stacks. One value then splits by compare / scan / search."
-              : "先问填还是选。长短拆开文本框。多个就叠。一个再按比较 / 扫列表 / 搜索拆。"}
+              ? "The tree returns null until it lands. Fill splits by length. Many stacks. One value then splits by compare / scan / search."
+              : "树没走完返回 null。先问填还是选。长短拆开文本框。多个就叠。一个再按比较 / 扫列表 / 搜索拆。"}
           </p>
         </article>
       </section>
