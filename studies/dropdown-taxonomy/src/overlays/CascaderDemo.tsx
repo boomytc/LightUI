@@ -65,7 +65,7 @@ export function CascaderDemo({ defaultOpen = false }: { defaultOpen?: boolean } 
               {columns.map((items, level) => (
                 <ul
                   key={level}
-                  className="min-w-32 overflow-y-auto border-l border-border py-1 first:border-l-0"
+                  className="min-w-[6.5rem] overflow-y-auto border-l border-border py-1 first:border-l-0 min-[400px]:min-w-32"
                 >
                   {items.map((item) => {
                     const label = labelOf(item.label, locale);

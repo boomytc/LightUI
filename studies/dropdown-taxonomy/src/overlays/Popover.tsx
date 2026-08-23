@@ -36,20 +36,36 @@ export function Popover({
     if (!open) return;
     const update = () => {
       const trigger = triggerRef.current;
+      const panel = panelRef.current;
       if (!trigger) return;
       const rect = trigger.getBoundingClientRect();
+      const pad = 8;
+      const avail = Math.max(160, window.innerWidth - pad * 2);
+      const minW = matchWidth ? rect.width : 12 * 16;
       const next: CSSProperties = {
         position: "fixed",
-        top: rect.bottom + 6,
         zIndex: 50,
-        minWidth: matchWidth ? rect.width : 12 * 16,
+        minWidth: Math.min(minW, avail),
+        maxWidth: avail,
       };
-      if (matchWidth) next.width = rect.width;
-      if (align === "end") {
-        next.right = window.innerWidth - rect.right;
-      } else {
-        next.left = rect.left;
+      if (matchWidth) next.width = Math.min(rect.width, avail);
+      const width = matchWidth
+        ? Math.min(rect.width, avail)
+        : Math.min(panel?.offsetWidth || minW, avail);
+      let left =
+        align === "end" ? rect.right - width : rect.left;
+      if (left + width > window.innerWidth - pad) {
+        left = Math.max(pad, window.innerWidth - pad - width);
       }
+      if (left < pad) left = pad;
+      next.left = left;
+      const height = panel?.offsetHeight || 0;
+      let top = rect.bottom + 6;
+      if (height && top + height > window.innerHeight - pad) {
+        const above = rect.top - 6 - height;
+        if (above >= pad) top = above;
+      }
+      next.top = top;
       setStyle(next);
     };
     update();
