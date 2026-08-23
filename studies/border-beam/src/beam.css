@@ -1,0 +1,96 @@
+@property --beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.bb-card {
+  --beam-duration: 3.2s;
+  --beam-stroke: 2px;
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 18px 20px;
+}
+
+.bb-card[data-kind="beam"] {
+  border: var(--beam-stroke) solid transparent;
+  background:
+    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    conic-gradient(
+      from var(--beam-angle),
+      transparent 72%,
+      var(--color-accent),
+      transparent 88%
+    ) border-box;
+  animation: bb-spin var(--beam-duration) linear infinite;
+}
+
+.bb-card[data-kind="beam"][data-running="false"] {
+  animation: none;
+}
+
+.bb-card[data-kind="beam"][data-stroke="static"] {
+  animation: none;
+  background:
+    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    linear-gradient(var(--color-accent), var(--color-accent)) border-box;
+}
+
+.bb-card[data-kind="fill"] {
+  border: var(--beam-stroke) solid color-mix(in oklab, var(--color-accent) 55%, transparent);
+  background: color-mix(in oklab, var(--color-accent) 22%, var(--color-surface));
+  box-shadow:
+    0 0 28px color-mix(in oklab, var(--color-accent) 48%, transparent),
+    inset 0 0 40px color-mix(in oklab, var(--color-accent) 28%, transparent);
+}
+
+.bb-card[data-kind="fill"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 18%,
+    color-mix(in oklab, var(--color-accent) 55%, var(--color-surface)) 50%,
+    transparent 82%
+  );
+  background-size: 220% 100%;
+  background-position: 100% 0;
+  animation: bb-flood 1.8s linear infinite;
+}
+
+.bb-card[data-kind="fill"][data-running="false"]::after {
+  animation: none;
+  background-position: 42% 0;
+}
+
+@keyframes bb-spin {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+@keyframes bb-flood {
+  to {
+    background-position: -20% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bb-card[data-kind="beam"] {
+    animation: none;
+    background:
+      linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+      linear-gradient(var(--color-accent), var(--color-accent)) border-box;
+  }
+
+  .bb-card[data-kind="fill"]::after {
+    animation: none;
+    background-position: 42% 0;
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "slug": "border-beam",
+  "title": "边光",
+  "titleEn": "Border beam",
+  "eyebrow": "Border path · Not a flood",
+  "eyebrowEn": "Border path · Not a flood",
+  "summary": "高光沿圆角边框绕行，不要铺满卡片。内层实心底，外层透明边框叠光束。品牌强调色，不要彩虹。",
+  "summaryEn": "The highlight travels the rounded border — it does not flood the card. Solid inner fill, transparent border stacking the beam. Brand accent, not a rainbow.",
+  "asks": "高光该走边框还是铺满卡片？",
+  "asksEn": "Should the highlight travel the border, or flood the card?",
+  "links": [
+    {
+      "slug": "glyph-sweep",
+      "rel": "contrast",
+      "when": "高光走边框不是走字形",
+      "whenEn": "a border beam is not a glyph-follow sweep"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["motion", "border", "css"]
+}
