@@ -34,7 +34,7 @@
 
 .login-split {
   display: grid;
-  grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+  grid-template-columns: minmax(8.5rem, 3fr) minmax(0, 2fr);
   min-height: 420px;
   min-width: 0;
 }

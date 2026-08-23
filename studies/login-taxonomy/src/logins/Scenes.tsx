@@ -76,7 +76,21 @@ function SplitPage() {
         <p className="text-[10px] font-medium tracking-[0.16em] text-white/70 uppercase">
           {pick(COPY.brandKicker, locale)}
         </p>
-        <h3 className="mt-2 text-[15px] font-semibold leading-snug">{pick(COPY.brandTitle, locale)}</h3>
+        <h3 className="mt-2 text-[15px] font-semibold leading-snug">
+          {locale === "en" ? (
+            <>
+              Turn a fuzzy spark
+              <br />
+              into a clear piece
+            </>
+          ) : (
+            <>
+              把每一个模糊灵感
+              <br />
+              变成清晰作品
+            </>
+          )}
+        </h3>
         <p className="mt-2 text-[11px] leading-relaxed text-white/75">{pick(COPY.brandBody, locale)}</p>
       </section>
       <section className="login-split-form grid gap-4">
