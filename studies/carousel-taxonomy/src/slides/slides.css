@@ -4,6 +4,19 @@
   min-width: 0;
 }
 
+.slide-art.absolute {
+  position: absolute;
+}
+
+.slide-stage {
+  height: 14rem;
+}
+
+.slide-window {
+  width: 100%;
+  max-width: 390px;
+}
+
 .slide-orb,
 .slide-slash,
 .slide-chip {
@@ -77,6 +90,7 @@
 }
 
 .coverflow-scene {
+  height: 252px;
   perspective: 1400px;
   perspective-origin: 50% 46%;
 }
@@ -93,9 +107,19 @@
   transition: none;
 }
 
+.stack-scene {
+  height: 236px;
+  max-width: 300px;
+  margin-inline: auto;
+}
+
 .stack-card {
   transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
+}
+
+.stack-card .slide-art {
+  height: 214px;
 }
 
 .stack-card.is-drag {
@@ -103,6 +127,7 @@
 }
 
 .book-scene {
+  height: 220px;
   perspective: 2200px;
   perspective-origin: 50% 50%;
 }
@@ -155,8 +180,13 @@
 
 .acc-grid {
   display: grid;
+  height: 14rem;
   gap: 6px;
   transition: grid-template-columns 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.acc-spine {
+  writing-mode: vertical-rl;
 }
 
 .acc-grid.is-jump {
@@ -164,6 +194,7 @@
 }
 
 .cube-scene {
+  height: 188px;
   perspective: 900px;
 }
 
@@ -178,6 +209,10 @@
 
 .cube.is-jump {
   transition: none;
+}
+
+.para-scene {
+  height: 16rem;
 }
 
 .para-layer {

@@ -36,7 +36,7 @@ export function ClassicMotion({ index, next, prev, jump, locale }: MotionProps) 
 
   return (
     <div
-      className="overflow-hidden select-none touch-pan-y"
+      className="slide-stage overflow-hidden select-none touch-pan-y"
       onPointerDown={(e) => {
         start.current = { x: e.clientX, y: e.clientY };
       }}
@@ -69,7 +69,7 @@ export function ClassicMotion({ index, next, prev, jump, locale }: MotionProps) 
 
 export function FadeMotion({ index, locale }: MotionProps) {
   return (
-    <div className="relative h-56">
+    <div className="slide-stage relative">
       {SLIDES.map((slide, i) => (
         <SlideArt
           key={slide.id}
@@ -170,7 +170,7 @@ export function StackMotion({ index, next, prev, jump, locale }: MotionProps) {
   }
 
   return (
-    <div className="relative mx-auto h-[236px] w-full max-w-[300px]">
+    <div className="stack-scene relative w-full">
       {visible.map((slideIndex, depth) => {
         const slide = SLIDES[slideIndex];
         const layer = stackLayer(depth);
@@ -370,7 +370,7 @@ export function AccordionMotion({ index, go, jump, locale }: MotionProps) {
             />
             <span
               className={cn(
-                "pointer-events-none absolute bottom-3 left-1/2 z-10 origin-bottom -translate-x-1/2 text-[12px] font-medium tracking-widest text-accent-fg drop-shadow [writing-mode:vertical-rl]",
+                "acc-spine pointer-events-none absolute bottom-3 left-1/2 z-10 origin-bottom -translate-x-1/2 text-[12px] font-medium tracking-widest text-accent-fg drop-shadow",
                 open ? "opacity-0" : "opacity-100",
               )}
             >
@@ -494,7 +494,7 @@ export function ParallaxMotion({ index, jump, locale }: MotionProps) {
 
   return (
     <div
-      className="relative h-64 overflow-hidden"
+      className="para-scene relative overflow-hidden"
       onPointerMove={(e) => {
         if (jump) return;
         const box = e.currentTarget.getBoundingClientRect();
