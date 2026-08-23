@@ -1,0 +1,23 @@
+{
+  "slug": "button-taxonomy",
+  "title": "按钮",
+  "titleEn": "Button",
+  "eyebrow": "Weight · Action",
+  "eyebrowEn": "Weight · Action",
+  "summary": "「做个按钮」只说了能点。先定这一区的主操作、次操作还是弱操作，一区只能有一个面状。",
+  "summaryEn": "“Make a button” only says it can be clicked. First decide whether this region’s action is primary, secondary, or weak — and keep only one filled button.",
+  "asks": "这个动作该有多重？",
+  "asksEn": "How heavy should this action be?",
+  "links": [
+    {
+      "slug": "control-taxonomy",
+      "rel": "contrast",
+      "when": "按钮重量不是填还是选",
+      "whenEn": "button weight is not fill versus pick"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-23",
+  "updated": "2026-08-23",
+  "tags": ["button", "action", "taxonomy"]
+}
