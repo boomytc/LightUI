@@ -1,5 +1,6 @@
-import type { ReactNode } from "react";
-import { Moon, Sun } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { Moon, Search, Sun } from "lucide-react";
+import { CommandPalette } from "./CommandPalette";
 import { Link } from "./Link";
 import { messages } from "../lib/i18n";
 import { usePath } from "../lib/nav";
@@ -15,14 +16,15 @@ export function Shell({ children }: { children: ReactNode }) {
   const path = usePath();
   const { theme, locale, toggleTheme, toggleLocale } = usePrefs();
   const copy = messages(locale);
+  const [paletteOpen, setPaletteOpen] = useState(false);
 
   return (
     <div className="flex min-h-dvh flex-col bg-bg text-fg">
-      <header className="border-b border-border bg-surface/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-30 border-b border-border bg-surface/85 backdrop-blur-md">
         <div className="page-width flex h-14 items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-5">
             <Link href="/" className="flex items-center gap-2.5 no-underline">
-              <span className="grid size-7 place-items-center rounded-md bg-fg text-surface" aria-hidden="true">
+              <span className="grid size-7 place-items-center rounded-md bg-fg text-surface shadow-xs" aria-hidden="true">
                 <svg viewBox="0 0 24 24" className="size-3.5" fill="none">
                   <path
                     d="M5 19 19 5v14Z"
@@ -55,7 +57,21 @@ export function Shell({ children }: { children: ReactNode }) {
               })}
             </nav>
           </div>
-          <div className="flex shrink-0 items-center gap-1">
+
+          <div className="flex shrink-0 items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setPaletteOpen(true)}
+              className="inline-flex h-8 items-center gap-2 rounded-lg border border-border bg-surface px-2.5 text-left text-[12px] text-fg-muted shadow-xs transition-colors hover:border-border-strong hover:bg-surface-2 hover:text-fg"
+              aria-label={copy.searchShortcut}
+            >
+              <Search className="size-3.5" />
+              <span className="hidden sm:inline">{copy.searchShortcut}</span>
+              <kbd className="hidden rounded bg-surface-2 px-1 py-0.5 font-mono text-[10px] text-fg-subtle sm:inline">
+                ⌘K
+              </kbd>
+            </button>
+
             <IconButton
               label={locale === "zh" ? copy.langToEn : copy.langToZh}
               onClick={toggleLocale}
@@ -64,12 +80,14 @@ export function Shell({ children }: { children: ReactNode }) {
                 {locale === "zh" ? "EN" : "中"}
               </span>
             </IconButton>
+
             <IconButton
               label={theme === "dark" ? copy.themeToLight : copy.themeToDark}
               onClick={toggleTheme}
             >
               {theme === "dark" ? <Sun className="size-4" strokeWidth={1.8} /> : <Moon className="size-4" strokeWidth={1.8} />}
             </IconButton>
+
             <a
               href={GITHUB_URL}
               className="inline-flex size-9 items-center justify-center rounded-lg text-fg-muted no-underline hover:bg-surface-2 hover:text-fg"
@@ -82,6 +100,8 @@ export function Shell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
+
+      <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
       <nav className="page-width flex gap-1 border-b border-border py-2 sm:hidden" aria-label="site">
         {NAV.map((item) => {
           const active = item.match(path);
