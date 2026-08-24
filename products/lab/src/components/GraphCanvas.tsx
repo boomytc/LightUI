@@ -242,23 +242,39 @@ export function GraphCanvas({
 
       {pairs.length > 0 ? (
         <div>
-          <p className="text-[12px] font-medium text-fg-muted">{copy.graphContrast}</p>
-          <ul className="mt-2 space-y-2">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 className="text-[13px] font-medium text-fg-muted">{copy.graphContrast}</h2>
+            <span className="text-[12px] text-fg-subtle">{copy.graphPairs(pairs.length)}</span>
+          </div>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {pairs.map((pair) => {
               const a = studies.find((s) => s.slug === pair.a);
               const b = studies.find((s) => s.slug === pair.b);
               if (!a || !b) return null;
               const when = linkWhen(pair.when, pair.whenEn, locale);
               return (
-                <li key={`${pair.a}|${pair.b}`} className="text-[13px] text-fg-muted">
-                  <Link href={`/s/${a.slug}`} className="text-fg no-underline hover:text-accent">
-                    {studyTitle(a, locale)}
-                  </Link>
-                  <span className="mx-1.5 text-fg-subtle">·</span>
-                  <Link href={`/s/${b.slug}`} className="text-fg no-underline hover:text-accent">
-                    {studyTitle(b, locale)}
-                  </Link>
-                  {when ? <span className="mt-0.5 block text-[12px] text-fg-subtle">{when}</span> : null}
+                <li
+                  key={`${pair.a}|${pair.b}`}
+                  className="flex flex-col gap-3 rounded-2xl border border-border bg-surface px-4 py-3.5 shadow-card transition-colors hover:border-border-strong"
+                >
+                  {when ? <p className="text-[14px] font-medium leading-snug text-fg">{when}</p> : null}
+                  <p className="mt-auto flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[12px]">
+                    <Link
+                      href={`/s/${a.slug}`}
+                      className="rounded-full border border-border bg-bg px-2 py-0.5 text-fg-muted no-underline transition-colors hover:border-border-strong hover:text-accent"
+                    >
+                      {studyTitle(a, locale)}
+                    </Link>
+                    <span className="text-fg-subtle" aria-hidden="true">
+                      ≠
+                    </span>
+                    <Link
+                      href={`/s/${b.slug}`}
+                      className="rounded-full border border-border bg-bg px-2 py-0.5 text-fg-muted no-underline transition-colors hover:border-border-strong hover:text-accent"
+                    >
+                      {studyTitle(b, locale)}
+                    </Link>
+                  </p>
                 </li>
               );
             })}
