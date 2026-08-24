@@ -43,6 +43,12 @@ export function NoteItem({
   );
 }
 
+export function estimateReadingTime(body: string, locale: Locale): string {
+  const len = body.trim().length;
+  const minutes = Math.max(1, Math.ceil(len / (locale === "en" ? 900 : 450)));
+  return locale === "en" ? `${minutes} min read` : `${minutes} 分钟阅读`;
+}
+
 export function NoteByline({
   note,
   locale,
@@ -68,6 +74,10 @@ export function NoteByline({
         locale={locale}
         className="font-mono text-fg-subtle"
       />
+      <span aria-hidden="true" className="text-fg-subtle">·</span>
+      <span className="font-mono text-[11px] text-fg-subtle">
+        {estimateReadingTime(note.body, locale)}
+      </span>
     </span>
   );
 }

@@ -37,9 +37,14 @@ export function NotePage({ slug }: { slug: string }) {
             fallback="/notes"
             className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 -ml-2 text-[13px] text-fg-muted no-underline hover:bg-surface-2 hover:text-fg"
           />
-          <h1 className="mt-4 text-[1.8rem] font-semibold tracking-tight">{note.title}</h1>
-          <NoteByline note={note} locale={locale} className="mt-2" />
-          <div className="mt-6">
+          <h1 className="mt-4 text-[1.8rem] font-semibold tracking-tight sm:text-[2.2rem]">{note.title}</h1>
+          <NoteByline note={note} locale={locale} className="mt-2.5" />
+          {note.summary ? (
+            <p className="mt-4 rounded-xl border border-border/80 bg-surface-2/60 px-4 py-3 text-[14px] leading-relaxed text-fg-muted">
+              {note.summary}
+            </p>
+          ) : null}
+          <div className="mt-8 border-t border-border/70 pt-6">
             <Markdown source={note.body} />
           </div>
         </div>
