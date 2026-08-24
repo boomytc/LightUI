@@ -95,6 +95,11 @@ const zh = {
   contrastLegend: "易混对照 (虚线)",
   flowLegend: "时序演进 (实线)",
   clickToInspect: "点击查看推演",
+  searchNotesPlaceholder: "搜索设计笔记、思考或关联作品...",
+  relatedStudyBadge: "关联作品",
+  prevNoteLabel: "上一篇笔记",
+  nextNoteLabel: "下一篇笔记",
+  moreInDomain: "同领域延伸思考",
 };
 
 const en: typeof zh = {
@@ -192,6 +197,11 @@ const en: typeof zh = {
   contrastLegend: "Contrast (Dashed)",
   flowLegend: "Sequence (Solid)",
   clickToInspect: "Click to inspect",
+  searchNotesPlaceholder: "Search notes, essays or related studies...",
+  relatedStudyBadge: "Related Study",
+  prevNoteLabel: "Previous Note",
+  nextNoteLabel: "Next Note",
+  moreInDomain: "More in this domain",
 };
 
 export function messages(locale: Locale): typeof zh {
