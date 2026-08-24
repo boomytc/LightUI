@@ -38,7 +38,7 @@ export function NotePage({ slug }: { slug: string }) {
 
   return (
     <Page as="article" className="pb-24 pt-8">
-      <div className="lg:grid lg:grid-cols-[minmax(0,44rem)_minmax(18rem,22rem)] lg:items-start lg:gap-x-14">
+      <div className="mx-auto max-w-5xl lg:grid lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start lg:gap-x-12">
         {/* Main Article Left Column */}
         <div className="min-w-0">
           <BackLink
