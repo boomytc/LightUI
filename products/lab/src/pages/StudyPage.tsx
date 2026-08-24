@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { BackLink } from "../components/BackLink";
 import { Page } from "../components/Page";
 import { RelatedDecisions } from "../components/RelatedDecisions";
+import { StudyPagination } from "../components/StudyPagination";
 import { Markdown } from "../lib/Markdown";
 import { loadStudy, studyIdea } from "../lib/catalog";
 import { messages } from "../lib/i18n";
@@ -89,6 +90,7 @@ export function StudyPage({ slug }: { slug: string }) {
 
       <div className="page-width pb-20">
         <RelatedDecisions slug={slug} locale={locale} />
+        <StudyPagination slug={slug} locale={locale} />
       </div>
     </div>
   );
