@@ -13,6 +13,8 @@
   --color-accent-fg: #ffffff;
   --color-intent: #16a34a;
   --color-intent-soft: #e7f8ed;
+  --color-wrong: #e11d48;
+  --color-wrong-soft: #ffe4e6;
   --color-predict: #2f6bff;
   --color-predict-soft: rgb(47 107 255 / 0.14);
   --color-ring: rgb(59 108 255 / 0.35);
@@ -50,6 +52,8 @@
   --color-accent-fg: #111216;
   --color-intent: #34d399;
   --color-intent-soft: rgb(52 211 153 / 0.14);
+  --color-wrong: #fb7185;
+  --color-wrong-soft: rgb(251 113 133 / 0.14);
   --color-predict: #6b8cff;
   --color-predict-soft: rgb(107 140 255 / 0.16);
   --color-ring: rgb(107 140 255 / 0.4);
