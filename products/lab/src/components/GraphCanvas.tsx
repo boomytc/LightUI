@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { afterEdges, contrastPairs, graphLevels, neighborsOf } from "../lib/graph";
+import { getStudyCategory } from "../lib/categories";
+import {
+  afterEdges,
+  contrastPairs,
+  graphLevels,
+  lineageOf,
+} from "../lib/graph";
 import { messages } from "../lib/i18n";
-import { linkWhen, studyAsks, studyTitle } from "../lib/localize";
+import { studyAsks, studyTitle } from "../lib/localize";
 import type { Locale } from "../lib/prefs";
 import type { StudyMeta } from "../lib/study";
-import { Link } from "./Link";
 
 function cn(...parts: Array<string | false | null | undefined>): string {
   return parts.filter(Boolean).join(" ");
@@ -17,7 +22,10 @@ type DrawnEdge = {
   d: string;
   from: string;
   to: string;
+  type: "after" | "contrast";
   hot: boolean;
+  when?: string;
+  whenEn?: string;
 };
 
 function boxOf(el: HTMLElement, root: DOMRect): Box {
@@ -25,52 +33,67 @@ function boxOf(el: HTMLElement, root: DOMRect): Box {
   return { x: r.left - root.left, y: r.top - root.top, w: r.width, h: r.height };
 }
 
-function afterPath(from: Box, to: Box, wide: boolean): string {
+function calcPath(from: Box, to: Box, wide: boolean, type: "after" | "contrast"): string {
   if (wide) {
+    if (type === "after") {
+      const x1 = from.x + from.w;
+      const y1 = from.y + from.h / 2;
+      const x2 = to.x;
+      const y2 = to.y + to.h / 2;
+      const mid = x1 + Math.max(32, (x2 - x1) / 2);
+      return `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`;
+    } else {
+      // Contrast arc
+      const x1 = from.x + from.w / 2;
+      const y1 = from.y + from.h;
+      const x2 = to.x + to.w / 2;
+      const y2 = to.y + to.h;
+      const arc = Math.max(y1, y2) + 30;
+      return `M ${x1} ${y1} C ${x1} ${arc}, ${x2} ${arc}, ${x2} ${y2}`;
+    }
+  }
+
+  // Mobile vertical stacking
+  if (type === "after") {
+    const x1 = from.x + from.w / 2;
+    const y1 = from.y + from.h;
+    const x2 = to.x + to.w / 2;
+    const y2 = to.y;
+    const mid = y1 + Math.max(20, (y2 - y1) / 2);
+    return `M ${x1} ${y1} C ${x1} ${mid}, ${x2} ${mid}, ${x2} ${y2}`;
+  } else {
     const x1 = from.x + from.w;
     const y1 = from.y + from.h / 2;
-    const x2 = to.x;
+    const x2 = to.x + to.w;
     const y2 = to.y + to.h / 2;
-    const mid = x1 + Math.max(36, (x2 - x1) / 2);
-    return `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`;
+    const arc = Math.max(x1, x2) + 30;
+    return `M ${x1} ${y1} C ${arc} ${y1}, ${arc} ${y2}, ${x2} ${y2}`;
   }
-  const x1 = from.x + from.w / 2;
-  const y1 = from.y + from.h;
-  const x2 = to.x + to.w / 2;
-  const y2 = to.y;
-  const mid = y1 + Math.max(24, (y2 - y1) / 2);
-  return `M ${x1} ${y1} C ${x1} ${mid}, ${x2} ${mid}, ${x2} ${y2}`;
 }
 
 export function GraphCanvas({
   studies,
   locale,
-  focus,
+  selectedSlug,
+  onSelectSlug,
 }: {
   studies: StudyMeta[];
   locale: Locale;
-  focus?: string;
+  selectedSlug?: string;
+  onSelectSlug: (slug: string) => void;
 }) {
   const copy = messages(locale);
   const rootRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<string, HTMLElement | null>>({});
-  const [selected, setSelected] = useState<string | undefined>(undefined);
   const [wide, setWide] = useState(() =>
     typeof window === "undefined" ? true : window.matchMedia("(min-width: 1024px)").matches,
   );
-  const [hover, setHover] = useState<string | undefined>(undefined);
+  const [hoverSlug, setHoverSlug] = useState<string | undefined>(undefined);
   const [edges, setEdges] = useState<DrawnEdge[]>([]);
 
+  const activeSlug = hoverSlug ?? selectedSlug;
+  const lineage = activeSlug ? lineageOf(activeSlug, studies) : null;
   const levels = graphLevels(studies);
-  const active = hover ?? selected ?? (focus && studies.some((s) => s.slug === focus) ? focus : undefined);
-  const focused = studies.find((s) => s.slug === active);
-  const neighbors = active ? neighborsOf(active, studies) : [];
-  const pairs = contrastPairs(studies);
-
-  useEffect(() => {
-    if (!focus) return;
-    document.getElementById(focus)?.scrollIntoView({ block: "nearest" });
-  }, [focus]);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -95,18 +118,45 @@ export function GraphCanvas({
       }
 
       const drawn: DrawnEdge[] = [];
+
+      // 1. After Edges (Solid)
       for (const edge of afterEdges(studies)) {
         const from = boxes[edge.from];
         const to = boxes[edge.to];
         if (!from || !to) continue;
+        const edgeKey = `after:${edge.from}>${edge.to}`;
+        const isHot = !activeSlug || (lineage?.allActiveEdges.has(edgeKey) ?? false);
         drawn.push({
-          key: `${edge.from}>${edge.to}`,
-          d: afterPath(from, to, wide),
+          key: edgeKey,
+          d: calcPath(from, to, wide, "after"),
           from: edge.from,
           to: edge.to,
-          hot: !active || active === edge.from || active === edge.to,
+          type: "after",
+          hot: isHot,
+          when: edge.when,
+          whenEn: edge.whenEn,
         });
       }
+
+      // 2. Contrast Edges (Dashed)
+      for (const pair of contrastPairs(studies)) {
+        const from = boxes[pair.a];
+        const to = boxes[pair.b];
+        if (!from || !to) continue;
+        const edgeKey = `contrast:${pair.a}<>${pair.b}`;
+        const isHot = !activeSlug || (lineage?.allActiveEdges.has(edgeKey) ?? false);
+        drawn.push({
+          key: edgeKey,
+          d: calcPath(from, to, wide, "contrast"),
+          from: pair.a,
+          to: pair.b,
+          type: "contrast",
+          hot: isHot,
+          when: pair.when,
+          whenEn: pair.whenEn,
+        });
+      }
+
       setEdges(drawn);
     }
 
@@ -122,57 +172,95 @@ export function GraphCanvas({
       ro.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, [studies, wide, active]);
+  }, [studies, wide, activeSlug, lineage]);
 
   if (levels.length === 0) {
     return <p className="text-[14px] text-fg-subtle">{copy.graphEmpty}</p>;
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap gap-4 text-[12px] text-fg-subtle">
-        <span className="inline-flex items-center gap-2">
-          <span className="h-px w-6 bg-accent" />
-          {copy.graphAfter}
-        </span>
+    <div className="space-y-4">
+      {/* Legend Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-4 text-[12px] text-fg-subtle">
+        <div className="flex items-center gap-5">
+          <span className="inline-flex items-center gap-2">
+            <span className="h-0.5 w-6 bg-accent rounded-full" />
+            <span className="text-fg-muted font-medium">{copy.flowLegend}</span>
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <span className="h-0.5 w-6 border-b-2 border-dashed border-rose-400" />
+            <span className="text-fg-muted font-medium">{copy.contrastLegend}</span>
+          </span>
+        </div>
+        <span>{copy.graphHint}</span>
       </div>
 
+      {/* Main Canvas Frame */}
       <div
         ref={rootRef}
-        className="relative rounded-2xl border border-border bg-surface px-4 py-8 sm:px-8"
+        className="relative overflow-x-auto rounded-2xl border border-border bg-surface p-6 sm:p-10 shadow-xs"
       >
         <svg className="pointer-events-none absolute inset-0 size-full" aria-hidden="true">
           <defs>
             <marker id="graph-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
               <path d="M0,0 L8,4 L0,8 Z" className="fill-accent" />
             </marker>
+            <marker id="graph-arrow-faded" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 Z" className="fill-accent/30" />
+            </marker>
           </defs>
-          {edges.map((edge) => (
-            <path
-              key={edge.key}
-              d={edge.d}
-              fill="none"
-              className="stroke-accent"
-              opacity={edge.hot ? 1 : 0.22}
-              strokeWidth={edge.hot && active ? 2 : 1.5}
-              markerEnd="url(#graph-arrow)"
-            />
-          ))}
+
+          {edges.map((edge) => {
+            const isContrast = edge.type === "contrast";
+            const opacity = activeSlug ? (edge.hot ? 1 : 0.12) : (isContrast ? 0.35 : 0.7);
+            const strokeWidth = edge.hot && activeSlug ? 2.5 : 1.5;
+
+            return (
+              <path
+                key={edge.key}
+                d={edge.d}
+                fill="none"
+                strokeDasharray={isContrast ? "5 4" : undefined}
+                className={isContrast ? "stroke-rose-400" : "stroke-accent"}
+                opacity={opacity}
+                strokeWidth={strokeWidth}
+                markerEnd={isContrast ? undefined : edge.hot && activeSlug ? "url(#graph-arrow)" : "url(#graph-arrow-faded)"}
+              />
+            );
+          })}
         </svg>
 
-        <div className="relative z-10 flex flex-col gap-14 lg:flex-row lg:items-center lg:justify-center lg:gap-16">
-          {levels.map((level, index) => (
+        {/* Node Layers */}
+        <div className="relative z-10 flex min-w-max flex-col gap-12 lg:flex-row lg:items-start lg:justify-between lg:gap-14">
+          {levels.map((level, levelIdx) => (
             <div
-              key={index}
-              className={
-                level.length > 1
-                  ? "grid grid-cols-2 gap-3 lg:flex lg:w-64 lg:flex-col lg:gap-4"
-                  : "flex justify-center lg:w-64"
-              }
+              key={levelIdx}
+              className="flex flex-col gap-4 w-60 shrink-0"
             >
+              <div className="flex items-center gap-2 px-1">
+                <span className="font-mono text-[11px] font-semibold text-fg-subtle">
+                  L{levelIdx + 1}
+                </span>
+                <div className="h-px flex-1 bg-border/60" />
+              </div>
+
               {level.map((meta) => {
-                const on = active === meta.slug;
+                const isCurrent = activeSlug === meta.slug;
+                const isSelected = selectedSlug === meta.slug;
+                const isInLineage = lineage?.allActiveNodes.has(meta.slug) ?? false;
+                const isAncestor = lineage?.ancestors.has(meta.slug) ?? false;
+                const isDescendant = lineage?.descendants.has(meta.slug) ?? false;
+                const isContrast = lineage?.contrasts.includes(meta.slug) ?? false;
+
+                const opacityClass = activeSlug
+                  ? isCurrent || isInLineage
+                    ? "opacity-100 scale-[1.02]"
+                    : "opacity-30"
+                  : "opacity-100";
+
+                const category = getStudyCategory(meta.slug);
                 const asks = studyAsks(meta, locale);
+
                 return (
                   <div
                     key={meta.slug}
@@ -180,23 +268,47 @@ export function GraphCanvas({
                     ref={(el) => {
                       nodeRefs.current[meta.slug] = el;
                     }}
-                    className="min-w-0 w-full"
-                    onMouseEnter={() => setHover(meta.slug)}
-                    onMouseLeave={() => setHover(undefined)}
-                    onClick={() => setSelected((prev) => (prev === meta.slug ? undefined : meta.slug))}
+                    onMouseEnter={() => setHoverSlug(meta.slug)}
+                    onMouseLeave={() => setHoverSlug(undefined)}
+                    onClick={() => onSelectSlug(meta.slug)}
+                    className={cn(
+                      "group relative cursor-pointer rounded-xl border p-3.5 shadow-xs transition-all duration-150",
+                      isSelected
+                        ? "border-accent bg-accent/10 ring-2 ring-accent shadow-md"
+                        : isCurrent
+                          ? "border-fg bg-surface-2 shadow-sm"
+                          : isAncestor
+                            ? "border-accent/60 bg-accent/5 ring-1 ring-accent/40"
+                            : isDescendant
+                              ? "border-accent/60 bg-accent/5 ring-1 ring-accent/40"
+                              : isContrast
+                                ? "border-rose-400/60 bg-rose-500/5 ring-1 ring-rose-400/40"
+                                : "border-border bg-bg hover:border-border-strong hover:bg-surface-2",
+                      opacityClass,
+                    )}
                   >
-                    <Link
-                      href={`/s/${meta.slug}`}
-                      className={cn(
-                        "block rounded-2xl border bg-bg px-4 py-4 shadow-card no-underline transition-colors",
-                        on ? "border-fg ring-2 ring-accent/20" : "border-border hover:border-border-strong",
-                      )}
-                    >
-                      <h2 className="text-[16px] font-semibold tracking-tight text-fg">
-                        {studyTitle(meta, locale)}
-                      </h2>
-                      {asks ? <p className="mt-1.5 text-[13px] leading-relaxed text-fg-muted">{asks}</p> : null}
-                    </Link>
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] uppercase text-fg-subtle">
+                        {category}
+                      </span>
+                      {isAncestor ? (
+                        <span className="font-mono text-[10px] text-accent font-semibold">前置</span>
+                      ) : isDescendant ? (
+                        <span className="font-mono text-[10px] text-accent font-semibold">后步</span>
+                      ) : isContrast ? (
+                        <span className="font-mono text-[10px] text-rose-500 font-semibold">对照</span>
+                      ) : null}
+                    </div>
+
+                    <h4 className="mt-1.5 text-[14px] font-semibold tracking-tight text-fg group-hover:text-accent transition-colors">
+                      {studyTitle(meta, locale)}
+                    </h4>
+
+                    {asks ? (
+                      <p className="mt-1 text-[11px] leading-relaxed text-fg-muted line-clamp-2">
+                        {asks}
+                      </p>
+                    ) : null}
                   </div>
                 );
               })}
@@ -204,96 +316,6 @@ export function GraphCanvas({
           ))}
         </div>
       </div>
-
-      {focused ? (
-        <div className="rounded-2xl border border-border bg-surface px-5 py-4">
-          <div className="flex items-center justify-between">
-            <p className="text-[12px] text-fg-subtle">{copy.graphAsks}</p>
-            {selected ? (
-              <button
-                type="button"
-                onClick={() => setSelected(undefined)}
-                className="text-[11px] text-accent hover:underline"
-              >
-                {locale === "en" ? "Clear selection" : "取消选中"}
-              </button>
-            ) : null}
-          </div>
-          <p className="mt-1 text-[15px] font-medium">{studyTitle(focused, locale)}</p>
-          {studyAsks(focused, locale) ? (
-            <p className="mt-1 text-[13px] text-fg-muted">{studyAsks(focused, locale)}</p>
-          ) : null}
-          {neighbors.length > 0 ? (
-            <ul className="mt-3 space-y-1.5 text-[13px]">
-              {neighbors.map((item) => {
-                const meta = studies.find((s) => s.slug === item.slug);
-                if (!meta) return null;
-                const rel =
-                  item.rel === "before"
-                    ? copy.graphBefore
-                    : item.rel === "after"
-                      ? copy.graphAfter
-                      : copy.graphContrast;
-                const when = linkWhen(item.when, item.whenEn, locale);
-                return (
-                  <li key={`${item.rel}-${item.slug}`} className="text-fg-muted">
-                    <span className="text-fg-subtle">{rel}</span>
-                    {when ? <span> · {when}</span> : null}
-                    {" → "}
-                    <Link href={`/s/${meta.slug}`} className="text-accent no-underline hover:underline">
-                      {studyTitle(meta, locale)}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : null}
-        </div>
-      ) : (
-        <p className="text-[12px] text-fg-subtle">{copy.graphHint}</p>
-      )}
-
-      {pairs.length > 0 ? (
-        <div>
-          <div className="flex items-baseline justify-between gap-4">
-            <h2 className="text-[13px] font-medium text-fg-muted">{copy.graphContrast}</h2>
-            <span className="text-[12px] text-fg-subtle">{copy.graphPairs(pairs.length)}</span>
-          </div>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {pairs.map((pair) => {
-              const a = studies.find((s) => s.slug === pair.a);
-              const b = studies.find((s) => s.slug === pair.b);
-              if (!a || !b) return null;
-              const when = linkWhen(pair.when, pair.whenEn, locale);
-              return (
-                <li
-                  key={`${pair.a}|${pair.b}`}
-                  className="flex flex-col gap-3 rounded-2xl border border-border bg-surface px-4 py-3.5 shadow-card transition-colors hover:border-border-strong"
-                >
-                  {when ? <p className="text-[14px] font-medium leading-snug text-fg">{when}</p> : null}
-                  <p className="mt-auto flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[12px]">
-                    <Link
-                      href={`/s/${a.slug}`}
-                      className="rounded-full border border-border bg-bg px-2 py-0.5 text-fg-muted no-underline transition-colors hover:border-border-strong hover:text-accent"
-                    >
-                      {studyTitle(a, locale)}
-                    </Link>
-                    <span className="text-fg-subtle" aria-hidden="true">
-                      ≠
-                    </span>
-                    <Link
-                      href={`/s/${b.slug}`}
-                      className="rounded-full border border-border bg-bg px-2 py-0.5 text-fg-muted no-underline transition-colors hover:border-border-strong hover:text-accent"
-                    >
-                      {studyTitle(b, locale)}
-                    </Link>
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ) : null}
     </div>
   );
 }
