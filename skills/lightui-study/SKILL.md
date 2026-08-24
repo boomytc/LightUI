@@ -47,6 +47,11 @@ Do not invent a second copy of these rules. Follow the files:
 
 ## Extracting from an external project
 
+Source dumps live in gitignored `sandboxes/`. Drop a new sandbox in
+`sandboxes/unintegrated/<name>/`. After the study is extracted, move
+that folder to `sandboxes/integrated/<name>/`. Do not place sandboxes
+under `studies/` (workspaces + lab glob).
+
 Copy the teaching surface and the rule (geometry, timing, state). Leave
 behind routers, auth, databases, PWA, preview bridges, and deploy
 adapters. Do not copy sandbox screenshots or source clips. Do not commit

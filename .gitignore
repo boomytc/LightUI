@@ -12,3 +12,8 @@ dist
 
 # Derived stills (`make stills`). Do not commit.
 studies/*/references/
+
+# Local sandbox inbox (full Grok/vibe apps, videos, screenshots).
+# Drop new material in sandboxes/unintegrated/; after extraction
+# move the original to sandboxes/integrated/. Never commit.
+sandboxes/

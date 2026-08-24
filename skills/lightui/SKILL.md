@@ -20,6 +20,7 @@ Read `AGENTS.md` first.
 | Public note | `writing/notes/` (`docs/writing.md`) |
 | Color, type, radius, shadow | `design/tokens.css` |
 | Index / how-to | `docs/catalog.md`, `docs/conventions.md`, `docs/study-contract.md` |
+| Incoming Grok/vibe sandbox | `sandboxes/unintegrated/`; after extract, `sandboxes/integrated/` |
 | Fixture stills (generated) | `make stills` from `/s/<slug>/stage` — do not commit png / mp4 |
 
 Root `package.json` is workspaces only. Do not add app `src/` at repo root.

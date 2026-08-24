@@ -23,6 +23,7 @@ products/lab/            the site: home, studies, graph, notes
 studies/<slug>/          one idea + playground + stage
 scripts/sync-catalog.mjs regenerate docs/catalog.md
 scripts/capture-stage.py export stage stills (`make stills`)
+sandboxes/               gitignored local inbox (not a package, not a study)
 ```
 
 Root `package.json` is a workspace orchestrator only. Do not put app `src/`
@@ -38,6 +39,7 @@ at the repository root.
 | Color, type, radius, shadow | `design/tokens.css` |
 | How to add a study | `docs/conventions.md` + `docs/study-contract.md` |
 | Agent procedure | `skills/lightui*` |
+| Incoming Grok/vibe sandbox | `sandboxes/unintegrated/`; after extract, move to `sandboxes/integrated/` |
 | Fixture stills (generated) | `make stills` from `/s/<slug>/stage` — do not commit png |
 
 Do not create empty study folders. Do not start a workspace-level component
@@ -71,6 +73,10 @@ Do not put them in `.grok/skills/`.
 - When bringing a sandbox in, copy the idea and the teaching playground.
   Do not copy auth, PWA, preview bridges, or deploy adapters. Do not put
   lineage or a kept/dropped diary on public pages.
+- `sandboxes/` is a machine-local archive (gitignored). New dumps go in
+  `sandboxes/unintegrated/`. After a study is extracted, move the original
+  folder to `sandboxes/integrated/`. Do not put sandboxes under
+  `studies/` — npm workspaces and the lab glob would pick them up.
 - Do not mention or link sibling private repositories from this repo's
   public pages or README.
 
@@ -91,4 +97,5 @@ Standalone study: `make dev-study STUDY=<slug>`. Ports: see
 ## Cleanup
 
 Remove transient `dist/`, `.cache/`, and generated `references/` media.
-Do not commit stills.
+Do not commit stills. Do not delete `sandboxes/` — it is a durable local
+archive, not cache.
