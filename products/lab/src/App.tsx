@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Page } from "./components/Page";
 import { Shell } from "./components/Shell";
 import { messages } from "./lib/i18n";
@@ -12,7 +13,14 @@ import { Studies } from "./pages/Studies";
 import { StudyPage } from "./pages/StudyPage";
 
 export function App() {
-  const route = parseRoute(usePath());
+  const path = usePath();
+  const route = parseRoute(path);
+
+  useEffect(() => {
+    if (!window.location.hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }
+  }, [path]);
 
   if (route.name === "stage") {
     return <StagePage slug={route.slug} />;
