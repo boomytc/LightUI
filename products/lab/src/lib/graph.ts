@@ -174,3 +174,122 @@ export function graphLevels(studies: readonly StudyMeta[]): StudyMeta[][] {
 export function graphNodes(studies: readonly StudyMeta[]): StudyMeta[] {
   return graphLevels(studies).flat();
 }
+
+export type DualEdge = {
+  key: string;
+  from: string;
+  to: string;
+  type: "after" | "contrast";
+  when?: string;
+  whenEn?: string;
+};
+
+export function allGraphEdges(studies: readonly StudyMeta[]): DualEdge[] {
+  const edges: DualEdge[] = [];
+  for (const edge of afterEdges(studies)) {
+    edges.push({
+      key: `after:${edge.from}>${edge.to}`,
+      from: edge.from,
+      to: edge.to,
+      type: "after",
+      when: edge.when,
+      whenEn: edge.whenEn,
+    });
+  }
+  for (const pair of contrastPairs(studies)) {
+    edges.push({
+      key: `contrast:${pair.a}<>${pair.b}`,
+      from: pair.a,
+      to: pair.b,
+      type: "contrast",
+      when: pair.when,
+      whenEn: pair.whenEn,
+    });
+  }
+  return edges;
+}
+
+export type Lineage = {
+  self: string;
+  ancestors: Set<string>;
+  descendants: Set<string>;
+  directBefore: string[];
+  directAfter: string[];
+  contrasts: string[];
+  allActiveNodes: Set<string>;
+  allActiveEdges: Set<string>;
+};
+
+export function lineageOf(slug: string, studies: readonly StudyMeta[]): Lineage {
+  const edges = afterEdges(studies);
+  const contrasts = contrastPairs(studies)
+    .filter((p) => p.a === slug || p.b === slug)
+    .map((p) => (p.a === slug ? p.b : p.a));
+
+  const directBefore: string[] = [];
+  const directAfter: string[] = [];
+
+  for (const e of edges) {
+    if (e.to === slug) directBefore.push(e.from);
+    if (e.from === slug) directAfter.push(e.to);
+  }
+
+  // BFS / DFS ancestors
+  const ancestors = new Set<string>();
+  const ancestorQueue = [...directBefore];
+  while (ancestorQueue.length > 0) {
+    const curr = ancestorQueue.shift()!;
+    if (!ancestors.has(curr)) {
+      ancestors.add(curr);
+      for (const e of edges) {
+        if (e.to === curr && !ancestors.has(e.from)) {
+          ancestorQueue.push(e.from);
+        }
+      }
+    }
+  }
+
+  // BFS / DFS descendants
+  const descendants = new Set<string>();
+  const descendantQueue = [...directAfter];
+  while (descendantQueue.length > 0) {
+    const curr = descendantQueue.shift()!;
+    if (!descendants.has(curr)) {
+      descendants.add(curr);
+      for (const e of edges) {
+        if (e.from === curr && !descendants.has(e.to)) {
+          descendantQueue.push(e.to);
+        }
+      }
+    }
+  }
+
+  const allActiveNodes = new Set<string>([
+    slug,
+    ...ancestors,
+    ...descendants,
+    ...contrasts,
+  ]);
+
+  const allActiveEdges = new Set<string>();
+  for (const e of edges) {
+    if (allActiveNodes.has(e.from) && allActiveNodes.has(e.to)) {
+      allActiveEdges.add(`after:${e.from}>${e.to}`);
+    }
+  }
+  for (const c of contrasts) {
+    const [a, b] = [slug, c].sort();
+    allActiveEdges.add(`contrast:${a}<>${b}`);
+  }
+
+  return {
+    self: slug,
+    ancestors,
+    descendants,
+    directBefore,
+    directAfter,
+    contrasts,
+    allActiveNodes,
+    allActiveEdges,
+  };
+}
