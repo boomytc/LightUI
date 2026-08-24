@@ -1,0 +1,35 @@
+{
+  "slug": "scroll-chrome",
+  "title": "滚动条",
+  "titleEn": "Scrollbar",
+  "eyebrow": "邀请 · 轨道",
+  "eyebrowEn": "Cue · Track",
+  "summary": "滚动提示是开场邀请，还是位置轨道？先定报什么。邀请只在顶上；轨道点的是比例，不是章节。",
+  "summaryEn": "Is this a start cue, or a position track? Name what it reports. A cue lives only at the top; track dots seek a fraction, not a heading.",
+  "asks": "滚动提示是开场邀请，还是位置轨道？",
+  "asksEn": "Is this a start cue, or a position track?",
+  "links": [
+    {
+      "slug": "progress-taxonomy",
+      "rel": "contrast",
+      "when": "文档滚过不是工作进度",
+      "whenEn": "how far the document has been read is not work progress"
+    },
+    {
+      "slug": "nav-taxonomy",
+      "rel": "after",
+      "when": "若点的是章节而不是比例",
+      "whenEn": "if the dots are sections, not a fraction"
+    },
+    {
+      "slug": "nav-taxonomy",
+      "rel": "contrast",
+      "when": "点列不是章节锚点",
+      "whenEn": "a position rail is not section scrollspy"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-24",
+  "updated": "2026-08-24",
+  "tags": ["scroll", "overflow", "quantize", "taxonomy"]
+}

@@ -1,0 +1,63 @@
+.scroll-pane {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-fg-muted) 55%, transparent) transparent;
+}
+
+.scroll-pane::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-pane::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-pane::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklab, var(--color-fg-muted) 45%, transparent);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+.scroll-pane[data-hide-native="true"] {
+  scrollbar-width: none;
+}
+
+.scroll-pane[data-hide-native="true"]::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-cue {
+  animation: scroll-cue-bob 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue {
+    animation: none;
+  }
+}
+
+@keyframes scroll-cue-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+.scroll-track {
+  pointer-events: none;
+}
+
+.scroll-track line {
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.scroll-track-hit {
+  fill: none;
+  pointer-events: all;
+  cursor: pointer;
+}

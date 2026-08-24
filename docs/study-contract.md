@@ -48,7 +48,7 @@ Same question, new skin → add a kind. New question → new study, then `links`
 Do not fold nav / sidebar / dropdown / notch / sweep / look / tab / control /
 overlay / notify / validation / progress / chart / carousel / layout / button /
 hero / login / align / dashboard-layers / assistant / pending / beam / timer /
-recall into one catalog because the fixtures look alike.
+recall / scroll into one catalog because the fixtures look alike.
 
 A study’s first question may be a machine (taxonomy), a construction
 (cut vs stitch), a motion that follows type or scroll, or continuous

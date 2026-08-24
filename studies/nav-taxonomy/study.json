@@ -50,10 +50,16 @@
       "rel": "contrast",
       "when": "汉堡抽屉不是这一页的内容抽屉",
       "whenEn": "a hamburger drawer is not a content drawer on this page"
+    },
+    {
+      "slug": "scroll-chrome",
+      "rel": "contrast",
+      "when": "章节锚点不是滚动比例",
+      "whenEn": "section scrollspy is not a scroll-fraction rail"
     }
   ],
   "status": "active",
   "created": "2026-08-15",
-  "updated": "2026-08-23",
+  "updated": "2026-08-24",
   "tags": ["nav", "layout", "taxonomy"]
 }

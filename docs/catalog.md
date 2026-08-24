@@ -7,6 +7,9 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [nav-taxonomy](../studies/nav-taxonomy/) | 一排链接只说了有入口。先定住在哪、怎么开、滚的时候干什么。 | active | 2026-08-15 | 2026-08-24 |
+| [progress-taxonomy](../studies/progress-taxonomy/) | 转圈只说了在等。先定进度能不能算：能算就走到 100 停住；不能算就循环，不要假百分比。 | active | 2026-08-23 | 2026-08-24 |
+| [scroll-chrome](../studies/scroll-chrome/) | 滚动提示是开场邀请，还是位置轨道？先定报什么。邀请只在顶上；轨道点的是比例，不是章节。 | active | 2026-08-24 | 2026-08-24 |
 | [align-craft](../studies/align-craft/) | 对齐不是看起来正。先问对齐的是文字基线、画面焦点，还是盒子。间距用 gap，贴边用帽高，定位用 inset。 | active | 2026-08-23 | 2026-08-23 |
 | [assistant-chrome](../studies/assistant-chrome/) | 助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。 | active | 2026-08-23 | 2026-08-23 |
 | [border-beam](../studies/border-beam/) | 高光沿圆角边框绕行，不要铺满卡片。内层实心底，外层透明边框叠光束。品牌强调色，不要彩虹。 | active | 2026-08-23 | 2026-08-23 |
@@ -20,11 +23,9 @@ Do not keep a second registry.
 | [hero-taxonomy](../studies/hero-taxonomy/) | 「做个高级首屏」只说了要花哨。先定第一眼回答什么：能解决什么、你是谁、为什么现在、卖什么、发生了什么、能学到什么、能帮我做什么，还是谁在这里。 | active | 2026-08-23 | 2026-08-23 |
 | [layout-taxonomy](../studies/layout-taxonomy/) | 「做个页面」只说了有块。先定是单栏、落地、瀑布、全屏、分栏、仪表盘还是模块拼贴。 | active | 2026-08-23 | 2026-08-23 |
 | [login-taxonomy](../studies/login-taxonomy/) | 「做个登录页」只说了有表单。先定是居中卡片、左右分栏、沉浸背景、角色入口，还是分步。 | active | 2026-08-23 | 2026-08-23 |
-| [nav-taxonomy](../studies/nav-taxonomy/) | 一排链接只说了有入口。先定住在哪、怎么开、滚的时候干什么。 | active | 2026-08-15 | 2026-08-23 |
 | [notify-taxonomy](../studies/notify-taxonomy/) | 报一条消息只说了要出声。先定打断到哪一档：瞄一眼、自动消失、还能撤销、留档、还是必须处理。 | active | 2026-08-23 | 2026-08-23 |
 | [overlay-taxonomy](../studies/overlay-taxonomy/) | 浮在页面上只是外观。先定打不打断当前任务，以及是否贴着触发点。 | active | 2026-08-23 | 2026-08-23 |
 | [pending-taxonomy](../studies/pending-taxonomy/) | 内容还没到，屏幕上该留什么？骨架占布局位子；空状态给人话和下一步。不要转圈，不要「暂无数据」。 | active | 2026-08-23 | 2026-08-23 |
-| [progress-taxonomy](../studies/progress-taxonomy/) | 转圈只说了在等。先定进度能不能算：能算就走到 100 停住；不能算就循环，不要假百分比。 | active | 2026-08-23 | 2026-08-23 |
 | [recall-grade](../studies/recall-grade/) | 翻开之后提交的是记得程度，用来排下次间隔。不是滑走下一张，也不是确认弹窗。 | active | 2026-08-23 | 2026-08-23 |
 | [sidebar-taxonomy](../studies/sidebar-taxonomy/) | 靠左只是外观。先定占不占位，展开改的是宽度还是图层。 | active | 2026-08-15 | 2026-08-23 |
 | [tab-taxonomy](../studies/tab-taxonomy/) | 一排标签只说了能切。先定选中态是短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。 | active | 2026-08-23 | 2026-08-23 |
@@ -38,6 +39,9 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **导航栏** (`nav-taxonomy`) — 这块叫导航的东西住在哪、怎么开？
+- **进度** (`progress-taxonomy`) — 进度能不能算？
+- **滚动条** (`scroll-chrome`) — 滚动提示是开场邀请，还是位置轨道？
 - **对齐** (`align-craft`) — 对齐的是基线、焦点，还是盒子？
 - **助手** (`assistant-chrome`) — 助手住在对话、侧栏、插件、浮层、画布，还是看不见？
 - **边光** (`border-beam`) — 高光该走边框还是铺满卡片？
@@ -51,11 +55,9 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **首屏** (`hero-taxonomy`) — 打开第一眼要回答什么？
 - **布局** (`layout-taxonomy`) — 这一页的骨架是哪一种？
 - **登录** (`login-taxonomy`) — 登录是一张卡、分栏、沉浸、角色入口，还是分步？
-- **导航栏** (`nav-taxonomy`) — 这块叫导航的东西住在哪、怎么开？
 - **提示** (`notify-taxonomy`) — 这条提示该打断到哪一档？
 - **浮层** (`overlay-taxonomy`) — 这块浮层打不打断、贴不贴触发点？
 - **等待** (`pending-taxonomy`) — 内容还没到，屏幕上该留什么？
-- **进度** (`progress-taxonomy`) — 进度能不能算？
 - **复习** (`recall-grade`) — 翻开之后提交的是记得程度，还是只是下一张？
 - **侧边栏** (`sidebar-taxonomy`) — 靠左那一块占不占位、怎么让路？
 - **页签** (`tab-taxonomy`) — 这一排标签，选中态是哪种模型？
@@ -67,6 +69,21 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `nav-taxonomy` after `dropdown-taxonomy` — 若它是往下展开的面板
+- `nav-taxonomy` after `sidebar-taxonomy` — 若它是靠左的一栏
+- `nav-taxonomy` contrast `dropdown-taxonomy` — 站点栏目不是表单下拉
+- `nav-taxonomy` contrast `sidebar-taxonomy` — 汉堡抽屉不是隐藏式侧栏
+- `nav-taxonomy` after `tab-taxonomy` — 若它是页内切内容的一排标签
+- `nav-taxonomy` contrast `tab-taxonomy` — 顶栏去哪不是页里切面板
+- `nav-taxonomy` contrast `overlay-taxonomy` — 汉堡抽屉不是这一页的内容抽屉
+- `nav-taxonomy` contrast `scroll-chrome` — 章节锚点不是滚动比例
+- `progress-taxonomy` contrast `notify-taxonomy` — 进度不是一条 toast
+- `progress-taxonomy` contrast `pending-taxonomy` — 进度是工作正在发生，不是布局占位
+- `progress-taxonomy` contrast `timer-taxonomy` — 进度能不能算不是这一段往上还是往下
+- `progress-taxonomy` contrast `scroll-chrome` — 工作进度不是文档滚过
+- `scroll-chrome` contrast `progress-taxonomy` — 文档滚过不是工作进度
+- `scroll-chrome` after `nav-taxonomy` — 若点的是章节而不是比例
+- `scroll-chrome` contrast `nav-taxonomy` — 点列不是章节锚点
 - `align-craft` contrast `layout-taxonomy` — 对齐不是换骨架
 - `assistant-chrome` contrast `layout-taxonomy` — 助手住哪不是整页骨架
 - `assistant-chrome` contrast `overlay-taxonomy` — 选区工具条不是弹窗
@@ -100,13 +117,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `layout-taxonomy` contrast `login-taxonomy` — 工作区分栏不是登录左右栏
 - `login-taxonomy` contrast `layout-taxonomy` — 登录卡怎么摆不是整页骨架
 - `login-taxonomy` contrast `hero-taxonomy` — 登录不是卖点首屏
-- `nav-taxonomy` after `dropdown-taxonomy` — 若它是往下展开的面板
-- `nav-taxonomy` after `sidebar-taxonomy` — 若它是靠左的一栏
-- `nav-taxonomy` contrast `dropdown-taxonomy` — 站点栏目不是表单下拉
-- `nav-taxonomy` contrast `sidebar-taxonomy` — 汉堡抽屉不是隐藏式侧栏
-- `nav-taxonomy` after `tab-taxonomy` — 若它是页内切内容的一排标签
-- `nav-taxonomy` contrast `tab-taxonomy` — 顶栏去哪不是页里切面板
-- `nav-taxonomy` contrast `overlay-taxonomy` — 汉堡抽屉不是这一页的内容抽屉
 - `notify-taxonomy` after `overlay-taxonomy` — 若必须先处理才能继续
 - `notify-taxonomy` contrast `overlay-taxonomy` — 提示不打断当前任务，弹窗才打断
 - `notify-taxonomy` contrast `progress-taxonomy` — 结果提示不是进度
@@ -116,9 +126,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `overlay-taxonomy` contrast `notify-taxonomy` — 必须先处理的弹窗不是一条提示
 - `pending-taxonomy` contrast `progress-taxonomy` — 骨架不是转圈进度
 - `pending-taxonomy` contrast `notify-taxonomy` — 空状态不是一条提示
-- `progress-taxonomy` contrast `notify-taxonomy` — 进度不是一条 toast
-- `progress-taxonomy` contrast `pending-taxonomy` — 进度是工作正在发生，不是布局占位
-- `progress-taxonomy` contrast `timer-taxonomy` — 进度能不能算不是这一段往上还是往下
 - `recall-grade` contrast `carousel-taxonomy` — 翻面打分不是切下一张画面
 - `recall-grade` contrast `pending-taxonomy` — 今日无到期不是一条空提示
 - `recall-grade` contrast `overlay-taxonomy` — 三个记得程度不是确认弹窗

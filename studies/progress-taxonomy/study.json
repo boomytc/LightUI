@@ -26,10 +26,16 @@
       "rel": "contrast",
       "when": "进度能不能算不是这一段往上还是往下",
       "whenEn": "whether progress is measurable is not whether a session counts up or down"
+    },
+    {
+      "slug": "scroll-chrome",
+      "rel": "contrast",
+      "when": "工作进度不是文档滚过",
+      "whenEn": "work progress is not how far the document has been read"
     }
   ],
   "status": "active",
   "created": "2026-08-23",
-  "updated": "2026-08-23",
+  "updated": "2026-08-24",
   "tags": ["progress", "motion", "taxonomy"]
 }
