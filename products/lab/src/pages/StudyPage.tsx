@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
-import { Link } from "../components/Link";
+import { BackLink } from "../components/BackLink";
 import { Page } from "../components/Page";
 import { Markdown } from "../lib/Markdown";
 import { loadStudy, studyIdea } from "../lib/catalog";
@@ -18,7 +17,7 @@ export function StudyPage({ slug }: { slug: string }) {
     return (
       <Page as="main" className="py-16">
         <p className="text-[15px] text-fg-muted">{copy.missingStudy(slug)}</p>
-        <BackLink label={copy.backWorks} />
+        <BackLink fallback="/studies" />
       </Page>
     );
   }
@@ -30,7 +29,7 @@ export function StudyPage({ slug }: { slug: string }) {
       <div className="border-b border-border bg-surface">
         <div className="page-width flex flex-wrap items-center justify-between gap-3 py-3">
           <div className="flex min-w-0 items-center gap-3">
-            <BackLink label={copy.backWorks} />
+            <BackLink fallback="/studies" />
             <p className="truncate text-[14px] font-semibold tracking-tight">{studyTitle(meta, locale)}</p>
           </div>
           <div className="flex rounded-lg border border-border p-0.5">
@@ -56,18 +55,6 @@ export function StudyPage({ slug }: { slug: string }) {
         </Page>
       )}
     </div>
-  );
-}
-
-function BackLink({ label }: { label: string }) {
-  return (
-    <Link
-      href="/studies"
-      className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-[13px] text-fg-muted no-underline hover:bg-surface-2 hover:text-fg"
-    >
-      <ArrowLeft className="size-3.5" />
-      {label}
-    </Link>
   );
 }
 

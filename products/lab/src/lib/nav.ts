@@ -1,11 +1,56 @@
 import { useEffect, useState } from "react";
 
-export function navigate(path: string) {
+export type LabHistoryState = { lab: true; from: string };
+
+function currentHref(): string {
+  return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+}
+
+function resolveHref(path: string): string {
   const url = new URL(path, window.location.origin);
-  const next = `${url.pathname}${url.search}${url.hash}`;
-  const here = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  return `${url.pathname}${url.search}${url.hash}`;
+}
+
+export function routePath(href: string): string {
+  const path = (href.split("#")[0] ?? href).split("?")[0] ?? href;
+  return path.replace(/\/+$/, "") || "/";
+}
+
+export function readFrom(state: unknown): string | null {
+  if (!state || typeof state !== "object") return null;
+  const rec = state as { lab?: unknown; from?: unknown };
+  if (rec.lab !== true || typeof rec.from !== "string" || rec.from.length === 0) return null;
+  return rec.from;
+}
+
+export function backHref(from: string | null, fallback: string): string {
+  if (!from) return fallback;
+  if (parseRoute(routePath(from)).name === "missing") return fallback;
+  return from;
+}
+
+export function canPopHistory(from: string | null, fallback: string, current: string): boolean {
+  const href = backHref(from, fallback);
+  return Boolean(from && href === from && href !== current);
+}
+
+export function navigate(path: string) {
+  const next = resolveHref(path);
+  const here = currentHref();
   if (here === next) return;
-  window.history.pushState({}, "", next);
+  window.history.pushState({ lab: true, from: here } satisfies LabHistoryState, "", next);
+  window.dispatchEvent(new PopStateEvent("popstate"));
+}
+
+export function back(fallback: string) {
+  const from = readFrom(window.history.state);
+  if (canPopHistory(from, fallback, currentHref())) {
+    window.history.back();
+    return;
+  }
+  const next = resolveHref(fallback);
+  if (currentHref() === next) return;
+  window.history.replaceState({ lab: true, from: "" } satisfies LabHistoryState, "", next);
   window.dispatchEvent(new PopStateEvent("popstate"));
 }
 

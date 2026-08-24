@@ -1,4 +1,5 @@
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import { BackLink } from "../components/BackLink";
 import { Link } from "../components/Link";
 import { NoteByline, relatedMetas } from "../components/NoteItem";
 import { Page } from "../components/Page";
@@ -32,13 +33,10 @@ export function NotePage({ slug }: { slug: string }) {
     <Page as="article" className="pb-14 pt-8">
       <div className="lg:grid lg:grid-cols-[minmax(0,42rem)_minmax(16rem,22rem)] lg:items-start lg:gap-x-16">
         <div>
-          <Link
-            href="/notes"
+          <BackLink
+            fallback="/notes"
             className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 -ml-2 text-[13px] text-fg-muted no-underline hover:bg-surface-2 hover:text-fg"
-          >
-            <ArrowLeft className="size-3.5" />
-            {copy.notesIndex}
-          </Link>
+          />
           <h1 className="mt-4 text-[1.8rem] font-semibold tracking-tight">{note.title}</h1>
           <NoteByline note={note} locale={locale} className="mt-2" />
           <div className="mt-6">
