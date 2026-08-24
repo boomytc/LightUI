@@ -1,9 +1,11 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { Check, Copy } from "lucide-react";
 import { navigate } from "./nav";
 
 type Block =
   | { type: "h"; level: 1 | 2 | 3; text: string }
   | { type: "p"; text: string }
+  | { type: "quote"; text: string }
   | { type: "ul"; items: string[] }
   | { type: "ol"; items: string[] }
   | { type: "pre"; code: string }
@@ -69,6 +71,101 @@ function inline(text: string): ReactNode[] {
   return parts;
 }
 
+function highlightCode(code: string): ReactNode[] {
+  const nodes: ReactNode[] = [];
+  const re =
+    /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\b(?:function|return|const|let|var|if|else|switch|case|break|for|while|import|export|from|type|interface|as|true|false|null|undefined|boolean|string|number|void)\b)|(\b\d+(?:\.\d+)?(?:ms|px|rem|ch|%)?\b)|(\b[A-Za-z_$][A-Za-z0-9_$]*(?=\s*\())/g;
+
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+
+  while ((match = re.exec(code)) !== null) {
+    if (match.index > lastIndex) {
+      nodes.push(code.slice(lastIndex, match.index));
+    }
+
+    const [token, comment, str, keyword, num, func] = match;
+
+    if (comment) {
+      nodes.push(
+        <span key={key++} className="text-surface/40 italic">
+          {comment}
+        </span>,
+      );
+    } else if (str) {
+      nodes.push(
+        <span key={key++} className="text-emerald-400">
+          {str}
+        </span>,
+      );
+    } else if (keyword) {
+      nodes.push(
+        <span key={key++} className="font-medium text-sky-300">
+          {keyword}
+        </span>,
+      );
+    } else if (num) {
+      nodes.push(
+        <span key={key++} className="text-amber-300">
+          {num}
+        </span>,
+      );
+    } else if (func) {
+      nodes.push(
+        <span key={key++} className="text-purple-300">
+          {func}
+        </span>,
+      );
+    } else {
+      nodes.push(token);
+    }
+
+    lastIndex = match.index + token.length;
+  }
+
+  if (lastIndex < code.length) {
+    nodes.push(code.slice(lastIndex));
+  }
+
+  return nodes;
+}
+
+function CodeBlock({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    } catch {
+      setCopied(false);
+    }
+  }
+
+  return (
+    <div className="relative group overflow-hidden rounded-2xl border border-border bg-fg p-4 text-surface shadow-card sm:p-5">
+      <div className="flex items-center justify-between border-b border-surface/10 pb-2 mb-3">
+        <span className="text-[11px] font-mono uppercase tracking-wider text-surface/45">
+          code
+        </span>
+        <button
+          type="button"
+          onClick={copy}
+          className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium text-surface/60 transition-colors hover:bg-surface/10 hover:text-surface"
+        >
+          {copied ? <Check className="size-3 text-emerald-400" /> : <Copy className="size-3" />}
+          <span>{copied ? "Copied" : "Copy"}</span>
+        </button>
+      </div>
+      <pre className="overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">
+        {highlightCode(code)}
+      </pre>
+    </div>
+  );
+}
+
 function parse(md: string): Block[] {
   const lines = md.replace(/\r\n/g, "\n").split("\n");
   const blocks: Block[] = [];
@@ -92,6 +189,16 @@ function parse(md: string): Block[] {
       }
       i += 1;
       blocks.push({ type: "pre", code: buf.join("\n") });
+      continue;
+    }
+
+    if (/^\s*>\s+/.test(line)) {
+      const quotes: string[] = [];
+      while (i < lines.length && /^\s*>\s+/.test(lines[i] ?? "")) {
+        quotes.push((lines[i] ?? "").replace(/^\s*>\s+/, ""));
+        i += 1;
+      }
+      blocks.push({ type: "quote", text: quotes.join(" ") });
       continue;
     }
 
@@ -150,7 +257,11 @@ function parse(md: string): Block[] {
 
     const para: string[] = [line];
     i += 1;
-    while (i < lines.length && (lines[i] ?? "").trim() && !/^(#{1,3}\s+|```|\||\s*[-*]\s+|\s*\d+\.\s+)/.test(lines[i] ?? "")) {
+    while (
+      i < lines.length &&
+      (lines[i] ?? "").trim() &&
+      !/^(#{1,3}\s+|```|\||\s*[-*]\s+|\s*\d+\.\s+|>\s+)/.test(lines[i] ?? "")
+    ) {
       para.push(lines[i] ?? "");
       i += 1;
     }
@@ -187,6 +298,16 @@ export function Markdown({ source }: { source: string }) {
             </p>
           );
         }
+        if (block.type === "quote") {
+          return (
+            <blockquote
+              key={i}
+              className="rounded-r-xl border-l-3 border-accent bg-accent-soft/40 px-4 py-3 text-[14px] leading-relaxed text-fg italic"
+            >
+              {inline(block.text)}
+            </blockquote>
+          );
+        }
         if (block.type === "ul") {
           const defs = asDefs(block.items);
           if (defs) {
@@ -219,14 +340,7 @@ export function Markdown({ source }: { source: string }) {
           );
         }
         if (block.type === "pre") {
-          return (
-            <pre
-              key={i}
-              className="overflow-x-auto rounded-xl bg-fg px-4 py-3 font-mono text-[12px] leading-relaxed text-surface/85"
-            >
-              {block.code}
-            </pre>
-          );
+          return <CodeBlock key={i} code={block.code} />;
         }
         return (
           <div key={i} className="overflow-x-auto">
