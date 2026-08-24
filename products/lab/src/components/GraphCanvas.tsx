@@ -54,6 +54,7 @@ export function GraphCanvas({
   const copy = messages(locale);
   const rootRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<string, HTMLElement | null>>({});
+  const [selected, setSelected] = useState<string | undefined>(undefined);
   const [wide, setWide] = useState(() =>
     typeof window === "undefined" ? true : window.matchMedia("(min-width: 1024px)").matches,
   );
@@ -61,7 +62,7 @@ export function GraphCanvas({
   const [edges, setEdges] = useState<DrawnEdge[]>([]);
 
   const levels = graphLevels(studies);
-  const active = hover ?? (focus && studies.some((s) => s.slug === focus) ? focus : undefined);
+  const active = hover ?? selected ?? (focus && studies.some((s) => s.slug === focus) ? focus : undefined);
   const focused = studies.find((s) => s.slug === active);
   const neighbors = active ? neighborsOf(active, studies) : [];
   const pairs = contrastPairs(studies);
@@ -182,12 +183,13 @@ export function GraphCanvas({
                     className="min-w-0 w-full"
                     onMouseEnter={() => setHover(meta.slug)}
                     onMouseLeave={() => setHover(undefined)}
+                    onClick={() => setSelected((prev) => (prev === meta.slug ? undefined : meta.slug))}
                   >
                     <Link
                       href={`/s/${meta.slug}`}
                       className={cn(
                         "block rounded-2xl border bg-bg px-4 py-4 shadow-card no-underline transition-colors",
-                        on ? "border-fg" : "border-border hover:border-border-strong",
+                        on ? "border-fg ring-2 ring-accent/20" : "border-border hover:border-border-strong",
                       )}
                     >
                       <h2 className="text-[16px] font-semibold tracking-tight text-fg">
@@ -205,7 +207,18 @@ export function GraphCanvas({
 
       {focused ? (
         <div className="rounded-2xl border border-border bg-surface px-5 py-4">
-          <p className="text-[12px] text-fg-subtle">{copy.graphAsks}</p>
+          <div className="flex items-center justify-between">
+            <p className="text-[12px] text-fg-subtle">{copy.graphAsks}</p>
+            {selected ? (
+              <button
+                type="button"
+                onClick={() => setSelected(undefined)}
+                className="text-[11px] text-accent hover:underline"
+              >
+                {locale === "en" ? "Clear selection" : "取消选中"}
+              </button>
+            ) : null}
+          </div>
           <p className="mt-1 text-[15px] font-medium">{studyTitle(focused, locale)}</p>
           {studyAsks(focused, locale) ? (
             <p className="mt-1 text-[13px] text-fg-muted">{studyAsks(focused, locale)}</p>
