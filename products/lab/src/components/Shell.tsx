@@ -102,25 +102,27 @@ export function Shell({ children }: { children: ReactNode }) {
       </header>
 
       <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
-      <nav className="page-width flex gap-1 border-b border-border py-2 sm:hidden" aria-label="site">
-        {NAV.map((item) => {
-          const active = item.match(path);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              ariaCurrent={active ? "page" : undefined}
-              className={
-                active
-                  ? "rounded-md px-2.5 py-1 text-[13px] font-medium text-fg no-underline"
-                  : "rounded-md px-2.5 py-1 text-[13px] text-fg-muted no-underline"
-              }
-            >
-              {copy[item.key]}
-            </Link>
-          );
-        })}
-      </nav>
+      <div className="page-width border-b border-border py-2 sm:hidden">
+        <nav className="flex items-center rounded-xl border border-border bg-surface-2 p-1" aria-label="mobile site">
+          {NAV.map((item) => {
+            const active = item.match(path);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                ariaCurrent={active ? "page" : undefined}
+                className={
+                  active
+                    ? "flex-1 rounded-lg bg-surface py-1.5 text-center text-[12px] font-semibold text-fg shadow-xs no-underline"
+                    : "flex-1 rounded-lg py-1.5 text-center text-[12px] font-medium text-fg-muted no-underline hover:text-fg"
+                }
+              >
+                {copy[item.key]}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
       <div className="min-w-0 flex-1">{children}</div>
       <footer className="mt-auto border-t border-border">
         <div className="page-width py-5">
