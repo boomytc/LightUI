@@ -22,5 +22,7 @@ npm run dev
 1. 居中弹窗：删除确认，点遮罩关不掉，Esc / 取消 / 确认才关，焦点回到删除
 2. 侧边抽屉：编辑商品，列表还在，点遮罩可关
 3. 气泡：头像四项，删除账号再唤起弹窗——轻操作和重决策分开
+4. 文字提示：悬停信息图标，延迟后出一句，不可点
+5. 底部操作层：分享从底下推上来，点遮罩可关，不是右侧抽屉
 
-舞台查询：`?stage=1&kind=modal|drawer|popover&state=open|closed`，默认 `modal` / `open`。
+舞台查询：`?stage=1&kind=modal|drawer|popover|tooltip|sheet&state=open|closed`，默认 `modal` / `open`。

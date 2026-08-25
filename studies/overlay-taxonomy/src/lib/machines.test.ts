@@ -1,10 +1,14 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  KIND_IDS,
+  TOOLTIP_DELAY_MS,
   anchorsToTrigger,
+  appearsFrom,
   backdropDismiss,
   hasBackdrop,
   interruptKind,
+  isInteractive,
   presence,
   restoreFocus,
   tooManyForPopover,
@@ -16,6 +20,11 @@ describe("interruptKind", () => {
     assert.equal(interruptKind("drawer"), "weak");
     assert.equal(interruptKind("popover"), "none");
   });
+
+  it("does not interrupt a tooltip; weakly interrupts a sheet", () => {
+    assert.equal(interruptKind("tooltip"), "none");
+    assert.equal(interruptKind("sheet"), "weak");
+  });
 });
 
 describe("hasBackdrop", () => {
@@ -23,6 +32,11 @@ describe("hasBackdrop", () => {
     assert.equal(hasBackdrop("modal"), true);
     assert.equal(hasBackdrop("drawer"), true);
     assert.equal(hasBackdrop("popover"), false);
+  });
+
+  it("gives a sheet a scrim and a tooltip none", () => {
+    assert.equal(hasBackdrop("sheet"), true);
+    assert.equal(hasBackdrop("tooltip"), false);
   });
 });
 
@@ -37,6 +51,10 @@ describe("backdropDismiss", () => {
     assert.equal(backdropDismiss("drawer", false), true);
   });
 
+  it("lets a sheet close on the scrim", () => {
+    assert.equal(backdropDismiss("sheet"), true);
+  });
+
   it("is not applicable to a popover", () => {
     assert.equal(backdropDismiss("popover"), false);
     assert.equal(backdropDismiss("popover", true), false);
@@ -48,6 +66,11 @@ describe("anchorsToTrigger", () => {
     assert.equal(anchorsToTrigger("popover"), true);
     assert.equal(anchorsToTrigger("modal"), false);
     assert.equal(anchorsToTrigger("drawer"), false);
+  });
+
+  it("anchors a tooltip and does not anchor a sheet", () => {
+    assert.equal(anchorsToTrigger("tooltip"), true);
+    assert.equal(anchorsToTrigger("sheet"), false);
   });
 });
 
@@ -62,6 +85,31 @@ describe("tooManyForPopover", () => {
     assert.equal(tooManyForPopover(2), false);
     assert.equal(tooManyForPopover(7), false);
     assert.equal(tooManyForPopover(8), true);
+  });
+});
+
+describe("isInteractive", () => {
+  it("is false only for tooltip", () => {
+    for (const id of KIND_IDS) {
+      assert.equal(isInteractive(id), id !== "tooltip");
+    }
+  });
+});
+
+describe("appearsFrom", () => {
+  it("puts a sheet at the bottom and a tooltip on the trigger", () => {
+    assert.equal(appearsFrom("sheet"), "bottom");
+    assert.equal(appearsFrom("tooltip"), "anchor");
+    assert.equal(appearsFrom("drawer"), "side");
+    assert.equal(appearsFrom("modal"), "center");
+  });
+});
+
+describe("TOOLTIP_DELAY_MS", () => {
+  it("delays hover so a pass-over does not flash", () => {
+    assert.equal(TOOLTIP_DELAY_MS, 280);
+    assert.ok(TOOLTIP_DELAY_MS >= 200);
+    assert.ok(TOOLTIP_DELAY_MS <= 400);
   });
 });
 

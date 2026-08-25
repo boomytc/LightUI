@@ -24,12 +24,16 @@ Ask interrupt vs attach first. Skin comes after.
 | Modal | **Must be handled first** | Centered in the viewport | Strong scrim; a dangerous action must not close on the scrim; Esc / buttons; focus stays in the dialog and returns to the trigger |
 | Drawer | **Weak interrupt** | Slides in from the right; the list stays visible | Light scrim; a click on the scrim closes it. Use this when there are many fields — do not cram them into a centered card |
 | Popover | **Does not interrupt** | **Stuck to the trigger** | No strong scrim; outside click / Esc / the trigger again. 2–7 items; more than that is a drawer. Delete in the menu opens a modal |
+| Tooltip | **Does not interrupt** | **Stuck to the trigger** | Delayed; **not interactive**; fades on leave. A sentence, not a menu |
+| Sheet | **Weak interrupt** | **Viewport bottom**, not the trigger | Light scrim; scrim-dismiss; rises from the bottom, not a right drawer |
 
 The three pairs people mix up:
 
 - **A content drawer is not a hamburger nav.** The drawer is an edit form on this page, from the right, with the list still underneath. A hamburger pulls site destinations in from the edge.
 - **A right-hand drawer is not an off-canvas rail.** The drawer covers the current task and goes away when you are done. An off-canvas rail is about occupancy: whether the main column yields.
 - **Must-handle first is not a notice.** A dialog blocks the current task. An alert stays in the content; the page can still be used.
+- **A sentence is not a popover.** A tooltip does not take pointer or focus. Buttons belong on a popover.
+- **A bottom sheet is not a right drawer.** A drawer edits beside a list. A sheet is thumb-reach shortcuts.
 
 To specify one of these, say three things:
 
@@ -52,4 +56,4 @@ A popover is also not a dropdown that opens downward and commits a value. An act
 
 ## The machines
 
-The rules live in DOM-free modules: `interruptKind`, `hasBackdrop`, `backdropDismiss`, `anchorsToTrigger`, `restoreFocus`, `tooManyForPopover`. Exit animation state is `presence`.
+The rules live in DOM-free modules: `interruptKind`, `hasBackdrop`, `backdropDismiss`, `anchorsToTrigger`, `isInteractive`, `appearsFrom`, `restoreFocus`, `tooManyForPopover`. Exit animation state is `presence`.

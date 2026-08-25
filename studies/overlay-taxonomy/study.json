@@ -32,10 +32,22 @@
       "rel": "contrast",
       "when": "必须先处理的弹窗不是一条提示",
       "whenEn": "a dialog that must be handled is not a notice"
+    },
+    {
+      "slug": "guide-interrupt",
+      "rel": "contrast",
+      "when": "任务浮层不是教学引导",
+      "whenEn": "a task overlay is not teaching"
+    },
+    {
+      "slug": "expand-inflow",
+      "rel": "contrast",
+      "when": "侧滑抽屉不是流内撑开",
+      "whenEn": "a side drawer is not in-flow expand"
     }
   ],
   "status": "active",
   "created": "2026-08-23",
-  "updated": "2026-08-23",
+  "updated": "2026-08-25",
   "tags": ["overlay", "interrupt", "taxonomy"]
 }

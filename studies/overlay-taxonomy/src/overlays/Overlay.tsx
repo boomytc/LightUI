@@ -239,6 +239,87 @@ export function PopoverMenu({
   );
 }
 
+export function Tooltip({
+  open,
+  text,
+}: {
+  open: boolean;
+  text: string;
+}) {
+  const { mounted, closing } = usePresence(open, 80);
+  if (!mounted) return null;
+  return (
+    <div
+      role="tooltip"
+      className={cn(
+        "pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[16rem] -translate-x-1/2 rounded-md bg-fg px-2.5 py-1.5 text-[12px] leading-snug text-surface shadow-menu",
+        closing ? "overlay-pop-out" : "overlay-pop-in",
+      )}
+    >
+      {text}
+      <span
+        aria-hidden="true"
+        className="absolute top-full left-1/2 -mt-px -translate-x-1/2 border-4 border-transparent border-t-fg"
+      />
+    </div>
+  );
+}
+
+export function Sheet({
+  open,
+  onClose,
+  title,
+  children,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  children: ReactNode;
+}) {
+  const { mounted, closing } = usePresence(open, 350);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+  useEsc(open, onClose);
+
+  if (!mounted) return null;
+
+  return (
+    <div className="absolute inset-0 z-50">
+      <Scrim closing={closing} tone="light" onClick={onClose} />
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className={cn(
+          "absolute inset-x-0 bottom-0 z-50 flex max-h-[70%] flex-col overflow-hidden rounded-t-2xl border-t border-border bg-surface shadow-menu",
+          closing ? "overlay-sheet-out" : "overlay-sheet-in",
+        )}
+      >
+        <div className="flex flex-col items-center pt-2">
+          <span className="h-1.5 w-10 rounded-full bg-border-strong" aria-hidden="true" />
+        </div>
+        <div className="flex items-start justify-between gap-3 px-4 pt-3 pb-2">
+          <h3 id={titleId} className="text-[16px] font-semibold tracking-tight">
+            {title}
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="grid size-9 shrink-0 place-items-center rounded-md text-fg-muted hover:bg-surface-2 hover:text-fg"
+            aria-label="关闭"
+          >
+            <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        </div>
+        <div className="min-h-0 overflow-y-auto px-4 pb-4">{children}</div>
+      </div>
+    </div>
+  );
+}
+
 export function MenuItem({
   children,
   onClick,

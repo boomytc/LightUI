@@ -6,6 +6,8 @@ import { cn } from "../lib/utils";
 import { DrawerDemo } from "./DrawerDemo";
 import { ModalDemo } from "./ModalDemo";
 import { PopoverDemo } from "./PopoverDemo";
+import { SheetDemo } from "./SheetDemo";
+import { TooltipDemo } from "./TooltipDemo";
 
 export function Playground() {
   const locale = useLocale();
@@ -48,7 +50,7 @@ export function Playground() {
       <section className="mt-6 min-w-0">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
-            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 03</p>
+            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 05</p>
             <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           </div>
@@ -138,5 +140,9 @@ export function KindDemo({
       return <DrawerDemo defaultOpen={open} compact={compact} />;
     case "popover":
       return <PopoverDemo defaultOpen={open} compact={compact} />;
+    case "tooltip":
+      return <TooltipDemo defaultOpen={open} compact={compact} />;
+    case "sheet":
+      return <SheetDemo defaultOpen={open} compact={compact} />;
   }
 }

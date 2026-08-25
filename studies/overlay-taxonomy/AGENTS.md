@@ -36,8 +36,9 @@ The lab mounts `StudyView` at `/s/overlay-taxonomy`.
 - Keep the overlay machines free of React.
 - Relative imports only (`../lib/...`). The lab compiles this tree from
   outside this folder.
-- Three leaves only: modal, drawer, popover. Delete in a popover opens a
-  modal — that is composition, not a fourth kind.
+- Five leaves: modal, drawer, popover, tooltip, sheet. Delete in a popover
+  opens a modal — that is composition, not a sixth kind. A tooltip is not
+  a popover. A sheet is not a right-hand drawer.
 - A content drawer is not a hamburger nav. A right drawer is not an
   off-canvas rail. A popover is not a dropdown that commits a value.
 - Bind the standalone server to `127.0.0.1:5183`.
