@@ -1,0 +1,35 @@
+{
+  "slug": "drag-commit",
+  "title": "拖放",
+  "titleEn": "Drag",
+  "eyebrow": "Commit · Path",
+  "eyebrowEn": "Commit · Path",
+  "summary": "同一抓取手势，松手提交的不是同一种结果。先定是新顺序、一次接收、跨组转移，还是无效回弹。",
+  "summaryEn": "The same grab does not commit the same thing. First decide: a new order, a single receive, a cross-list transfer, or an invalid snap-back.",
+  "asks": "这一拖提交的是新顺序、一次接收、跨组转移，还是无效回弹？",
+  "asksEn": "Does this drag commit a new order, a single receive, a cross-list transfer, or an invalid snap-back?",
+  "links": [
+    {
+      "slug": "look-quantize",
+      "rel": "contrast",
+      "when": "拖放提交不是视线落到格子",
+      "whenEn": "a drag commit is not gaze landing on a cell"
+    },
+    {
+      "slug": "carousel-taxonomy",
+      "rel": "contrast",
+      "when": "不是转产品的角度",
+      "whenEn": "not advancing a product by turning its angle"
+    },
+    {
+      "slug": "layout-taxonomy",
+      "rel": "contrast",
+      "when": "不是拖动分栏分隔条",
+      "whenEn": "not dragging a pane splitter"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-25",
+  "updated": "2026-08-25",
+  "tags": ["drag", "commit", "pointer"]
+}

@@ -1,0 +1,48 @@
+.drag-item {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.drag-ghost {
+  box-shadow: var(--shadow-menu);
+  transform: rotate(2deg) scale(1.03);
+  transform-origin: center center;
+  cursor: grabbing;
+}
+
+.drag-ghost-reject {
+  outline: 2px solid var(--color-wrong);
+  background: var(--color-wrong-soft);
+}
+
+.drag-hole {
+  box-sizing: border-box;
+  border-radius: var(--radius-md);
+  border: 1px dashed color-mix(in oklab, var(--color-accent) 55%, var(--color-border));
+  background: color-mix(in oklab, var(--color-accent-soft) 85%, transparent);
+}
+
+.drag-zone {
+  border: 1.5px dashed var(--color-border-strong);
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.drag-zone[data-hit="true"] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.drag-tray[data-reject="true"] {
+  border-color: var(--color-wrong);
+  background: var(--color-wrong-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drag-ghost {
+    transform: none;
+  }
+}
