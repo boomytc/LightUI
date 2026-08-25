@@ -1,0 +1,35 @@
+{
+  "slug": "chart-read",
+  "title": "读图",
+  "titleEn": "Chart read",
+  "eyebrow": "Read · Filter · Window",
+  "eyebrowEn": "Read · Filter · Window",
+  "summary": "图画好之后，这一手是读数、过滤还是改窗口。选图种是另一问；看板层递也是另一问。",
+  "summaryEn": "After the chart is drawn, this gesture is a readout, a filter, or a window change. Picking the mark is a different question; so is drilling a board.",
+  "asks": "图上这一手是读数、过滤，还是改窗口？",
+  "asksEn": "Is this gesture on the chart a readout, a filter, or a window change?",
+  "links": [
+    {
+      "slug": "chart-taxonomy",
+      "rel": "contrast",
+      "when": "读数手势不是选图种",
+      "whenEn": "a readout gesture is not picking the mark"
+    },
+    {
+      "slug": "dashboard-layers",
+      "rel": "contrast",
+      "when": "图内换层不是看板从结果往下钻",
+      "whenEn": "changing path on a chart is not drilling a board from the result"
+    },
+    {
+      "slug": "look-quantize",
+      "rel": "contrast",
+      "when": "最近邻吸附是读点，不是视线落到格子",
+      "whenEn": "nearest-index snap is reading a point, not gaze landing on a cell"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-25",
+  "updated": "2026-08-25",
+  "tags": ["chart", "pointer", "read"]
+}
