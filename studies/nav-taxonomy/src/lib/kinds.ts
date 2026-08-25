@@ -9,7 +9,8 @@ export type KindId =
   | "drawer"
   | "overlay"
   | "scrollspy"
-  | "shrink";
+  | "shrink"
+  | "bottom";
 
 export type KindMeta = {
   id: KindId;
@@ -193,6 +194,28 @@ export const KINDS: KindMeta[] = [
     ),
     note: loc("收缩改的是顶栏自己。吸顶改的是钉住的位置。", "Shrink changes the bar itself. Sticky changes where it pins."),
     lives: loc("叠在大图上；自己变矮", "Over the hero; the bar itself shrinks"),
+  },
+  {
+    id: "bottom",
+    index: "10",
+    name: "Bottom Nav",
+    zh: loc("底部导航", "Bottom nav"),
+    oneLiner: loc("小屏主导航占底，三到五项，不是汉堡盖上来", "Small-screen primary occupies the bottom, 3–5 items, not a hamburger overlay"),
+    scenes: [
+      loc("首页 / 发现 / 消息 / 我的", "Home / Discover / Inbox / Me"),
+      loc("手机里最常用的入口", "The most-used phone destinations"),
+    ],
+    rules: [
+      loc("长期占底，不是从边缘滑入的汉堡", "Occupies the bottom; not a hamburger sliding from the edge"),
+      loc("控制在 3–5 项；当前项点亮并上浮", "Three to five items; the current one lights and lifts"),
+      loc("切换的是主页面，底栏自己不卸", "It switches the main page; the bar itself stays"),
+    ],
+    spec: loc(
+      "做底部导航：把三到五个一级入口固定在屏幕底部。点击后图标上浮点亮，主页面切换，底栏保持占位。不要做成汉堡抽屉。",
+      "A bottom nav: three to five primary destinations fixed at the bottom. A tap lifts and lights the icon, the page switches, the bar stays. Not a hamburger drawer.",
+    ),
+    note: loc("底栏占位。汉堡抽屉才是从边上盖上来。", "The bar occupies. A hamburger drawer overlays from the edge."),
+    lives: loc("占位；钉在底部", "Occupies; pins to the bottom"),
   },
 ];
 

@@ -11,6 +11,7 @@ import { MegaDemo } from "./MegaDemo";
 import { OverlayDemo } from "./OverlayDemo";
 import { ScrollspyDemo } from "./ScrollspyDemo";
 import { ShrinkDemo } from "./ShrinkDemo";
+import { BottomNavDemo } from "./BottomNavDemo";
 import { SidebarDemo } from "./SidebarDemo";
 
 export function Playground() {
@@ -67,7 +68,7 @@ export function Playground() {
       <section className="mt-6 min-w-0">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
-            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 09</p>
+            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 10</p>
             <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           </div>
@@ -163,5 +164,7 @@ export function KindDemo({ id, defaultOpen }: { id: KindId; defaultOpen?: boolea
       return <ScrollspyDemo />;
     case "shrink":
       return <ShrinkDemo />;
+    case "bottom":
+      return <BottomNavDemo />;
   }
 }

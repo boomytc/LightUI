@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Name the nav: nine placement / reveal / scroll models",
+  "description": "Name the nav: placement / reveal / scroll models",
   "engines": {
     "node": ">=20"
   },
@@ -12,7 +12,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit --pretty false",
-    "test": "tsx --test src/lib/crumb.test.ts src/lib/spy.test.ts src/lib/shrink.test.ts"
+    "test": "tsx --test src/lib/crumb.test.ts src/lib/spy.test.ts src/lib/shrink.test.ts src/lib/occupy.test.ts"
   },
   "dependencies": {
     "lucide-react": "^0.510.0",

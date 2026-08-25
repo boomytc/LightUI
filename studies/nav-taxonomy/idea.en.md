@@ -30,12 +30,14 @@ Pick the model by placement, reveal, and scroll, then talk about the skin.
 | Full-screen overlay | Few items, a beat of ceremony | Covers the page; large centered type |
 | Scrollspy | A long page in sections | Highlight follows the section; lock the observer on click |
 | Shrink on scroll | A bar over a hero | Past a threshold it shortens and goes solid; two thresholds, not one |
+| Bottom nav | Small-screen primary; occupies the bottom | 3–5 items stay visible; not a hamburger overlay |
 
 Three pairs people mix up:
 
 - **A drawer is not a full-screen overlay.** A drawer takes an edge. Overlay replaces the page.
 - **A dropdown is not a mega menu.** A dropdown is one column. Mega is a classified grid.
 - **Shrink is not a floating sticky.** Shrink changes the bar’s own height and contrast. Sticky changes where it pins.
+- **A bottom bar is not a hamburger.** The bar occupies the bottom. A hamburger overlays from the edge.
 
 To name a nav, say three things:
 
