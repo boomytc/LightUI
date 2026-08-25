@@ -15,8 +15,8 @@ export const CATEGORIES: CategoryMeta[] = [
     id: "all",
     nameZh: "全部",
     nameEn: "All",
-    descZh: "全部 27 则交互设计研究",
-    descEn: "All 27 UI/UX design studies",
+    descZh: "全部交互设计研究",
+    descEn: "All UI/UX design studies",
   },
   {
     id: "pointer",
@@ -59,6 +59,10 @@ const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "intent-cascade": "pointer",
   "look-quantize": "pointer",
   "scroll-chrome": "pointer",
+  "drag-commit": "pointer",
+  "guide-interrupt": "pointer",
+  "chart-read": "pointer",
+  "container-morph": "craft",
 
   "layout-taxonomy": "layout",
   "sidebar-taxonomy": "layout",
@@ -67,6 +71,8 @@ const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "hero-taxonomy": "layout",
   "login-taxonomy": "layout",
   "nav-taxonomy": "layout",
+  "expand-inflow": "layout",
+  "page-append": "layout",
 
   "button-taxonomy": "controls",
   "control-taxonomy": "controls",

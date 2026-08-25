@@ -111,8 +111,10 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5191` hero-taxonomy, `5192` login-taxonomy, `5193` align-craft,
   `5194` dashboard-layers, `5195` assistant-chrome, `5196` pending-taxonomy,
   `5197` border-beam, `5198` timer-taxonomy, `5199` recall-grade,
-  `5200` scroll-chrome, `5201` bm25-explain.
-  Next free: `5202`.
+  `5200` scroll-chrome, `5201` bm25-explain,
+  `5202` container-morph, `5203` drag-commit, `5204` guide-interrupt,
+  `5205` chart-read, `5206` expand-inflow, `5207` page-append.
+  Next free: `5208`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

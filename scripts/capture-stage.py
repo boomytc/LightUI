@@ -43,6 +43,7 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("overlay", "open", "overlay-open.png"),
         ("scrollspy", "closed", "scrollspy.png"),
         ("shrink", "closed", "shrink.png"),
+        ("bottom", "closed", "bottom.png"),
     ],
     "inverted-notch": [
         ("shape", "closed", "shape-closed.png"),
@@ -84,6 +85,8 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("modal", "open", "modal-open.png"),
         ("drawer", "open", "drawer-open.png"),
         ("popover", "open", "popover-open.png"),
+        ("tooltip", "open", "tooltip-open.png"),
+        ("sheet", "open", "sheet-open.png"),
     ],
     "notify-taxonomy": [
         ("badge", "3", "badge-count.png"),
@@ -103,6 +106,7 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("circular", "mid", "circular-mid.png"),
         ("spin", "loop", "spin-loop.png"),
         ("dots", "loop", "dots-loop.png"),
+        ("button", "loop", "button-loop.png"),
     ],
     "chart-taxonomy": [
         ("change", "primary", "change-line.png"),
@@ -162,6 +166,7 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("skeleton", "loading", "skeleton-loading.png"),
         ("skeleton", "ready", "skeleton-ready.png"),
         ("empty", "empty", "empty.png"),
+        ("page", "loading", "page-loading.png"),
     ],
     "border-beam": [
         ("beam", "run", "beam-run.png"),
@@ -187,6 +192,30 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
     "bm25-explain": [
         ("compare", "default", "compare.png"),
         ("score", "default", "score.png"),
+    ],
+    "container-morph": [
+        ("circle-pill", "expanded", "circle-pill-expanded.png"),
+        ("reverse", "dot", "reverse-dot.png"),
+    ],
+    "drag-commit": [
+        ("reorder", "idle", "reorder-idle.png"),
+        ("snapback", "lift", "snapback-lift.png"),
+    ],
+    "guide-interrupt": [
+        ("spotlight", "mid", "spotlight-mid.png"),
+        ("tour", "step1", "tour-step1.png"),
+    ],
+    "chart-read": [
+        ("brush", "frozen", "brush-frozen.png"),
+        ("drill", "l2", "drill-l2.png"),
+    ],
+    "expand-inflow": [
+        ("accordion", "a", "accordion-a.png"),
+        ("row", "open", "row-open.png"),
+    ],
+    "page-append": [
+        ("page", "page2", "page-page2.png"),
+        ("append", "exhausted", "append-exhausted.png"),
     ],
 }
 
