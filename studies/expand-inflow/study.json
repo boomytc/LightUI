@@ -1,0 +1,41 @@
+{
+  "slug": "expand-inflow",
+  "title": "展开",
+  "titleEn": "Expand",
+  "eyebrow": "Flow · Cover",
+  "eyebrowEn": "Flow · Cover",
+  "summary": "多出来的内容先问撑开文档流还是盖一层。互斥还是独立，是流里的第二问。不要把抽屉再做一遍。",
+  "summaryEn": "Extra content first asks whether it pushes the document flow or covers it. Exclusive versus independent is the second question inside the flow. Do not rebuild the drawer.",
+  "asks": "这块多出来的内容，是撑开文档流，还是盖一层？",
+  "asksEn": "Does the extra content push the document flow, or cover it with a new layer?",
+  "links": [
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "流内撑开不是侧滑抽屉",
+      "whenEn": "pushing the document flow is not a sliding drawer"
+    },
+    {
+      "slug": "carousel-taxonomy",
+      "rel": "contrast",
+      "when": "FAQ 手风琴不是列宽画廊",
+      "whenEn": "a FAQ accordion is not a column-width gallery"
+    },
+    {
+      "slug": "sidebar-taxonomy",
+      "rel": "contrast",
+      "when": "内容树不是主导航多级",
+      "whenEn": "a content tree is not primary-nav multilevel"
+    },
+    {
+      "slug": "page-append",
+      "rel": "after",
+      "when": "若是列表变长而不是一块面板开合",
+      "whenEn": "if the list grows rather than a panel opening"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-25",
+  "updated": "2026-08-25",
+  "tags": ["expand", "flow", "accordion"]
+}

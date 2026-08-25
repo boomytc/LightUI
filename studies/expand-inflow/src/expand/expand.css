@@ -1,0 +1,42 @@
+.expand-slot {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.expand-slot[data-open] {
+  grid-template-rows: 1fr;
+}
+
+.expand-slot > .expand-slot-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.expand-card-extra:not([data-open]) {
+  transition-delay: 160ms;
+}
+
+.expand-card-fade {
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.expand-card-extra[data-open] .expand-card-fade {
+  opacity: 1;
+  transition-delay: 180ms;
+}
+
+.expand-card-extra:not([data-open]) .expand-card-fade {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+.expand-readmore {
+  overflow: hidden;
+  transition: height 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.expand-readmore:not([data-open]) {
+  mask-image: linear-gradient(#000 calc(100% - 2.2em), transparent);
+}
