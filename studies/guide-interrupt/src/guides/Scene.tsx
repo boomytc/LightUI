@@ -143,6 +143,7 @@ export function GuideScene({
   const [, bump] = useState(0);
 
   const register = useCallback((id: TargetId, el: HTMLElement | null) => {
+    if (el == null) return;
     if (nodes.current[id] === el) return;
     nodes.current[id] = el;
     bump((n) => n + 1);

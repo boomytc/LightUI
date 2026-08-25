@@ -18,14 +18,22 @@ export function useCutout(
     const measure = () => {
       const t = target.getBoundingClientRect();
       const c = host.getBoundingClientRect();
-      setHostSize({ w: c.width, h: c.height });
-      setHole(
-        cutoutPad(kind, {
-          x: t.left - c.left,
-          y: t.top - c.top,
-          w: t.width,
-          h: t.height,
-        }),
+      const nextHost = { w: Math.round(c.width), h: Math.round(c.height) };
+      const nextHole = cutoutPad(kind, {
+        x: Math.round(t.left - c.left),
+        y: Math.round(t.top - c.top),
+        w: Math.round(t.width),
+        h: Math.round(t.height),
+      });
+      setHostSize((prev) => (prev.w === nextHost.w && prev.h === nextHost.h ? prev : nextHost));
+      setHole((prev) =>
+        prev &&
+        prev.x === nextHole.x &&
+        prev.y === nextHole.y &&
+        prev.w === nextHole.w &&
+        prev.h === nextHole.h
+          ? prev
+          : nextHole,
       );
     };
 
