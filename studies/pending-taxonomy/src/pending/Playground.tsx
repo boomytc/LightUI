@@ -13,7 +13,7 @@ import { pick, useLocale, type Locale } from "../lib/site-locale";
 import { useReducedMotion } from "../lib/use-reduced-motion";
 import { cn } from "../lib/utils";
 import { Window } from "./Frame";
-import { BoneList, BriefList, EmptyPanel, SceneHeading } from "./Scene";
+import { BoneList, BriefList, EmptyPanel, PageVeil, SceneHeading } from "./Scene";
 import "./pending.css";
 
 export function Playground() {
@@ -43,7 +43,7 @@ export function Playground() {
 
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
-            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 02</p>
+            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 03</p>
             <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           </div>
@@ -159,7 +159,7 @@ export function KindDemo({ id, state }: { id: KindId; state?: StageState }) {
   const locale = useLocale();
   const reduced = useReducedMotion();
   const locked = state !== undefined;
-  const liveDefault: StageState = id === "skeleton" ? "loading" : "empty";
+  const liveDefault: StageState = id === "empty" ? "empty" : "loading";
   const [phase, setPhase] = useState<StageState>(locked ? state : liveDefault);
   const [leaving, setLeaving] = useState(false);
   const current = locked ? state : phase;
@@ -211,7 +211,7 @@ function ChromeAction({
   seat: Occupancy;
   onGo: (next: StageState) => void;
 }) {
-  if (id === "skeleton") {
+  if (id === "skeleton" || id === "page") {
     return (
       <ActionButton onClick={() => onGo(seat === "content" ? "loading" : "ready")}>
         {seat === "content"
@@ -265,6 +265,10 @@ function Workbench({
 }) {
   const count = seat === "empty" ? 0 : seat === "content" ? BRIEFS.length : undefined;
   const fadeIn = seat === "content" && !reduced && !locked && id === "skeleton";
+
+  if (seat === "veil") {
+    return <PageVeil locale={locale} />;
+  }
 
   return (
     <div className="relative min-w-0 overflow-x-hidden">

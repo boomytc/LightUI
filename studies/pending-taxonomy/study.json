@@ -2,10 +2,10 @@
   "slug": "pending-taxonomy",
   "title": "等待",
   "titleEn": "Pending",
-  "eyebrow": "Skeleton · Empty",
-  "eyebrowEn": "Skeleton · Empty",
-  "summary": "内容还没到，屏幕上该留什么？骨架占布局位子；空状态给人话和下一步。不要转圈，不要「暂无数据」。",
-  "summaryEn": "While content is missing, what should occupy the screen? A skeleton holds layout; an empty state offers a human line and a next step. Not a spinner. Not “no data”.",
+  "eyebrow": "Skeleton · Empty · Veil",
+  "eyebrowEn": "Skeleton · Empty · Veil",
+  "summary": "内容还没到，屏幕上该留什么？骨架占布局位子；空状态给人话和下一步；壳未知时整页遮罩。不要转圈，不要假进度条。",
+  "summaryEn": "While content is missing, what should occupy the screen? A skeleton holds layout; an empty state offers a next step; a veil covers an unknown shell. Not a spinner. Not a fake bar.",
   "asks": "内容还没到，屏幕上该留什么？",
   "asksEn": "While content is missing, what should occupy the screen?",
   "links": [
@@ -20,10 +20,16 @@
       "rel": "contrast",
       "when": "空状态不是一条提示",
       "whenEn": "an empty state is not a notice"
+    },
+    {
+      "slug": "page-append",
+      "rel": "contrast",
+      "when": "骨架不是已经到了一截",
+      "whenEn": "a skeleton is not a loaded prefix"
     }
   ],
   "status": "active",
   "created": "2026-08-23",
-  "updated": "2026-08-23",
+  "updated": "2026-08-25",
   "tags": ["pending", "skeleton", "empty", "taxonomy"]
 }

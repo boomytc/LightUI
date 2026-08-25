@@ -72,13 +72,40 @@ export const KINDS: KindMeta[] = [
     tells: loc("空着也说人话，并给出下一步", "Empty still speaks in human, and offers a next step"),
     window: loc("简报 · 空", "Briefs · empty"),
   },
+  {
+    id: "page",
+    index: "03",
+    name: "Page veil",
+    zh: loc("整页遮罩", "Page veil"),
+    oneLiner: loc("壳还没到、结构未知时盖住整页；就绪后淡出，不要假进度条", "Cover the page while the shell is unknown; fade out when ready — no fake bar"),
+    scenes: [
+      loc("应用第一次打开", "First launch"),
+      loc("核心壳未就绪", "The app shell is not ready"),
+      loc("结构本身还不知道", "The layout itself is still unknown"),
+    ],
+    rules: [
+      loc("整页遮罩，不是骨架块", "A full-page veil, not skeleton blocks"),
+      loc("不要转圈进度，不要装饰假条", "Not a spinner, and not a decorative fake bar"),
+      loc("二次跳转、局部刷新改用骨架", "Later navigations use a skeleton, not this veil"),
+    ],
+    spec: loc(
+      "做整页遮罩。第一次打开、结构未知时用品牌标记和一句短状态盖住整页；壳就绪后淡出。不要画假进度条，不要转圈代替遮罩，列表刷新不要再用它。",
+      "A first-open veil. Brand mark and a short status cover the page while the shell is unknown; fade out when ready. No fake progress bar. Not a spinner. Not for later list refreshes.",
+    ),
+    note: loc(
+      "结构已知用骨架。转圈是不确定进度。这里只盖未知的壳。",
+      "A skeleton is for a known layout. A spinner is indeterminate progress. This veil covers an unknown shell.",
+    ),
+    tells: loc("整页先挡住，壳到了再让开", "The page is covered; the shell arrives, then it yields"),
+    window: loc("工坊 · 启动", "Studio · launch"),
+  },
 ];
 
 export const FORMULA = [
   {
     n: "1",
     title: loc("名称", "Name"),
-    example: loc("别说「做个 loading」，说骨架屏或空状态", "Not “a loading state” — a skeleton, or an empty state"),
+    example: loc("别说「做个 loading」，说骨架屏、空状态或整页遮罩", "Not “a loading state” — a skeleton, an empty state, or a page veil"),
   },
   {
     n: "2",

@@ -6,6 +6,7 @@ import {
   allowsSpinner,
   hasAction,
   isKindId,
+  isVeil,
   occupancy,
   reservesLayout,
   shimmerMotion,
@@ -14,16 +15,17 @@ import {
 } from "./machines";
 
 describe("KIND_IDS", () => {
-  it("is the two leaves", () => {
+  it("is the three leaves", () => {
     const ids: readonly KindId[] = KIND_IDS;
-    assert.deepEqual(ids, ["skeleton", "empty"]);
+    assert.deepEqual(ids, ["skeleton", "empty", "page"]);
   });
 });
 
 describe("isKindId", () => {
-  it("accepts the two leaves and rejects progress / notice slugs", () => {
+  it("accepts the leaves and rejects progress / notice slugs", () => {
     assert.equal(isKindId("skeleton"), true);
     assert.equal(isKindId("empty"), true);
+    assert.equal(isKindId("page"), true);
     assert.equal(isKindId("spin"), false);
     assert.equal(isKindId("toast"), false);
     assert.equal(isKindId(""), false);
@@ -31,9 +33,10 @@ describe("isKindId", () => {
 });
 
 describe("reservesLayout", () => {
-  it("is true only for skeleton", () => {
+  it("is true only for skeleton — a first-open veil has no layout to hold", () => {
     assert.equal(reservesLayout("skeleton"), true);
     assert.equal(reservesLayout("empty"), false);
+    assert.equal(reservesLayout("page"), false);
   });
 });
 
@@ -41,6 +44,7 @@ describe("hasAction", () => {
   it("is true only for empty", () => {
     assert.equal(hasAction("empty"), true);
     assert.equal(hasAction("skeleton"), false);
+    assert.equal(hasAction("page"), false);
   });
 });
 
@@ -77,6 +81,13 @@ describe("occupancy", () => {
     assert.equal(occupancy("empty", "empty"), "empty");
     assert.equal(occupancy("empty", "loading"), "empty");
     assert.equal(occupancy("empty", "ready"), "content");
+  });
+
+  it("covers first open with a full-page veil, not a skeleton and not a spinner", () => {
+    assert.equal(occupancy("page", "loading"), "veil");
+    assert.equal(occupancy("page", "ready"), "content");
+    assert.equal(isVeil("page", "loading"), true);
+    assert.equal(isVeil("skeleton", "loading"), false);
   });
 });
 

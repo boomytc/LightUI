@@ -23,13 +23,15 @@ Ask whether content is **still on the way**, or **already here and this set is e
 | --- | --- | --- |
 | Skeleton | Structure is known; content is still arriving | `reservesLayout`; placeholder size matches the final layout; shimmer is a **background-position loop**, not an opacity flash; a short crossfade on arrival; **do not replace the skeleton with a spinner**; `prefers-reduced-motion` stops the shimmer and leaves gray blocks |
 | Empty | It has arrived; this set is empty | `hasAction`; an icon, one human title, one line of guidance, **one primary button**; no “no data”, no blank board |
+| Page veil | First open; the shell itself is unknown | `occupancy` is `veil`; a brand mark and a short status; **no fake progress bar**; not a spinner; later navigations use a skeleton |
 
-Both leaves have **`allowsSpinner` false**. A spinner is indeterminate progress, not a pending occupancy.
+All three leaves have **`allowsSpinner` false**. A spinner is indeterminate progress, not a pending occupancy.
 
 The two pairs people mix up:
 
 - **A skeleton is not a looping spinner.** A skeleton holds layout until the real content replaces it. A spinner says work is happening and progress cannot be measured.
 - **An empty state is not a notice.** A notice reports something that already happened. An empty state occupies this region: why it is empty, and where to go next.
+- **A page veil is not a skeleton.** A skeleton holds a known layout. Cover the page only while the shell itself is unknown. Do not draw a fake bar.
 
 To specify one wait, say three things:
 
@@ -50,4 +52,4 @@ Those three, in one sentence, are the “Say it this way” card.
 
 ## The machines
 
-The calls live in DOM-free modules: `reservesLayout(kind)` (true for skeleton), `hasAction(kind)` (true for empty), `allowsSpinner(kind)` (false for both), `occupancy(kind, state)` (skeleton / content / empty). Shimmer is `background-position`, not an opacity blink.
+The calls live in DOM-free modules: `reservesLayout(kind)` (true for skeleton), `hasAction(kind)` (true for empty), `allowsSpinner(kind)` (false for all three), `occupancy(kind, state)` (skeleton / content / empty / veil). Shimmer is `background-position`, not an opacity blink. Do not draw a fake bar on the veil.

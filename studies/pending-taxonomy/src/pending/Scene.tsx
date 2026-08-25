@@ -101,6 +101,30 @@ export function BriefList({ briefs, locale }: { briefs: readonly Brief[]; locale
   );
 }
 
+export function PageVeil({ locale }: { locale: Locale }) {
+  return (
+    <div
+      className="pending-occupy px-3 py-8"
+      data-region="veil"
+      aria-busy="true"
+      aria-live="polite"
+    >
+      <span
+        className="grid size-12 place-items-center rounded-2xl bg-fg text-[15px] font-semibold text-surface"
+        aria-hidden="true"
+      >
+        O
+      </span>
+      <h3 className="mt-4 text-[15px] font-semibold tracking-tight">
+        {locale === "en" ? "Orbit" : "Orbit"}
+      </h3>
+      <p className="mt-1.5 max-w-[16rem] text-[13px] leading-relaxed text-fg-muted">
+        {locale === "en" ? "Preparing the workspace" : "正在准备工作台"}
+      </p>
+    </div>
+  );
+}
+
 export function EmptyPanel({
   locale,
   onCreate,
