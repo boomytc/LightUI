@@ -1,0 +1,35 @@
+{
+  "slug": "container-morph",
+  "title": "变形",
+  "titleEn": "Morph",
+  "eyebrow": "Identity · Path",
+  "eyebrowEn": "Identity · Path",
+  "asks": "容器身份连续时，改的是宽、高、圆角，还是排版？停在展开态还是沿路收回？",
+  "asksEn": "When a container keeps its identity, does it change width, height, radius, or layout — and does it hold the expanded state or reverse along the same path?",
+  "summary": "同一入口连续变形。先定改宽、高、圆角还是排版；停在展开态，或沿原路收回——内容先走，容器后收。",
+  "summaryEn": "The same entry morphs in place. First decide whether it changes width, height, radius, or layout; then whether it holds the expanded state, or reverses along the same path — content leaves first, the container follows.",
+  "links": [
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "同一容器变形不是新开一层",
+      "whenEn": "a continuous morph is not a new overlay"
+    },
+    {
+      "slug": "carousel-taxonomy",
+      "rel": "contrast",
+      "when": "连续变形不是切画面",
+      "whenEn": "a continuous morph is not advancing frames"
+    },
+    {
+      "slug": "sidebar-taxonomy",
+      "rel": "contrast",
+      "when": "不是侧栏变宽占位",
+      "whenEn": "it is not a rail that occupies width"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-25",
+  "updated": "2026-08-25",
+  "tags": ["morph", "identity", "motion"]
+}

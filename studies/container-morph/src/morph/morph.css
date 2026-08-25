@@ -1,0 +1,111 @@
+.morph-box {
+  box-sizing: border-box;
+  --morph-ms: 400ms;
+  --morph-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    width var(--morph-ms) var(--morph-ease),
+    height var(--morph-ms) var(--morph-ease),
+    border-radius var(--morph-ms) var(--morph-ease);
+}
+
+.morph-box[data-locked="true"] {
+  cursor: default;
+}
+
+.morph-box[data-reduced="true"] {
+  --morph-ms: 0ms;
+}
+
+.morph-stage {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  min-height: 18rem;
+  padding: 1rem 1.25rem 0.75rem;
+}
+
+.morph-stage[data-anchor="center"],
+.morph-stage[data-anchor="none"] {
+  place-items: center;
+}
+
+.morph-stage[data-anchor="top"] {
+  justify-items: center;
+  align-items: start;
+}
+
+.morph-stage[data-anchor="top-left"] {
+  justify-items: start;
+  align-items: start;
+}
+
+.morph-late {
+  opacity: 0;
+  transition: opacity calc(var(--morph-ms) * 0.4) var(--morph-ease);
+  transition-delay: 0ms;
+}
+
+.morph-late[data-open="true"] {
+  opacity: 1;
+  transition-delay: calc(var(--morph-ms) * 0.45);
+}
+
+.morph-late[data-sync="true"] {
+  transition-delay: 0ms;
+}
+
+.morph-late[data-sync="true"][data-open="true"] {
+  opacity: 1;
+}
+
+.morph-extra {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--morph-ms) var(--morph-ease);
+}
+
+.morph-extra[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+.morph-extra-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.morph-reflow {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  transition: grid-template-columns var(--morph-ms) var(--morph-ease);
+}
+
+.morph-reflow[data-open="true"] {
+  grid-template-columns: 7.25rem minmax(0, 1fr);
+}
+
+.morph-reflow[data-open="true"] > :first-child {
+  grid-row: 1 / span 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .morph-box {
+    --morph-ms: 0ms;
+  }
+}
