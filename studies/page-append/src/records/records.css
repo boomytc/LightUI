@@ -1,0 +1,57 @@
+.records-window {
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.records-window-live {
+  height: 28rem;
+}
+
+@media (min-width: 640px) {
+  .records-window-live {
+    height: 32rem;
+  }
+}
+
+.records-window-compact {
+  height: 22rem;
+}
+
+.records-scroller {
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.records-chip {
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.records-replace {
+  animation: records-in 160ms ease;
+}
+
+@keyframes records-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .records-chip {
+    transition: none;
+  }
+
+  .records-replace {
+    animation: none;
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "slug": "page-append",
+  "title": "翻页",
+  "titleEn": "Page · Append",
+  "eyebrow": "Replace · Grow",
+  "eyebrowEn": "Replace · Grow",
+  "summary": "一批记录先问整页替换还是末尾追加。翻页会丢掉上一页并回到顶部；追加只增加 visibleCount，旧节点不卸。",
+  "summaryEn": "A batch of records first asks: replace the page, or append at the end? Paging drops the previous page and returns to the top; append only grows visibleCount, and old nodes stay mounted.",
+  "asks": "这一批记录是整页替换，还是末尾追加？",
+  "asksEn": "Does this batch of records replace the page, or append at the end?",
+  "links": [
+    {
+      "slug": "carousel-taxonomy",
+      "rel": "contrast",
+      "when": "列表翻页不是走马灯",
+      "whenEn": "a paged list is not a carousel"
+    },
+    {
+      "slug": "expand-inflow",
+      "rel": "contrast",
+      "when": "集合怎么长不是一块面板怎么开",
+      "whenEn": "how a collection grows is not how a panel opens"
+    },
+    {
+      "slug": "pending-taxonomy",
+      "rel": "contrast",
+      "when": "已经到了一截不是骨架占位",
+      "whenEn": "a loaded prefix is not a skeleton"
+    },
+    {
+      "slug": "progress-taxonomy",
+      "rel": "contrast",
+      "when": "不是工作进度",
+      "whenEn": "this is not work progress"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-25",
+  "updated": "2026-08-25",
+  "tags": ["pagination", "append", "collection"]
+}
