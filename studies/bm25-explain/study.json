@@ -1,0 +1,35 @@
+{
+  "slug": "bm25-explain",
+  "title": "检索可解释性",
+  "titleEn": "Explainable Search",
+  "eyebrow": "Information Retrieval · Lucene BM25",
+  "eyebrowEn": "Information Retrieval · Lucene BM25",
+  "summary": "检索排序不是黑盒总分。先定稀疏与向量的分数不可直接相加，再把得分拆解为词频饱和与篇幅惩罚。",
+  "summaryEn": "Search ranking is not a black-box total score. Never add sparse and dense scores directly; decompose scores into term frequency saturation and document length penalty.",
+  "asks": "检索排序怎么让人看明白？",
+  "asksEn": "How should search ranking and score breakdown be explained?",
+  "links": [
+    {
+      "slug": "dashboard-layers",
+      "rel": "contrast",
+      "when": "检索分数拆解不是业务看板层递",
+      "whenEn": "search score breakdown is not dashboard drill-down"
+    },
+    {
+      "slug": "chart-taxonomy",
+      "rel": "contrast",
+      "when": "排序贡献瀑布图不是通用数据图表",
+      "whenEn": "ranking contribution waterfall is not a generic chart"
+    },
+    {
+      "slug": "control-taxonomy",
+      "rel": "contrast",
+      "when": "检索输入与参数实验不是普通表单填写",
+      "whenEn": "search input and tuning experiments are not form controls"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-25",
+  "updated": "2026-08-25",
+  "tags": ["search", "retrieval", "algorithm", "explainability", "ranking", "rag"]
+}

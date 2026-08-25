@@ -1,0 +1,104 @@
+:root {
+  --color-bm25: #b33a2c;
+  --color-vector: #0d9488;
+}
+
+.dark, [data-theme="dark"] {
+  --color-bm25: #f87171;
+  --color-vector: #2dd4bf;
+}
+
+.text-bm25 {
+  color: var(--color-bm25);
+}
+
+.bg-bm25 {
+  background-color: var(--color-bm25);
+}
+
+.border-bm25 {
+  border-color: var(--color-bm25);
+}
+
+.bg-bm25\/15 {
+  background-color: color-mix(in oklab, var(--color-bm25) 15%, transparent);
+}
+
+.bg-bm25\/5 {
+  background-color: color-mix(in oklab, var(--color-bm25) 5%, transparent);
+}
+
+.border-bm25\/30 {
+  border-color: color-mix(in oklab, var(--color-bm25) 30%, transparent);
+}
+
+.text-vector {
+  color: var(--color-vector);
+}
+
+.bg-vector {
+  background-color: var(--color-vector);
+}
+
+.border-vector {
+  border-color: var(--color-vector);
+}
+
+.bg-vector\/15 {
+  background-color: color-mix(in oklab, var(--color-vector) 15%, transparent);
+}
+
+.border-vector\/30 {
+  border-color: color-mix(in oklab, var(--color-vector) 30%, transparent);
+}
+
+/* Custom range slider styling */
+input[type="range"].bm25-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"].bm25-range::-webkit-slider-runnable-track {
+  height: 6px;
+  background-color: var(--color-surface-2, #f4f5f7);
+  border-radius: 9999px;
+}
+
+input[type="range"].bm25-range::-moz-range-track {
+  height: 6px;
+  background-color: var(--color-surface-2, #f4f5f7);
+  border-radius: 9999px;
+}
+
+input[type="range"].bm25-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -7px;
+  height: 20px;
+  width: 20px;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, rgb(23 24 28 / 0.08));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  border-radius: 9999px;
+  transition: transform 0.1s ease;
+}
+
+input[type="range"].bm25-range::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, rgb(23 24 28 / 0.08));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  border-radius: 9999px;
+  transition: transform 0.1s ease;
+}
+
+input[type="range"].bm25-range:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+
+input[type="range"].bm25-range:active::-moz-range-thumb {
+  transform: scale(1.15);
+}

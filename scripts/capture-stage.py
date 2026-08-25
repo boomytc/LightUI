@@ -184,6 +184,10 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("track", "mid", "track-mid.png"),
         ("track", "fit", "track-fit.png"),
     ],
+    "bm25-explain": [
+        ("compare", "default", "compare.png"),
+        ("score", "default", "score.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:

@@ -7,6 +7,7 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [bm25-explain](../studies/bm25-explain/) | 检索排序不是黑盒总分。先定稀疏与向量的分数不可直接相加，再把得分拆解为词频饱和与篇幅惩罚。 | active | 2026-08-25 | 2026-08-25 |
 | [nav-taxonomy](../studies/nav-taxonomy/) | 一排链接只说了有入口。先定住在哪、怎么开、滚的时候干什么。 | active | 2026-08-15 | 2026-08-24 |
 | [progress-taxonomy](../studies/progress-taxonomy/) | 转圈只说了在等。先定进度能不能算：能算就走到 100 停住；不能算就循环，不要假百分比。 | active | 2026-08-23 | 2026-08-24 |
 | [scroll-chrome](../studies/scroll-chrome/) | 滚动提示是开场邀请，还是位置轨道？先定报什么。邀请只在顶上；轨道点的是比例，不是章节。 | active | 2026-08-24 | 2026-08-24 |
@@ -39,6 +40,7 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **检索可解释性** (`bm25-explain`) — 检索排序怎么让人看明白？
 - **导航栏** (`nav-taxonomy`) — 这块叫导航的东西住在哪、怎么开？
 - **进度** (`progress-taxonomy`) — 进度能不能算？
 - **滚动条** (`scroll-chrome`) — 滚动提示是开场邀请，还是位置轨道？
@@ -69,6 +71,9 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `bm25-explain` contrast `dashboard-layers` — 检索分数拆解不是业务看板层递
+- `bm25-explain` contrast `chart-taxonomy` — 排序贡献瀑布图不是通用数据图表
+- `bm25-explain` contrast `control-taxonomy` — 检索输入与参数实验不是普通表单填写
 - `nav-taxonomy` after `dropdown-taxonomy` — 若它是往下展开的面板
 - `nav-taxonomy` after `sidebar-taxonomy` — 若它是靠左的一栏
 - `nav-taxonomy` contrast `dropdown-taxonomy` — 站点栏目不是表单下拉
