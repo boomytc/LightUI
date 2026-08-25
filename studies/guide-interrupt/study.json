@@ -1,0 +1,35 @@
+{
+  "slug": "guide-interrupt",
+  "title": "引导",
+  "titleEn": "Guide",
+  "eyebrow": "Pin · Advance",
+  "eyebrowEn": "Pin · Advance",
+  "summary": "教学不是弹窗，也不是一条提示。先定何时出现、钉在谁身上、靠什么推进、结束后还挡不挡。",
+  "summaryEn": "Teaching is not a dialog, and not a notice. First decide when it appears, what it pins to, how the user advances, and whether it still blocks after.",
+  "asks": "引导何时出现、钉在谁身上、靠什么推进、结束后还挡不挡？",
+  "asksEn": "When does teaching appear, what does it pin to, how does the user advance, and does it still block after?",
+  "links": [
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "教学打断不是任务弹窗",
+      "whenEn": "a teaching interrupt is not a task dialog"
+    },
+    {
+      "slug": "notify-taxonomy",
+      "rel": "contrast",
+      "when": "教怎么用不是报已经发生的事",
+      "whenEn": "teaching how to use it is not reporting something that already happened"
+    },
+    {
+      "slug": "inverted-notch",
+      "rel": "contrast",
+      "when": "挖孔遮罩不是卡片内凹角",
+      "whenEn": "a cutout scrim is not an inverted card notch"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-25",
+  "updated": "2026-08-25",
+  "tags": ["guide", "coach", "interrupt"]
+}
