@@ -9,6 +9,7 @@ import { CollapseDemo } from "./CollapseDemo";
 import { ReadMoreDemo } from "./ReadMoreDemo";
 import { RowDemo } from "./RowDemo";
 import { TreeDemo } from "./TreeDemo";
+import "./expand.css";
 
 export function Playground() {
   const locale = useLocale();

@@ -171,7 +171,10 @@ export function GuideScene({
     (kind === "hint" && hint === null) ||
     (kind === "checklist" && checklistProgress(checks, CHECKLIST_TASKS.length) === 1);
 
+  const locked = Boolean(lock);
+
   function onTarget(id: TargetId) {
+    if (locked) return;
     if (kind === "spotlight") {
       if (spot === 0 && id === "permission") {
         setPermission(true);
@@ -187,6 +190,7 @@ export function GuideScene({
   }
 
   function replay() {
+    if (locked) return;
     const next = seed(kind, "");
     setTour({ step: next.tourStep, done: next.tourDone });
     setCoachOn(next.coachOn);
@@ -220,7 +224,8 @@ export function GuideScene({
                 {allowsSkip(kind) ? (
                   <button
                     type="button"
-                    className="text-[11px] text-surface/50 hover:text-surface"
+                    disabled={locked}
+                    className="text-[11px] text-surface/50 hover:text-surface disabled:pointer-events-none"
                     onClick={() => setTour(tourStep(tour.step, TOUR_COUNT, "skip"))}
                   >
                     {pick(loc("跳过", "Skip"), locale)}
@@ -231,7 +236,8 @@ export function GuideScene({
               <div className="mt-3 flex justify-end">
                 <button
                   type="button"
-                  className="h-8 rounded-lg bg-surface px-3 text-[12px] font-medium text-fg"
+                  disabled={locked}
+                  className="h-8 rounded-lg bg-surface px-3 text-[12px] font-medium text-fg disabled:cursor-default"
                   onClick={() => setTour(tourStep(tour.step, TOUR_COUNT, "next"))}
                 >
                   {tour.step + 1 >= TOUR_COUNT
@@ -266,7 +272,8 @@ export function GuideScene({
               <div className="mt-3 flex justify-end">
                 <button
                   type="button"
-                  className="h-8 rounded-lg bg-fg px-3 text-[12px] font-medium text-surface"
+                  disabled={locked}
+                  className="h-8 rounded-lg bg-fg px-3 text-[12px] font-medium text-surface disabled:cursor-default"
                   onClick={() => setCoachOn(false)}
                 >
                   {pick(loc("明白了", "Got it"), locale)}
@@ -284,7 +291,9 @@ export function GuideScene({
             <HotspotDot
               hole={hole}
               label={pick(loc("打开新功能提示", "Open the new-feature tip"), locale)}
-              onClick={() => setHotspot((s) => hotspotNext(s, "click-dot"))}
+              onClick={() => {
+                if (!locked) setHotspot((s) => hotspotNext(s, "click-dot"));
+              }}
             />
           ) : null}
           {hotspot === "open" ? (
@@ -299,7 +308,8 @@ export function GuideScene({
                 <div className="mt-3 flex justify-end">
                   <button
                     type="button"
-                    className="h-8 rounded-lg bg-fg px-3 text-[12px] font-medium text-surface"
+                    disabled={locked}
+                    className="h-8 rounded-lg bg-fg px-3 text-[12px] font-medium text-surface disabled:cursor-default"
                     onClick={() => setHotspot((s) => hotspotNext(s, "dismiss"))}
                   >
                     {pick(loc("知道了", "Dismiss"), locale)}
@@ -348,11 +358,13 @@ export function GuideScene({
                   <input
                     type="checkbox"
                     checked={on}
-                    onChange={() =>
+                    disabled={locked}
+                    onChange={() => {
+                      if (locked) return;
                       setChecks((list) =>
                         list.includes(task.id) ? list.filter((id) => id !== task.id) : [...list, task.id],
-                      )
-                    }
+                      );
+                    }}
                   />
                   <span className={cn(on && "text-fg-muted line-through")}>
                     {pick({ zh: task.zh, en: task.en }, locale)}
@@ -373,6 +385,7 @@ export function GuideScene({
         title={title}
         permission={permission}
         shipped={shipped}
+        locked={locked}
         onTitle={setTitle}
         onPermission={setPermission}
         onPublish={() => setShipped(true)}
@@ -391,7 +404,7 @@ export function GuideScene({
             {allowsSkip(kind) ? " · skip" : ""}
             {teaching && kind === "tour" ? ` · ${tour.step + 1}/${TOUR_COUNT}` : ""}
           </p>
-          {finished ? (
+          {finished && !locked ? (
             <button type="button" className="text-[12px] text-accent hover:underline" onClick={replay}>
               {pick(loc("再看一遍", "Replay"), locale)}
             </button>

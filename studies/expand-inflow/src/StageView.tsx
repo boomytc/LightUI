@@ -1,6 +1,7 @@
 import { KIND_IDS } from "./lib/machines";
 import { normalizeStageState, readStageQuery, stageKind } from "./lib/stage-query";
 import { KindDemo } from "./expand/Playground";
+import "./expand/expand.css";
 
 const IDS = new Set<string>(KIND_IDS);
 

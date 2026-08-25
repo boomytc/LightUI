@@ -18,6 +18,7 @@ export function Workbench({
   title,
   permission,
   shipped,
+  locked = false,
   onTitle,
   onPermission,
   onPublish,
@@ -32,6 +33,7 @@ export function Workbench({
   title: string;
   permission: boolean;
   shipped: boolean;
+  locked?: boolean;
   onTitle: (value: string) => void;
   onPermission: (value: boolean) => void;
   onPublish: () => void;
@@ -59,10 +61,12 @@ export function Workbench({
                 key={item.id}
                 type="button"
                 ref={feature ? (el) => register("feature", el) : undefined}
+                disabled={locked}
                 onClick={feature ? () => onTarget("feature") : undefined}
                 className={cn(
                   "relative inline-flex h-8 shrink-0 items-center gap-1 rounded-md px-2.5 text-[12px] font-medium",
                   feature ? "text-fg" : "text-fg-muted hover:bg-surface-2 hover:text-fg",
+                  locked && "cursor-default",
                 )}
               >
                 {pick({ zh: item.zh, en: item.en }, locale)}
@@ -102,6 +106,7 @@ export function Workbench({
               ref={(el) => register("title", el)}
               className={cn(fieldClass, "mt-1")}
               value={title}
+              disabled={locked}
               placeholder={pick(loc("给这一次发布起名", "Name this release"), locale)}
               onChange={(e) => onTitle(e.target.value)}
             />
@@ -113,6 +118,7 @@ export function Workbench({
               ref={(el) => register("permission", el)}
               className={cn(fieldClass, "mt-1")}
               value={permission ? "team" : "self"}
+              disabled={locked}
               onPointerDown={() => onTarget("permission")}
               onChange={(e) => onPermission(e.target.value === "team")}
             >
@@ -123,7 +129,14 @@ export function Workbench({
               {shipped ? (
                 <span className="text-[12px] text-intent">{pick(loc("已发布", "Published"), locale)}</span>
               ) : null}
-              <Btn ref={(el) => register("publish", el)} onClick={() => { onTarget("publish"); onPublish(); }}>
+              <Btn
+                ref={(el) => register("publish", el)}
+                disabled={locked}
+                onClick={() => {
+                  onTarget("publish");
+                  onPublish();
+                }}
+              >
                 {pick(loc("发布", "Publish"), locale)}
               </Btn>
             </div>

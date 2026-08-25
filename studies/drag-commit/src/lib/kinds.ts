@@ -106,8 +106,8 @@ export const KINDS: KindMeta[] = [
       loc("路径沿来路倒回，不是一次成功投放", "The path reverses — this is not a successful drop"),
     ],
     spec: loc(
-      "做无效回弹。可投放托盘能收下；只读托盘变红，路径倒回，数据数组不变。回弹不是成功投放。",
-      "An invalid snap-back. The open tray can receive. The read-only tray turns red, the path reverses, and the arrays do not change. A snap-back is not a successful drop.",
+      "做无效回弹。只读托盘变红，路径倒回，数据数组不变。回弹不是成功投放。",
+      "An invalid snap-back. The read-only tray turns red, the path reverses, and the arrays do not change. A snap-back is not a successful drop.",
     ),
     note: loc("回弹不是成功投放。动画回去是因为目标无效。", "A snap-back is not a successful drop. It returns because the target is invalid."),
     tells: loc("只读变红，卡片沿路回去，数组没变", "Read-only turns red; the card returns; arrays stay"),

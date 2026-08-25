@@ -83,7 +83,7 @@ export function usePointerDrag(options: {
     return () => window.removeEventListener("keydown", onKey);
   }, [finish]);
 
-  useEffect(() => () => clearListeners.current?.(), []);
+  useEffect(() => () => finish("cancel"), [finish]);
 
   const bind = useCallback(
     (id: string) => ({

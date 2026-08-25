@@ -129,7 +129,7 @@ export function GestureChart({
   winRef.current = win;
 
   useEffect(() => {
-    if (kind !== "zoom") return;
+    if (kind !== "zoom" || locked) return;
     const el = svgRef.current;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
@@ -141,7 +141,7 @@ export function GestureChart({
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, [kind]);
+  }, [kind, locked]);
 
   const visibleSeries = useMemo(
     () => SERIES.filter((s) => !hidden.has(s.id)),
@@ -175,6 +175,7 @@ export function GestureChart({
         : (hover ?? cursor);
 
   function onPointerDown(e: PointerEvent<SVGSVGElement>) {
+    if (locked) return;
     const i = pointerAbsIndex(e.clientX, e.currentTarget, view.start, view.end);
     setCursor(i);
     if (kind === "brush") {
@@ -184,6 +185,7 @@ export function GestureChart({
   }
 
   function onPointerMove(e: PointerEvent<SVGSVGElement>) {
+    if (locked) return;
     const i = pointerAbsIndex(e.clientX, e.currentTarget, view.start, view.end);
     setCursor(i);
     if (kind === "brush") setBrush((s) => brushPointerMove(s, i));
@@ -191,14 +193,17 @@ export function GestureChart({
   }
 
   function onPointerUp() {
+    if (locked) return;
     if (kind === "brush") setBrush((s) => brushPointerUp(s));
   }
 
   function onPointerLeave() {
+    if (locked) return;
     if (kind === "crosshair" || kind === "tooltip") setHover(null);
   }
 
   function toggleSeries(id: string) {
+    if (locked) return;
     setHidden((h) => {
       const next = legendToggle(h, id, SERIES_IDS);
       const blocked = !h.has(id) && !next.has(id);
@@ -262,10 +267,12 @@ export function GestureChart({
                 key={mode}
                 type="button"
                 aria-pressed={hiMode === mode}
+                disabled={locked}
                 onClick={() => setHiMode(mode)}
                 className={cn(
                   "rounded-md px-2 py-1 text-[11px] font-medium",
                   hiMode === mode ? "bg-surface text-fg shadow-sm" : "text-fg-muted hover:text-fg",
+                  locked && "cursor-default opacity-80",
                 )}
               >
                 {mode === "anomaly"
@@ -288,10 +295,12 @@ export function GestureChart({
                   key={n}
                   type="button"
                   aria-pressed={on}
+                  disabled={locked}
                   onClick={() => setWin(presetWindow(n, cursor))}
                   className={cn(
                     "rounded-md px-2 py-1 font-mono text-[11px] font-medium",
                     on ? "bg-surface text-fg shadow-sm" : "text-fg-muted hover:text-fg",
+                    locked && "cursor-default opacity-80",
                   )}
                 >
                   {n}
@@ -306,8 +315,9 @@ export function GestureChart({
         <div className="mb-3 flex flex-wrap items-center gap-1 text-[12px]">
           <button
             type="button"
+            disabled={locked}
             onClick={() => setPath((p) => drillPop(p, 0))}
-            className="rounded-md px-1.5 py-0.5 text-fg-muted hover:bg-surface-2 hover:text-fg"
+            className="rounded-md px-1.5 py-0.5 text-fg-muted hover:bg-surface-2 hover:text-fg disabled:pointer-events-none"
           >
             {locale === "en" ? "Channel" : "渠道"}
           </button>
@@ -316,8 +326,9 @@ export function GestureChart({
               <span className="text-fg-subtle">/</span>
               <button
                 type="button"
+                disabled={locked}
                 onClick={() => setPath((p) => drillPop(p, i + 1))}
-                className="rounded-md px-1.5 py-0.5 text-fg-muted hover:bg-surface-2 hover:text-fg"
+                className="rounded-md px-1.5 py-0.5 text-fg-muted hover:bg-surface-2 hover:text-fg disabled:pointer-events-none"
               >
                 {c.name}
               </button>
@@ -338,6 +349,7 @@ export function GestureChart({
               hasChildren: Boolean(b.children && b.children.length > 0),
             }))}
             max={barMax * 1.12}
+            locked={locked}
             onPick={(id) => setPath((p) => drillPush(p, id, tree))}
           />
         ) : (
@@ -371,8 +383,9 @@ export function GestureChart({
                 key={s.id}
                 type="button"
                 aria-pressed={on}
+                disabled={locked}
                 onClick={() => toggleSeries(s.id)}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-2.5 py-1 text-[12px] text-fg-muted hover:bg-surface-2"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-2.5 py-1 text-[12px] text-fg-muted hover:bg-surface-2 disabled:cursor-default"
               >
                 <i className="size-2.5 rounded-full" style={{ background: s.color }} />
                 {pick(s.name, locale)}
@@ -654,11 +667,13 @@ function BarPlot({
   locale,
   items,
   max,
+  locked = false,
   onPick,
 }: {
   locale: Locale;
   items: { id: string; name: string; value: number; hasChildren: boolean }[];
   max: number;
+  locked?: boolean;
   onPick: (id: string) => void;
 }) {
   const n = Math.max(items.length, 1);
@@ -689,8 +704,10 @@ function BarPlot({
                 d={roundTop(x, y, barW, h, 5)}
                 fill={ACCENT}
                 fillOpacity={item.hasChildren ? 1 : 0.7}
-                className="cursor-pointer"
-                onClick={() => onPick(item.id)}
+                className={locked ? "cursor-default" : "cursor-pointer"}
+                onClick={() => {
+                  if (!locked) onPick(item.id);
+                }}
               />
               <text x={x + barW / 2} y={y - 6} textAnchor="middle" fill={FG} fontSize={11}>
                 {item.value}

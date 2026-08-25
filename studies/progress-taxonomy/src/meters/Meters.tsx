@@ -250,32 +250,47 @@ export function LoopSpinner({
 }
 
 export function ButtonLock({
-  looping,
+  phase,
+  looping = false,
   locale,
   scale = "compact",
+  onClick,
+  disabled,
 }: {
-  looping: boolean;
+  phase?: "idle" | "loading" | "done";
+  looping?: boolean;
   locale: Locale;
   scale?: MeterScale;
+  onClick?: () => void;
+  disabled?: boolean;
 }) {
-  const busy = looping;
-  const done = !looping;
+  const currentPhase = phase ?? (looping ? "loading" : "done");
+  const busy = currentPhase === "loading";
+  const done = currentPhase === "done";
+  const isDisabled = disabled ?? busy;
   const label = busy
     ? locale === "en"
       ? "Generating"
       : "生成中"
-    : locale === "en"
-      ? "Completed"
-      : "已完成";
+    : done
+      ? locale === "en"
+        ? "Completed"
+        : "已完成"
+      : locale === "en"
+        ? "Generate brief"
+        : "生成简报";
   return (
     <button
       type="button"
       data-meter="button"
-      disabled
+      data-phase={currentPhase}
+      disabled={isDisabled}
       aria-busy={busy}
       aria-live="polite"
+      onClick={onClick}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-full bg-fg font-medium text-surface",
+        "inline-flex items-center justify-center gap-2 rounded-full bg-fg font-medium text-surface transition-all",
+        !isDisabled && "cursor-pointer hover:bg-fg/90 active:scale-[0.98]",
         scale === "hero" ? "mt-8 h-12 min-w-[10rem] px-5 text-[15px]" : "mt-6 h-10 min-w-[8.5rem] px-4 text-[13px]",
       )}
     >

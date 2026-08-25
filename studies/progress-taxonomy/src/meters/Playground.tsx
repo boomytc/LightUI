@@ -2,7 +2,9 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Check, Copy } from "lucide-react";
 import { KINDS, type KindMeta } from "../lib/kinds";
 import {
+  buttonPhase,
   category,
+  locksTrigger,
   MID_PROGRESS,
   prefersStatic,
   resolveLock,
@@ -196,11 +198,14 @@ function LockedScene({ id, state }: { id: KindId; state: string }) {
   const reduced = useReducedMotion();
   const snap = resolveLock(id, state);
   const looping = snap.looping && !prefersStatic(reduced, id);
+  const bPhase = id === "button" ? buttonPhase(snap.state, snap.looping) : undefined;
   return (
     <Scene
       id={id}
       progress={snap.progress}
       looping={looping}
+      buttonPhase={bPhase}
+      buttonDisabled={true}
       wave={false}
       locale={locale}
       scale="compact"
@@ -212,7 +217,9 @@ function LiveScene({ id }: { id: KindId }) {
   const locale = useLocale();
   const reduced = useReducedMotion();
   const cat = category(id);
+  const isTriggerButton = locksTrigger(id);
   const [phase, setPhase] = useState<"idle" | "run" | "done">("idle");
+  const [btnPhase, setBtnPhase] = useState<"idle" | "loading" | "done">("idle");
   const [restartKey, setRestartKey] = useState(0);
   const [looping, setLooping] = useState(true);
   const { value, done } = useRunProgress({
@@ -225,6 +232,14 @@ function LiveScene({ id }: { id: KindId }) {
     if (done && phase === "run") setPhase("done");
   }, [done, phase]);
 
+  useEffect(() => {
+    if (btnPhase !== "loading") return;
+    const t = window.setTimeout(() => {
+      setBtnPhase("done");
+    }, reduced ? 200 : 1600);
+    return () => window.clearTimeout(t);
+  }, [btnPhase, reduced]);
+
   const progress =
     cat === "determinate" ? (phase === "idle" ? MID_PROGRESS : phase === "done" ? 1 : value) : 0;
   const loop = cat === "indeterminate" && looping && !prefersStatic(reduced, id);
@@ -235,6 +250,34 @@ function LiveScene({ id }: { id: KindId }) {
     setPhase("run");
   }
 
+  function handleButtonClick() {
+    if (btnPhase === "idle") {
+      setBtnPhase("loading");
+    } else if (btnPhase === "done") {
+      setBtnPhase("idle");
+    }
+  }
+
+  const action = isTriggerButton ? undefined : cat === "determinate" ? (
+    <ActionButton disabled={phase === "run"} onClick={startDeterminate}>
+      {phase === "done"
+        ? locale === "en"
+          ? "Again"
+          : "再来"
+        : locale === "en"
+          ? "Start"
+          : "开始"}
+    </ActionButton>
+  ) : looping ? (
+    <ActionButton onClick={() => setLooping(false)}>
+      {locale === "en" ? "Done" : "完成"}
+    </ActionButton>
+  ) : (
+    <ActionButton onClick={() => setLooping(true)}>
+      {locale === "en" ? "Start" : "开始"}
+    </ActionButton>
+  );
+
   return (
     <Scene
       id={id}
@@ -243,27 +286,9 @@ function LiveScene({ id }: { id: KindId }) {
       wave={wave}
       locale={locale}
       scale="hero"
-      action={
-        cat === "determinate" ? (
-          <ActionButton disabled={phase === "run"} onClick={startDeterminate}>
-            {phase === "done"
-              ? locale === "en"
-                ? "Again"
-                : "再来"
-              : locale === "en"
-                ? "Start"
-                : "开始"}
-          </ActionButton>
-        ) : looping ? (
-          <ActionButton onClick={() => setLooping(false)}>
-            {locale === "en" ? "Done" : "完成"}
-          </ActionButton>
-        ) : (
-          <ActionButton onClick={() => setLooping(true)}>
-            {locale === "en" ? "Start" : "开始"}
-          </ActionButton>
-        )
-      }
+      buttonPhase={btnPhase}
+      onButtonClick={handleButtonClick}
+      action={action}
     />
   );
 }

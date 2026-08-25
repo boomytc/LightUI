@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Archive, Inbox, Lock } from "lucide-react";
+import { Archive, Lock } from "lucide-react";
 import { dropzoneHit, snapbackKeepsModel } from "../lib/machines";
 import { pick, useLocale } from "../lib/site-locale";
 import type { StageLock } from "../lib/stage-query";
@@ -9,24 +9,29 @@ import { Btn, CardFace, DemoShell } from "./Frame";
 import { animateReversePath } from "./reverse-path";
 import { ghostStyle, usePointerDrag, type DragLive } from "./use-pointer-drag";
 
+const LOCKED_QUEUE: Task[] = [
+  {
+    id: "f3",
+    title: { zh: "冻结队列 · 只读", en: "Frozen queue · read-only" },
+    meta: { zh: "不可追加", en: "Cannot append" },
+  },
+];
+
 export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boolean; lock?: StageLock }) {
   const locale = useLocale();
   const locked = lock === "lift";
   const [desk, setDesk] = useState<Task[]>(DESK_SEED);
-  const [inbox, setInbox] = useState<Task[]>([]);
   const archive = ARCHIVE_SEED;
+  const lockedQueue = LOCKED_QUEUE;
   const [reject, setReject] = useState(locked);
-  const [hitInbox, setHitInbox] = useState(false);
   const [returning, setReturning] = useState<DragLive | null>(null);
   const [status, setStatus] = useState(() =>
-    locale === "en" ? "Idle · archive is read-only" : "待机 · 归档是只读的",
+    locale === "en" ? "Idle · trays are read-only" : "待机 · 托盘是只读的",
   );
 
-  const inboxRef = useRef<HTMLDivElement>(null);
   const archiveRef = useRef<HTMLDivElement>(null);
-  const deskRef = useRef(desk);
+  const queueRef = useRef<HTMLDivElement>(null);
   const reverseStop = useRef<(() => void) | null>(null);
-  deskRef.current = desk;
 
   function boxOf(el: HTMLElement | null) {
     if (!el) return null;
@@ -37,21 +42,24 @@ export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boo
   const { live, bind } = usePointerDrag({
     disabled: locked,
     onLift: () =>
-      setStatus(locale === "en" ? "Lifted · only Inbox receives" : "已抬起 · 只有收件箱能收下"),
+      setStatus(locale === "en" ? "Lifted · read-only trays will reject" : "已抬起 · 只读托盘会拒收"),
     onMove: (session) => {
-      const inboxBox = boxOf(inboxRef.current);
       const archiveBox = boxOf(archiveRef.current);
-      setHitInbox(inboxBox ? dropzoneHit(inboxBox, session.x, session.y) : false);
-      setReject(archiveBox ? dropzoneHit(archiveBox, session.x, session.y) : false);
+      const queueBox = boxOf(queueRef.current);
+      const onArchive = archiveBox ? dropzoneHit(archiveBox, session.x, session.y) : false;
+      const onQueue = queueBox ? dropzoneHit(queueBox, session.x, session.y) : false;
+      setReject(onArchive || onQueue);
     },
     onDrop: (session) => {
-      const inboxBox = boxOf(inboxRef.current);
       const archiveBox = boxOf(archiveRef.current);
-      const valid = inboxBox ? dropzoneHit(inboxBox, session.x, session.y) : false;
+      const queueBox = boxOf(queueRef.current);
       const onArchive = archiveBox ? dropzoneHit(archiveBox, session.x, session.y) : false;
-      setHitInbox(false);
+      const onQueue = queueBox ? dropzoneHit(queueBox, session.x, session.y) : false;
+      const onReadOnly = onArchive || onQueue;
       setReject(false);
-      if (snapbackKeepsModel(valid)) {
+
+      // Snap-back purely teaches the reject commit model: arrays never mutate
+      if (snapbackKeepsModel(false)) {
         reverseStop.current?.();
         setReturning(session);
         reverseStop.current = animateReversePath(
@@ -60,24 +68,17 @@ export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boo
           () => setReturning(null),
         );
         setStatus(
-          onArchive
+          onReadOnly
             ? locale === "en"
-              ? "Read-only · path reversed · arrays unchanged"
-              : "只读 · 路径倒回 · 数组不变"
+              ? "Read-only tray · rejected · arrays unchanged"
+              : "只读托盘 · 拒绝提交 · 数组不变"
             : locale === "en"
               ? "Invalid target · snap-back"
               : "无效目标 · 回弹",
         );
-        return;
       }
-      const card = deskRef.current.find((item) => item.id === session.id);
-      if (!card) return;
-      setDesk((list) => list.filter((item) => item.id !== session.id));
-      setInbox((list) => [...list, card]);
-      setStatus(locale === "en" ? "Inbox received · archive untouched" : "收件箱收下 · 归档未动");
     },
     onCancel: (session) => {
-      setHitInbox(false);
       setReject(false);
       reverseStop.current?.();
       setReturning(session);
@@ -101,31 +102,23 @@ export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boo
     icon,
     count,
     children,
-    hit,
-    lockedTray = false,
   }: {
-    boxRef: typeof inboxRef;
+    boxRef: typeof archiveRef;
     title: string;
     icon: ReactNode;
     count: number;
     children: ReactNode;
-    hit?: boolean;
-    lockedTray?: boolean;
   }) {
     return (
       <div
         ref={boxRef}
-        data-hit={hit && !lockedTray ? "true" : undefined}
-        data-reject={lockedTray && reject ? "true" : undefined}
-        className={cn(
-          "drag-zone drag-tray relative flex min-h-0 flex-col rounded-2xl p-3",
-          lockedTray && "border-dashed",
-        )}
+        data-reject={reject ? "true" : undefined}
+        className="drag-zone drag-tray relative flex min-h-0 flex-col rounded-2xl border-dashed p-3"
       >
         <p className="mb-2 flex items-center gap-1.5 text-[11px] font-medium text-fg-subtle">
           {icon}
           {title}
-          {lockedTray ? <Lock className="size-3" aria-hidden="true" /> : null}
+          <Lock className="size-3" aria-hidden="true" />
           <span className="ml-auto tabular-nums">{count}</span>
         </p>
         <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">{children}</div>
@@ -142,7 +135,6 @@ export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boo
           <Btn
             onClick={() => {
               setDesk(DESK_SEED);
-              setInbox([]);
               setStatus(locale === "en" ? "Reset · desk restored" : "已重置 · 桌面回来");
             }}
           >
@@ -183,21 +175,10 @@ export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boo
         </div>
         <div className="grid min-h-0 grid-rows-2 gap-3">
           {tray({
-            boxRef: inboxRef,
-            title: locale === "en" ? "Inbox" : "收件箱",
-            icon: <Inbox className="size-3.5" aria-hidden="true" />,
-            count: inbox.length,
-            hit: hitInbox,
-            children: inbox.map((item) => (
-              <CardFace key={item.id} title={pick(item.title, locale)} meta={pick(item.meta, locale)} />
-            )),
-          })}
-          {tray({
             boxRef: archiveRef,
             title: locale === "en" ? "Archive · read-only" : "归档 · 只读",
             icon: <Archive className="size-3.5" aria-hidden="true" />,
             count: archive.length,
-            lockedTray: true,
             children: (
               <>
                 {archive.map((item) => (
@@ -218,6 +199,20 @@ export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boo
                 ) : null}
               </>
             ),
+          })}
+          {tray({
+            boxRef: queueRef,
+            title: locale === "en" ? "Locked storage · read-only" : "锁定库 · 只读",
+            icon: <Archive className="size-3.5" aria-hidden="true" />,
+            count: lockedQueue.length,
+            children: lockedQueue.map((item) => (
+              <CardFace
+                key={item.id}
+                title={pick(item.title, locale)}
+                meta={pick(item.meta, locale)}
+                className="opacity-70"
+              />
+            )),
           })}
         </div>
       </div>

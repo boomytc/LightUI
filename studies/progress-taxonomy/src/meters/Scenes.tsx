@@ -24,6 +24,9 @@ export function Scene({
   locale,
   action,
   scale = "compact",
+  buttonPhase,
+  onButtonClick,
+  buttonDisabled,
 }: {
   id: KindId;
   progress: number;
@@ -32,6 +35,9 @@ export function Scene({
   locale: Locale;
   action?: ReactNode;
   scale?: MeterScale;
+  buttonPhase?: "idle" | "loading" | "done";
+  onButtonClick?: () => void;
+  buttonDisabled?: boolean;
 }) {
   const meta = KINDS.find((k) => k.id === id) ?? KINDS[0];
   const title = pick(meta.window, locale);
@@ -104,7 +110,14 @@ export function Scene({
       return (
         <Shell scale={scale} title={title} action={action} demo={id}>
           <CopyBlock headline={headline} sub={sub} scale={scale} />
-          <ButtonLock looping={looping} locale={locale} scale={scale} />
+          <ButtonLock
+            phase={buttonPhase}
+            looping={looping}
+            locale={locale}
+            scale={scale}
+            onClick={onButtonClick}
+            disabled={buttonDisabled}
+          />
         </Shell>
       );
   }
