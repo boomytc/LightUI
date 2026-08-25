@@ -37,13 +37,15 @@ Ask whether progress can be measured, then pick a leaf.
 | Radar sweep | Search / probe | A conic sector sweeps; not a generic spinner |
 | Bounce dots | A short chat wait | Three dots bounce in turn; no track |
 | Audio wave | Speech recognition | Bars `scaleY`; not a static volume icon |
+| Button lock | Submit / generate | Chrome on the trigger; `disabled` + `aria-busy`; **no percent** |
 
 The pairs people mix up:
 
 - **Progress is not a skeleton.** Progress is work happening. A skeleton holds layout until content arrives.
 - **Progress is not a toast.** A toast says the result is out. Progress says the work is still going.
 - **Stage steps are not tab chevrons.** A chevron row is a navigation selection model: land on a step, view that step. Here the nodes *are* the work: done is checked, active is working, later has not started.
-- **Indeterminate work does not get a fake percent.** Spin, radar, dots, and wave only promise “still here,” not “how much is left.”
+- **Indeterminate work does not get a fake percent.** Spin, radar, dots, wave, and a button lock only promise “still here,” not “how much is left.”
+- **A button lock is not button weight.** Weight is how heavy the action is. This lock is the chrome on the control that started the work.
 
 To specify one of these, say three things:
 

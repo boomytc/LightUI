@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  buttonPhase,
   category,
   circularOffset,
   clampProgress,
   KIND_IDS,
+  locksTrigger,
   MID_PROGRESS,
   prefersStatic,
   resolveLock,
@@ -16,7 +18,7 @@ import {
 } from "./machines";
 
 describe("category", () => {
-  it("splits the eight leaves into determinate and indeterminate", () => {
+  it("splits the leaves into determinate and indeterminate", () => {
     assert.equal(category("fill"), "determinate");
     assert.equal(category("steps"), "determinate");
     assert.equal(category("circular"), "determinate");
@@ -25,6 +27,7 @@ describe("category", () => {
     assert.equal(category("radar"), "indeterminate");
     assert.equal(category("dots"), "indeterminate");
     assert.equal(category("wave"), "indeterminate");
+    assert.equal(category("button"), "indeterminate");
   });
 });
 
@@ -50,6 +53,24 @@ describe("showPercent", () => {
     }
     assert.equal(showPercent("fill"), true);
     assert.equal(showPercent("spin"), false);
+    assert.equal(showPercent("button"), false);
+  });
+});
+
+describe("locksTrigger", () => {
+  it("is true only for button lock", () => {
+    for (const id of KIND_IDS) {
+      assert.equal(locksTrigger(id), id === "button");
+    }
+  });
+});
+
+describe("buttonPhase", () => {
+  it("loads while looping, completes on done, never shows a percent phase", () => {
+    assert.equal(buttonPhase("loop", true), "loading");
+    assert.equal(buttonPhase("mid", true), "loading");
+    assert.equal(buttonPhase("done", false), "done");
+    assert.equal(showPercent("button"), false);
   });
 });
 

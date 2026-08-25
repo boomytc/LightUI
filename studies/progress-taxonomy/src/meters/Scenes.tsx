@@ -12,6 +12,7 @@ import {
   LoopSpinner,
   RadarScan,
   StageSteps,
+  ButtonLock,
   type MeterScale,
 } from "./Meters";
 
@@ -97,6 +98,13 @@ export function Scene({
       return (
         <Shell scale={scale} title={title} action={action} demo={id}>
           <VoiceBody looping={looping} locale={locale} scale={scale} />
+        </Shell>
+      );
+    case "button":
+      return (
+        <Shell scale={scale} title={title} action={action} demo={id}>
+          <CopyBlock headline={headline} sub={sub} scale={scale} />
+          <ButtonLock looping={looping} locale={locale} scale={scale} />
         </Shell>
       );
   }

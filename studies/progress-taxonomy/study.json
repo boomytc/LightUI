@@ -32,10 +32,16 @@
       "rel": "contrast",
       "when": "工作进度不是文档滚过",
       "whenEn": "work progress is not how far the document has been read"
+    },
+    {
+      "slug": "page-append",
+      "rel": "contrast",
+      "when": "工作进度不是列表翻页",
+      "whenEn": "work progress is not paging a list"
     }
   ],
   "status": "active",
   "created": "2026-08-23",
-  "updated": "2026-08-24",
+  "updated": "2026-08-25",
   "tags": ["progress", "motion", "taxonomy"]
 }

@@ -249,6 +249,47 @@ export function LoopSpinner({
   );
 }
 
+export function ButtonLock({
+  looping,
+  locale,
+  scale = "compact",
+}: {
+  looping: boolean;
+  locale: Locale;
+  scale?: MeterScale;
+}) {
+  const busy = looping;
+  const done = !looping;
+  const label = busy
+    ? locale === "en"
+      ? "Generating"
+      : "生成中"
+    : locale === "en"
+      ? "Completed"
+      : "已完成";
+  return (
+    <button
+      type="button"
+      data-meter="button"
+      disabled
+      aria-busy={busy}
+      aria-live="polite"
+      className={cn(
+        "inline-flex items-center justify-center gap-2 rounded-full bg-fg font-medium text-surface",
+        scale === "hero" ? "mt-8 h-12 min-w-[10rem] px-5 text-[15px]" : "mt-6 h-10 min-w-[8.5rem] px-4 text-[13px]",
+      )}
+    >
+      {busy ? <LoopSpinner looping scale="compact" className="size-4 text-surface" /> : null}
+      {done ? (
+        <span className="grid size-4 place-items-center rounded-full bg-surface text-fg" aria-hidden>
+          ✓
+        </span>
+      ) : null}
+      <span>{label}</span>
+    </button>
+  );
+}
+
 export function RadarScan({
   looping,
   scale = "compact",

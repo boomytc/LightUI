@@ -204,6 +204,29 @@ export const KINDS: KindMeta[] = [
     headline: loc("正在识别语音", "Listening to speech"),
     sub: loc("波形随声音持续变化", "The wave keeps changing with the voice"),
   },
+  {
+    id: "button",
+    index: "09",
+    category: "indeterminate",
+    name: "Button lock",
+    zh: loc("按钮锁定", "Button lock"),
+    oneLiner: loc("提交后锁住触发它的按钮，不画假百分比", "Lock the trigger after submit; no fake percent"),
+    scenes: [loc("生成", "Generate"), loc("保存", "Save"), loc("支付", "Pay")],
+    rules: [
+      loc("立刻 disabled + aria-busy，挡住连点", "Disable and aria-busy immediately so it cannot double-fire"),
+      loc("文案变成进行时，内嵌小转圈", "The label becomes progressive; a small spinner sits inside"),
+      loc("不要百分比；失败要能重试，不要卡在转圈", "No percent. Failure must retry; do not stick on a spin"),
+    ],
+    spec: loc(
+      "做按钮锁定。点击后立刻禁用，文案改成「生成中」，内嵌小转圈，aria-busy。不要百分比。完成后变成对勾和「已完成」。",
+      "A button lock. On click it disables, the label becomes Generating, a small spinner, aria-busy. No percent. Done becomes a check and Completed.",
+    ),
+    note: loc("铬长在触发它的按钮上。不要假百分比。", "The chrome lives on the trigger. No fake percent."),
+    tells: loc("按钮自己在忙，点不了第二次", "The button is busy; a second click does not land"),
+    window: loc("工坊 · 生成", "Studio · generate"),
+    headline: loc("生成简报", "Generate a brief"),
+    sub: loc("锁住这一击，不要假进度", "Lock this click. No fake progress."),
+  },
 ];
 
 export const FORMULA = [
@@ -215,7 +238,7 @@ export const FORMULA = [
   {
     n: "2",
     title: loc("场景", "Scene"),
-    example: loc("上传、分步解析、仪表盘、同步、扫描、聊天、语音", "Upload, parse steps, dashboard, sync, scan, chat, voice"),
+    example: loc("上传、分步解析、仪表盘、同步、扫描、聊天、语音、提交按钮", "Upload, parse steps, dashboard, sync, scan, chat, voice, a submit lock"),
   },
   {
     n: "3",

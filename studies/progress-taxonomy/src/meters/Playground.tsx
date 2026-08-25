@@ -59,7 +59,7 @@ export function Playground() {
       <section className="mt-8 min-w-0">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
-            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 08</p>
+            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 09</p>
             <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           </div>

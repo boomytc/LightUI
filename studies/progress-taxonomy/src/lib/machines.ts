@@ -6,7 +6,8 @@ export type KindId =
   | "spin"
   | "radar"
   | "dots"
-  | "wave";
+  | "wave"
+  | "button";
 
 export type Category = "determinate" | "indeterminate";
 
@@ -23,6 +24,7 @@ export const KIND_IDS: readonly KindId[] = [
   "radar",
   "dots",
   "wave",
+  "button",
 ];
 
 export const MID_PROGRESS = 0.62;
@@ -49,6 +51,19 @@ export function clampProgress(p: number): number {
 
 export function showPercent(kind: KindId): boolean {
   return category(kind) === "determinate";
+}
+
+/** Chrome lives on the control that started the work. */
+export function locksTrigger(kind: KindId): boolean {
+  return kind === "button";
+}
+
+export type ButtonPhase = "idle" | "loading" | "done";
+
+export function buttonPhase(state: StageState, looping: boolean): ButtonPhase {
+  if (state === "done") return "done";
+  if (looping || state === "loop" || state === "mid") return "loading";
+  return "idle";
 }
 
 /** `active` is the current index. Everything before is done. */
