@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { afterEdges, contrastPairs, graphLevels, graphNodes, neighborsOf, normalizeLinks } from "./graph";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { afterEdges, afterLeftover, contrastPairs, graphLevels, graphNodes, neighborsOf, normalizeLinks } from "./graph";
 import type { StudyMeta } from "./study";
 
 function study(partial: Partial<StudyMeta> & Pick<StudyMeta, "slug">): StudyMeta {
@@ -104,5 +107,46 @@ describe("afterEdges / contrastPairs / graphNodes", () => {
       graphLevels(pack).map((level) => level.map((s) => s.slug)),
       [["nav", "orphan"], ["drop", "side"], ["intent"]],
     );
+  });
+
+  it("reports leftover when after-edges cycle", () => {
+    const cyclic: StudyMeta[] = [
+      study({
+        slug: "a",
+        asks: "a?",
+        links: [{ slug: "b", rel: "after", when: "next" }],
+      }),
+      study({
+        slug: "b",
+        asks: "b?",
+        links: [{ slug: "a", rel: "after", when: "back" }],
+      }),
+    ];
+    assert.deepEqual(afterLeftover(cyclic), ["a", "b"]);
+  });
+});
+
+function loadCatalog(): StudyMeta[] {
+  const dir = join(fileURLToPath(new URL(".", import.meta.url)), "../../../../studies");
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => {
+      try {
+        return JSON.parse(readFileSync(join(dir, entry.name, "study.json"), "utf8")) as StudyMeta;
+      } catch {
+        return null;
+      }
+    })
+    .filter((meta): meta is StudyMeta => Boolean(meta));
+}
+
+describe("catalog after-DAG", () => {
+  it("has no leftover and no fill/control 2-cycle", () => {
+    const studies = loadCatalog();
+    assert.deepEqual(afterLeftover(studies), []);
+    const keys = new Set(afterEdges(studies).map((edge) => `${edge.from}>${edge.to}`));
+    assert.equal(keys.has("fill-taxonomy>control-taxonomy") && keys.has("control-taxonomy>fill-taxonomy"), false);
+    assert.equal(keys.has("control-taxonomy>fill-taxonomy"), true);
+    assert.equal(keys.has("fill-taxonomy>control-taxonomy"), false);
   });
 });

@@ -7,6 +7,7 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [fill-taxonomy](../studies/fill-taxonomy/) | 「做个表单」只说了有格子。先定填写前、填写中、提交后这一栏该交代什么：标签常在、必填先标、错在栏下能改、成功带下一步。 | active | 2026-08-26 | 2026-08-26 |
 | [bm25-explain](../studies/bm25-explain/) | 检索排序不是黑盒总分。先定稀疏与向量的分数不可直接相加，再把得分拆解为词频饱和与篇幅惩罚。 | active | 2026-08-25 | 2026-08-25 |
 | [chart-read](../studies/chart-read/) | 图画好之后，这一手是读数、过滤还是改窗口。选图种是另一问；看板层递也是另一问。 | active | 2026-08-25 | 2026-08-25 |
 | [container-morph](../studies/container-morph/) | 同一入口连续变形。先定改宽、高、圆角还是排版；停在展开态，或沿原路收回——内容先走，容器后收。 | active | 2026-08-25 | 2026-08-25 |
@@ -46,6 +47,7 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **填写** (`fill-taxonomy`) — 填写前、填写中、提交后，这一栏该交代什么？
 - **检索可解释性** (`bm25-explain`) — 检索排序怎么让人看明白？
 - **读图** (`chart-read`) — 图上这一手是读数、过滤，还是改窗口？
 - **变形** (`container-morph`) — 容器身份连续时，改的是宽、高、圆角，还是排版？停在展开态还是沿路收回？
@@ -83,6 +85,10 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `fill-taxonomy` contrast `control-taxonomy` — 三个时刻该交代什么不是填还是选
+- `fill-taxonomy` after `validation-taxonomy` — 若问题是错误何时开口
+- `fill-taxonomy` contrast `validation-taxonomy` — 当场能改不是何时开口
+- `fill-taxonomy` contrast `notify-taxonomy` — 提交成功不是一条 toast
 - `bm25-explain` contrast `dashboard-layers` — 检索分数拆解不是业务看板层递
 - `bm25-explain` contrast `chart-taxonomy` — 排序贡献瀑布图不是通用数据图表
 - `bm25-explain` contrast `control-taxonomy` — 检索输入与参数实验不是普通表单填写
@@ -146,6 +152,8 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `control-taxonomy` after `validation-taxonomy` — 若问题是错误何时开口
 - `control-taxonomy` contrast `validation-taxonomy` — 填还是选不是何时报错
 - `control-taxonomy` contrast `button-taxonomy` — 填还是选不是按钮有多重
+- `control-taxonomy` after `fill-taxonomy` — 若问题是填写前中后该交代什么
+- `control-taxonomy` contrast `fill-taxonomy` — 填还是选不是三个时刻该交代什么
 - `dashboard-layers` contrast `chart-taxonomy` — 下钻不是换图种
 - `dashboard-layers` contrast `layout-taxonomy` — 层递不是仪表盘皮
 - `dropdown-taxonomy` after `intent-cascade` — 若改成 hover 跟手
@@ -167,6 +175,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `notify-taxonomy` after `overlay-taxonomy` — 若必须先处理才能继续
 - `notify-taxonomy` contrast `overlay-taxonomy` — 提示不打断当前任务，弹窗才打断
 - `notify-taxonomy` contrast `progress-taxonomy` — 结果提示不是进度
+- `notify-taxonomy` contrast `fill-taxonomy` — 结果 toast 不是提交后的成功页
 - `recall-grade` contrast `carousel-taxonomy` — 翻面打分不是切下一张画面
 - `recall-grade` contrast `pending-taxonomy` — 今日无到期不是一条空提示
 - `recall-grade` contrast `overlay-taxonomy` — 三个记得程度不是确认弹窗
@@ -178,6 +187,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `validation-taxonomy` contrast `control-taxonomy` — 何时报错不是填还是选
 - `validation-taxonomy` contrast `notify-taxonomy` — 行内报错不是一条 toast
 - `validation-taxonomy` contrast `overlay-taxonomy` — 提交一次标出不是 modal 确认
+- `validation-taxonomy` contrast `fill-taxonomy` — 何时开口不是三个时刻该交代什么
 
 ## How to read a row
 

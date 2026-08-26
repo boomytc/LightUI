@@ -1,0 +1,41 @@
+{
+  "slug": "fill-taxonomy",
+  "title": "填写",
+  "titleEn": "Filling",
+  "eyebrow": "Disclose · Three moments",
+  "eyebrowEn": "Disclose · Three moments",
+  "summary": "「做个表单」只说了有格子。先定填写前、填写中、提交后这一栏该交代什么：标签常在、必填先标、错在栏下能改、成功带下一步。",
+  "summaryEn": "“Make a form” only says there are boxes. First decide what this field discloses before, during, and after: a lasting label, required up front, a field-level fix, and a success with a next step.",
+  "asks": "填写前、填写中、提交后，这一栏该交代什么？",
+  "asksEn": "What should this field disclose before filling, while filling, and after submit?",
+  "links": [
+    {
+      "slug": "control-taxonomy",
+      "rel": "contrast",
+      "when": "三个时刻该交代什么不是填还是选",
+      "whenEn": "what the three moments disclose is not fill versus pick"
+    },
+    {
+      "slug": "validation-taxonomy",
+      "rel": "after",
+      "when": "若问题是错误何时开口",
+      "whenEn": "if the miss is when the error should speak"
+    },
+    {
+      "slug": "validation-taxonomy",
+      "rel": "contrast",
+      "when": "当场能改不是何时开口",
+      "whenEn": "a field-level fix is not when the error speaks"
+    },
+    {
+      "slug": "notify-taxonomy",
+      "rel": "contrast",
+      "when": "提交成功不是一条 toast",
+      "whenEn": "a completed submit is not a toast"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-26",
+  "updated": "2026-08-26",
+  "tags": ["form", "fill", "taxonomy"]
+}

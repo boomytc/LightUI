@@ -217,6 +217,15 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("page", "page2", "page-page2.png"),
         ("append", "exhausted", "append-exhausted.png"),
     ],
+    "fill-taxonomy": [
+        ("label", "naive", "label-naive.png"),
+        ("required", "clear", "required-clear.png"),
+        ("helper", "clear", "helper-clear.png"),
+        ("group", "naive", "group-naive.png"),
+        ("hint", "clear", "hint-clear.png"),
+        ("repair", "clear", "repair-clear.png"),
+        ("done", "clear", "done-clear.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:

@@ -36,8 +36,8 @@ export const CATEGORIES: CategoryMeta[] = [
     id: "controls",
     nameZh: "表单与控件",
     nameEn: "Controls & Forms",
-    descZh: "按钮重量、输入选择、下拉与页签",
-    descEn: "Button weights, input choices, dropdowns, and tabs",
+    descZh: "按钮重量、输入选择、填写职责、下拉与页签",
+    descEn: "Button weights, input choices, filling duties, dropdowns, and tabs",
   },
   {
     id: "feedback",
@@ -78,6 +78,7 @@ const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "control-taxonomy": "controls",
   "dropdown-taxonomy": "controls",
   "validation-taxonomy": "controls",
+  "fill-taxonomy": "controls",
   "tab-taxonomy": "controls",
 
   "progress-taxonomy": "feedback",

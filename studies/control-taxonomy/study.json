@@ -38,6 +38,18 @@
       "rel": "contrast",
       "when": "填还是选不是按钮有多重",
       "whenEn": "fill versus pick is not how heavy the action is"
+    },
+    {
+      "slug": "fill-taxonomy",
+      "rel": "after",
+      "when": "若问题是填写前中后该交代什么",
+      "whenEn": "if the miss is what the three filling moments disclose"
+    },
+    {
+      "slug": "fill-taxonomy",
+      "rel": "contrast",
+      "when": "填还是选不是三个时刻该交代什么",
+      "whenEn": "fill versus pick is not what the three moments disclose"
     }
   ],
   "status": "active",

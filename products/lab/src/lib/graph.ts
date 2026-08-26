@@ -126,8 +126,7 @@ export function contrastPairs(studies: readonly StudyMeta[]): ContrastPair[] {
   return pairs.sort((a, b) => a.a.localeCompare(b.a) || a.b.localeCompare(b.b));
 }
 
-/** Layers of the after-DAG: earlier questions on the left / top. */
-export function graphLevels(studies: readonly StudyMeta[]): StudyMeta[][] {
+function afterKahn(studies: readonly StudyMeta[]): { layers: string[][]; leftover: string[] } {
   const edges = afterEdges(studies);
   const connected = new Set<string>();
   for (const study of studies) {
@@ -163,6 +162,17 @@ export function graphLevels(studies: readonly StudyMeta[]): StudyMeta[][] {
     ready.sort();
   }
   const leftover = [...connected].filter((slug) => !seen.has(slug)).sort();
+  return { layers, leftover };
+}
+
+/** Nodes Kahn could not place — an `after` cycle. Empty on a DAG. */
+export function afterLeftover(studies: readonly StudyMeta[]): string[] {
+  return afterKahn(studies).leftover;
+}
+
+/** Layers of the after-DAG: earlier questions on the left / top. */
+export function graphLevels(studies: readonly StudyMeta[]): StudyMeta[][] {
+  const { layers, leftover } = afterKahn(studies);
   if (leftover.length) layers.push(leftover);
 
   const bySlug = known(studies);

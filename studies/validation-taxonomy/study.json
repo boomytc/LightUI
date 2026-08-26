@@ -26,6 +26,12 @@
       "rel": "contrast",
       "when": "提交一次标出不是 modal 确认",
       "whenEn": "marking every miss on submit is not a confirm modal"
+    },
+    {
+      "slug": "fill-taxonomy",
+      "rel": "contrast",
+      "when": "何时开口不是三个时刻该交代什么",
+      "whenEn": "when to speak is not what the three moments disclose"
     }
   ],
   "status": "active",

@@ -41,9 +41,10 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another look-at-pointer face | Quantize in `look-quantize` | A mascot / game product → leave it out |
 | Another in-page tab row | Selection model in `tab-taxonomy` | Site nav placement → `nav-taxonomy` |
 | Another form field | Fill vs pick in `control-taxonomy` | What a downward panel **commits** → `dropdown-taxonomy` |
+| Another tidy form | What to disclose in `fill-taxonomy` | When to speak → `validation-taxonomy`; fill vs pick → `control-taxonomy` |
 | Another centered dialog | Interrupt / attach in `overlay-taxonomy` | Small-screen hamburger → `nav-taxonomy`; off-canvas rail → `sidebar-taxonomy` |
 | Another toast | Notice weight in `notify-taxonomy` | A blocking dialog → `overlay-taxonomy` |
-| Another error message | When to speak in `validation-taxonomy` | Fill vs pick → `control-taxonomy` |
+| Another error message | When to speak in `validation-taxonomy` | Fill vs pick → `control-taxonomy`; what to disclose → `fill-taxonomy` |
 | Another spinner | Measurable or not in `progress-taxonomy` | A result toast → `notify-taxonomy` |
 | Another chart | What the data is for in `chart-taxonomy` | Dashboard drill → `dashboard-layers` |
 | Another banner slider | How frames advance in `carousel-taxonomy` | A notice marquee → `notify-taxonomy` |
@@ -113,8 +114,9 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5197` border-beam, `5198` timer-taxonomy, `5199` recall-grade,
   `5200` scroll-chrome, `5201` bm25-explain,
   `5202` container-morph, `5203` drag-commit, `5204` guide-interrupt,
-  `5205` chart-read, `5206` expand-inflow, `5207` page-append.
-  Next free: `5208`.
+  `5205` chart-read, `5206` expand-inflow, `5207` page-append,
+  `5208` fill-taxonomy.
+  Next free: `5209`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

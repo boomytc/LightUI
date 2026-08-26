@@ -46,7 +46,7 @@ Do not keep a neighbor census in `idea.md` (“和另外 N 则”). The lab asse
 
 Same question, new skin → add a kind. New question → new study, then `links`.
 Do not fold nav / sidebar / dropdown / notch / sweep / look / tab / control /
-overlay / notify / validation / progress / chart / carousel / layout / button /
+overlay / notify / validation / fill / progress / chart / carousel / layout / button /
 hero / login / align / dashboard-layers / assistant / pending / beam / timer /
 recall / scroll into one catalog because the fixtures look alike.
 

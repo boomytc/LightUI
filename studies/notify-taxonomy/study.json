@@ -26,6 +26,12 @@
       "rel": "contrast",
       "when": "结果提示不是进度",
       "whenEn": "a result notice is not progress"
+    },
+    {
+      "slug": "fill-taxonomy",
+      "rel": "contrast",
+      "when": "结果 toast 不是提交后的成功页",
+      "whenEn": "a result toast is not the success after submit"
     }
   ],
   "status": "active",
