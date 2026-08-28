@@ -8,8 +8,8 @@ export function StageView() {
   const isReady = state === "ready";
 
   return (
-    <div className="flex min-h-[380px] w-full items-center justify-center p-8 bg-surface">
-      <div className="w-full max-w-[320px] rounded-[32px] border-4 border-fg/20 bg-surface p-4 shadow-2xl">
+    <div data-stage="root" className="flex min-h-[380px] w-full items-center justify-center p-8 bg-surface">
+      <div data-stage="fixture" className="w-full max-w-[320px] rounded-[32px] border-4 border-fg/20 bg-surface p-4 shadow-2xl">
         <div className="flex items-center justify-between px-2 pt-1 pb-3">
           <span className="text-[11px] font-medium tracking-wider text-fg-subtle uppercase">
             Live Feed

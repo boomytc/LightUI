@@ -20,10 +20,10 @@ export const CATEGORIES: CategoryMeta[] = [
   },
   {
     id: "pointer",
-    nameZh: "指针与几何",
-    nameEn: "Pointer & Geometry",
-    descZh: "安全三角、视线量化与轨迹保护",
-    descEn: "Safe triangle, gaze grid, and track protection",
+    nameZh: "指针与手势",
+    nameEn: "Pointer & Gesture",
+    descZh: "安全三角、长按选择、下拉刷新、拖放与视线量化",
+    descEn: "Safe triangle, long-press selection, pull-to-refresh, drag commit, and gaze grid",
   },
   {
     id: "layout",
@@ -43,15 +43,15 @@ export const CATEGORIES: CategoryMeta[] = [
     id: "feedback",
     nameZh: "反馈与动效",
     nameEn: "Feedback & Motion",
-    descZh: "进度、计时、提示打断与骨架等待",
-    descEn: "Progress, timers, notification levels, and pending states",
+    descZh: "进度、计时、提示打断、骨架等待与乐观回滚",
+    descEn: "Progress, timers, notification levels, pending states, and optimistic rollback",
   },
   {
     id: "craft",
     nameZh: "视觉与对齐",
     nameEn: "Craft & Geometry",
-    descZh: "基线对齐、边框光束、扫光与内凹角",
-    descEn: "Baseline alignment, border beam, glyph sweep, and inverted notch",
+    descZh: "基线对齐、边框光束、扫光、内凹角与可解释性",
+    descEn: "Baseline alignment, border beam, glyph sweep, inverted notch, and explainability",
   },
 ];
 
@@ -62,6 +62,8 @@ const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "drag-commit": "pointer",
   "guide-interrupt": "pointer",
   "chart-read": "pointer",
+  "press-select": "pointer",
+  "pull-refresh": "pointer",
   "container-morph": "craft",
 
   "layout-taxonomy": "layout",
@@ -88,12 +90,14 @@ const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "overlay-taxonomy": "feedback",
   "carousel-taxonomy": "feedback",
   "recall-grade": "feedback",
+  "optimistic-rollback": "feedback",
 
   "align-craft": "craft",
   "border-beam": "craft",
   "glyph-sweep": "craft",
   "inverted-notch": "craft",
   "chart-taxonomy": "craft",
+  "bm25-explain": "craft",
 };
 
 export function getStudyCategory(slug: string): CategoryId {

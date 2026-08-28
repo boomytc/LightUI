@@ -226,6 +226,20 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("repair", "clear", "repair-clear.png"),
         ("done", "clear", "done-clear.png"),
     ],
+    "optimistic-rollback": [
+        ("bookmark", "syncing", "bookmark-syncing.png"),
+        ("bookmark", "synced", "bookmark-synced.png"),
+        ("bookmark", "error", "bookmark-error.png"),
+    ],
+    "press-select": [
+        ("selecting", "2", "selecting-2.png"),
+        ("normal", "0", "normal-0.png"),
+    ],
+    "pull-refresh": [
+        ("pull", "pulling", "pulling.png"),
+        ("ready", "ready", "ready.png"),
+        ("refreshing", "refreshing", "refreshing.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:

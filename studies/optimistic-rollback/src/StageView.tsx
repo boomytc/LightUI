@@ -8,8 +8,8 @@ export function StageView() {
   const isError = state === "error";
 
   return (
-    <div className="flex min-h-[360px] w-full items-center justify-center p-8 bg-surface">
-      <div className="w-full max-w-sm rounded-xl border border-border bg-surface p-5 shadow-card">
+    <div data-stage="root" className="flex min-h-[360px] w-full items-center justify-center p-8 bg-surface">
+      <div data-stage="fixture" className="w-full max-w-sm rounded-xl border border-border bg-surface p-5 shadow-card">
         <div className="flex items-start justify-between gap-4">
           <div>
             <span className="inline-block rounded-md bg-surface-muted px-2 py-0.5 text-[11px] font-medium text-fg-muted">
