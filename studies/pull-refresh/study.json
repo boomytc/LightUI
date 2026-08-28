@@ -1,0 +1,35 @@
+{
+  "slug": "pull-refresh",
+  "title": "下拉刷新",
+  "titleEn": "Pull to Refresh",
+  "eyebrow": "Damping · Threshold",
+  "eyebrowEn": "Damping · Threshold",
+  "summary": "下拉手势何时接管滚动、何时提交刷新？顶边且向下才接管；位移应用阻尼并设上限；松手超阈值才提交刷新，未达阈值弹性复位。",
+  "summaryEn": "When does a downward pull take over scroll, and when does it commit a refresh? Take over only at top and moving down; apply damping; release beyond threshold to commit, snap back otherwise.",
+  "asks": "下拉手势何时接管滚动、何时提交刷新？",
+  "asksEn": "When does a downward pull take over scroll, and when does it commit a refresh?",
+  "links": [
+    {
+      "slug": "scroll-chrome",
+      "rel": "contrast",
+      "when": "下拉刷新不是滚动条轨道",
+      "whenEn": "pull-to-refresh is not a scroll track or cue"
+    },
+    {
+      "slug": "page-append",
+      "rel": "contrast",
+      "when": "顶部下拉刷新不是底部追加记录",
+      "whenEn": "top pull-to-refresh is not bottom record append"
+    },
+    {
+      "slug": "progress-taxonomy",
+      "rel": "contrast",
+      "when": "下拉阻尼指示器不是工作进度条",
+      "whenEn": "pull indicator is not work progress bar"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-28",
+  "updated": "2026-08-28",
+  "tags": ["pull", "refresh", "damping", "gesture", "touch"]
+}

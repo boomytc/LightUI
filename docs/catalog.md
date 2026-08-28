@@ -7,6 +7,9 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [optimistic-rollback](../studies/optimistic-rollback/) | 点完这一击，界面是等网络回执还是立即改？成功是默认路径，UI 先行响应；若网络失败，根据快照原位回滚并说明原因；不可逆高风险操作禁止乐观更新。 | active | 2026-08-28 | 2026-08-28 |
+| [press-select](../studies/press-select/) | 列表中这一按，是直接打开还是激活批量选择？单击默认打开；按住超 480ms 且位移在容差内激活选择模式；滑动则立即注销长按转为滚动。 | active | 2026-08-28 | 2026-08-28 |
+| [pull-refresh](../studies/pull-refresh/) | 下拉手势何时接管滚动、何时提交刷新？顶边且向下才接管；位移应用阻尼并设上限；松手超阈值才提交刷新，未达阈值弹性复位。 | active | 2026-08-28 | 2026-08-28 |
 | [fill-taxonomy](../studies/fill-taxonomy/) | 「做个表单」只说了有格子。先定填写前、填写中、提交后这一栏该交代什么：标签常在、必填先标、错在栏下能改、成功带下一步。 | active | 2026-08-26 | 2026-08-26 |
 | [bm25-explain](../studies/bm25-explain/) | 检索排序不是黑盒总分。先定稀疏与向量的分数不可直接相加，再把得分拆解为词频饱和与篇幅惩罚。 | active | 2026-08-25 | 2026-08-25 |
 | [chart-read](../studies/chart-read/) | 图画好之后，这一手是读数、过滤还是改窗口。选图种是另一问；看板层递也是另一问。 | active | 2026-08-25 | 2026-08-25 |
@@ -47,6 +50,9 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **乐观更新** (`optimistic-rollback`) — 点完这一击，界面是等网络回执还是立即改？
+- **长按选择** (`press-select`) — 列表中这一按，是直接打开还是激活批量选择？
+- **下拉刷新** (`pull-refresh`) — 下拉手势何时接管滚动、何时提交刷新？
 - **填写** (`fill-taxonomy`) — 填写前、填写中、提交后，这一栏该交代什么？
 - **检索可解释性** (`bm25-explain`) — 检索排序怎么让人看明白？
 - **读图** (`chart-read`) — 图上这一手是读数、过滤，还是改窗口？
@@ -85,6 +91,16 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `optimistic-rollback` contrast `pending-taxonomy` — 乐观更新不是等骨架占位
+- `optimistic-rollback` contrast `progress-taxonomy` — 乐观更新不是在等待中转圈算进度
+- `optimistic-rollback` contrast `notify-taxonomy` — 乐观状态不是一条消息通知
+- `optimistic-rollback` contrast `button-taxonomy` — 乐观触发不是按钮重量
+- `press-select` contrast `control-taxonomy` — 长按进入模式不是常驻复选框
+- `press-select` contrast `drag-commit` — 长按进入选择不是拖动提交
+- `press-select` contrast `page-append` — 批量选择不是列表翻页
+- `pull-refresh` contrast `scroll-chrome` — 下拉刷新不是滚动条轨道
+- `pull-refresh` contrast `page-append` — 顶部下拉刷新不是底部追加记录
+- `pull-refresh` contrast `progress-taxonomy` — 下拉阻尼指示器不是工作进度条
 - `fill-taxonomy` contrast `control-taxonomy` — 三个时刻该交代什么不是填还是选
 - `fill-taxonomy` after `validation-taxonomy` — 若问题是错误何时开口
 - `fill-taxonomy` contrast `validation-taxonomy` — 当场能改不是何时开口

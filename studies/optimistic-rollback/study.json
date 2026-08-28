@@ -1,0 +1,41 @@
+{
+  "slug": "optimistic-rollback",
+  "title": "乐观更新",
+  "titleEn": "Optimistic Update",
+  "eyebrow": "Snapshot · Rollback",
+  "eyebrowEn": "Snapshot · Rollback",
+  "summary": "点完这一击，界面是等网络回执还是立即改？成功是默认路径，UI 先行响应；若网络失败，根据快照原位回滚并说明原因；不可逆高风险操作禁止乐观更新。",
+  "summaryEn": "When an action is clicked, does the UI wait for network ACK or commit optimistically? Success is the default path, UI reacts immediately; on failure, roll back in place with a snapshot and explain why.",
+  "asks": "点完这一击，界面是等网络回执还是立即改？",
+  "asksEn": "When an action is clicked, does the UI wait for network ACK or commit optimistically?",
+  "links": [
+    {
+      "slug": "pending-taxonomy",
+      "rel": "contrast",
+      "when": "乐观更新不是等骨架占位",
+      "whenEn": "optimistic response is not skeleton layout placeholder"
+    },
+    {
+      "slug": "progress-taxonomy",
+      "rel": "contrast",
+      "when": "乐观更新不是在等待中转圈算进度",
+      "whenEn": "optimistic update is not a waiting spinner or progress track"
+    },
+    {
+      "slug": "notify-taxonomy",
+      "rel": "contrast",
+      "when": "乐观状态不是一条消息通知",
+      "whenEn": "optimistic state is not a notification toast"
+    },
+    {
+      "slug": "button-taxonomy",
+      "rel": "contrast",
+      "when": "乐观触发不是按钮重量",
+      "whenEn": "optimistic toggle is not button visual weight"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-28",
+  "updated": "2026-08-28",
+  "tags": ["optimistic", "rollback", "network", "state"]
+}

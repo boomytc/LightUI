@@ -1,0 +1,35 @@
+{
+  "slug": "press-select",
+  "title": "长按选择",
+  "titleEn": "Press · Select",
+  "eyebrow": "Disambiguate · Mode",
+  "eyebrowEn": "Disambiguate · Mode",
+  "summary": "列表中这一按，是直接打开还是激活批量选择？单击默认打开；按住超 480ms 且位移在容差内激活选择模式；滑动则立即注销长按转为滚动。",
+  "summaryEn": "Is this press in a list an immediate open or activating multi-selection? Tap opens; hold past 480ms within drift threshold enters select mode; drag cancels immediately for scroll.",
+  "asks": "列表中这一按，是直接打开还是激活批量选择？",
+  "asksEn": "Does this press in a list open the item, or activate multi-select mode?",
+  "links": [
+    {
+      "slug": "control-taxonomy",
+      "rel": "contrast",
+      "when": "长按进入模式不是常驻复选框",
+      "whenEn": "long-press modal state is not permanent checkboxes"
+    },
+    {
+      "slug": "drag-commit",
+      "rel": "contrast",
+      "when": "长按进入选择不是拖动提交",
+      "whenEn": "long-press activation is not a drag commit"
+    },
+    {
+      "slug": "page-append",
+      "rel": "contrast",
+      "when": "批量选择不是列表翻页",
+      "whenEn": "multi-selection is not paging"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-28",
+  "updated": "2026-08-28",
+  "tags": ["gesture", "touch", "select", "mobile"]
+}
