@@ -47,7 +47,7 @@ export function GraphMatrixView({
               {when ? (
                 <div className="mb-4">
                   <span className="inline-block rounded-md bg-rose-500/10 px-2 py-0.5 font-mono text-[11px] font-medium text-rose-500">
-                    {locale === "en" ? "Distinction" : "辨析"}
+                    {copy.distinctionBadge}
                   </span>
                   <p className="mt-1.5 text-[14px] font-medium leading-snug text-fg">
                     {when}

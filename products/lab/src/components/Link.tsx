@@ -23,8 +23,10 @@ export function Link({
       title={title}
       aria-current={ariaCurrent}
       onClick={(e) => {
-        e.preventDefault();
         onClick?.(e);
+        if (e.defaultPrevented) return;
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        e.preventDefault();
         navigate(href);
       }}
     >

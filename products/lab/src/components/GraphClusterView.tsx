@@ -56,7 +56,7 @@ export function GraphClusterView({
                 </span>
                 <div>
                   <h3 className="text-[15px] font-semibold text-fg">{group.title}</h3>
-                  <span className="text-[11px] font-mono text-fg-subtle">{group.items.length} 理念</span>
+                  <span className="text-[11px] font-mono text-fg-subtle">{copy.domainStudiesCount(group.items.length)}</span>
                 </div>
               </div>
             </div>

@@ -100,6 +100,12 @@ const zh = {
   prevNoteLabel: "上一篇笔记",
   nextNoteLabel: "下一篇笔记",
   moreInDomain: "同领域延伸思考",
+  graphAncestor: "前置",
+  graphDescendant: "后步",
+  graphContrastBadge: "对照",
+  domainStudiesCount: (n: number) => `${n} 项`,
+  clearFilters: "清空筛选条件",
+  distinctionBadge: "辨析",
 };
 
 const en: typeof zh = {
@@ -202,6 +208,12 @@ const en: typeof zh = {
   prevNoteLabel: "Previous Note",
   nextNoteLabel: "Next Note",
   moreInDomain: "More in this domain",
+  graphAncestor: "Prior",
+  graphDescendant: "Next",
+  graphContrastBadge: "Contrast",
+  domainStudiesCount: (n) => (n === 1 ? "1 study" : `${n} studies`),
+  clearFilters: "Clear filters",
+  distinctionBadge: "Distinction",
 };
 
 export function messages(locale: Locale): typeof zh {

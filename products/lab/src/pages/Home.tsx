@@ -62,8 +62,8 @@ export function Home() {
             {CATEGORIES.filter((c) => c.id !== "all").map((cat) => (
               <Link
                 key={cat.id}
-                href="/studies"
-                className="rounded-md border border-border/80 bg-surface px-2 py-1 text-[11px] text-fg-muted no-underline transition-colors hover:border-border-strong hover:text-fg"
+                href={`/studies?category=${cat.id}`}
+                className="rounded-md border border-border/80 bg-surface px-2.5 py-1 text-[11px] font-medium text-fg-muted no-underline transition-colors hover:border-border-strong hover:bg-surface-2 hover:text-fg"
               >
                 {locale === "en" ? cat.nameEn : cat.nameZh}
               </Link>

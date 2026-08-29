@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, X } from "lucide-react";
 import { NoteCard } from "../components/NoteCard";
 import { Page } from "../components/Page";
 import { CATEGORIES, type CategoryId } from "../lib/categories";
 import { messages } from "../lib/i18n";
+import { updateSearchParams, useSearchParams } from "../lib/nav";
 import { filterNotes, loadNotes } from "../lib/notes";
 import { usePrefs } from "../lib/prefs";
 
@@ -12,8 +13,38 @@ export function Notes() {
   const copy = messages(locale);
   const allNotes = loadNotes(locale);
 
-  const [category, setCategory] = useState<CategoryId>("all");
-  const [query, setQuery] = useState("");
+  const searchParams = useSearchParams();
+  const initialCategory = (searchParams.get("category") as CategoryId) || "all";
+  const initialQuery = searchParams.get("q") || "";
+
+  const [category, setCategory] = useState<CategoryId>(
+    CATEGORIES.some((c) => c.id === initialCategory) ? initialCategory : "all",
+  );
+  const [query, setQuery] = useState(initialQuery);
+
+  useEffect(() => {
+    const cat = (searchParams.get("category") as CategoryId) || "all";
+    if (CATEGORIES.some((c) => c.id === cat)) {
+      setCategory(cat);
+    }
+    setQuery(searchParams.get("q") || "");
+  }, [searchParams]);
+
+  const handleCategoryChange = (catId: CategoryId) => {
+    setCategory(catId);
+    updateSearchParams({ category: catId === "all" ? null : catId }, { replace: true });
+  };
+
+  const handleQueryChange = (q: string) => {
+    setQuery(q);
+    updateSearchParams({ q: q || null }, { replace: true });
+  };
+
+  const handleClearAll = () => {
+    setQuery("");
+    setCategory("all");
+    updateSearchParams({ category: null, q: null }, { replace: true });
+  };
 
   const filteredNotes = filterNotes(allNotes, query, category);
 
@@ -40,7 +71,7 @@ export function Notes() {
               <button
                 key={cat.id}
                 type="button"
-                onClick={() => setCategory(cat.id)}
+                onClick={() => handleCategoryChange(cat.id)}
                 className={
                   isSelected
                     ? "rounded-lg bg-surface px-3 py-1.5 text-[12px] font-semibold text-fg shadow-xs transition-all"
@@ -59,14 +90,14 @@ export function Notes() {
           <input
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => handleQueryChange(e.target.value)}
             placeholder={copy.searchNotesPlaceholder}
             className="w-full rounded-xl border border-border bg-surface py-1.5 pl-8 pr-8 text-[13px] text-fg outline-none transition-colors placeholder:text-fg-subtle focus:border-border-strong"
           />
           {query ? (
             <button
               type="button"
-              onClick={() => setQuery("")}
+              onClick={() => handleQueryChange("")}
               className="absolute right-2.5 text-fg-subtle hover:text-fg"
             >
               <X className="size-3.5" />
@@ -78,6 +109,15 @@ export function Notes() {
       {/* Results Header / Counter */}
       <div className="mt-5 flex items-center justify-between text-[12px] text-fg-subtle">
         <span>{copy.notesCount(filteredNotes.length)}</span>
+        {(query || category !== "all") && (
+          <button
+            type="button"
+            onClick={handleClearAll}
+            className="text-[12px] font-medium text-accent hover:underline"
+          >
+            {copy.clearFilters}
+          </button>
+        )}
       </div>
 
       {/* Notes Grid */}

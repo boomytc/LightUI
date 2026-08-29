@@ -65,7 +65,7 @@ export function NoteCard({
       <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
         {related.length > 0 ? (
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] text-fg-subtle">{copy.relatedStudyBadge}：</span>
+            <span className="text-[11px] text-fg-subtle">{copy.relatedStudyBadge}{locale === "en" ? ":" : "："}</span>
             {related.map((meta) => (
               <Link
                 key={meta.slug}

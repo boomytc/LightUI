@@ -72,7 +72,7 @@ export function GraphInspector({
           </h2>
           {asks ? (
             <div className="mt-3 rounded-xl border border-border/80 bg-bg p-3 text-[13px] leading-relaxed text-fg-muted">
-              <span className="font-semibold text-fg">{copy.graphAsks}：</span>
+              <span className="font-semibold text-fg">{copy.graphAsks}{locale === "en" ? ":" : "："} </span>
               <span>{asks}</span>
             </div>
           ) : null}

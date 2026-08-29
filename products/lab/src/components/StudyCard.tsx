@@ -25,6 +25,7 @@ export function StudyCard({
     <a
       href={href}
       onClick={(e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
         e.preventDefault();
         navigate(href);
       }}
@@ -72,9 +73,13 @@ export function StudyCard({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                onSelectTag?.(tag);
+                if (onSelectTag) {
+                  onSelectTag(tag);
+                } else {
+                  navigate(`/studies?tag=${tag}`);
+                }
               }}
-              className="rounded-md border border-border/80 bg-bg px-1.5 py-0.5 font-mono text-[10px] text-fg-subtle transition-colors hover:border-border-strong hover:text-fg"
+              className="rounded-md border border-border/80 bg-bg px-1.5 py-0.5 font-mono text-[10px] text-fg-subtle transition-colors hover:border-border-strong hover:text-fg cursor-pointer"
             >
               #{tag}
             </button>

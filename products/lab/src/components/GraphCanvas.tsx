@@ -200,120 +200,122 @@ export function GraphCanvas({
         ref={rootRef}
         className="relative overflow-x-auto rounded-2xl border border-border bg-surface p-6 sm:p-10 shadow-xs"
       >
-        <svg className="pointer-events-none absolute inset-0 size-full" aria-hidden="true">
-          <defs>
-            <marker id="graph-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-              <path d="M0,0 L8,4 L0,8 Z" className="fill-accent" />
-            </marker>
-            <marker id="graph-arrow-faded" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-              <path d="M0,0 L8,4 L0,8 Z" className="fill-accent/30" />
-            </marker>
-          </defs>
+        <div className="relative inline-block min-w-full">
+          <svg className="pointer-events-none absolute inset-0 size-full" aria-hidden="true">
+            <defs>
+              <marker id="graph-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" className="fill-accent" />
+              </marker>
+              <marker id="graph-arrow-faded" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" className="fill-accent/30" />
+              </marker>
+            </defs>
 
-          {edges.map((edge) => {
-            const isContrast = edge.type === "contrast";
-            const opacity = activeSlug ? (edge.hot ? 1 : 0.12) : (isContrast ? 0.35 : 0.7);
-            const strokeWidth = edge.hot && activeSlug ? 2.5 : 1.5;
+            {edges.map((edge) => {
+              const isContrast = edge.type === "contrast";
+              const opacity = activeSlug ? (edge.hot ? 1 : 0.12) : (isContrast ? 0.35 : 0.7);
+              const strokeWidth = edge.hot && activeSlug ? 2.5 : 1.5;
 
-            return (
-              <path
-                key={edge.key}
-                d={edge.d}
-                fill="none"
-                strokeDasharray={isContrast ? "5 4" : undefined}
-                className={isContrast ? "stroke-rose-400" : "stroke-accent"}
-                opacity={opacity}
-                strokeWidth={strokeWidth}
-                markerEnd={isContrast ? undefined : edge.hot && activeSlug ? "url(#graph-arrow)" : "url(#graph-arrow-faded)"}
-              />
-            );
-          })}
-        </svg>
+              return (
+                <path
+                  key={edge.key}
+                  d={edge.d}
+                  fill="none"
+                  strokeDasharray={isContrast ? "5 4" : undefined}
+                  className={isContrast ? "stroke-rose-400" : "stroke-accent"}
+                  opacity={opacity}
+                  strokeWidth={strokeWidth}
+                  markerEnd={isContrast ? undefined : edge.hot && activeSlug ? "url(#graph-arrow)" : "url(#graph-arrow-faded)"}
+                />
+              );
+            })}
+          </svg>
 
-        {/* Node Layers */}
-        <div className="relative z-10 flex min-w-max flex-col gap-12 lg:flex-row lg:items-start lg:justify-between lg:gap-14">
-          {levels.map((level, levelIdx) => (
-            <div
-              key={levelIdx}
-              className="flex flex-col gap-4 w-60 shrink-0"
-            >
-              <div className="flex items-center gap-2 px-1">
-                <span className="font-mono text-[11px] font-semibold text-fg-subtle">
-                  L{levelIdx + 1}
-                </span>
-                <div className="h-px flex-1 bg-border/60" />
-              </div>
+          {/* Node Layers */}
+          <div className="relative z-10 flex min-w-max flex-col gap-12 lg:flex-row lg:items-start lg:justify-between lg:gap-14">
+            {levels.map((level, levelIdx) => (
+              <div
+                key={levelIdx}
+                className="flex flex-col gap-4 w-60 shrink-0"
+              >
+                <div className="flex items-center gap-2 px-1">
+                  <span className="font-mono text-[11px] font-semibold text-fg-subtle">
+                    L{levelIdx + 1}
+                  </span>
+                  <div className="h-px flex-1 bg-border/60" />
+                </div>
 
-              {level.map((meta) => {
-                const isCurrent = activeSlug === meta.slug;
-                const isSelected = selectedSlug === meta.slug;
-                const isInLineage = lineage?.allActiveNodes.has(meta.slug) ?? false;
-                const isAncestor = lineage?.ancestors.has(meta.slug) ?? false;
-                const isDescendant = lineage?.descendants.has(meta.slug) ?? false;
-                const isContrast = lineage?.contrasts.includes(meta.slug) ?? false;
+                {level.map((meta) => {
+                  const isCurrent = activeSlug === meta.slug;
+                  const isSelected = selectedSlug === meta.slug;
+                  const isInLineage = lineage?.allActiveNodes.has(meta.slug) ?? false;
+                  const isAncestor = lineage?.ancestors.has(meta.slug) ?? false;
+                  const isDescendant = lineage?.descendants.has(meta.slug) ?? false;
+                  const isContrast = lineage?.contrasts.includes(meta.slug) ?? false;
 
-                const opacityClass = activeSlug
-                  ? isCurrent || isInLineage
-                    ? "opacity-100 scale-[1.02]"
-                    : "opacity-30"
-                  : "opacity-100";
+                  const opacityClass = activeSlug
+                    ? isCurrent || isInLineage
+                      ? "opacity-100 scale-[1.02]"
+                      : "opacity-30"
+                    : "opacity-100";
 
-                const category = getStudyCategory(meta.slug);
-                const asks = studyAsks(meta, locale);
+                  const category = getStudyCategory(meta.slug);
+                  const asks = studyAsks(meta, locale);
 
-                return (
-                  <div
-                    key={meta.slug}
-                    id={meta.slug}
-                    ref={(el) => {
-                      nodeRefs.current[meta.slug] = el;
-                    }}
-                    onMouseEnter={() => setHoverSlug(meta.slug)}
-                    onMouseLeave={() => setHoverSlug(undefined)}
-                    onClick={() => onSelectSlug(meta.slug)}
-                    className={cn(
-                      "group relative cursor-pointer rounded-xl border p-3.5 shadow-xs transition-all duration-150",
-                      isSelected
-                        ? "border-accent bg-accent/10 ring-2 ring-accent shadow-md"
-                        : isCurrent
-                          ? "border-fg bg-surface-2 shadow-sm"
-                          : isAncestor
-                            ? "border-accent/60 bg-accent/5 ring-1 ring-accent/40"
-                            : isDescendant
+                  return (
+                    <div
+                      key={meta.slug}
+                      id={meta.slug}
+                      ref={(el) => {
+                        nodeRefs.current[meta.slug] = el;
+                      }}
+                      onMouseEnter={() => setHoverSlug(meta.slug)}
+                      onMouseLeave={() => setHoverSlug(undefined)}
+                      onClick={() => onSelectSlug(meta.slug)}
+                      className={cn(
+                        "group relative cursor-pointer rounded-xl border p-3.5 shadow-xs transition-all duration-150",
+                        isSelected
+                          ? "border-accent bg-accent/10 ring-2 ring-accent shadow-md"
+                          : isCurrent
+                            ? "border-fg bg-surface-2 shadow-sm"
+                            : isAncestor
                               ? "border-accent/60 bg-accent/5 ring-1 ring-accent/40"
-                              : isContrast
-                                ? "border-rose-400/60 bg-rose-500/5 ring-1 ring-rose-400/40"
-                                : "border-border bg-bg hover:border-border-strong hover:bg-surface-2",
-                      opacityClass,
-                    )}
-                  >
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] uppercase text-fg-subtle">
-                        {category}
-                      </span>
-                      {isAncestor ? (
-                        <span className="font-mono text-[10px] text-accent font-semibold">前置</span>
-                      ) : isDescendant ? (
-                        <span className="font-mono text-[10px] text-accent font-semibold">后步</span>
-                      ) : isContrast ? (
-                        <span className="font-mono text-[10px] text-rose-500 font-semibold">对照</span>
+                              : isDescendant
+                                ? "border-accent/60 bg-accent/5 ring-1 ring-accent/40"
+                                : isContrast
+                                  ? "border-rose-400/60 bg-rose-500/5 ring-1 ring-rose-400/40"
+                                  : "border-border bg-bg hover:border-border-strong hover:bg-surface-2",
+                        opacityClass,
+                      )}
+                    >
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] uppercase text-fg-subtle">
+                          {category}
+                        </span>
+                        {isAncestor ? (
+                          <span className="font-mono text-[10px] text-accent font-semibold">{copy.graphAncestor}</span>
+                        ) : isDescendant ? (
+                          <span className="font-mono text-[10px] text-accent font-semibold">{copy.graphDescendant}</span>
+                        ) : isContrast ? (
+                          <span className="font-mono text-[10px] text-rose-500 font-semibold">{copy.graphContrastBadge}</span>
+                        ) : null}
+                      </div>
+
+                      <h4 className="mt-1.5 text-[14px] font-semibold tracking-tight text-fg group-hover:text-accent transition-colors">
+                        {studyTitle(meta, locale)}
+                      </h4>
+
+                      {asks ? (
+                        <p className="mt-1 text-[11px] leading-relaxed text-fg-muted line-clamp-2">
+                          {asks}
+                        </p>
                       ) : null}
                     </div>
-
-                    <h4 className="mt-1.5 text-[14px] font-semibold tracking-tight text-fg group-hover:text-accent transition-colors">
-                      {studyTitle(meta, locale)}
-                    </h4>
-
-                    {asks ? (
-                      <p className="mt-1 text-[11px] leading-relaxed text-fg-muted line-clamp-2">
-                        {asks}
-                      </p>
-                    ) : null}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+                  );
+                })}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

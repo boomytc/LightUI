@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, X } from "lucide-react";
 import { Page } from "../components/Page";
 import { StudyCard } from "../components/StudyCard";
 import { CATEGORIES, filterStudies, type CategoryId } from "../lib/categories";
 import { loadStudies } from "../lib/catalog";
 import { messages } from "../lib/i18n";
+import { updateSearchParams, useSearchParams } from "../lib/nav";
 import { usePrefs } from "../lib/prefs";
 
 export function Studies() {
@@ -12,12 +13,50 @@ export function Studies() {
   const copy = messages(locale);
   const allStudies = loadStudies().filter((s) => s.meta.status !== "retired");
 
-  const [activeCategory, setActiveCategory] = useState<CategoryId>("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTag, setSelectedTag] = useState<string | undefined>(undefined);
+  const searchParams = useSearchParams();
+  const initialCategory = (searchParams.get("category") as CategoryId) || "all";
+  const initialQuery = searchParams.get("q") || "";
+  const initialTag = searchParams.get("tag") || undefined;
+
+  const [activeCategory, setActiveCategory] = useState<CategoryId>(
+    CATEGORIES.some((c) => c.id === initialCategory) ? initialCategory : "all",
+  );
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [selectedTag, setSelectedTag] = useState<string | undefined>(initialTag);
+
+  useEffect(() => {
+    const cat = (searchParams.get("category") as CategoryId) || "all";
+    if (CATEGORIES.some((c) => c.id === cat)) {
+      setActiveCategory(cat);
+    }
+    setSearchQuery(searchParams.get("q") || "");
+    setSelectedTag(searchParams.get("tag") || undefined);
+  }, [searchParams]);
+
+  const handleCategoryChange = (catId: CategoryId) => {
+    setActiveCategory(catId);
+    setSelectedTag(undefined);
+    updateSearchParams({ category: catId === "all" ? null : catId, tag: null }, { replace: true });
+  };
+
+  const handleQueryChange = (q: string) => {
+    setSearchQuery(q);
+    updateSearchParams({ q: q || null }, { replace: true });
+  };
+
+  const handleSelectTag = (tag: string | undefined) => {
+    setSelectedTag(tag);
+    updateSearchParams({ tag: tag || null }, { replace: true });
+  };
+
+  const handleClearAll = () => {
+    setSearchQuery("");
+    setSelectedTag(undefined);
+    setActiveCategory("all");
+    updateSearchParams({ category: null, tag: null, q: null }, { replace: true });
+  };
 
   const filtered = filterStudies(allStudies, searchQuery, activeCategory, selectedTag);
-
   const activeCategoryMeta = CATEGORIES.find((c) => c.id === activeCategory);
 
   return (
@@ -33,14 +72,14 @@ export function Studies() {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleQueryChange(e.target.value)}
             placeholder={copy.searchPlaceholder}
             className="h-10 w-full rounded-xl border border-border bg-surface pl-9 pr-8 text-[13px] text-fg shadow-sm outline-none transition-colors placeholder:text-fg-subtle focus:border-border-strong focus:ring-2 focus:ring-accent/20"
           />
           {searchQuery ? (
             <button
               type="button"
-              onClick={() => setSearchQuery("")}
+              onClick={() => handleQueryChange("")}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 text-fg-subtle hover:text-fg"
             >
               <X className="size-3.5" />
@@ -58,10 +97,7 @@ export function Studies() {
             <button
               key={cat.id}
               type="button"
-              onClick={() => {
-                setActiveCategory(cat.id);
-                setSelectedTag(undefined);
-              }}
+              onClick={() => handleCategoryChange(cat.id)}
               className={
                 isActive
                   ? "rounded-lg bg-fg px-3.5 py-1.5 text-[13px] font-medium text-surface shadow-sm"
@@ -90,7 +126,7 @@ export function Studies() {
             <span>#{selectedTag}</span>
             <button
               type="button"
-              onClick={() => setSelectedTag(undefined)}
+              onClick={() => handleSelectTag(undefined)}
               className="text-fg-subtle hover:text-fg"
             >
               <X className="size-3" />
@@ -105,14 +141,10 @@ export function Studies() {
           {(searchQuery || selectedTag || activeCategory !== "all") && (
             <button
               type="button"
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedTag(undefined);
-                setActiveCategory("all");
-              }}
+              onClick={handleClearAll}
               className="mt-3 text-[13px] font-medium text-accent hover:underline"
             >
-              {locale === "en" ? "Clear filters" : "清空筛选条件"}
+              {copy.clearFilters}
             </button>
           )}
         </div>
@@ -123,7 +155,7 @@ export function Studies() {
               key={s.meta.slug}
               meta={s.meta}
               locale={locale}
-              onSelectTag={(tag) => setSelectedTag(tag)}
+              onSelectTag={(tag) => handleSelectTag(tag)}
             />
           ))}
         </div>

@@ -67,7 +67,7 @@ export function usePath(): string {
 }
 
 export function useHash(): string {
-  const [hash, setHash] = useState(() => window.location.hash.replace(/^#/, ""));
+  const [hash, setHash] = useState(() => (typeof window === "undefined" ? "" : window.location.hash.replace(/^#/, "")));
 
   useEffect(() => {
     const sync = () => setHash(window.location.hash.replace(/^#/, ""));
@@ -80,6 +80,44 @@ export function useHash(): string {
   }, []);
 
   return hash;
+}
+
+export function useSearchParams(): URLSearchParams {
+  const [params, setParams] = useState(() => (typeof window === "undefined" ? new URLSearchParams() : new URLSearchParams(window.location.search)));
+
+  useEffect(() => {
+    const sync = () => setParams(new URLSearchParams(window.location.search));
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, []);
+
+  return params;
+}
+
+export function updateSearchParams(
+  updates: Record<string, string | null | undefined>,
+  options?: { replace?: boolean },
+) {
+  if (typeof window === "undefined") return;
+  const current = new URLSearchParams(window.location.search);
+  for (const [key, value] of Object.entries(updates)) {
+    if (value === null || value === undefined || value === "") {
+      current.delete(key);
+    } else {
+      current.set(key, value);
+    }
+  }
+  const search = current.toString();
+  const next = `${window.location.pathname}${search ? `?${search}` : ""}${window.location.hash}`;
+  const here = currentHref();
+  if (here === next) return;
+
+  if (options?.replace) {
+    window.history.replaceState(window.history.state, "", next);
+  } else {
+    window.history.pushState({ lab: true, from: here } satisfies LabHistoryState, "", next);
+  }
+  window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
 export type Route =

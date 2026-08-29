@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Moon, Search, Sun } from "lucide-react";
 import { CommandPalette } from "./CommandPalette";
 import { Link } from "./Link";
@@ -17,6 +17,28 @@ export function Shell({ children }: { children: ReactNode }) {
   const { theme, locale, toggleTheme, toggleLocale } = usePrefs();
   const copy = messages(locale);
   const [paletteOpen, setPaletteOpen] = useState(false);
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen((prev) => !prev);
+      } else if (e.key === "/" && !paletteOpen) {
+        const activeEl = document.activeElement;
+        const isInput =
+          activeEl?.tagName === "INPUT" ||
+          activeEl?.tagName === "TEXTAREA" ||
+          (activeEl as HTMLElement)?.isContentEditable;
+        if (!isInput) {
+          e.preventDefault();
+          setPaletteOpen(true);
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [paletteOpen]);
 
   return (
     <div className="flex min-h-dvh flex-col bg-bg text-fg">

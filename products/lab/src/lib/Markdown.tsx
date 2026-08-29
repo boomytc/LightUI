@@ -24,23 +24,25 @@ function asDefs(items: string[]): { name: string; text: string }[] | null {
 
 function inline(text: string): ReactNode[] {
   const parts: ReactNode[] = [];
-  const re = /(\[([^\]]+)\]\(([^)]+)\))|(`[^`]+`)|(\*\*[^*]+\*\*)/g;
+  const re =
+    /(\[([^\]]+)\]\(([^)]+)\))|(`[^`]+`)|(\*\*[^*]+\*\*)|(~~[^~]+~~)|(\*[^*]+\*)/g;
   let last = 0;
   let match: RegExpExecArray | null;
   let key = 0;
   while ((match = re.exec(text))) {
     if (match.index > last) parts.push(text.slice(last, match.index));
-    const [full, , label, href, code, bold] = match;
+    const [full, , label, href, code, bold, strike, italic] = match;
     if (label && href) {
       const internal = href.startsWith("/");
       parts.push(
         <a
           key={key++}
           href={href}
-          className="text-accent underline-offset-2 hover:underline"
+          className="font-medium text-accent underline-offset-2 hover:underline"
           onClick={
             internal
               ? (e) => {
+                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
                   e.preventDefault();
                   navigate(href);
                 }
@@ -52,15 +54,30 @@ function inline(text: string): ReactNode[] {
       );
     } else if (code) {
       parts.push(
-        <code key={key++} className="rounded bg-surface-2 px-1 py-0.5 font-mono text-[12px] text-fg">
+        <code
+          key={key++}
+          className="rounded-md border border-border/70 bg-surface-2 px-1.5 py-0.5 font-mono text-[12px] text-fg"
+        >
           {code.slice(1, -1)}
         </code>,
       );
     } else if (bold) {
       parts.push(
-        <strong key={key++} className="font-medium text-fg">
+        <strong key={key++} className="font-semibold text-fg">
           {bold.slice(2, -2)}
         </strong>,
+      );
+    } else if (strike) {
+      parts.push(
+        <del key={key++} className="text-fg-subtle line-through">
+          {strike.slice(2, -2)}
+        </del>,
+      );
+    } else if (italic) {
+      parts.push(
+        <em key={key++} className="italic text-fg">
+          {italic.slice(1, -1)}
+        </em>,
       );
     } else {
       parts.push(full);
@@ -89,7 +106,7 @@ function highlightCode(code: string): ReactNode[] {
 
     if (comment) {
       nodes.push(
-        <span key={key++} className="text-surface/40 italic">
+        <span key={key++} className="text-white/40 italic">
           {comment}
         </span>,
       );
@@ -145,21 +162,21 @@ function CodeBlock({ code }: { code: string }) {
   }
 
   return (
-    <div className="relative group overflow-hidden rounded-2xl border border-border bg-fg p-4 text-surface shadow-card sm:p-5">
-      <div className="flex items-center justify-between border-b border-surface/10 pb-2 mb-3">
-        <span className="text-[11px] font-mono uppercase tracking-wider text-surface/45">
+    <div className="group relative overflow-hidden rounded-2xl border border-border/80 bg-[#12141a] p-4 text-[#e2e4ea] shadow-card sm:p-5">
+      <div className="mb-3 flex items-center justify-between border-b border-white/10 pb-2">
+        <span className="font-mono text-[11px] uppercase tracking-wider text-white/45">
           code
         </span>
         <button
           type="button"
           onClick={copy}
-          className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium text-surface/60 transition-colors hover:bg-surface/10 hover:text-surface"
+          className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
         >
           {copied ? <Check className="size-3 text-emerald-400" /> : <Copy className="size-3" />}
           <span>{copied ? "Copied" : "Copy"}</span>
         </button>
       </div>
-      <pre className="overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">
+      <pre className="overflow-x-auto font-mono text-[12px] leading-relaxed text-[#dcdfe6]">
         {highlightCode(code)}
       </pre>
     </div>
@@ -280,11 +297,11 @@ export function Markdown({ source }: { source: string }) {
         if (block.type === "h") {
           const cls =
             block.level === 1
-              ? "text-[1.8rem] font-semibold tracking-tight"
+              ? "text-[1.8rem] font-bold tracking-tight text-fg"
               : block.level === 2
-                ? "pt-4 text-[1.25rem] font-semibold tracking-tight"
-                : "pt-2 text-[1.05rem] font-semibold tracking-tight";
-          const Tag = (`h${block.level}` as const);
+                ? "pt-4 text-[1.25rem] font-bold tracking-tight text-fg"
+                : "pt-2 text-[1.05rem] font-semibold tracking-tight text-fg";
+          const Tag = `h${block.level}` as const;
           return (
             <Tag key={i} className={cls}>
               {inline(block.text)}
@@ -302,7 +319,7 @@ export function Markdown({ source }: { source: string }) {
           return (
             <blockquote
               key={i}
-              className="rounded-r-xl border-l-3 border-accent bg-accent-soft/40 px-4 py-3 text-[14px] leading-relaxed text-fg italic"
+              className="rounded-r-xl border-l-[3px] border-accent bg-accent-soft/40 px-4 py-3 text-[14px] leading-relaxed text-fg italic"
             >
               {inline(block.text)}
             </blockquote>
@@ -315,8 +332,8 @@ export function Markdown({ source }: { source: string }) {
               <dl key={i} className="grid grid-cols-[auto_1fr] items-baseline gap-x-3 gap-y-1.5 text-[15px] leading-[1.75] text-fg">
                 {defs.map((def) => (
                   <div key={def.name} className="contents">
-                    <dt className="font-medium">{def.name}</dt>
-                    <dd className="min-w-0">{inline(def.text)}</dd>
+                    <dt className="font-semibold text-fg">{def.name}</dt>
+                    <dd className="min-w-0 text-fg-muted">{inline(def.text)}</dd>
                   </div>
                 ))}
               </dl>
@@ -343,22 +360,22 @@ export function Markdown({ source }: { source: string }) {
           return <CodeBlock key={i} code={block.code} />;
         }
         return (
-          <div key={i} className="overflow-x-auto">
+          <div key={i} className="overflow-x-auto rounded-xl border border-border bg-surface shadow-xs">
             <table className="w-full min-w-md border-collapse text-left text-[13px]">
               <thead>
-                <tr>
-                  {block.headers.map((h) => (
-                    <th key={h} className="border-b border-border px-3 py-2 font-medium text-fg">
+                <tr className="border-b border-border bg-surface-2/60">
+                  {block.headers.map((h, hi) => (
+                    <th key={hi} className="px-4 py-2.5 font-semibold text-fg">
                       {inline(h)}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-border/60">
                 {block.rows.map((row, ri) => (
-                  <tr key={ri}>
+                  <tr key={ri} className="transition-colors hover:bg-surface-2/40">
                     {row.map((cell, ci) => (
-                      <td key={ci} className="border-b border-border px-3 py-2 text-fg-muted">
+                      <td key={ci} className="px-4 py-2.5 text-fg-muted">
                         {inline(cell)}
                       </td>
                     ))}

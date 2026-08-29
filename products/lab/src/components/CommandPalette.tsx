@@ -54,44 +54,10 @@ export function CommandPalette({
     if (isOpen) {
       setQuery("");
       setActiveIndex(0);
-      setTimeout(() => inputRef.current?.focus(), 50);
+      const timer = setTimeout(() => inputRef.current?.focus(), 40);
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
-
-  // Global shortcut listeners
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      // Toggle palette on Cmd+K or Ctrl+K or / (when not typing in an input)
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        if (isOpen) onClose();
-        else {
-          // Open
-          setQuery("");
-          setActiveIndex(0);
-          inputRef.current?.focus();
-        }
-      } else if (e.key === "/" && !isOpen) {
-        const activeEl = document.activeElement;
-        const isInput =
-          activeEl?.tagName === "INPUT" ||
-          activeEl?.tagName === "TEXTAREA" ||
-          (activeEl as HTMLElement)?.isContentEditable;
-        if (!isInput) {
-          e.preventDefault();
-          // Open
-          setQuery("");
-          setActiveIndex(0);
-          inputRef.current?.focus();
-        }
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
 
   const q = query.trim().toLowerCase();
 
@@ -218,14 +184,15 @@ export function CommandPalette({
       if (!q) return true;
       return (
         note.title.toLowerCase().includes(q) ||
-        note.slug.toLowerCase().includes(q)
+        note.slug.toLowerCase().includes(q) ||
+        note.summary.toLowerCase().includes(q)
       );
     })
     .map((note) => ({
       id: `note-${note.slug}`,
       group: "note" as const,
       title: note.title,
-      subtitle: `/notes/${note.slug}`,
+      subtitle: note.summary || `/notes/${note.slug}`,
       badge: "Note",
       icon: FileText,
       onSelect: () => {
@@ -239,6 +206,17 @@ export function CommandPalette({
     ...filteredStudies,
     ...filteredNotes,
   ];
+
+  // Scroll active item into view when activeIndex changes
+  useEffect(() => {
+    if (!listRef.current) return;
+    const activeEl = listRef.current.querySelector<HTMLElement>(`[data-palette-index="${activeIndex}"]`);
+    if (activeEl) {
+      activeEl.scrollIntoView({ block: "nearest" });
+    }
+  }, [activeIndex]);
+
+  if (!isOpen) return null;
 
   function handleInputKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Escape") {
@@ -297,6 +275,7 @@ export function CommandPalette({
               type="button"
               onClick={() => {
                 setQuery("");
+                setActiveIndex(0);
                 inputRef.current?.focus();
               }}
               className="text-fg-subtle hover:text-fg"
@@ -326,6 +305,7 @@ export function CommandPalette({
                   <button
                     key={item.id}
                     type="button"
+                    data-palette-index={index}
                     onClick={item.onSelect}
                     onMouseEnter={() => setActiveIndex(index)}
                     className={
