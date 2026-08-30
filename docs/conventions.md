@@ -116,8 +116,9 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5202` container-morph, `5203` drag-commit, `5204` guide-interrupt,
   `5205` chart-read, `5206` expand-inflow, `5207` page-append,
   `5208` fill-taxonomy, `5209` optimistic-rollback,
-  `5210` press-select, `5211` pull-refresh.
-  Next free: `5212`.
+  `5210` press-select, `5211` pull-refresh,
+  `5212` locator-taxonomy, `5213` confirm-taxonomy.
+  Next free: `5214`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

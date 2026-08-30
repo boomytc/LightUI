@@ -1,0 +1,41 @@
+{
+  "slug": "locator-taxonomy",
+  "title": "定位器",
+  "titleEn": "In-Page Locator",
+  "eyebrow": "Orient · Jump · Filter",
+  "eyebrowEn": "Orient · Jump · Filter",
+  "summary": "页面变长时只是滚动更多。真正要先定的是意图：是连续阅读、结构跳转、折叠展开，还是行内检索与筛选。",
+  "summaryEn": "A longer page just means more scrolling. First decide the user's intent: continuous reading, structural jump, progressive disclosure, or in-page search and filtering.",
+  "asks": "长页面里，用户怎么知道自己在哪里、怎么快速到达目标？",
+  "asksEn": "How do users know where they are on a long page, and how do they reach their target?",
+  "links": [
+    {
+      "slug": "nav-taxonomy",
+      "rel": "contrast",
+      "when": "页面内定位不是整站全局路由",
+      "whenEn": "in-page navigation is not site-wide routing"
+    },
+    {
+      "slug": "scroll-chrome",
+      "rel": "contrast",
+      "when": "阅读进度不是滚动条皮肤",
+      "whenEn": "reading progress is not scrollbar chrome"
+    },
+    {
+      "slug": "tab-taxonomy",
+      "rel": "contrast",
+      "when": "大纲锚点不是页签切换",
+      "whenEn": "outline anchors are not tab switching"
+    },
+    {
+      "slug": "fill-taxonomy",
+      "rel": "contrast",
+      "when": "分步向导不是表单字段按需披露",
+      "whenEn": "steppers are not progressive form disclosure"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-30",
+  "updated": "2026-08-30",
+  "tags": ["navigation", "scroll", "locator", "taxonomy", "in-page"]
+}

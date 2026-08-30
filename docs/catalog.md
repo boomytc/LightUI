@@ -7,6 +7,8 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [confirm-taxonomy](../studies/confirm-taxonomy/) | 二次确认不是一律弹窗。打断程度与认知摩擦，必须与后果的不可逆性及影响范围严格成正比。 | active | 2026-08-30 | 2026-08-30 |
+| [locator-taxonomy](../studies/locator-taxonomy/) | 页面变长时只是滚动更多。真正要先定的是意图：是连续阅读、结构跳转、折叠展开，还是行内检索与筛选。 | active | 2026-08-30 | 2026-08-30 |
 | [optimistic-rollback](../studies/optimistic-rollback/) | 点完这一击，界面是等网络回执还是立即改？成功是默认路径，UI 先行响应；若网络失败，根据快照原位回滚并说明原因；不可逆高风险操作禁止乐观更新。 | active | 2026-08-28 | 2026-08-28 |
 | [press-select](../studies/press-select/) | 列表中这一按，是直接打开还是激活批量选择？单击默认打开；按住超 480ms 且位移在容差内激活选择模式；滑动则立即注销长按转为滚动。 | active | 2026-08-28 | 2026-08-28 |
 | [pull-refresh](../studies/pull-refresh/) | 下拉手势何时接管滚动、何时提交刷新？顶边且向下才接管；位移应用阻尼并设上限；松手超阈值才提交刷新，未达阈值弹性复位。 | active | 2026-08-28 | 2026-08-28 |
@@ -50,6 +52,8 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **二次确认** (`confirm-taxonomy`) — 执行破坏性操作时，该用多重的二次确认？
+- **定位器** (`locator-taxonomy`) — 长页面里，用户怎么知道自己在哪里、怎么快速到达目标？
 - **乐观更新** (`optimistic-rollback`) — 点完这一击，界面是等网络回执还是立即改？
 - **长按选择** (`press-select`) — 列表中这一按，是直接打开还是激活批量选择？
 - **下拉刷新** (`pull-refresh`) — 下拉手势何时接管滚动、何时提交刷新？
@@ -91,6 +95,14 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `confirm-taxonomy` contrast `overlay-taxonomy` — 破坏性确认阶梯不是浮层贴附分类
+- `confirm-taxonomy` contrast `button-taxonomy` — 二次确认拦截机制不是按钮视觉层级
+- `confirm-taxonomy` contrast `optimistic-rollback` — 事后撤销窗口不是网络失败回滚
+- `confirm-taxonomy` contrast `press-select` — 长按确认防误触不是长按激活多选
+- `locator-taxonomy` contrast `nav-taxonomy` — 页面内定位不是整站全局路由
+- `locator-taxonomy` contrast `scroll-chrome` — 阅读进度不是滚动条皮肤
+- `locator-taxonomy` contrast `tab-taxonomy` — 大纲锚点不是页签切换
+- `locator-taxonomy` contrast `fill-taxonomy` — 分步向导不是表单字段按需披露
 - `optimistic-rollback` contrast `pending-taxonomy` — 乐观更新不是等骨架占位
 - `optimistic-rollback` contrast `progress-taxonomy` — 乐观更新不是在等待中转圈算进度
 - `optimistic-rollback` contrast `notify-taxonomy` — 乐观状态不是一条消息通知

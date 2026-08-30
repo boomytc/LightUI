@@ -1,0 +1,41 @@
+{
+  "slug": "confirm-taxonomy",
+  "title": "二次确认",
+  "titleEn": "Confirmation Ladder",
+  "eyebrow": "Consequence · Friction · Safeguard",
+  "eyebrowEn": "Consequence · Friction · Safeguard",
+  "summary": "二次确认不是一律弹窗。打断程度与认知摩擦，必须与后果的不可逆性及影响范围严格成正比。",
+  "summaryEn": "Confirmations should not be a one-size-fits-all modal. Interruption weight and cognitive friction must strictly scale with irreversibility and scope of consequence.",
+  "asks": "执行破坏性操作时，该用多重的二次确认？",
+  "asksEn": "How heavy should the confirmation be for a destructive action?",
+  "links": [
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "破坏性确认阶梯不是浮层贴附分类",
+      "whenEn": "destructive confirmation ladder is not overlay anchoring"
+    },
+    {
+      "slug": "button-taxonomy",
+      "rel": "contrast",
+      "when": "二次确认拦截机制不是按钮视觉层级",
+      "whenEn": "confirmation safeguard is not button visual hierarchy"
+    },
+    {
+      "slug": "optimistic-rollback",
+      "rel": "contrast",
+      "when": "事后撤销窗口不是网络失败回滚",
+      "whenEn": "post-action undo window is not network error rollback"
+    },
+    {
+      "slug": "press-select",
+      "rel": "contrast",
+      "when": "长按确认防误触不是长按激活多选",
+      "whenEn": "hold-to-confirm is not long-press multi-select"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-30",
+  "updated": "2026-08-30",
+  "tags": ["confirm", "safety", "dialog", "action", "taxonomy"]
+}
