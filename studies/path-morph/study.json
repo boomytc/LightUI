@@ -1,0 +1,29 @@
+{
+  "slug": "path-morph",
+  "title": "路径变形",
+  "titleEn": "Path Morph",
+  "eyebrow": "Polar Procrustes · Micro-interaction",
+  "eyebrowEn": "Polar Procrustes · Micro-interaction",
+  "asks": "矢量路径变形时，是走单纯的坐标线性插值，还是分解为相似变换（旋放）加极坐标残差形变？",
+  "asksEn": "When morphing vector paths, do you linearly interpolate coordinates, or decompose into similarity rotation/scale plus polar residual deformation?",
+  "summary": "矢量路径变形。2D Procrustes 相似分解求解旋转与缩放，极坐标插值杜绝弦长塌陷，角点锚定保证静止态保真。",
+  "summaryEn": "Vector path morphing. 2D Procrustes solves rotation and scale in closed form; polar interpolation avoids chord collapse; corner anchors ensure endpoint fidelity.",
+  "links": [
+    {
+      "slug": "container-morph",
+      "rel": "contrast",
+      "when": "矢量路径形变不是容器盒模型拉伸",
+      "whenEn": "vector path morphing is not container box stretching"
+    },
+    {
+      "slug": "glyph-sweep",
+      "rel": "contrast",
+      "when": "路径连续形变不是文本高光扫光",
+      "whenEn": "continuous path morphing is not a glyph highlight sweep"
+    }
+  ],
+  "status": "active",
+  "created": "2026-08-31",
+  "updated": "2026-08-31",
+  "tags": ["morph", "vector", "geometry", "motion"]
+}

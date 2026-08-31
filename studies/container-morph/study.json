@@ -26,6 +26,12 @@
       "rel": "contrast",
       "when": "不是侧栏变宽占位",
       "whenEn": "it is not a rail that occupies width"
+    },
+    {
+      "slug": "path-morph",
+      "rel": "contrast",
+      "when": "容器按轴连续变形不是矢量路径极坐标形变",
+      "whenEn": "continuous container axis morph is not vector path polar morph"
     }
   ],
   "status": "active",

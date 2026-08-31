@@ -7,6 +7,7 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [path-morph](../studies/path-morph/) | 矢量路径变形。2D Procrustes 相似分解求解旋转与缩放，极坐标插值杜绝弦长塌陷，角点锚定保证静止态保真。 | active | 2026-08-31 | 2026-08-31 |
 | [confirm-taxonomy](../studies/confirm-taxonomy/) | 二次确认不是一律弹窗。打断程度与认知摩擦，必须与后果的不可逆性及影响范围严格成正比。 | active | 2026-08-30 | 2026-08-30 |
 | [locator-taxonomy](../studies/locator-taxonomy/) | 页面变长时只是滚动更多。真正要先定的是意图：是连续阅读、结构跳转、折叠展开，还是行内检索与筛选。 | active | 2026-08-30 | 2026-08-30 |
 | [optimistic-rollback](../studies/optimistic-rollback/) | 点完这一击，界面是等网络回执还是立即改？成功是默认路径，UI 先行响应；若网络失败，根据快照原位回滚并说明原因；不可逆高风险操作禁止乐观更新。 | active | 2026-08-28 | 2026-08-28 |
@@ -52,6 +53,7 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **路径变形** (`path-morph`) — 矢量路径变形时，是走单纯的坐标线性插值，还是分解为相似变换（旋放）加极坐标残差形变？
 - **二次确认** (`confirm-taxonomy`) — 执行破坏性操作时，该用多重的二次确认？
 - **定位器** (`locator-taxonomy`) — 长页面里，用户怎么知道自己在哪里、怎么快速到达目标？
 - **乐观更新** (`optimistic-rollback`) — 点完这一击，界面是等网络回执还是立即改？
@@ -95,6 +97,8 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `path-morph` contrast `container-morph` — 矢量路径形变不是容器盒模型拉伸
+- `path-morph` contrast `glyph-sweep` — 路径连续形变不是文本高光扫光
 - `confirm-taxonomy` contrast `overlay-taxonomy` — 破坏性确认阶梯不是浮层贴附分类
 - `confirm-taxonomy` contrast `button-taxonomy` — 二次确认拦截机制不是按钮视觉层级
 - `confirm-taxonomy` contrast `optimistic-rollback` — 事后撤销窗口不是网络失败回滚
@@ -126,6 +130,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `container-morph` contrast `overlay-taxonomy` — 同一容器变形不是新开一层
 - `container-morph` contrast `carousel-taxonomy` — 连续变形不是切画面
 - `container-morph` contrast `sidebar-taxonomy` — 不是侧栏变宽占位
+- `container-morph` contrast `path-morph` — 容器按轴连续变形不是矢量路径极坐标形变
 - `drag-commit` contrast `look-quantize` — 拖放提交不是视线落到格子
 - `drag-commit` contrast `carousel-taxonomy` — 不是转产品的角度
 - `drag-commit` contrast `layout-taxonomy` — 不是拖动分栏分隔条
