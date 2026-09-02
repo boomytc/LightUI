@@ -67,8 +67,8 @@ export function StudyView() {
     <div className="page-width min-w-0 overflow-x-hidden pt-4 pb-20">
       {/* Navigation Bar */}
       <nav aria-label="分组技法导航" className="mb-8 border-b border-border pb-3">
-        <div className="chip-scroll flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 overflow-x-auto">
+        <div className="flex items-center justify-between gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex items-center gap-1.5 shrink-0">
             {NAV_ITEMS.map((item) => {
               const active = item.id === p;
               return (
@@ -97,7 +97,7 @@ export function StudyView() {
             })}
           </div>
 
-          <div className="hidden items-center gap-1 text-[0.7rem] text-fg-subtle sm:flex">
+          <div className="hidden items-center gap-1 text-[0.7rem] text-fg-subtle sm:flex shrink-0">
             <kbd className="rounded bg-surface px-1.5 py-0.5 font-mono text-[0.65rem] border border-border">
               0-5
             </kbd>

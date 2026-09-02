@@ -46,7 +46,7 @@ export function CopyBlock({
           )}
         </button>
       </div>
-      <pre className="code-block rounded-lg bg-surface p-3.5 text-fg-muted border border-border">
+      <pre className="font-mono text-xs leading-relaxed whitespace-pre overflow-x-auto rounded-lg bg-surface p-3.5 text-fg-muted border border-border">
         <code>{text}</code>
       </pre>
     </div>
