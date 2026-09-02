@@ -1,0 +1,41 @@
+{
+  "slug": "group-taxonomy",
+  "title": "分组",
+  "titleEn": "Group Taxonomy",
+  "eyebrow": "Card Diet · Semantic Rhythm",
+  "eyebrowEn": "Card Diet · Semantic Rhythm",
+  "summary": "信息块分组不是默认套卡片。卡片只装真正独立的对象，关系才是分组的答案。",
+  "summaryEn": "Grouping UI chunks should not default to cards. Cards belong to truly independent objects; semantic relationships dictate the boundaries.",
+  "asks": "信息块该怎么组织与隔断？",
+  "asksEn": "How should related content chunks be grouped and separated?",
+  "links": [
+    {
+      "slug": "layout-taxonomy",
+      "rel": "contrast",
+      "when": "区块内部组织与隔断不是整页骨架铺法",
+      "whenEn": "inner block grouping is not page-level skeleton"
+    },
+    {
+      "slug": "fill-taxonomy",
+      "rel": "contrast",
+      "when": "表单按任务分段不是填写前中后的状态交代",
+      "whenEn": "task-based form sections are not field disclosure moments"
+    },
+    {
+      "slug": "control-taxonomy",
+      "rel": "contrast",
+      "when": "表单分组不是输入控件形态",
+      "whenEn": "form chunking is not input control selection"
+    },
+    {
+      "slug": "align-craft",
+      "rel": "contrast",
+      "when": "分组节奏与分割线不是文字基线与盒子对齐",
+      "whenEn": "grouping rhythm is not baseline and box alignment"
+    }
+  ],
+  "status": "active",
+  "created": "2026-09-02",
+  "updated": "2026-09-02",
+  "tags": ["grouping", "card", "whitespace", "form", "layout", "taxonomy"]
+}

@@ -7,6 +7,7 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [group-taxonomy](../studies/group-taxonomy/) | 信息块分组不是默认套卡片。卡片只装真正独立的对象，关系才是分组的答案。 | active | 2026-09-02 | 2026-09-02 |
 | [path-morph](../studies/path-morph/) | 矢量路径变形。2D Procrustes 相似分解求解旋转与缩放，极坐标插值杜绝弦长塌陷，角点锚定保证静止态保真。 | active | 2026-08-31 | 2026-08-31 |
 | [confirm-taxonomy](../studies/confirm-taxonomy/) | 二次确认不是一律弹窗。打断程度与认知摩擦，必须与后果的不可逆性及影响范围严格成正比。 | active | 2026-08-30 | 2026-08-30 |
 | [locator-taxonomy](../studies/locator-taxonomy/) | 页面变长时只是滚动更多。真正要先定的是意图：是连续阅读、结构跳转、折叠展开，还是行内检索与筛选。 | active | 2026-08-30 | 2026-08-30 |
@@ -53,6 +54,7 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **分组** (`group-taxonomy`) — 信息块该怎么组织与隔断？
 - **路径变形** (`path-morph`) — 矢量路径变形时，是走单纯的坐标线性插值，还是分解为相似变换（旋放）加极坐标残差形变？
 - **二次确认** (`confirm-taxonomy`) — 执行破坏性操作时，该用多重的二次确认？
 - **定位器** (`locator-taxonomy`) — 长页面里，用户怎么知道自己在哪里、怎么快速到达目标？
@@ -97,6 +99,10 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `group-taxonomy` contrast `layout-taxonomy` — 区块内部组织与隔断不是整页骨架铺法
+- `group-taxonomy` contrast `fill-taxonomy` — 表单按任务分段不是填写前中后的状态交代
+- `group-taxonomy` contrast `control-taxonomy` — 表单分组不是输入控件形态
+- `group-taxonomy` contrast `align-craft` — 分组节奏与分割线不是文字基线与盒子对齐
 - `path-morph` contrast `container-morph` — 矢量路径形变不是容器盒模型拉伸
 - `path-morph` contrast `glyph-sweep` — 路径连续形变不是文本高光扫光
 - `confirm-taxonomy` contrast `overlay-taxonomy` — 破坏性确认阶梯不是浮层贴附分类
