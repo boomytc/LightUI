@@ -1,0 +1,41 @@
+{
+  "slug": "sheet-snap",
+  "title": "抽屉吸附",
+  "titleEn": "Sheet Snap",
+  "eyebrow": "Continuous Drag · Snap Quantization",
+  "eyebrowEn": "Continuous Drag · Snap Quantization",
+  "summary": "多档抽屉不是简单的二元开合。拖动时全量跟手并带越界阻尼，松手依据位移与速度综合裁定落入哪个离散档位。",
+  "summaryEn": "Multi-snap bottom sheets are not binary toggles. Dragging tracks with overdrag damping, while release resolves displacement and velocity into discrete snap points.",
+  "asks": "多档底部抽屉拖拽时，手势如何在连续拖拽与离散档位之间落点？",
+  "asksEn": "How should a multi-snap bottom sheet balance direct tracking with snap quantization?",
+  "links": [
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "多档吸附抽屉不是二元阻断的操作菜单",
+      "whenEn": "multi-snap sheet is not a binary blocking action sheet"
+    },
+    {
+      "slug": "expand-inflow",
+      "rel": "contrast",
+      "when": "覆盖层档位吸附不是流内排版撑开",
+      "whenEn": "overlay snap positioning is not inflow document expansion"
+    },
+    {
+      "slug": "drag-commit",
+      "rel": "contrast",
+      "when": "抽屉高度吸附不是拖放改变数据顺序",
+      "whenEn": "sheet height snapping is not drag-and-drop reordering"
+    },
+    {
+      "slug": "pull-refresh",
+      "rel": "contrast",
+      "when": "抽屉多档定位不是顶部单向阈值触发刷新",
+      "whenEn": "multi-snap sheet positioning is not top-edge threshold refresh"
+    }
+  ],
+  "status": "active",
+  "created": "2026-09-09",
+  "updated": "2026-09-09",
+  "tags": ["gesture", "sheet", "drag", "snap", "mobile", "continuous-discrete"]
+}
