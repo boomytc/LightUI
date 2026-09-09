@@ -1,0 +1,35 @@
+{
+  "slug": "touch-context",
+  "title": "长按上下文",
+  "titleEn": "Touch Context",
+  "eyebrow": "触控长按消歧 · 就近定位与边界避让",
+  "eyebrowEn": "Hold Disambiguation · Anchored Placement & Boundary Avoidance",
+  "summary": "触控长按不是简单弹窗。原地按住约 460ms 且位移在 10px 容差内触发；位移超标立即销毁定时器让路给滚动；菜单紧贴触控点就近浮现并在视口边界自动翻转避让。",
+  "summaryEn": "Touch context menus are not centered modals. Holding a target ~460ms within a 10px drift tolerance anchors a localized action popover, while boundary clamping and vertical flipping prevent clipping.",
+  "asks": "触控长按目标时，手势如何在误触位移与持续时间中消歧，并在目标就近定位上下文操作？",
+  "asksEn": "On touch targets, how should gestures disambiguate hold duration from movement drift, and anchor context actions with boundary avoidance?",
+  "links": [
+    {
+      "slug": "press-select",
+      "rel": "contrast",
+      "when": "长按就近弹出单条操作菜单，不是长按进入多选批处理模式",
+      "whenEn": "touch context pops single-item actions, not entering multi-select mode"
+    },
+    {
+      "slug": "overlay-taxonomy",
+      "rel": "contrast",
+      "when": "触控上下文菜单由手势就近触发并带手抖消歧，不是桌面端点击静态按钮的 Popover",
+      "whenEn": "touch context is gesture-triggered with drift cancellation, not a click Popover"
+    },
+    {
+      "slug": "confirm-taxonomy",
+      "rel": "contrast",
+      "when": "长按就近菜单是快捷操作入口，不是长按蓄力防误触确认",
+      "whenEn": "touch context provides shortcuts, not hold-to-confirm"
+    }
+  ],
+  "status": "active",
+  "created": "2026-09-09",
+  "updated": "2026-09-09",
+  "tags": ["gesture", "context-menu", "popover", "mobile", "touch", "continuous-discrete"]
+}
