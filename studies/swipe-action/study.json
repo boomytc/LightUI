@@ -1,0 +1,41 @@
+{
+  "slug": "swipe-action",
+  "title": "列表侧滑",
+  "titleEn": "Swipe Action",
+  "eyebrow": "横竖意图消歧 · 露出吸附与全滑提交",
+  "eyebrowEn": "Axis Disambiguation · Reveal Snap & Overswipe Commit",
+  "summary": "列表行向左侧滑时，8px 矢量消歧区分纵向滚动与横向侧滑；释放时依据位移与阻尼裁定回弹、吸附露出快捷操作，或超过深滑阈值直接全滑提交删除。",
+  "summaryEn": "Swiping a list row left disambiguates axis intent within an 8px deadband. On release, it resolves between spring rollback, action tray snap reveal, or direct deletion past the deep overswipe commit threshold.",
+  "asks": "列表行向左侧滑时，手势如何区分横竖意图，并在操作露出与全滑提交之间裁定？",
+  "asksEn": "When swiping a list row horizontally, how should gestures disambiguate axis intent and resolve between action reveal and overswipe commit?",
+  "links": [
+    {
+      "slug": "confirm-taxonomy",
+      "rel": "contrast",
+      "when": "列表侧滑操作是多状态快捷手势体系，不是单纯的危险操作拦截滑块",
+      "whenEn": "swipe action is a multi-action gesture system, not merely a single destructive confirm slider"
+    },
+    {
+      "slug": "press-select",
+      "rel": "contrast",
+      "when": "列表侧滑露出针对单行的就近动作，长按则是激活列表多选批处理模式",
+      "whenEn": "swipe action reveals single-row actions, while long-press activates batch selection"
+    },
+    {
+      "slug": "pull-refresh",
+      "rel": "contrast",
+      "when": "侧滑是列表内部各行的水平局部接管，下拉刷新是顶部容器级的纵向接管",
+      "whenEn": "swipe action is intra-row horizontal gesture, pull-to-refresh is container-level vertical"
+    },
+    {
+      "slug": "drag-commit",
+      "rel": "contrast",
+      "when": "侧滑是露出动作面板或触发提交，不是拖拽改变记录的排序位置",
+      "whenEn": "swipe is revealing actions or committing, not reordering items"
+    }
+  ],
+  "status": "active",
+  "created": "2026-09-09",
+  "updated": "2026-09-09",
+  "tags": ["gesture", "swipe", "list", "commit", "mobile", "continuous-discrete"]
+}
