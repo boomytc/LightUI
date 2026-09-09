@@ -7,6 +7,10 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [sheet-snap](../studies/sheet-snap/) | 多档抽屉不是简单的二元开合。拖动时全量跟手并带越界阻尼，松手依据位移与速度综合裁定落入哪个离散档位。 | active | 2026-09-09 | 2026-09-09 |
+| [swipe-action](../studies/swipe-action/) | 列表行向左侧滑时，8px 矢量消歧区分纵向滚动与横向侧滑；释放时依据位移与阻尼裁定回弹、吸附露出快捷操作，或超过深滑阈值直接全滑提交删除。 | active | 2026-09-09 | 2026-09-09 |
+| [touch-context](../studies/touch-context/) | 触控长按不是简单弹窗。原地按住约 460ms 且位移在 10px 容差内触发；位移超标立即销毁定时器让路给滚动；菜单紧贴触控点就近浮现并在视口边界自动翻转避让。 | active | 2026-09-09 | 2026-09-09 |
+| [wheel-picker](../studies/wheel-picker/) | 有序离散数据或时间刻度，不要弹虚拟键盘也不要展开60项长列表。上下拨动连续滑动，松手依据滚动吸附中央基准线，离基准线越远透明度与尺寸沿圆柱面几何递减。 | active | 2026-09-09 | 2026-09-09 |
 | [group-taxonomy](../studies/group-taxonomy/) | 信息块分组不是默认套卡片。卡片只装真正独立的对象，关系才是分组的答案。 | active | 2026-09-02 | 2026-09-02 |
 | [path-morph](../studies/path-morph/) | 矢量路径变形。2D Procrustes 相似分解求解旋转与缩放，极坐标插值杜绝弦长塌陷，角点锚定保证静止态保真。 | active | 2026-08-31 | 2026-08-31 |
 | [confirm-taxonomy](../studies/confirm-taxonomy/) | 二次确认不是一律弹窗。打断程度与认知摩擦，必须与后果的不可逆性及影响范围严格成正比。 | active | 2026-08-30 | 2026-08-30 |
@@ -54,6 +58,10 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **抽屉吸附** (`sheet-snap`) — 多档底部抽屉拖拽时，手势如何在连续拖拽与离散档位之间落点？
+- **列表侧滑** (`swipe-action`) — 列表行向左侧滑时，手势如何区分横竖意图，并在操作露出与全滑提交之间裁定？
+- **长按上下文** (`touch-context`) — 触控长按目标时，手势如何在误触位移与持续时间中消歧，并在目标就近定位上下文操作？
+- **滚轮选择器** (`wheel-picker`) — 有序固定选项或时间刻度，这一格是用键盘输入、长列表展开，还是滚轮对齐基准线？
 - **分组** (`group-taxonomy`) — 信息块该怎么组织与隔断？
 - **路径变形** (`path-morph`) — 矢量路径变形时，是走单纯的坐标线性插值，还是分解为相似变换（旋放）加极坐标残差形变？
 - **二次确认** (`confirm-taxonomy`) — 执行破坏性操作时，该用多重的二次确认？
@@ -99,6 +107,21 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `sheet-snap` contrast `overlay-taxonomy` — 多档吸附抽屉不是二元阻断的操作菜单
+- `sheet-snap` contrast `expand-inflow` — 覆盖层档位吸附不是流内排版撑开
+- `sheet-snap` contrast `drag-commit` — 抽屉高度吸附不是拖放改变数据顺序
+- `sheet-snap` contrast `pull-refresh` — 抽屉多档定位不是顶部单向阈值触发刷新
+- `swipe-action` contrast `confirm-taxonomy` — 列表侧滑操作是多状态快捷手势体系，不是单纯的危险操作拦截滑块
+- `swipe-action` contrast `press-select` — 列表侧滑露出针对单行的就近动作，长按则是激活列表多选批处理模式
+- `swipe-action` contrast `pull-refresh` — 侧滑是列表内部各行的水平局部接管，下拉刷新是顶部容器级的纵向接管
+- `swipe-action` contrast `drag-commit` — 侧滑是露出动作面板或触发提交，不是拖拽改变记录的排序位置
+- `touch-context` contrast `press-select` — 长按就近弹出单条操作菜单，不是长按进入多选批处理模式
+- `touch-context` contrast `overlay-taxonomy` — 触控上下文菜单由手势就近触发并带手抖消歧，不是桌面端点击静态按钮的 Popover
+- `touch-context` contrast `confirm-taxonomy` — 长按就近菜单是快捷操作入口，不是长按蓄力防误触确认
+- `wheel-picker` contrast `control-taxonomy` — 滚轮选择器针对有序滚动吸附，不是下拉面板单选
+- `wheel-picker` contrast `sidebar-taxonomy` — 滚轮选择器是移动端触控输入控件，不是桌面鼠标滚轮侧栏
+- `wheel-picker` after `timer-taxonomy` — 滚轮选择器设定时长后，再由计时器管理正数倒数会话
+- `wheel-picker` contrast `sheet-snap` — 滚轮吸附是内容滚动量化到基准线，不是抽屉容器高度吸附
 - `group-taxonomy` contrast `layout-taxonomy` — 区块内部组织与隔断不是整页骨架铺法
 - `group-taxonomy` contrast `fill-taxonomy` — 表单按任务分段不是填写前中后的状态交代
 - `group-taxonomy` contrast `control-taxonomy` — 表单分组不是输入控件形态

@@ -64,6 +64,9 @@ const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "chart-read": "pointer",
   "press-select": "pointer",
   "pull-refresh": "pointer",
+  "sheet-snap": "pointer",
+  "swipe-action": "pointer",
+  "touch-context": "pointer",
   "container-morph": "craft",
 
   "layout-taxonomy": "layout",
@@ -75,6 +78,7 @@ const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "nav-taxonomy": "layout",
   "expand-inflow": "layout",
   "page-append": "layout",
+  "group-taxonomy": "layout",
 
   "button-taxonomy": "controls",
   "control-taxonomy": "controls",
@@ -82,6 +86,8 @@ const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "validation-taxonomy": "controls",
   "fill-taxonomy": "controls",
   "tab-taxonomy": "controls",
+  "locator-taxonomy": "controls",
+  "wheel-picker": "controls",
 
   "progress-taxonomy": "feedback",
   "timer-taxonomy": "feedback",
@@ -91,6 +97,7 @@ const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "carousel-taxonomy": "feedback",
   "recall-grade": "feedback",
   "optimistic-rollback": "feedback",
+  "confirm-taxonomy": "feedback",
 
   "align-craft": "craft",
   "border-beam": "craft",
@@ -98,6 +105,7 @@ const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "inverted-notch": "craft",
   "chart-taxonomy": "craft",
   "bm25-explain": "craft",
+  "path-morph": "craft",
 };
 
 export function getStudyCategory(slug: string): CategoryId {

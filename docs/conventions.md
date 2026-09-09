@@ -60,6 +60,9 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another study timer | Count-up vs count-down in `timer-taxonomy` | Measurable work → `progress-taxonomy` |
 | Another flashcard | Recall grade after flip in `recall-grade` | Advancing frames → `carousel-taxonomy` |
 | Another cooler scrollbar | Cue vs track in `scroll-chrome` | Work progress → `progress-taxonomy`; section spy → `nav-taxonomy` |
+| Another time/number picker | Baseline snap & depth in `wheel-picker` | Form field choice → `control-taxonomy`; timer session → `timer-taxonomy` |
+| Another row gesture | Disambiguation & commit in `swipe-action` | Safety confirm → `confirm-taxonomy`; batch select → `press-select` |
+| Another context menu | Touch disambiguation & flip in `touch-context` | Batch mode → `press-select`; click popover → `overlay-taxonomy` |
 
 Do not merge these into one encyclopedia because the fixtures look alike.
 The graph keeps the questions apart. Isolated nodes are allowed; only add
@@ -118,8 +121,10 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5208` fill-taxonomy, `5209` optimistic-rollback,
   `5210` press-select, `5211` pull-refresh,
   `5212` locator-taxonomy, `5213` confirm-taxonomy,
-  `5214` path-morph, `5215` group-taxonomy.
-  Next free: `5216`.
+  `5214` path-morph, `5215` group-taxonomy,
+  `5216` sheet-snap, `5217` wheel-picker,
+  `5218` swipe-action, `5219` touch-context.
+  Next free: `5220`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.
