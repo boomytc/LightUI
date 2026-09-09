@@ -1,0 +1,41 @@
+{
+  "slug": "wheel-picker",
+  "title": "滚轮选择器",
+  "titleEn": "Wheel Picker",
+  "eyebrow": "连续拨动 · 基准吸附与圆柱透视",
+  "eyebrowEn": "Continuous Flick · Baseline Snap & Cylinder Depth",
+  "summary": "有序离散数据或时间刻度，不要弹虚拟键盘也不要展开60项长列表。上下拨动连续滑动，松手依据滚动吸附中央基准线，离基准线越远透明度与尺寸沿圆柱面几何递减。",
+  "summaryEn": "Ordered discrete values and time scales should never pop an obstructive soft keyboard or span an unscrollable 60-row list. Vertical flicking tracks continuously, release snaps to the central baseline, and peripheral items fade along a cylindrical perspective curve.",
+  "asks": "有序固定选项或时间刻度，这一格是用键盘输入、长列表展开，还是滚轮对齐基准线？",
+  "asksEn": "When selecting ordered options or time units, should it be typed, expanded into a long list, or aligned via a wheel picker?",
+  "links": [
+    {
+      "slug": "control-taxonomy",
+      "rel": "contrast",
+      "when": "滚轮选择器针对有序滚动吸附，不是下拉面板单选",
+      "whenEn": "wheel picker is for ordered scroll-snap alignment, not a flat dropdown select"
+    },
+    {
+      "slug": "sidebar-taxonomy",
+      "rel": "contrast",
+      "when": "滚轮选择器是移动端触控输入控件，不是桌面鼠标滚轮侧栏",
+      "whenEn": "wheel picker is a mobile touch input control, not a desktop mouse wheel sidebar"
+    },
+    {
+      "slug": "timer-taxonomy",
+      "rel": "after",
+      "when": "滚轮选择器设定时长后，再由计时器管理正数倒数会话",
+      "whenEn": "wheel picker sets duration, then timer manages count-up/down"
+    },
+    {
+      "slug": "sheet-snap",
+      "rel": "contrast",
+      "when": "滚轮吸附是内容滚动量化到基准线，不是抽屉容器高度吸附",
+      "whenEn": "wheel snap is content scroll quantized to baseline, not container height snapping"
+    }
+  ],
+  "status": "active",
+  "created": "2026-09-09",
+  "updated": "2026-09-09",
+  "tags": ["picker", "wheel", "gesture", "scroll-snap", "mobile", "continuous-discrete"]
+}
