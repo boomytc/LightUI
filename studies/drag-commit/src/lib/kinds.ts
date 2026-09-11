@@ -3,11 +3,16 @@ import type { KindId } from "./machines";
 
 export type { KindId };
 
+export type KindTone = "reorder" | "receive" | "transfer" | "reject";
+
 export type KindMeta = {
   id: KindId;
   index: string;
   name: string;
+  tone: KindTone;
   zh: Localized;
+  commit: Localized;
+  writes: Localized;
   oneLiner: Localized;
   scenes: Localized[];
   rules: Localized[];
@@ -21,7 +26,10 @@ export const KINDS: KindMeta[] = [
     id: "reorder",
     index: "01",
     name: "Reorder",
+    tone: "reorder",
     zh: loc("同列排序", "Reorder"),
+    commit: loc("新顺序", "New order"),
+    writes: loc("交一份新列表", "Writes one new list"),
     oneLiner: loc("松手交一份新顺序；按垂直中线插", "Commit a new order; insert on the vertical midline"),
     scenes: [
       loc("任务卡排序", "A task list"),
@@ -47,7 +55,10 @@ export const KINDS: KindMeta[] = [
     id: "dropzone",
     index: "02",
     name: "Dropzone",
+    tone: "receive",
     zh: loc("投放区", "Dropzone"),
+    commit: loc("一次接收", "One receive"),
+    writes: loc("区内收下；区外不写", "Inside receives; outside writes nothing"),
     oneLiner: loc("只有区内才接收；区外什么都不改", "Receive only inside the zone; outside does nothing"),
     scenes: [
       loc("丢进收件箱", "Drop into inbox"),
@@ -70,7 +81,10 @@ export const KINDS: KindMeta[] = [
     id: "transfer",
     index: "03",
     name: "Transfer",
+    tone: "transfer",
     zh: loc("跨组转移", "Transfer"),
+    commit: loc("源 + 目标 + 下标", "Source + dest + index"),
+    writes: loc("一次改两列", "One drop updates both lists"),
     oneLiner: loc("一次交源列、目标列和下标；源列拖时不塌", "One commit: source, dest, destIndex; source does not collapse"),
     scenes: [
       loc("从队列拖到今日", "Queue onto Today"),
@@ -93,7 +107,10 @@ export const KINDS: KindMeta[] = [
     id: "snapback",
     index: "04",
     name: "Snap-back",
+    tone: "reject",
     zh: loc("无效回弹", "Snap-back"),
+    commit: loc("拒绝", "Reject"),
+    writes: loc("模型不变，路径倒回", "Model unchanged; path reverses"),
     oneLiner: loc("无效目标：模型不变，路径倒回去", "Invalid target: model unchanged, path reverses"),
     scenes: [
       loc("拖到只读托盘", "Drop onto a read-only tray"),

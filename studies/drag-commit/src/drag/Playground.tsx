@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Check, Copy } from "lucide-react";
-import { KINDS, type KindId } from "../lib/kinds";
+import { ArrowDownUp, ArrowLeftRight, Check, Copy, Inbox, Undo2 } from "lucide-react";
+import { KINDS, type KindId, type KindTone } from "../lib/kinds";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
 import type { StageLock } from "../lib/stage-query";
 import { cn } from "../lib/utils";
@@ -9,6 +9,13 @@ import { ReorderDemo } from "./ReorderDemo";
 import { SnapbackDemo } from "./SnapbackDemo";
 import { TransferDemo } from "./TransferDemo";
 import "./drag.css";
+
+const KIND_ICON: Record<KindId, typeof ArrowDownUp> = {
+  reorder: ArrowDownUp,
+  dropzone: Inbox,
+  transfer: ArrowLeftRight,
+  snapback: Undo2,
+};
 
 export function Playground() {
   const locale = useLocale();
@@ -34,29 +41,53 @@ export function Playground() {
     <div className="min-w-0 overflow-x-hidden">
       <nav
         aria-label={locale === "en" ? "Drag kinds" : "拖放种类"}
-        className="flex flex-wrap gap-2"
+        className="grid grid-cols-2 gap-2 lg:grid-cols-4"
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
+          const Icon = KIND_ICON[kind.id];
           return (
             <button
               key={kind.id}
               type="button"
               data-kind={kind.id}
+              data-tone={kind.tone}
+              aria-pressed={on}
               onClick={() => setActive(kind.id)}
               className={cn(
-                "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-left transition-colors",
+                "drag-kind-card min-w-0 rounded-2xl border px-3.5 py-3 text-left",
                 on
-                  ? "border-fg bg-fg text-surface"
-                  : "border-border bg-surface text-fg-muted hover:bg-surface-2 hover:text-fg",
+                  ? "border-transparent bg-[var(--kind-soft)]"
+                  : "border-border bg-surface hover:border-border-strong hover:bg-surface-2",
               )}
             >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-surface/70" : "text-fg-subtle")}>
-                {kind.index}
+              <span className="flex items-center justify-between gap-2">
+                <span
+                  className={cn(
+                    "font-mono text-[11px] tabular-nums",
+                    on ? "text-[var(--kind)]" : "text-fg-subtle",
+                  )}
+                >
+                  {kind.index}
+                </span>
+                <Icon
+                  className={cn("size-3.5", on ? "text-[var(--kind)]" : "text-fg-subtle")}
+                  aria-hidden="true"
+                />
               </span>
-              <span className="text-[13px] font-medium">{kind.name}</span>
-              <span className={cn("text-[11px]", on ? "text-surface/70" : "text-fg-subtle")}>
+              <span className="mt-2 block text-[13px] font-semibold tracking-tight">
                 {pick(kind.zh, locale)}
+              </span>
+              <span
+                className={cn(
+                  "mt-1 inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold",
+                  on ? "bg-surface/80 text-[var(--kind)]" : "bg-surface-2 text-fg-muted",
+                )}
+              >
+                {locale === "en" ? "Commits" : "提交"} {pick(kind.commit, locale)}
+              </span>
+              <span className="mt-2 block text-[11px] leading-snug text-fg-subtle">
+                {pick(kind.tells, locale)}
               </span>
             </button>
           );
@@ -66,12 +97,14 @@ export function Playground() {
       <section className="mt-6 min-w-0">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
-            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 04</p>
-            <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
+            <p className="font-mono text-[12px] tabular-nums" style={{ color: toneColor(meta.tone) }}>
+              {meta.index} / 04 · {pick(meta.commit, locale)}
+            </p>
+            <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{pick(meta.zh, locale)}</h2>
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           </div>
           <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
-            {pick(meta.tells, locale)}
+            {pick(meta.writes, locale)}
           </p>
         </div>
 
@@ -79,14 +112,18 @@ export function Playground() {
           {meta.scenes.map((scene) => (
             <span
               key={scene.zh}
-              className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
+              className="rounded-full bg-surface px-2.5 py-1 text-[11px] font-medium text-fg-muted ring-1 ring-border"
             >
               {pick(scene, locale)}
             </span>
           ))}
         </div>
 
-        {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
+        {meta.note ? (
+          <p className="mb-4 text-[13px] font-medium" style={{ color: toneColor(meta.tone) }}>
+            {pick(meta.note, locale)}
+          </p>
+        ) : null}
 
         <KindDemo key={meta.id} id={meta.id} />
 
@@ -105,6 +142,13 @@ export function Playground() {
       </section>
     </div>
   );
+}
+
+function toneColor(tone: KindTone): string {
+  if (tone === "receive") return "var(--color-intent)";
+  if (tone === "reject") return "var(--color-wrong)";
+  if (tone === "transfer") return "var(--color-accent)";
+  return "var(--color-predict)";
 }
 
 function SpecCard({ text, locale }: { text: string; locale: Locale }) {

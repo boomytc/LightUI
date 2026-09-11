@@ -1,40 +1,63 @@
-import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from "react";
+import { useEffect, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from "react";
 import { GripVertical } from "lucide-react";
+import type { KindTone } from "../lib/kinds";
 import { cn } from "../lib/utils";
+
+export type DragOutcome = "idle" | "armed" | "commit" | "reject";
+
+export function useCommitFlash(ms = 720) {
+  const [flash, setFlash] = useState<"commit" | "reject" | null>(null);
+  const timer = useRef(0);
+
+  function fire(kind: "commit" | "reject") {
+    window.clearTimeout(timer.current);
+    setFlash(kind);
+    timer.current = window.setTimeout(() => setFlash(null), ms);
+  }
+
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  return [flash, fire] as const;
+}
 
 export function DemoShell({
   compact = false,
   title,
   action,
   footer,
+  tone = "reorder",
+  commit,
+  outcome = "idle",
   children,
 }: {
   compact?: boolean;
   title: string;
   action?: ReactNode;
   footer?: ReactNode;
+  tone?: KindTone;
+  commit?: string;
+  outcome?: DragOutcome;
   children: ReactNode;
 }) {
   return (
     <div
+      data-tone={tone}
+      data-outcome={outcome}
       className={cn(
-        "relative isolate flex min-w-0 flex-col overflow-hidden border border-border bg-surface shadow-card",
+        "drag-shell relative isolate flex min-w-0 flex-col overflow-hidden border border-border bg-surface shadow-card",
         compact ? "min-h-[22rem] rounded-2xl" : "h-[28rem] w-full rounded-2xl sm:h-[32rem]",
       )}
     >
       <div className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-border px-4">
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="flex gap-1" aria-hidden="true">
-            <i className="size-2 rounded-full bg-[#ff5f57]" />
-            <i className="size-2 rounded-full bg-[#febc2e]" />
-            <i className="size-2 rounded-full bg-[#28c840]" />
-          </span>
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className="drag-tone-dot" aria-hidden="true" />
+          {commit ? <span className="drag-commit-pill">{commit}</span> : null}
           <p className="truncate text-[12px] text-fg-subtle">{title}</p>
         </div>
         {action}
       </div>
-      <div className="relative min-h-0 min-w-0 flex-1">{children}</div>
-      {footer ? (
+      {!compact && footer ? <div className="drag-ticker">{footer}</div> : null}
+      <div className="drag-bench relative min-h-0 min-w-0 flex-1">{children}</div>
+      {compact && footer ? (
         <div className="flex h-10 shrink-0 items-center border-t border-border px-4 text-[11px] text-fg-subtle">
           {footer}
         </div>
@@ -47,12 +70,16 @@ export function CardFace({
   title,
   meta,
   dim = false,
+  ghost = false,
+  badge,
   className,
   style,
 }: {
   title: string;
   meta: string;
   dim?: boolean;
+  ghost?: boolean;
+  badge?: string;
   className?: string;
   style?: CSSProperties;
 }) {
@@ -60,7 +87,8 @@ export function CardFace({
     <div
       style={style}
       className={cn(
-        "flex h-14 items-center gap-3 rounded-xl border border-border bg-surface px-3",
+        "flex h-14 items-center gap-3 rounded-xl border bg-surface px-3",
+        ghost ? "border-dashed border-border-strong bg-surface-2" : "border-border",
         dim && "opacity-40",
         className,
       )}
@@ -70,6 +98,11 @@ export function CardFace({
         <p className="truncate text-[13px] font-medium leading-tight">{title}</p>
         <p className="text-[11px] text-fg-subtle">{meta}</p>
       </div>
+      {badge ? (
+        <span className="shrink-0 rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] text-fg-subtle">
+          {badge}
+        </span>
+      ) : null}
     </div>
   );
 }

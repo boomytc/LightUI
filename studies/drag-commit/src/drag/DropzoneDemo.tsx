@@ -4,10 +4,13 @@ import { dropzoneHit } from "../lib/machines";
 import { pick, useLocale } from "../lib/site-locale";
 import type { StageLock } from "../lib/stage-query";
 import { cn } from "../lib/utils";
+import { KINDS } from "../lib/kinds";
 import { CHIPS, type Chip } from "./fixtures";
-import { Btn, ChipFace, DemoShell } from "./Frame";
+import { Btn, ChipFace, DemoShell, useCommitFlash } from "./Frame";
 import { animateReversePath } from "./reverse-path";
 import { ghostStyle, usePointerDrag, type DragLive } from "./use-pointer-drag";
+
+const META = KINDS[1]!;
 
 export function DropzoneDemo({ compact = false, lock = "idle" }: { compact?: boolean; lock?: StageLock }) {
   const locale = useLocale();
@@ -16,6 +19,8 @@ export function DropzoneDemo({ compact = false, lock = "idle" }: { compact?: boo
   const [inbox, setInbox] = useState<Chip[]>([]);
   const [hit, setHit] = useState(locked);
   const [returning, setReturning] = useState<DragLive | null>(null);
+  const [justIn, setJustIn] = useState<string | null>(null);
+  const [flash, fire] = useCommitFlash();
   const [status, setStatus] = useState(() =>
     locale === "en" ? "Idle · drop only inside the zone" : "待机 · 只有区内才接收",
   );
@@ -51,6 +56,7 @@ export function DropzoneDemo({ compact = false, lock = "idle" }: { compact?: boo
           (point) => setReturning((g) => (g ? { ...g, x: point.x, y: point.y } : g)),
           () => setReturning(null),
         );
+        fire("reject");
         setStatus(locale === "en" ? "Outside · no commit" : "区外 · 未提交");
         return;
       }
@@ -58,6 +64,8 @@ export function DropzoneDemo({ compact = false, lock = "idle" }: { compact?: boo
       if (!chip) return;
       setPool((list) => list.filter((item) => item.id !== session.id));
       setInbox((list) => [...list, chip]);
+      setJustIn(chip.id);
+      fire("commit");
       setStatus(
         locale === "en"
           ? `Received ${pick(chip.title, "en")}`
@@ -73,6 +81,7 @@ export function DropzoneDemo({ compact = false, lock = "idle" }: { compact?: boo
         (point) => setReturning((g) => (g ? { ...g, x: point.x, y: point.y } : g)),
         () => setReturning(null),
       );
+      fire("reject");
       setStatus(locale === "en" ? "Cancelled · no receive" : "已取消 · 没有接收");
     },
   });
@@ -85,13 +94,17 @@ export function DropzoneDemo({ compact = false, lock = "idle" }: { compact?: boo
   return (
     <DemoShell
       compact={compact}
-      title={locale === "en" ? "Orbit · inbox" : "Orbit · 收件"}
+      tone={META.tone}
+      commit={pick(META.commit, locale)}
+      outcome={flash ?? (returning ? "reject" : live ? (hit ? "armed" : "reject") : "idle")}
+      title={locale === "en" ? "Zone · inbox" : "投放区 · 收件"}
       action={
         compact ? null : (
           <Btn
             onClick={() => {
               setPool(CHIPS);
               setInbox([]);
+              setJustIn(null);
               setStatus(locale === "en" ? "Reset · four chips" : "已重置 · 四个筹码");
             }}
           >
@@ -119,6 +132,7 @@ export function DropzoneDemo({ compact = false, lock = "idle" }: { compact?: boo
                 key={chip.id}
                 type="button"
                 {...(locked ? {} : bind(chip.id))}
+                role="button"
                 className={cn("drag-item", !locked && "cursor-grab active:cursor-grabbing")}
                 aria-grabbed={hiding === chip.id}
               >
@@ -132,14 +146,27 @@ export function DropzoneDemo({ compact = false, lock = "idle" }: { compact?: boo
           data-hit={hit ? "true" : undefined}
           className="drag-zone relative flex min-h-0 flex-col rounded-2xl p-3"
         >
-          <p className="mb-2 flex items-center gap-1.5 text-[11px] font-medium text-fg-subtle">
+          <p className={cn("mb-2 flex items-center gap-1.5 text-[11px] font-medium", hit ? "text-intent" : "text-fg-subtle")}>
             <Inbox className="size-3.5" aria-hidden="true" />
-            {locale === "en" ? "Inbox · drop here" : "收件箱 · 丢进这里"}
+            {hit
+              ? locale === "en"
+                ? "Will receive once"
+                : "将接收一次"
+              : locale === "en"
+                ? "Inbox · drop here"
+                : "收件箱 · 丢进这里"}
             <span className="ml-auto tabular-nums">{inbox.length}</span>
           </p>
           <div className="flex flex-wrap content-start gap-2">
             {inbox.map((chip) => (
-              <ChipFace key={chip.id} title={pick(chip.title, locale)} className="border-accent/30 bg-accent-soft" />
+              <ChipFace
+                key={chip.id}
+                title={pick(chip.title, locale)}
+                className={cn(
+                  "border-intent/30 bg-intent-soft",
+                  justIn === chip.id && "drag-pop",
+                )}
+              />
             ))}
           </div>
           {locked ? (

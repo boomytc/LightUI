@@ -3,10 +3,13 @@ import { dropzoneHit, insertIndexY, transferItem, type SlotBox } from "../lib/ma
 import { pick, useLocale } from "../lib/site-locale";
 import type { StageLock } from "../lib/stage-query";
 import { cn } from "../lib/utils";
+import { KINDS } from "../lib/kinds";
 import { QUEUE_SEED, TODAY_SEED, type Task } from "./fixtures";
-import { Btn, CardFace, DemoShell } from "./Frame";
+import { Btn, CardFace, DemoShell, useCommitFlash } from "./Frame";
 import { animateReversePath } from "./reverse-path";
 import { ghostStyle, usePointerDrag, type DragLive } from "./use-pointer-drag";
+
+const META = KINDS[2]!;
 
 function measureSlots(ids: string[], els: Map<string, HTMLElement>, content: HTMLElement): SlotBox[] {
   const cTop = content.getBoundingClientRect().top;
@@ -26,6 +29,8 @@ export function TransferDemo({ compact = false, lock = "idle" }: { compact?: boo
   const [destIndex, setDestIndex] = useState(locked ? 0 : -1);
   const [overDest, setOverDest] = useState(locked);
   const [returning, setReturning] = useState<DragLive | null>(null);
+  const [justIn, setJustIn] = useState<string | null>(null);
+  const [flash, fire] = useCommitFlash();
   const [status, setStatus] = useState(() =>
     locale === "en" ? "Idle · source stays until drop" : "待机 · 源列留着，松手才交",
   );
@@ -89,6 +94,7 @@ export function TransferDemo({ compact = false, lock = "idle" }: { compact?: boo
           (point) => setReturning((g) => (g ? { ...g, x: point.x, y: point.y } : g)),
           () => setReturning(null),
         );
+        fire("reject");
         setStatus(locale === "en" ? "Missed dest · no transfer" : "没进目标列 · 未转移");
         return;
       }
@@ -108,6 +114,8 @@ export function TransferDemo({ compact = false, lock = "idle" }: { compact?: boo
         setQueue(next.dest);
       }
       setDestIndex(-1);
+      setJustIn(session.id);
+      fire("commit");
       setStatus(
         locale === "en"
           ? `Transferred · destIndex ${at} · ${next.source.length}/${next.dest.length}`
@@ -124,6 +132,7 @@ export function TransferDemo({ compact = false, lock = "idle" }: { compact?: boo
         (point) => setReturning((g) => (g ? { ...g, x: point.x, y: point.y } : g)),
         () => setReturning(null),
       );
+      fire("reject");
       setStatus(locale === "en" ? "Cancelled · both lists unchanged" : "已取消 · 两列都不变");
     },
   });
@@ -152,7 +161,13 @@ export function TransferDemo({ compact = false, lock = "idle" }: { compact?: boo
             key="hole"
             className="drag-hole h-14 shrink-0"
             aria-hidden="true"
-          />,
+          >
+            {!compact && destIndex >= 0 ? (
+              <span className="drag-hole-index">
+                {locale === "en" ? `Index ${destIndex}` : `下标 ${destIndex}`}
+              </span>
+            ) : null}
+          </div>,
         );
       }
       nodes.push(
@@ -163,25 +178,56 @@ export function TransferDemo({ compact = false, lock = "idle" }: { compact?: boo
             else itemEls.current.delete(item.id);
           }}
           {...(locked ? {} : bind(item.id))}
-          className={cn("drag-item", !locked && "cursor-grab active:cursor-grabbing")}
+          role="button"
+          className={cn("drag-item", !locked && "cursor-grab active:cursor-grabbing", justIn === item.id && isDest && "drag-pop")}
           aria-grabbed={dragId === item.id}
         >
           <CardFace
             title={pick(item.title, locale)}
             meta={pick(item.meta, locale)}
             dim={dragId === item.id}
+            ghost={dragId === item.id}
+            badge={
+              dragId === item.id && !isDest
+                ? locale === "en"
+                  ? "Held"
+                  : "未交"
+                : undefined
+            }
           />
         </div>,
       );
     });
     if (gapAt >= list.length) {
-      nodes.push(<div key="hole-end" className="drag-hole h-14 shrink-0" aria-hidden="true" />);
+      nodes.push(
+        <div key="hole-end" className="drag-hole h-14 shrink-0" aria-hidden="true">
+          {!compact && destIndex >= 0 ? (
+            <span className="drag-hole-index">
+              {locale === "en" ? `Index ${destIndex}` : `下标 ${destIndex}`}
+            </span>
+          ) : null}
+        </div>,
+      );
     }
     return (
-      <div ref={boxRef} className="flex min-h-0 min-w-0 flex-col rounded-xl bg-surface-2/80 p-2">
-        <p className="mb-2 px-1 text-[11px] font-medium text-fg-subtle">
-          {title}
-          <span className="ml-1 tabular-nums">{count}</span>
+      <div
+        ref={boxRef}
+        data-hot={isDest && overDest ? "true" : undefined}
+        className="drag-col flex min-h-0 min-w-0 flex-col rounded-xl bg-surface-2/80 p-2"
+      >
+        <p className="mb-2 flex items-center gap-1.5 px-1 text-[11px] font-medium text-fg-subtle">
+          <span>{title}</span>
+          <span className="tabular-nums">{count}</span>
+          {live && !isDest && !compact ? (
+            <span className="ml-auto text-[10px] text-fg-subtle">
+              {locale === "en" ? "Ghost stays" : "幽灵留着"}
+            </span>
+          ) : null}
+          {isDest && overDest && !compact ? (
+            <span className="ml-auto text-[10px] font-semibold text-accent">
+              {locale === "en" ? "Will take" : "将收下"}
+            </span>
+          ) : null}
         </p>
         <div ref={listRef} className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
           {nodes}
@@ -193,13 +239,17 @@ export function TransferDemo({ compact = false, lock = "idle" }: { compact?: boo
   return (
     <DemoShell
       compact={compact}
-      title={locale === "en" ? "Orbit · boards" : "Orbit · 看板"}
+      tone={META.tone}
+      commit={pick(META.commit, locale)}
+      outcome={flash ?? (returning ? "reject" : live ? (overDest ? "armed" : "reject") : "idle")}
+      title={locale === "en" ? "Boards · queue → today" : "看板 · 队列 → 今日"}
       action={
         compact ? null : (
           <Btn
             onClick={() => {
               setQueue(QUEUE_SEED);
               setToday(TODAY_SEED);
+              setJustIn(null);
               setStatus(locale === "en" ? "Reset · two lists" : "已重置 · 两列");
             }}
           >

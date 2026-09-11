@@ -1,4 +1,5 @@
-import { FORMULA } from "./lib/kinds";
+import { commitKind } from "./lib/machines";
+import { FORMULA, KINDS } from "./lib/kinds";
 import { pick, useLocale } from "./lib/site-locale";
 import { Playground } from "./drag/Playground";
 
@@ -19,11 +20,23 @@ export function StudyView() {
               ? "“Make it draggable” describes the skin. The thing that breaks is the commit: a new order, a single receive, a cross-list transfer, or an invalid snap-back."
               : "「做个拖放」说的是外观。真正会坏掉的是提交：新顺序、一次接收、跨组转移，还是无效回弹。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {KINDS.map((kind) => (
+              <li
+                key={kind.id}
+                data-tone={kind.tone}
+                className="inline-flex items-center gap-1.5 rounded-full bg-[var(--kind-soft)] px-2.5 py-1 text-[12px] font-semibold text-[var(--kind)]"
+              >
+                <span className="font-mono text-[10px] tabular-nums opacity-70">{kind.index}</span>
+                {pick(kind.commit, locale)}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Name the commit, name the scene, then name what drop writes. The four contrasts below are live."
-            : "先说提交，再说场景，再说松手写什么。下面四个对照可以拖。"}
+            ? "Name the commit, name the scene, then name what drop writes. The four contrasts below are live — 1 to 4 to switch."
+            : "先说提交，再说场景，再说松手写什么。下面四个对照可以拖。按 1–4 切换。"}
         </p>
       </section>
 
@@ -48,50 +61,57 @@ export function StudyView() {
           <h2 className="text-[1.35rem] font-semibold tracking-tight">
             {locale === "en" ? "How to tell them apart" : "怎么把它们分开"}
           </h2>
-          <ol className="mt-5 space-y-4 text-[14px] leading-relaxed text-fg-muted">
-            <li>
-              <span className="font-medium text-fg">
-                {locale === "en" ? "1. A hole is not another commit" : "1. 占位洞不是另一种提交"}
-              </span>
-              <br />
-              {locale === "en"
-                ? "The gap hints where the insert will land. The commit is still a new order or a transfer."
-                : "洞只提示将要插到哪。提交的仍是新顺序或跨组转移。"}
-            </li>
-            <li>
-              <span className="font-medium text-fg">
-                {locale === "en" ? "2. A snap-back is not a successful drop" : "2. 回弹不是成功投放"}
-              </span>
-              <br />
-              {locale === "en"
-                ? "It returns because the target is invalid. The data arrays must not change."
-                : "动画回到原位，是因为目标无效。数据数组不能变。"}
-            </li>
-            <li>
-              <span className="font-medium text-fg">
-                {locale === "en" ? "3. Across lists is not a reorder" : "3. 跨列不是同列排序"}
-              </span>
-              <br />
-              {locale === "en"
-                ? "A transfer commits source, dest, and destIndex. The source does not collapse while dragging."
-                : "跨组要交源列、目标列和下标。源列在拖的时候不塌，免得看起来已经交了。"}
-            </li>
+          <ol className="mt-5 space-y-3">
+            <Mixup
+              n="1"
+              title={locale === "en" ? "A hole is not another commit" : "占位洞不是另一种提交"}
+              body={
+                locale === "en"
+                  ? "The gap hints where the insert will land. The commit is still a new order or a transfer."
+                  : "洞只提示将要插到哪。提交的仍是新顺序或跨组转移。"
+              }
+            />
+            <Mixup
+              n="2"
+              title={locale === "en" ? "A snap-back is not a successful drop" : "回弹不是成功投放"}
+              body={
+                locale === "en"
+                  ? "It returns because the target is invalid. The data arrays must not change."
+                  : "动画回到原位，是因为目标无效。数据数组不能变。"
+              }
+            />
+            <Mixup
+              n="3"
+              title={locale === "en" ? "Across lists is not a reorder" : "跨列不是同列排序"}
+              body={
+                locale === "en"
+                  ? "A transfer commits source, dest, and destIndex. The source does not collapse while dragging."
+                  : "跨组要交源列、目标列和下标。源列在拖的时候不塌，免得看起来已经交了。"
+              }
+            />
           </ol>
         </article>
 
-        <article className="min-w-0 overflow-hidden rounded-2xl border border-border bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
+        <article className="min-w-0 overflow-hidden rounded-2xl border border-fg bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
           <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-surface/45">
             commitKind
           </p>
-          <pre className="mt-3 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">
-{`function commitKind(kind) {
-  if (kind === "reorder") return "reorder"
-  if (kind === "dropzone") return "receive"
-  if (kind === "transfer") return "transfer"
-  return "reject"
-}`}
-          </pre>
-          <p className="mt-4 text-[13px] leading-relaxed text-surface/55">
+          <ul className="mt-4 space-y-2.5">
+            {KINDS.map((kind) => (
+              <li
+                key={kind.id}
+                className="grid grid-cols-[2.25rem_minmax(0,1fr)_auto] items-baseline gap-3 font-mono text-[12px]"
+              >
+                <span className="tabular-nums text-surface/40">{kind.index}</span>
+                <span className="min-w-0 truncate text-surface/70">
+                  {kind.id}
+                  <span className="text-surface/35"> → {commitKind(kind.id)}</span>
+                </span>
+                <span className="shrink-0 text-surface">{pick(kind.commit, locale)}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 text-[13px] leading-relaxed text-surface/55">
             {locale === "en"
               ? "Insert on the vertical midline. Receive only inside the zone. Autoscroll is 64px of reorder, not a fifth kind."
               : "按垂直中线插。只有区内才接收。边缘 64px 自滚是排序里的行为，不是第五种。"}
@@ -99,5 +119,17 @@ export function StudyView() {
         </article>
       </section>
     </div>
+  );
+}
+
+function Mixup({ n, title, body }: { n: string; title: string; body: string }) {
+  return (
+    <li className="rounded-xl border border-border bg-surface px-3.5 py-3">
+      <p className="text-[14px] font-medium text-fg">
+        <span className="mr-2 font-mono text-[11px] text-fg-subtle">{n}</span>
+        {title}
+      </p>
+      <p className="mt-1 text-[13px] leading-relaxed text-fg-muted">{body}</p>
+    </li>
   );
 }

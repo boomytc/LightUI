@@ -4,10 +4,13 @@ import { dropzoneHit, snapbackKeepsModel } from "../lib/machines";
 import { pick, useLocale } from "../lib/site-locale";
 import type { StageLock } from "../lib/stage-query";
 import { cn } from "../lib/utils";
+import { KINDS } from "../lib/kinds";
 import { ARCHIVE_SEED, DESK_SEED, type Task } from "./fixtures";
-import { Btn, CardFace, DemoShell } from "./Frame";
+import { Btn, CardFace, DemoShell, useCommitFlash } from "./Frame";
 import { animateReversePath } from "./reverse-path";
 import { ghostStyle, usePointerDrag, type DragLive } from "./use-pointer-drag";
+
+const META = KINDS[3]!;
 
 const LOCKED_QUEUE: Task[] = [
   {
@@ -25,6 +28,7 @@ export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boo
   const lockedQueue = LOCKED_QUEUE;
   const [reject, setReject] = useState(locked);
   const [returning, setReturning] = useState<DragLive | null>(null);
+  const [flash, fire] = useCommitFlash();
   const [status, setStatus] = useState(() =>
     locale === "en" ? "Idle · trays are read-only" : "待机 · 托盘是只读的",
   );
@@ -67,6 +71,7 @@ export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boo
           (point) => setReturning((g) => (g ? { ...g, x: point.x, y: point.y } : g)),
           () => setReturning(null),
         );
+        fire("reject");
         setStatus(
           onReadOnly
             ? locale === "en"
@@ -87,6 +92,7 @@ export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boo
         (point) => setReturning((g) => (g ? { ...g, x: point.x, y: point.y } : g)),
         () => setReturning(null),
       );
+      fire("reject");
       setStatus(locale === "en" ? "Cancelled · arrays unchanged" : "已取消 · 数组不变");
     },
   });
@@ -115,10 +121,15 @@ export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boo
         data-reject={reject ? "true" : undefined}
         className="drag-zone drag-tray relative flex min-h-0 flex-col rounded-2xl border-dashed p-3"
       >
-        <p className="mb-2 flex items-center gap-1.5 text-[11px] font-medium text-fg-subtle">
+        <p className={cn("mb-2 flex items-center gap-1.5 text-[11px] font-medium", reject ? "text-wrong" : "text-fg-subtle")}>
           {icon}
           {title}
           <Lock className="size-3" aria-hidden="true" />
+          {reject ? (
+            <span className="rounded-md bg-wrong-soft px-1.5 py-0.5 text-[10px] font-semibold text-wrong">
+              {locale === "en" ? "Reject" : "拒收"}
+            </span>
+          ) : null}
           <span className="ml-auto tabular-nums">{count}</span>
         </p>
         <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">{children}</div>
@@ -129,7 +140,10 @@ export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boo
   return (
     <DemoShell
       compact={compact}
-      title={locale === "en" ? "Orbit · trays" : "Orbit · 托盘"}
+      tone={META.tone}
+      commit={pick(META.commit, locale)}
+      outcome={flash ?? (returning || reject || live ? "reject" : "idle")}
+      title={locale === "en" ? "Trays · read-only" : "托盘 · 只读"}
       action={
         compact ? null : (
           <Btn
@@ -161,6 +175,7 @@ export function SnapbackDemo({ compact = false, lock = "idle" }: { compact?: boo
               <div
                 key={item.id}
                 {...(locked ? {} : bind(item.id))}
+                role="button"
                 className={cn("drag-item", !locked && "cursor-grab active:cursor-grabbing")}
                 aria-grabbed={hiding === item.id}
               >

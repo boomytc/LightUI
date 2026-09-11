@@ -1,3 +1,23 @@
+[data-tone="reorder"] {
+  --kind: var(--color-predict);
+  --kind-soft: var(--color-predict-soft);
+}
+
+[data-tone="receive"] {
+  --kind: var(--color-intent);
+  --kind-soft: var(--color-intent-soft);
+}
+
+[data-tone="transfer"] {
+  --kind: var(--color-accent);
+  --kind-soft: var(--color-accent-soft);
+}
+
+[data-tone="reject"] {
+  --kind: var(--color-wrong);
+  --kind-soft: var(--color-wrong-soft);
+}
+
 .drag-item {
   touch-action: none;
   user-select: none;
@@ -6,43 +26,233 @@
 
 .drag-ghost {
   box-shadow: var(--shadow-menu);
-  transform: rotate(2deg) scale(1.03);
+  transform: translateY(-3px) rotate(2deg) scale(1.035);
   transform-origin: center center;
   cursor: grabbing;
+  will-change: left, top, transform;
+  animation: drag-lift 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .drag-ghost-reject {
   outline: 2px solid var(--color-wrong);
   background: var(--color-wrong-soft);
+  animation: drag-reject-pulse 520ms ease-in-out infinite;
 }
 
 .drag-hole {
   box-sizing: border-box;
+  display: grid;
+  place-items: center;
   border-radius: var(--radius-md);
-  border: 1px dashed color-mix(in oklab, var(--color-accent) 55%, var(--color-border));
-  background: color-mix(in oklab, var(--color-accent-soft) 85%, transparent);
+  border: 1.5px dashed color-mix(in oklab, var(--color-predict) 60%, var(--color-border));
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-predict-soft) 0%, transparent),
+      color-mix(in oklab, var(--color-predict-soft) 92%, transparent)
+    );
+  animation: drag-hole-breathe 1.35s ease-in-out infinite;
+}
+
+.drag-hole-index {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 550;
+  letter-spacing: 0.04em;
+  color: var(--color-predict);
 }
 
 .drag-zone {
   border: 1.5px dashed var(--color-border-strong);
   transition:
-    border-color 120ms ease,
-    background-color 120ms ease,
-    color 120ms ease;
+    border-color 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 160ms ease,
+    box-shadow 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .drag-zone[data-hit="true"] {
-  border-color: var(--color-accent);
-  background: var(--color-accent-soft);
+  border-color: var(--color-intent);
+  border-style: solid;
+  background: var(--color-intent-soft);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-intent-soft) 80%, transparent);
+  transform: scale(1.012);
 }
 
 .drag-tray[data-reject="true"] {
   border-color: var(--color-wrong);
+  border-style: solid;
   background: var(--color-wrong-soft);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-wrong-soft) 80%, transparent);
+  animation: drag-tray-shake 280ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+.drag-col {
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.drag-col[data-hot="true"] {
+  background: color-mix(in oklab, var(--color-accent-soft) 88%, var(--color-surface));
+  box-shadow: inset 0 0 0 1.5px var(--color-accent);
+}
+
+.drag-tone-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--kind);
+  box-shadow: 0 0 0 3px var(--kind-soft);
+}
+
+.drag-commit-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 1.375rem;
+  border-radius: 999px;
+  padding: 0 0.5rem;
+  background: var(--kind-soft);
+  color: var(--kind);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.drag-ticker {
+  display: flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-fg-subtle);
+  font-size: 12px;
+  font-weight: 450;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.drag-shell[data-outcome="armed"] .drag-ticker {
+  background: var(--kind-soft);
+  color: var(--kind);
+  font-weight: 550;
+}
+
+.drag-shell[data-outcome="commit"] {
+  box-shadow:
+    0 0 0 2px color-mix(in oklab, var(--color-intent) 32%, transparent),
+    var(--shadow-card);
+}
+
+.drag-shell[data-outcome="commit"] .drag-ticker {
+  background: var(--color-intent-soft);
+  color: var(--color-intent);
+  font-weight: 550;
+}
+
+.drag-shell[data-outcome="reject"] {
+  box-shadow:
+    0 0 0 2px color-mix(in oklab, var(--color-wrong) 28%, transparent),
+    var(--shadow-card);
+}
+
+.drag-shell[data-outcome="reject"] .drag-ticker {
+  background: var(--color-wrong-soft);
+  color: var(--color-wrong);
+  font-weight: 550;
+}
+
+.drag-bench {
+  background:
+    radial-gradient(120% 80% at 8% -10%, var(--color-play-glow), transparent 52%),
+    var(--color-surface-2);
+}
+
+.drag-pop {
+  animation: drag-pop 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.drag-kind-card {
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.drag-kind-card:hover {
+  transform: translateY(-1px);
+}
+
+.drag-kind-card[aria-pressed="true"] {
+  box-shadow: 0 0 0 3px var(--kind-soft);
+}
+
+@keyframes drag-lift {
+  from {
+    transform: translateY(0) rotate(0deg) scale(1);
+    box-shadow: 0 0 0 rgb(0 0 0 / 0);
+  }
+}
+
+@keyframes drag-hole-breathe {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes drag-reject-pulse {
+  0%,
+  100% {
+    outline-color: var(--color-wrong);
+  }
+  50% {
+    outline-color: color-mix(in oklab, var(--color-wrong) 55%, transparent);
+  }
+}
+
+@keyframes drag-tray-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes drag-pop {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .drag-ghost {
+  .drag-ghost,
+  .drag-ghost-reject,
+  .drag-hole,
+  .drag-tray[data-reject="true"],
+  .drag-pop,
+  .drag-kind-card,
+  .drag-zone {
+    animation: none;
     transform: none;
+    transition-duration: 0.01ms;
   }
 }

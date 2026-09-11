@@ -8,10 +8,13 @@ import {
 import { pick, useLocale } from "../lib/site-locale";
 import type { StageLock } from "../lib/stage-query";
 import { cn } from "../lib/utils";
+import { KINDS } from "../lib/kinds";
 import { TASKS, type Task } from "./fixtures";
-import { Btn, CardFace, DemoShell } from "./Frame";
+import { Btn, CardFace, DemoShell, useCommitFlash } from "./Frame";
 import { animateReversePath } from "./reverse-path";
 import { ghostStyle, usePointerDrag, type DragLive } from "./use-pointer-drag";
+
+const META = KINDS[0]!;
 
 type Origin = { top: number; height: number; stride: number };
 
@@ -92,6 +95,7 @@ export function ReorderDemo({ compact = false, lock = "idle" }: { compact?: bool
     locale === "en" ? "Idle · drag a card 6px to lift" : "待机 · 拖一张卡，移动 6px 抬起",
   );
   const [returning, setReturning] = useState<DragLive | null>(null);
+  const [flash, fire] = useCommitFlash();
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -151,6 +155,7 @@ export function ReorderDemo({ compact = false, lock = "idle" }: { compact?: bool
       originRef.current = null;
       slotsRef.current = null;
       lastTops.current = null;
+      fire("commit");
       setStatus(
         locale === "en" ? `Committed a new order · insert ${at}` : `已提交新顺序 · 插入 ${at}`,
       );
@@ -168,6 +173,7 @@ export function ReorderDemo({ compact = false, lock = "idle" }: { compact?: bool
         (point) => setReturning((g) => (g ? { ...g, x: point.x, y: point.y } : g)),
         () => setReturning(null),
       );
+      fire("reject");
       setStatus(locale === "en" ? "Cancelled · order unchanged" : "已取消 · 顺序不变");
     },
   });
@@ -207,7 +213,7 @@ export function ReorderDemo({ compact = false, lock = "idle" }: { compact?: bool
       if (Math.abs(dy) < 1) continue;
       el.animate(
         [{ transform: `translateY(${dy}px)` }, { transform: "translateY(0)" }],
-        { duration: 220, easing: "cubic-bezier(0.2, 0, 0, 1)" },
+        { duration: 260, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
       );
     }
   }, [items, locked]);
@@ -236,7 +242,7 @@ export function ReorderDemo({ compact = false, lock = "idle" }: { compact?: bool
         const ty = yieldTranslate(id, live.id, insertAt, order, origin);
         el.animate(
           [{ transform: `translateY(${ty + dy}px)` }, { transform: `translateY(${ty}px)` }],
-          { duration: 200, easing: "cubic-bezier(0.2, 0, 0, 1)" },
+          { duration: 240, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
         );
       }
     }
@@ -257,7 +263,10 @@ export function ReorderDemo({ compact = false, lock = "idle" }: { compact?: bool
   return (
     <DemoShell
       compact={compact}
-      title={locale === "en" ? "Orbit · queue" : "Orbit · 队列"}
+      tone={META.tone}
+      commit={pick(META.commit, locale)}
+      outcome={flash ?? (returning ? "reject" : live ? "armed" : "idle")}
+      title={locale === "en" ? "Same list · queue" : "同列 · 队列"}
       action={
         compact ? null : (
           <Btn
@@ -297,6 +306,7 @@ export function ReorderDemo({ compact = false, lock = "idle" }: { compact?: bool
                   else itemEls.current.delete(item.id);
                 }}
                 {...(locked ? {} : bind(item.id))}
+                role="button"
                 className={cn("drag-item relative", !locked && "cursor-grab active:cursor-grabbing")}
                 style={{
                   transform: ty ? `translateY(${ty}px)` : undefined,
@@ -305,7 +315,11 @@ export function ReorderDemo({ compact = false, lock = "idle" }: { compact?: bool
                 aria-grabbed={lifting}
               >
                 {locked && item.id === "b" ? (
-                  <div className="drag-hole absolute inset-0" aria-hidden="true" />
+                  <div className="drag-hole absolute inset-0" aria-hidden="true">
+                    <span className="drag-hole-index">
+                      {locale === "en" ? "Insert 1" : "插入 1"}
+                    </span>
+                  </div>
                 ) : null}
                 <CardFace
                   title={pick(item.title, locale)}
@@ -331,7 +345,11 @@ export function ReorderDemo({ compact = false, lock = "idle" }: { compact?: bool
                 height: live.height,
               }}
               aria-hidden="true"
-            />
+            >
+              <span className="drag-hole-index">
+                {locale === "en" ? `Insert ${insertAt}` : `插入 ${insertAt}`}
+              </span>
+            </div>
           ) : null}
         </div>
       </div>
