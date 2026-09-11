@@ -2,6 +2,70 @@ export type ActionKind = "like" | "bookmark" | "follow" | "delete";
 
 export type SyncPhase = "idle" | "syncing" | "synced" | "error";
 
+export type PathId = "lead" | "rollback" | "forbid";
+
+export type PathFormula = {
+  id: PathId;
+  title: { zh: string; en: string };
+  eyebrow: { zh: string; en: string };
+  desc: { zh: string; en: string };
+  kinds: ActionKind[];
+};
+
+export const PATHS: PathFormula[] = [
+  {
+    id: "lead",
+    title: { zh: "先行", en: "Lead" },
+    eyebrow: { zh: "成功默认", en: "Success default" },
+    desc: {
+      zh: "可逆低风险：UI 立刻翻到目标值，网络在后台静默同步。",
+      en: "Reversible and low-risk: the UI flips now; the network syncs quietly.",
+    },
+    kinds: ["bookmark", "like", "follow"],
+  },
+  {
+    id: "rollback",
+    title: { zh: "回滚", en: "Rollback" },
+    eyebrow: { zh: "快照还原", en: "Restore snapshot" },
+    desc: {
+      zh: "失败不撒谎：按点击前的快照原位弹回，并说清原因。",
+      en: "Failure does not lie: snap back to the pre-click snapshot and say why.",
+    },
+    kinds: ["bookmark", "like", "follow"],
+  },
+  {
+    id: "forbid",
+    title: { zh: "禁止乐观", en: "Forbid" },
+    eyebrow: { zh: "高风险等待", en: "High-risk wait" },
+    desc: {
+      zh: "不可逆操作不先行：锁定触发器，等服务端回执再提交。",
+      en: "Irreversible work does not lead: lock the trigger and wait for the ACK.",
+    },
+    kinds: ["delete"],
+  },
+];
+
+export const PATH_STEPS: Record<
+  PathId,
+  { id: "trigger" | "syncing" | "end"; zh: string; en: string }[]
+> = {
+  lead: [
+    { id: "trigger", zh: "存快照", en: "Snapshot" },
+    { id: "syncing", zh: "UI 先行", en: "UI leads" },
+    { id: "end", zh: "确认", en: "Commit" },
+  ],
+  rollback: [
+    { id: "trigger", zh: "存快照", en: "Snapshot" },
+    { id: "syncing", zh: "UI 先行", en: "UI leads" },
+    { id: "end", zh: "回滚", en: "Rollback" },
+  ],
+  forbid: [
+    { id: "trigger", zh: "锁定", en: "Lock" },
+    { id: "syncing", zh: "等回执", en: "Await ACK" },
+    { id: "end", zh: "再提交", en: "Then commit" },
+  ],
+};
+
 export type ActionFormula = {
   kind: ActionKind;
   title: { zh: string; en: string };

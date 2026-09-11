@@ -1,0 +1,234 @@
+.or-play {
+  --or-tint: var(--color-intent);
+  --or-wash: var(--color-intent-soft);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.or-play[data-path="rollback"] {
+  --or-tint: var(--color-wrong);
+  --or-wash: var(--color-wrong-soft);
+}
+
+.or-play[data-path="forbid"] {
+  --or-tint: var(--color-fg);
+  --or-wash: color-mix(in oklab, var(--color-fg) 7%, var(--color-surface));
+}
+
+.or-path-btn[data-on="true"] {
+  border-color: color-mix(in oklab, var(--or-tint) 42%, var(--color-border));
+  background: var(--or-wash);
+  box-shadow: var(--shadow-card);
+}
+
+.or-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(120% 90% at 0% 0%, var(--or-wash) 0%, transparent 58%),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-surface) 88%, var(--color-bg)) 0%,
+      var(--color-surface) 100%
+    );
+}
+
+.or-stage::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.28'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+.dark .or-stage::before {
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+}
+
+.or-stage > * {
+  position: relative;
+}
+
+.or-action {
+  min-height: 44px;
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms ease;
+}
+
+.or-action[data-motion="flip"] {
+  animation: or-lead-pop 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.or-action[data-motion="live"] {
+  animation: or-breath 1.35s ease-in-out infinite;
+}
+
+.or-action[data-motion="snap"] {
+  animation: or-rewind 460ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.or-action[data-motion="wait"] {
+  cursor: wait;
+}
+
+.or-caption {
+  animation: or-rise 280ms ease both;
+}
+
+.or-token {
+  animation: or-tick 280ms ease both;
+}
+
+.or-compare[data-dir="back"] .or-compare-arrow {
+  animation: or-arrow-back 460ms ease both;
+}
+
+.or-compare[data-dir="forward"] .or-compare-arrow {
+  animation: or-arrow-fwd 320ms ease both;
+}
+
+.or-compare-cell[data-flash="true"] {
+  animation: or-flash-wrong 520ms ease;
+}
+
+.or-step[data-now="true"] {
+  color: var(--or-tint);
+}
+
+.or-step-bar {
+  transform: scaleX(var(--or-progress, 0));
+  transform-origin: left center;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  background: var(--or-tint);
+}
+
+.or-fixture {
+  --or-tint: var(--color-intent);
+  --or-wash: var(--color-intent-soft);
+}
+
+.or-fixture[data-path="rollback"] {
+  --or-tint: var(--color-wrong);
+  --or-wash: var(--color-wrong-soft);
+}
+
+.or-fixture[data-path="forbid"] {
+  --or-tint: var(--color-fg);
+  --or-wash: color-mix(in oklab, var(--color-fg) 7%, var(--color-surface));
+}
+
+@keyframes or-lead-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes or-breath {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-predict) 0%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in oklab, var(--color-predict) 20%, transparent);
+  }
+}
+
+@keyframes or-rewind {
+  0% {
+    transform: translateX(0);
+  }
+  32% {
+    transform: translateX(-7px);
+  }
+  58% {
+    transform: translateX(3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes or-flash-wrong {
+  0%,
+  100% {
+    background-color: var(--color-surface);
+  }
+  35% {
+    background-color: var(--color-wrong-soft);
+  }
+}
+
+@keyframes or-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes or-tick {
+  from {
+    opacity: 0.35;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes or-arrow-fwd {
+  from {
+    transform: translateX(-4px);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes or-arrow-back {
+  from {
+    transform: translateX(4px) scaleX(-1);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateX(0) scaleX(-1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .or-action,
+  .or-caption,
+  .or-token,
+  .or-compare-arrow,
+  .or-compare-cell,
+  .or-step-bar {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
