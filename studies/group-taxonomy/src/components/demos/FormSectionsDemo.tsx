@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { GroupMode } from "../../lib/machines.js";
+import { ModeCrossfade } from "../ModeCrossfade.js";
 
 const FIELDS = [
   { key: "name", label: "姓名", group: "基本信息", placeholder: "苏小明", hint: "在成员名录中公开显示", required: true },
@@ -165,21 +166,10 @@ export function FormSectionsDemo({ mode }: { mode: GroupMode }) {
     setValues((prev) => ({ ...prev, [key]: value }));
 
   return (
-    <div className="relative min-h-[380px]">
-      <div
-        className={`transition-opacity duration-200 ${
-          mode === "cards" ? "opacity-100" : "opacity-0 pointer-events-none absolute inset-0"
-        }`}
-      >
-        <Cards values={values} set={set} />
-      </div>
-      <div
-        className={`transition-opacity duration-200 ${
-          mode === "grouped" ? "opacity-100" : "opacity-0 pointer-events-none absolute inset-0"
-        }`}
-      >
-        <Grouped values={values} set={set} percent={percent} />
-      </div>
-    </div>
+    <ModeCrossfade
+      mode={mode}
+      cards={<Cards values={values} set={set} />}
+      grouped={<Grouped values={values} set={set} percent={percent} />}
+    />
   );
 }

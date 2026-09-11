@@ -10,4 +10,4 @@ make dev-study STUDY=group-taxonomy
 npm run dev --workspace=@lightui/group-taxonomy
 ```
 
-Standalone playground runs at `http://127.0.0.1:5215/`.
+Standalone playground runs at `http://127.0.0.1:5188/`.

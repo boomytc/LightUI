@@ -13,25 +13,23 @@ export function CopyBlock({
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
     } catch {
-      // Fallback
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
+      // keep the visual confirm even if clipboard is blocked
     }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
   }
 
   return (
-    <div className="rounded-xl border border-border bg-surface-2 p-4">
-      <div className="mb-2.5 flex items-center justify-between">
-        <span className="font-mono text-xs font-medium text-fg-muted uppercase tracking-wider">
+    <div>
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <span className="font-mono text-[0.65rem] font-medium tracking-wider text-fg-subtle uppercase">
           {label}
         </span>
         <button
           type="button"
           onClick={handleCopy}
-          className="pressable inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 py-1 text-xs text-fg-muted transition-colors hover:text-fg hover:border-border-strong"
+          className="pressable inline-flex items-center gap-1.5 text-xs text-fg-muted transition-colors hover:text-fg"
         >
           {copied ? (
             <>
@@ -46,7 +44,7 @@ export function CopyBlock({
           )}
         </button>
       </div>
-      <pre className="font-mono text-xs leading-relaxed whitespace-pre overflow-x-auto rounded-lg bg-surface p-3.5 text-fg-muted border border-border">
+      <pre className="overflow-x-auto border-t border-border pt-3 font-mono text-xs leading-relaxed whitespace-pre text-fg-muted">
         <code>{text}</code>
       </pre>
     </div>

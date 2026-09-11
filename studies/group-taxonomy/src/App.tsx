@@ -16,7 +16,7 @@ export function App() {
           <a href="/" className="text-sm font-semibold tracking-tight text-fg">
             LightUI · Study
           </a>
-          <span className="rounded-full bg-surface-2 px-2.5 py-0.5 text-xs text-fg-muted font-mono border border-border">
+          <span className="font-mono text-xs text-fg-subtle">
             /s/group-taxonomy
           </span>
         </div>

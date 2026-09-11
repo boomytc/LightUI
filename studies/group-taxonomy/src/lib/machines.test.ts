@@ -41,6 +41,8 @@ describe("group-taxonomy machines", () => {
       assert.ok(pattern.num);
       assert.ok(pattern.name);
       assert.ok(pattern.relation);
+      assert.ok(pattern.cut);
+      assert.ok(pattern.when);
       assert.ok(pattern.css);
       assert.ok(pattern.prompt);
     }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { GroupMode } from "../../lib/machines.js";
+import { ModeCrossfade } from "../ModeCrossfade.js";
 
 const ITEMS = [
   { id: 1, title: "产品原型已更新", meta: "项目工作台 · Atlas", time: "09:42", status: "刚刚", unread: true },
@@ -93,22 +94,5 @@ function Grouped() {
 }
 
 export function ActivityListDemo({ mode }: { mode: GroupMode }) {
-  return (
-    <div className="relative min-h-[360px]">
-      <div
-        className={`transition-opacity duration-200 ${
-          mode === "cards" ? "opacity-100" : "opacity-0 pointer-events-none absolute inset-0"
-        }`}
-      >
-        <Cards />
-      </div>
-      <div
-        className={`transition-opacity duration-200 ${
-          mode === "grouped" ? "opacity-100" : "opacity-0 pointer-events-none absolute inset-0"
-        }`}
-      >
-        <Grouped />
-      </div>
-    </div>
-  );
+  return <ModeCrossfade mode={mode} cards={<Cards />} grouped={<Grouped />} />;
 }

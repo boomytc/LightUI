@@ -1,4 +1,5 @@
 import type { GroupMode } from "../../lib/machines.js";
+import { ModeCrossfade } from "../ModeCrossfade.js";
 
 function MiniBar({ value }: { value: number }) {
   return (
@@ -128,22 +129,5 @@ function Grouped() {
 }
 
 export function DefaultCardsDemo({ mode }: { mode: GroupMode }) {
-  return (
-    <div className="relative min-h-[360px]">
-      <div
-        className={`transition-opacity duration-200 ${
-          mode === "cards" ? "opacity-100" : "opacity-0 pointer-events-none absolute inset-0"
-        }`}
-      >
-        <Cards />
-      </div>
-      <div
-        className={`transition-opacity duration-200 ${
-          mode === "grouped" ? "opacity-100" : "opacity-0 pointer-events-none absolute inset-0"
-        }`}
-      >
-        <Grouped />
-      </div>
-    </div>
-  );
+  return <ModeCrossfade mode={mode} cards={<Cards />} grouped={<Grouped />} />;
 }

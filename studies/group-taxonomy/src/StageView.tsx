@@ -35,7 +35,7 @@ export function StageView() {
     >
       <div
         data-stage="fixture"
-        className="w-full max-w-3xl rounded-2xl border border-border bg-surface shadow-card overflow-hidden"
+        className="w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
       >
         {renderDemo()}
       </div>

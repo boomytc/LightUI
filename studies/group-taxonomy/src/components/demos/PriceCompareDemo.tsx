@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { GroupMode } from "../../lib/machines.js";
+import { ModeCrossfade } from "../ModeCrossfade.js";
 
 const PLANS = [
   {
@@ -109,21 +110,10 @@ export function PriceCompareDemo({ mode }: { mode: GroupMode }) {
   const [selected, setSelected] = useState("Pro");
 
   return (
-    <div className="relative min-h-[360px]">
-      <div
-        className={`transition-opacity duration-200 ${
-          mode === "cards" ? "opacity-100" : "opacity-0 pointer-events-none absolute inset-0"
-        }`}
-      >
-        <Cards selected={selected} onSelect={setSelected} />
-      </div>
-      <div
-        className={`transition-opacity duration-200 ${
-          mode === "grouped" ? "opacity-100" : "opacity-0 pointer-events-none absolute inset-0"
-        }`}
-      >
-        <Grouped selected={selected} onSelect={setSelected} />
-      </div>
-    </div>
+    <ModeCrossfade
+      mode={mode}
+      cards={<Cards selected={selected} onSelect={setSelected} />}
+      grouped={<Grouped selected={selected} onSelect={setSelected} />}
+    />
   );
 }

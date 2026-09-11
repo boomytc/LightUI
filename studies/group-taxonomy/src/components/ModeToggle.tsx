@@ -9,32 +9,37 @@ export function ModeToggle({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="inline-flex rounded-full border border-border bg-surface-2 p-1">
+      <div
+        role="radiogroup"
+        aria-label="对照模式"
+        className="mode-toggle"
+      >
+        <span
+          className="mode-toggle-thumb"
+          data-mode={mode}
+          aria-hidden
+        />
         <button
           type="button"
+          role="radio"
+          aria-checked={mode === "cards"}
           onClick={() => onChange("cards")}
-          className={`rounded-full px-3.5 py-1 text-xs font-medium transition-all ${
-            mode === "cards"
-              ? "bg-surface text-fg shadow-sm border border-border"
-              : "text-fg-muted hover:text-fg"
-          }`}
+          className={mode === "cards" ? "is-on" : ""}
         >
           默认卡片
         </button>
         <button
           type="button"
+          role="radio"
+          aria-checked={mode === "grouped"}
           onClick={() => onChange("grouped")}
-          className={`rounded-full px-3.5 py-1 text-xs font-medium transition-all ${
-            mode === "grouped"
-              ? "bg-accent text-accent-fg shadow-sm"
-              : "text-fg-muted hover:text-fg"
-          }`}
+          className={mode === "grouped" ? "is-on" : ""}
         >
           语义分组
         </button>
       </div>
-      <kbd className="hidden sm:inline-block rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[0.65rem] text-fg-subtle">
-        T 对照
+      <kbd className="hidden rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[0.65rem] text-fg-subtle sm:inline-block">
+        T
       </kbd>
     </div>
   );

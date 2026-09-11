@@ -24,6 +24,8 @@ export type PatternMeta = {
   purpose: string;
   scenes: string[];
   rule: string;
+  cut: string;
+  when: string;
   css: string;
   prompt: string;
 };
@@ -38,6 +40,8 @@ export const PATTERNS: PatternMeta[] = [
     purpose: "识别内容块后先套框，再补圆角、边框和阴影",
     scenes: ["看板拖拽卡", "收藏夹单品", "独立实体"],
     rule: "卡片只该装真正独立、可被单独拿起的对象。标题、指标、介绍如果只是同一页面上的连续段落，不必各套一张卡。",
+    cut: "圆角 + 阴影",
+    when: "对象可单独拿起",
     css: `.card {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
@@ -56,6 +60,8 @@ export const PATTERNS: PatternMeta[] = [
     purpose: "用垂直节奏分开上下承接的内容，不靠框",
     scenes: ["介绍页", "详情页", "长文叙述"],
     rule: "内容沿阅读顺序自然推进时，留白和细分割线就足够了。外框会把连续叙述切成互不相关的贴纸。",
+    cut: "间距 + 细线",
+    when: "内容顺着读下去",
     css: `.section + .section {
   margin-top: 2.5rem;
   padding-top: 2.5rem;
@@ -78,6 +84,8 @@ export const PATTERNS: PatternMeta[] = [
     purpose: "把字段按填写任务自然组织成大区",
     scenes: ["注册流程", "个人资料", "团队设置"],
     rule: "基本信息放一起，工作信息放一起。字段是任务里的输入格子，不是一张张独立卡片。",
+    cut: "标题分区",
+    when: "同一任务一次填完",
     css: `.form-block + .form-block {
   margin-top: 1.75rem;
   padding-top: 1.75rem;
@@ -105,6 +113,8 @@ export const PATTERNS: PatternMeta[] = [
     purpose: "让连续事件沿单一路径快速扫过",
     scenes: ["消息通知", "审计日志", "项目动态流"],
     rule: "消息与动态是时间线上的节点。一张卡一个事件会强迫视线在网格间跳跃，单列列表让视线顺一条路径扫下。",
+    cut: "行分割",
+    when: "事件沿时间连续发生",
     css: `.feed-row {
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -126,6 +136,8 @@ export const PATTERNS: PatternMeta[] = [
     purpose: "用整行背景色带建立不同内容区域",
     scenes: ["功能段落", "专题功能区", "行动号召区"],
     rule: "同一主题的一组入口共享一条色带。背景色是区域边界，不必给行内每一项单独套卡片。",
+    cut: "通栏色带",
+    when: "整行同属一个主题",
     css: `.band {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -148,6 +160,8 @@ export const PATTERNS: PatternMeta[] = [
     purpose: "多款产品沿列直接横向比较参数与价格",
     scenes: ["套餐定价", "产品版本", "服务阶梯对比"],
     rule: "要并排看差异时，细竖线标明栏目边界，页面仍是一张整表。独立卡片会把横向对齐切碎。",
+    cut: "竖向细线",
+    when: "要并排比较参数",
     css: `.plans {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
