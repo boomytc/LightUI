@@ -10,20 +10,16 @@ export function App() {
   }
 
   return (
-    <main className="min-h-screen bg-bg text-fg">
-      <header className="border-b border-border bg-surface px-6 py-4">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <a href="/" className="text-sm font-semibold tracking-tight text-fg">
-            LightUI · Study
-          </a>
-          <span className="rounded-full bg-surface-2 px-2.5 py-0.5 text-xs text-fg-muted font-mono">
-            /s/touch-context
-          </span>
-        </div>
+    <div className="min-h-dvh overflow-x-hidden bg-bg text-fg">
+      <header className="page-width flex items-center justify-between py-4">
+        <a href="/" className="text-[15px] font-semibold tracking-tight text-fg">
+          LightUI · Study
+        </a>
+        <span className="rounded-full bg-surface-2 px-2.5 py-0.5 font-mono text-xs text-fg-muted">
+          /s/touch-context
+        </span>
       </header>
-      <div className="mx-auto max-w-5xl px-6 py-8">
-        <StudyView />
-      </div>
-    </main>
+      <StudyView />
+    </div>
   );
 }
