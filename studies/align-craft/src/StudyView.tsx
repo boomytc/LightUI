@@ -2,6 +2,12 @@ import { Playground } from "./craft/Playground";
 import { FORMULA, kindMeta } from "./lib/kinds";
 import { pick, useLocale } from "./lib/site-locale";
 
+const TARGETS = [
+  { zh: "基线 · 大小字", en: "Baseline · mixed type" },
+  { zh: "焦点 · 封面 / 光学", en: "Focus · cover / optical" },
+  { zh: "盒子 · 图标行", en: "Box · icon row" },
+];
+
 export function StudyView() {
   const locale = useLocale();
   const css = kindMeta("baseline").css;
@@ -20,11 +26,21 @@ export function StudyView() {
               ? "“Nudge it so it lines up” describes a feeling. The thing that breaks is lining up the wrong thing: the baseline, the focal point, or the box — then gap, edge, and optical mass."
               : "「帮我对齐一下」说的是观感。真正会坏掉的是对错了东西：基线、焦点，还是盒子；再往下是缝、边，和视觉质量。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {TARGETS.map((item) => (
+              <li
+                key={item.zh}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {pick(item, locale)}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Each spell is a wrong construction beside the right one. The seven contrasts below are live."
-            : "每句咒语都是错的构造和它对的并排。下面七个对照可以点。"}
+            ? "Each spell is a wrong construction beside the right one. Rose is the box or the guess. Green is the baseline, the focus, or the named edge."
+            : "每句咒语都是错的构造和它对的并排。玫瑰色是外框或猜。绿色是基线、焦点，或说清的那条边。"}
         </p>
       </section>
 
@@ -32,14 +48,12 @@ export function StudyView() {
 
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
-          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
-            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
+          <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
+            <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
               {item.n}
             </span>
-            <div className="min-w-0">
-              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
-              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
-            </div>
+            <h2 className="mt-3 text-[15px] font-semibold">{pick(item.title, locale)}</h2>
+            <p className="mt-1 text-[13px] text-fg-muted">{pick(item.example, locale)}</p>
           </div>
         ))}
       </section>

@@ -15,6 +15,11 @@ export type KindMeta = {
   note?: Localized;
   tells: Localized;
   css: string;
+  wrongCss: string;
+  wrongHint: Localized;
+  rightHint: Localized;
+  wrongCaption: Localized;
+  rightCaption: Localized;
 };
 
 export const KINDS: KindMeta[] = [
@@ -43,6 +48,13 @@ export const KINDS: KindMeta[] = [
     css: `display: flex;
 align-items: baseline;
 gap: 0.35em;`,
+    wrongCss: `display: flex;
+align-items: center;
+gap: 0.35em;`,
+    wrongHint: loc("外框中线", "Box midline"),
+    rightHint: loc("文字基线", "Text baseline"),
+    wrongCaption: loc("items-center 对的是 margin box", "items-center lines up margin boxes"),
+    rightCaption: loc("大小字坐在同一条基线上", "Mixed type sits on one baseline"),
   },
   {
     id: "cover",
@@ -70,6 +82,12 @@ gap: 0.35em;`,
 height: 100%;
 object-fit: cover;
 object-position: 50% 88%;`,
+    wrongCss: `object-fit: contain;
+object-position: 50% 50%;`,
+    wrongHint: loc("留空 · 画面中心", "Letterbox · center"),
+    rightHint: loc("填满 · 主体焦点", "Fill · subject"),
+    wrongCaption: loc("contain 留空，看起来像裁偏了", "Contain letterboxes and looks off"),
+    rightCaption: loc("cover 填满，焦点停在 50% 88%", "Cover fills; focus stays at 50% 88%"),
   },
   {
     id: "axis",
@@ -96,6 +114,13 @@ object-position: 50% 88%;`,
     css: `display: flex;
 align-items: center;
 gap: 0.75rem;`,
+    wrongCss: `display: flex;
+/* 没写交叉轴 */
+gap: 0.75rem;`,
+    wrongHint: loc("没写交叉轴", "No cross axis"),
+    rightHint: loc("交叉轴居中", "Cross-axis center"),
+    wrongCaption: loc("图标贴着第一行顶", "The icon hugs the first line"),
+    rightCaption: loc("图标中线与文字中线重合", "Icon and label midlines meet"),
   },
   {
     id: "margin",
@@ -126,6 +151,12 @@ gap: 1rem;
 h1, p, ul, figure {
   margin: 0;
 }`,
+    wrongCss: `.card + .card { margin-top: 18px; }
+.card:last-child { margin-top: 7px; }`,
+    wrongHint: loc("随机 margin", "Leftover margin"),
+    rightHint: loc("父级一条 gap", "One parent gap"),
+    wrongCaption: loc("18px 和 7px，缝对不齐", "18px then 7px — the seam slips"),
+    rightCaption: loc("子孙 margin: 0，缝只有一条", "Children margin: 0; one seam"),
   },
   {
     id: "padding",
@@ -153,6 +184,11 @@ h1, p, ul, figure {
 padding-top: calc(var(--inset) - (1lh - 1cap) / 2);
 padding-inline: var(--inset);
 padding-bottom: var(--inset);`,
+    wrongCss: `padding: 4px 1rem 1rem;`,
+    wrongHint: loc("第一行贴顶", "Flush to the top"),
+    rightHint: loc("帽高对 inset", "Cap to inset"),
+    wrongCaption: loc("量的是内容盒顶，不是帽高", "Measures content-box top, not the cap"),
+    rightCaption: loc("帽高和左右 inset 是同一条缝", "Cap and side inset share one seam"),
   },
   {
     id: "optical",
@@ -178,6 +214,11 @@ padding-bottom: var(--inset);`,
     tells: loc("眼睛觉得在正中，尺子量着却偏一点", "The eye says center; the ruler is off by a hair"),
     css: `.circle { transform: scale(1.06); }
 .play { transform: translateX(8%); }`,
+    wrongCss: `.circle, .play { /* 几何正中 */ }`,
+    wrongHint: loc("几何中心", "Geometric center"),
+    rightHint: loc("视觉质量", "Optical mass"),
+    wrongCaption: loc("圆显小，三角看起来偏左", "The circle reads small; the triangle sits left"),
+    rightCaption: loc("圆略放大，三角略右移", "Scale the circle; nudge the triangle right"),
   },
   {
     id: "inset",
@@ -205,6 +246,13 @@ padding-bottom: var(--inset);`,
   position: absolute;
   inset: 10px;
 }`,
+    wrongCss: `top: 14px; left: 22px;
+right: 8px; bottom: 28px;
+transform: translate(6px, -4px);`,
+    wrongHint: loc("translate 猜", "Translate guess"),
+    rightHint: loc("inset 四边", "Inset on four sides"),
+    wrongCaption: loc("四边缝不等，换尺寸就歪", "Uneven seams; it slips when size changes"),
+    rightCaption: loc("inset: 10px，四边同一条缝", "inset: 10px — four matching seams"),
   },
 ];
 
