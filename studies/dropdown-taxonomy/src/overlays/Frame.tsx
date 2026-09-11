@@ -1,4 +1,5 @@
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
+import "./dropdown.css";
 
 export function Frame({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -29,8 +30,8 @@ export const TriggerButton = forwardRef<HTMLButtonElement, TriggerProps>(functio
       className={
         className ??
         (open
-          ? "flex min-h-11 w-full items-center justify-between gap-2 rounded-lg border border-accent bg-surface px-3 py-1.5 text-left text-[14px] outline-none"
-          : "flex min-h-11 w-full items-center justify-between gap-2 rounded-lg border border-border-strong bg-surface px-3 py-1.5 text-left text-[14px] outline-none transition-colors hover:border-accent")
+          ? "dropdown-trigger flex min-h-11 w-full items-center justify-between gap-2 rounded-lg border border-accent bg-surface px-3 py-1.5 text-left text-[14px] outline-none"
+          : "dropdown-trigger flex min-h-11 w-full items-center justify-between gap-2 rounded-lg border border-border-strong bg-surface px-3 py-1.5 text-left text-[14px] outline-none transition-colors hover:border-accent")
       }
       {...props}
     >

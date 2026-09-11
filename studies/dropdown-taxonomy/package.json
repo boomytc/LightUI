@@ -12,7 +12,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit --pretty false",
-    "test": "tsx --test src/lib/multi-select.test.ts src/lib/cascader.test.ts src/lib/date-range.test.ts"
+    "test": "tsx --test src/lib/multi-select.test.ts src/lib/cascader.test.ts src/lib/date-range.test.ts src/lib/commit.test.ts"
   },
   "dependencies": {
     "lucide-react": "^0.510.0",

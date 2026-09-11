@@ -65,7 +65,7 @@ export function CascaderDemo({ defaultOpen = false }: { defaultOpen?: boolean } 
               {columns.map((items, level) => (
                 <ul
                   key={level}
-                  className="min-w-[6.5rem] overflow-y-auto border-l border-border py-1 first:border-l-0 min-[400px]:min-w-32 xl:min-w-36"
+                  className="dropdown-col-in min-w-[6.5rem] overflow-y-auto border-l border-border py-1 first:border-l-0 min-[400px]:min-w-32 xl:min-w-36"
                 >
                   {items.map((item) => {
                     const label = labelOf(item.label, locale);
@@ -77,7 +77,7 @@ export function CascaderDemo({ defaultOpen = false }: { defaultOpen?: boolean } 
                           data-region={item.id}
                           onClick={() => chooseLevel(level, item.id)}
                           className={cn(
-                            "flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-[13px]",
+                            "dropdown-item flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-[13px]",
                             on ? "bg-accent-soft text-fg" : "hover:bg-surface-2",
                           )}
                         >

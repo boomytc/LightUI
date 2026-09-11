@@ -119,7 +119,7 @@ export function Popover({
       data-stage="popover"
       style={style}
       className={cn(
-        "overflow-hidden rounded-xl border border-border bg-surface shadow-menu",
+        "dropdown-pop overflow-hidden rounded-xl border border-border bg-surface shadow-menu",
         className,
       )}
     >

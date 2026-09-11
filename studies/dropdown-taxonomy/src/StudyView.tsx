@@ -7,9 +7,12 @@ export function StudyView() {
 
   return (
     <div className="page-width min-w-0 overflow-x-hidden pb-20">
-      <section className="grid gap-8 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
+      <section className="grid gap-8 pt-4 pb-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pt-8 lg:pb-12">
         <div className="min-w-0">
-          <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
+          <p className="mb-3 font-mono text-[11px] tracking-[0.18em] text-accent uppercase">
+            {locale === "en" ? "Commit × close" : "提交 × 关闭"}
+          </p>
+          <h1 className="text-[2rem] leading-[1.15] font-semibold tracking-tight text-fg sm:text-[2.6rem]">
             {locale === "en"
               ? "They all open downward. They do not commit the same thing."
               : "看起来都是往下展开，用途却完全不同。"}
@@ -19,11 +22,24 @@ export function StudyView() {
               ? "“Make a dropdown” describes the skin. The thing that breaks is the commit rule: one value, a set, a path, an action, or a span of days."
               : "「做个下拉」说的是外观。真正会坏掉的是提交规则：一个值、一组、一条路径、一次动作，还是一段日期。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["One value · close on pick", "A set · stay open", "A path · leaf only", "An action · body fires"]
+              : ["一个值 · 点中即关", "一组 · 保持开着", "一条路径 · 叶子才关", "一次动作 · 主体直接执行"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Name the model, name the scene, then name when the panel closes. The seven contrasts below are live."
-            : "先说模型，再说场景，再说面板何时关闭。下面七个对照可以点。"}
+            ? "Name what is committed, then name when the panel closes. Grouped is filing. Cascader is parent–child. The six families below are live."
+            : "先说提交的是什么，再说面板何时关闭。Grouped 是分类，Cascader 才是上下级。下面六档可以点。"}
         </p>
       </section>
 
@@ -31,14 +47,12 @@ export function StudyView() {
 
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
-          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
-            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
+          <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
+            <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
               {item.n}
             </span>
-            <div className="min-w-0">
-              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
-              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
-            </div>
+            <h2 className="mt-3 text-[15px] font-semibold">{pick(item.title, locale)}</h2>
+            <p className="mt-1 text-[13px] text-fg-muted">{pick(item.example, locale)}</p>
           </div>
         ))}
       </section>
@@ -80,7 +94,7 @@ export function StudyView() {
         </article>
 
         <article className="min-w-0 overflow-hidden rounded-2xl border border-border bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
-          <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-surface/45">
+          <p className="text-[12px] font-medium tracking-[0.12em] text-surface/45 uppercase">
             pickCascade
           </p>
           <pre className="mt-3 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">
@@ -98,7 +112,6 @@ export function StudyView() {
           </p>
         </article>
       </section>
-
     </div>
   );
 }

@@ -68,7 +68,7 @@ export function SplitButtonDemo({ defaultOpen = false }: { defaultOpen?: boolean
               <button
                 type="button"
                 onClick={schedule}
-                className="flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-left text-[14px] hover:bg-surface-2"
+                className="dropdown-item flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-left text-[14px] hover:bg-surface-2"
               >
                 <CalendarClock className="size-3.5 text-fg-muted" />
                 {locale === "en" ? "Schedule" : "定时发布"}
@@ -76,7 +76,7 @@ export function SplitButtonDemo({ defaultOpen = false }: { defaultOpen?: boolean
               <button
                 type="button"
                 onClick={saveDraft}
-                className="flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-left text-[14px] hover:bg-surface-2"
+                className="dropdown-item flex w-full items-center gap-2 rounded-md px-3 py-2.5 text-left text-[14px] hover:bg-surface-2"
               >
                 <FileText className="size-3.5 text-fg-muted" />
                 {locale === "en" ? "Save draft" : "保存草稿"}

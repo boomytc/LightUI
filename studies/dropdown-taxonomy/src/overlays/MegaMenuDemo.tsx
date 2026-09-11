@@ -67,7 +67,7 @@ export function MegaMenuDemo({ defaultOpen = true }: { defaultOpen?: boolean } =
         </div>
 
         {open ? (
-          <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-5 rounded-xl border border-border bg-surface-2/70 p-4 sm:grid-cols-4">
+          <div className="dropdown-mega-in mt-3 grid grid-cols-2 gap-x-4 gap-y-5 rounded-xl border border-border bg-surface-2/70 p-4 sm:grid-cols-4">
             {MEGA_COLUMNS.map((col) => (
               <div key={col.id}>
                 <p className="mb-2 text-[11px] font-medium tracking-wide text-fg-subtle">

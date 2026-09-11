@@ -43,7 +43,7 @@ export function SelectDemo({ defaultOpen = false }: { defaultOpen?: boolean } = 
                     setOpen(false);
                   }}
                   className={cn(
-                    "flex w-full items-center justify-between rounded-md px-3 py-2.5 text-left text-[14px]",
+                    "dropdown-item flex w-full items-center justify-between rounded-md px-3 py-2.5 text-left text-[14px]",
                     on ? "bg-accent-soft" : "hover:bg-surface-2",
                   )}
                 >

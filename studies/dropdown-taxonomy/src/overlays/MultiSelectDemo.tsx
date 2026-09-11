@@ -77,7 +77,7 @@ export function MultiSelectDemo({ defaultOpen = false }: { defaultOpen?: boolean
                   disabled={blocked}
                   onClick={() => setSelected((prev) => toggleMulti(prev, skill.id, SKILL_MAX))}
                   className={cn(
-                    "flex w-full items-center justify-between rounded-md px-3 py-2.5 text-left text-[14px]",
+                    "dropdown-item flex w-full items-center justify-between rounded-md px-3 py-2.5 text-left text-[14px]",
                     on && "bg-accent-soft",
                     blocked && "opacity-40",
                     !blocked && !on && "hover:bg-surface-2",
