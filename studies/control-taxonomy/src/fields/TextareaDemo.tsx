@@ -27,7 +27,13 @@ export function TextareaDemo({ state }: { state?: string } = {}) {
         onChange={(e) => setValue(e.target.value)}
         placeholder={locale === "en" ? "Describe the brief…" : "请输入需求描述…"}
       />
-      <p className="mt-2 text-right text-[12px] tabular-nums text-fg-subtle" aria-live="polite">
+      <p
+        className={cn(
+          "mt-2 text-right text-[12px] tabular-nums",
+          value.length >= MAX ? "text-wrong" : value.length > MAX * 0.8 ? "text-accent" : "text-fg-subtle",
+        )}
+        aria-live="polite"
+      >
         {value.length}/{MAX}
       </p>
     </Frame>

@@ -72,7 +72,7 @@ export function Popover({ open, onClose, triggerRef, children, id }: Props) {
       id={id}
       data-stage="popover"
       style={style}
-      className={cn("overflow-hidden rounded-xl border border-border bg-surface shadow-menu")}
+      className={cn("ctl-pop overflow-hidden rounded-xl border border-border bg-surface shadow-menu")}
     >
       {children}
     </div>,

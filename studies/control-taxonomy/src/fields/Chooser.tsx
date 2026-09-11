@@ -14,6 +14,51 @@ import { KINDS } from "../lib/kinds";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 
+export function trailFor(answers: Answers, locale: Locale): string[] {
+  const parts: string[] = [];
+  if (!answers.demand) return parts;
+  parts.push(
+    answers.demand === "fill"
+      ? locale === "en"
+        ? "Fill it in"
+        : "自己填"
+      : locale === "en"
+        ? "Pick from answers"
+        : "从答案里选",
+  );
+  if (answers.demand === "fill" && answers.length) {
+    parts.push(
+      answers.length === "short"
+        ? locale === "en"
+          ? "One line"
+          : "一行"
+        : locale === "en"
+          ? "A paragraph"
+          : "一段",
+    );
+  }
+  if (answers.demand === "choose" && answers.cardinality) {
+    parts.push(
+      answers.cardinality === "many"
+        ? locale === "en"
+          ? "Several at once"
+          : "同时多个"
+        : locale === "en"
+          ? "Only one"
+          : "只能一个",
+    );
+  }
+  if (answers.find) {
+    const find = {
+      compare: locale === "en" ? "Compare in view" : "可见比较",
+      scan: locale === "en" ? "Short list" : "短列表",
+      search: locale === "en" ? "Type to find" : "边搜边选",
+    };
+    parts.push(find[answers.find]);
+  }
+  return parts;
+}
+
 export function Chooser({
   answers,
   onChange,
@@ -25,6 +70,7 @@ export function Chooser({
   const step = nextStep(answers);
   const result = chooseControl(answers);
   const meta = result ? KINDS.find((k) => k.id === result) : null;
+  const trail = trailFor(answers, locale);
 
   return (
     <div data-chooser={step} className="rounded-2xl border border-border bg-surface p-5 shadow-card sm:p-6">
@@ -45,6 +91,7 @@ export function Chooser({
           <Choice
             label={locale === "en" ? "Pick from answers" : "从已有答案里选"}
             hint={locale === "en" ? "A city, a member, shipping, interests…" : "城市、成员、配送方式、兴趣…"}
+            accent
             onClick={() => onChange(withDemand("choose"))}
           />
         </Step>
@@ -113,7 +160,17 @@ export function Chooser({
       ) : null}
 
       {step === "result" && meta ? (
-        <div>
+        <div className="ctl-enter">
+          {trail.length > 0 ? (
+            <ol className="mb-3 flex flex-wrap items-center gap-1 text-[11px] text-fg-subtle">
+              {trail.map((part, i) => (
+                <li key={`${part}-${i}`} className="inline-flex items-center gap-1">
+                  {i > 0 ? <span aria-hidden="true">→</span> : null}
+                  <span>{part}</span>
+                </li>
+              ))}
+            </ol>
+          ) : null}
           <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-accent">
             {locale === "en" ? "Use this machine" : "该用这个"}
           </p>
@@ -122,7 +179,7 @@ export function Chooser({
           <p className="mt-3 text-[14px] leading-relaxed text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           <button
             type="button"
-            className="mt-5 rounded-lg border border-border px-3 py-2 text-[13px] text-fg-muted hover:bg-surface-2"
+            className="mt-5 rounded-lg border border-border px-3 py-2 text-[13px] text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg"
             onClick={() => onChange({})}
           >
             {locale === "en" ? "Ask again" : "再选一次"}
@@ -149,9 +206,9 @@ function Step({
   children: ReactNode;
 }) {
   return (
-    <div>
+    <div className="ctl-enter">
       {onBack ? (
-        <button type="button" className="mb-3 text-[12px] text-fg-subtle hover:text-fg" onClick={onBack}>
+        <button type="button" className="mb-3 text-[12px] text-fg-subtle transition-colors hover:text-fg" onClick={onBack}>
           {back}
         </button>
       ) : null}
@@ -162,9 +219,26 @@ function Step({
   );
 }
 
-function Choice({ label, hint, onClick }: { label: string; hint?: string; onClick: () => void }) {
+function Choice({
+  label,
+  hint,
+  onClick,
+  accent,
+}: {
+  label: string;
+  hint?: string;
+  onClick: () => void;
+  accent?: boolean;
+}) {
   return (
-    <button type="button" className="rounded-xl border border-border px-4 py-3 text-left hover:bg-surface-2" onClick={onClick}>
+    <button
+      type="button"
+      className={cn(
+        "ctl-choice rounded-xl border px-4 py-3 text-left",
+        accent ? "border-accent/35 bg-accent-soft/40 hover:bg-accent-soft" : "border-border hover:bg-surface-2",
+      )}
+      onClick={onClick}
+    >
       <span className="block text-[14px] font-medium text-fg">{label}</span>
       {hint ? <span className="mt-0.5 block text-[12px] text-fg-subtle">{hint}</span> : null}
     </button>
@@ -174,10 +248,10 @@ function Choice({ label, hint, onClick }: { label: string; hint?: string; onClic
 const SCENES: { id: ControlId; zh: string; en: string }[] = [
   { id: "text-field", zh: "注册页要填姓名", en: "Sign-up needs a name" },
   { id: "textarea", zh: "意见反馈要写一段话", en: "Feedback needs a paragraph" },
-  { id: "checkbox", zh: "兴趣标签最多 3 个", en: "Interest tags, cap at 3" },
   { id: "radio", zh: "三种配送要对比时效", en: "Compare three shipping options" },
   { id: "select", zh: "选择所在城市", en: "Pick a city" },
   { id: "combobox", zh: "从 200 个同事里找人", en: "Find one person among 200" },
+  { id: "checkbox", zh: "兴趣标签最多 3 个", en: "Interest tags, cap at 3" },
 ];
 
 function Scenarios({ locale, onPick }: { locale: Locale; onPick: (id: ControlId) => void }) {
@@ -191,12 +265,12 @@ function Scenarios({ locale, onPick }: { locale: Locale; onPick: (id: ControlId)
             <li key={s.id}>
               <button
                 type="button"
-                className={cn("w-full rounded-lg px-3 py-2 text-left hover:bg-surface-2")}
+                className="w-full rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-2"
                 onClick={() => onPick(s.id)}
               >
                 <span className="block text-[13px] text-fg">{locale === "en" ? s.en : s.zh}</span>
                 <span className="block text-[11px] text-accent">
-                  {meta?.name} · {meta ? pick(meta.zh, locale) : ""}
+                  {meta ? pick(meta.zh, locale) : ""} · {meta?.name}
                 </span>
               </button>
             </li>

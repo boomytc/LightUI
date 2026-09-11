@@ -20,7 +20,7 @@ export function TextFieldDemo({ state }: { state?: string } = {}) {
       </FieldLabel>
       <input
         id={id}
-        className={cn(fieldClass, error && "border-fg")}
+        className={cn(fieldClass, error && "border-wrong")}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onBlur={() => setTouched(true)}
@@ -30,7 +30,7 @@ export function TextFieldDemo({ state }: { state?: string } = {}) {
         aria-invalid={error}
       />
       {error ? (
-        <p className="mt-2 text-[13px] text-fg" role="alert">
+        <p className="ctl-msg-in mt-2 text-[13px] text-wrong" role="alert">
           {locale === "en" ? "Enter a name" : "请填写姓名"}
         </p>
       ) : null}

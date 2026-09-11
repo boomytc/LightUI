@@ -28,18 +28,18 @@ export function RadioDemo({ state }: { state?: string } = {}) {
               data-state={item.id}
               onClick={() => setValue(item.id)}
               className={cn(
-                "flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors",
+                "ctl-choice flex items-center gap-3 rounded-xl border px-4 py-3 text-left",
                 on ? "border-accent bg-accent-soft" : "border-border bg-surface hover:bg-surface-2",
               )}
             >
               <span
                 className={cn(
-                  "grid size-4 shrink-0 place-items-center rounded-full border",
+                  "ctl-dot grid size-4 shrink-0 place-items-center rounded-full border",
                   on ? "border-accent bg-accent" : "border-border-strong bg-surface",
                 )}
                 aria-hidden="true"
               >
-                {on ? <span className="size-1.5 rounded-full bg-accent-fg" /> : null}
+                {on ? <span className="ctl-mark size-1.5 rounded-full bg-accent-fg" /> : null}
               </span>
               <span>
                 <span className="block text-[14px] font-medium text-fg">{pick(item.title, locale)}</span>

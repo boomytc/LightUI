@@ -19,11 +19,24 @@ export function StudyView() {
               ? "“Make an input” describes the skin. The thing that breaks is fill versus pick: one line or a paragraph, compared in view, a short list, type-to-find, or several at once."
               : "「做个输入框」说的是外观。真正会坏掉的是填还是选：一行或一段，可见比较、短列表、边搜边选，或同时多个。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["Fill · one line", "Fill · a paragraph", "Compare in view", "Short list", "Type to find", "Several at once"]
+              : ["自己填 · 一行", "自己填 · 一段", "可见比较", "短列表", "边搜边选", "同时多个"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Ask fill or pick first. Walk the tree, or jump a leaf."
-            : "先问是填还是选。判断树可以走，六种叶子也可以直接点。"}
+            ? "Ask fill or pick first. The left rail is the split; the tree can still be walked. Six leaves, two branches."
+            : "先问是填还是选。左边是分枝，判断树还可以走。六种叶子，两条枝。"}
         </p>
       </section>
 
@@ -31,14 +44,12 @@ export function StudyView() {
 
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
-          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
-            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
+          <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
+            <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
               {item.n}
             </span>
-            <div className="min-w-0">
-              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
-              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
-            </div>
+            <h2 className="mt-3 text-[15px] font-semibold">{pick(item.title, locale)}</h2>
+            <p className="mt-1 text-[13px] text-fg-muted">{pick(item.example, locale)}</p>
           </div>
         ))}
       </section>

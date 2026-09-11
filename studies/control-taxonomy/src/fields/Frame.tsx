@@ -1,5 +1,6 @@
 import { createContext, forwardRef, useContext, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { cn } from "../lib/utils";
+import "./fields.css";
 
 const LiveFillContext = createContext(false);
 
@@ -50,10 +51,10 @@ export function FieldLabel({
   children: ReactNode;
 }) {
   return (
-    <label htmlFor={htmlFor} className="mb-2 flex items-center gap-1 text-[13px] text-fg-muted">
+    <label htmlFor={htmlFor} className="mb-2 flex items-center gap-1 text-[13px] font-medium text-fg">
       {children}
       {required ? (
-        <span className="text-fg" aria-hidden="true">
+        <span className="text-wrong" aria-hidden="true">
           *
         </span>
       ) : null}
@@ -74,9 +75,10 @@ export const TriggerButton = forwardRef<HTMLButtonElement, TriggerProps>(functio
       aria-expanded={open}
       className={
         className ??
-        (open
-          ? "flex min-h-11 w-full items-center justify-between gap-2 rounded-lg border border-accent bg-surface px-3 py-1.5 text-left text-[14px] outline-none"
-          : "flex min-h-11 w-full items-center justify-between gap-2 rounded-lg border border-border-strong bg-surface px-3 py-1.5 text-left text-[14px] outline-none transition-colors hover:border-accent")
+        cn(
+          "ctl-field flex min-h-11 w-full items-center justify-between gap-2 rounded-lg border bg-surface px-3 py-1.5 text-left text-[14px] outline-none",
+          open ? "border-accent" : "border-border-strong",
+        )
       }
       {...props}
     >
@@ -86,4 +88,4 @@ export const TriggerButton = forwardRef<HTMLButtonElement, TriggerProps>(functio
 });
 
 export const fieldClass =
-  "min-h-11 w-full rounded-lg border border-border-strong bg-surface px-3 text-[14px] outline-none placeholder:text-fg-subtle";
+  "ctl-field min-h-11 w-full rounded-lg border border-border-strong bg-surface px-3 text-[14px] outline-none placeholder:text-fg-subtle";

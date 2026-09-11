@@ -26,7 +26,7 @@ export function SelectDemo({ state }: { state?: string } = {}) {
         <span className={current ? "text-fg" : "text-fg-subtle"}>
           {current ? pick(current.label, locale) : locale === "en" ? "Choose one" : "请选择"}
         </span>
-        <ChevronDown className="size-4 shrink-0 text-fg-muted" />
+        <ChevronDown className={cn("ctl-chevron size-4 shrink-0 text-fg-muted", open && "rotate-180")} />
       </TriggerButton>
       <Popover open={open} onClose={() => setOpen(false)} triggerRef={triggerRef}>
         <ul role="listbox" aria-label={locale === "en" ? "Cities" : "城市"} className="max-h-56 overflow-y-auto p-1">
@@ -43,7 +43,7 @@ export function SelectDemo({ state }: { state?: string } = {}) {
                     setOpen(false);
                   }}
                   className={cn(
-                    "flex w-full items-center justify-between rounded-md px-3 py-2.5 text-left text-[14px]",
+                    "flex w-full items-center justify-between rounded-md px-3 py-2.5 text-left text-[14px] transition-colors",
                     on ? "bg-accent-soft" : "hover:bg-surface-2",
                   )}
                 >

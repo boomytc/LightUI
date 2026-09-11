@@ -36,18 +36,18 @@ export function CheckboxDemo({ state }: { state?: string } = {}) {
               disabled={locked}
               onClick={() => setPicked((curr) => toggleCapped(curr, item.id, INTEREST_MAX))}
               className={cn(
-                "flex items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-40",
+                "ctl-choice flex items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:transform-none",
                 on ? "border-accent bg-accent-soft" : "border-border bg-surface hover:bg-surface-2",
               )}
             >
               <span
                 className={cn(
-                  "grid size-4 shrink-0 place-items-center rounded-sm border",
+                  "ctl-dot grid size-4 shrink-0 place-items-center rounded-sm border",
                   on ? "border-accent bg-accent text-accent-fg" : "border-border-strong bg-surface",
                 )}
                 aria-hidden="true"
               >
-                {on ? <Check className="size-3" strokeWidth={3} /> : null}
+                {on ? <Check className="ctl-mark size-3" strokeWidth={3} /> : null}
               </span>
               <span className="text-[14px] font-medium text-fg">{pick(item.label, locale)}</span>
             </button>
