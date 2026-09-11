@@ -2,28 +2,30 @@ import { StageView } from "./StageView";
 import { StudyView } from "./StudyView";
 
 export function App() {
-  const params = new URLSearchParams(window.location.search);
-  const isStage = params.get("stage") === "1";
-
-  if (isStage) {
+  if (new URLSearchParams(window.location.search).has("stage")) {
     return <StageView />;
   }
 
   return (
-    <main className="min-h-screen bg-bg text-fg">
-      <header className="border-b border-border bg-surface px-6 py-4">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <a href="/" className="text-sm font-semibold tracking-tight text-fg">
-            LightUI · Study
-          </a>
-          <span className="rounded-full bg-surface-2 px-2.5 py-0.5 text-xs text-fg-muted font-mono">
-            /s/sheet-snap
-          </span>
+    <div className="min-h-dvh overflow-x-hidden bg-bg text-fg">
+      <header className="page-width flex items-center gap-3 py-4">
+        <span className="grid size-8 place-items-center rounded-lg bg-fg text-surface" aria-hidden="true">
+          <svg viewBox="0 0 24 24" className="size-4" fill="none">
+            <path
+              d="M5 19 19 5v14Z"
+              fill="currentColor"
+              fillOpacity="0.35"
+              stroke="currentColor"
+              strokeWidth="1.4"
+            />
+          </svg>
+        </span>
+        <div className="min-w-0">
+          <p className="text-[15px] font-semibold tracking-tight">sheet-snap</p>
+          <p className="text-[12px] text-fg-subtle">LightUI · standalone playground</p>
         </div>
       </header>
-      <div className="mx-auto max-w-5xl px-6 py-8">
-        <StudyView />
-      </div>
-    </main>
+      <StudyView />
+    </div>
   );
 }

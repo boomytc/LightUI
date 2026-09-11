@@ -55,6 +55,47 @@ export const FORMULA = [
   },
 ];
 
+export type SnapMode = "smart" | "static_nearest" | "hard_clamp";
+
+export const MODE_META: {
+  id: SnapMode;
+  name: Localized;
+  hint: Localized;
+  recommended?: boolean;
+}[] = [
+  {
+    id: "smart",
+    name: loc("动量 + 弹性阻尼", "Velocity + damping"),
+    hint: loc("速度感应跃迁下一档，越界 0.20 阻尼", "Flick jumps a notch; 0.20 overdrag damping"),
+    recommended: true,
+  },
+  {
+    id: "static_nearest",
+    name: loc("纯静态距离吸附", "Static nearest"),
+    hint: loc("无速度感应，向上轻甩常因未过半而缩回", "No velocity; a short flick often snaps back"),
+  },
+  {
+    id: "hard_clamp",
+    name: loc("生硬截断无阻尼", "Hard clamp"),
+    hint: loc("拉过极值直接撞墙，没有弹性拉伸", "Hits the wall at the extrema; no elastic stretch"),
+  },
+];
+
+export const REASON_LABELS: Record<string, Localized> = {
+  init: loc("初始", "Initial"),
+  static_nearest: loc("静态就近", "Static nearest"),
+  velocity_up: loc("上甩跃迁", "Flick up"),
+  velocity_down: loc("下甩跃迁", "Flick down"),
+  nearest: loc("就近吸附", "Nearest"),
+  manual_tap: loc("点按跳档", "Tapped"),
+};
+
+export const PHASE_LABELS = {
+  tracking: loc("跟手中", "Tracking"),
+  overdrag: loc("越界阻尼", "Overdrag"),
+  settled: loc("已落档", "Settled"),
+} as const;
+
 export const PLACE_DATA = {
   name: "河畔咖啡馆 · Waterfront Cafe",
   status: "营业中 · 08:30–21:00",
