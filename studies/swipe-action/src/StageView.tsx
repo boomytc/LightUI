@@ -7,102 +7,71 @@ import { cn } from "./lib/utils";
 export function StageView() {
   const { openRowId, overswipe } = readStageQuery();
   const offset = overswipe ? -DEFAULT_COMMIT_THRESHOLD : -DEFAULT_ACTIONS_WIDTH;
+  const tray = overswipe ? "100%" : DEFAULT_ACTIONS_WIDTH;
 
   return (
-    <div
-      data-stage="root"
-      className="flex min-h-dvh items-center justify-center bg-bg p-4 sm:p-8"
-    >
+    <div data-stage="root" className="flex min-h-dvh w-full items-center justify-center bg-bg p-6 sm:p-8">
       <div
         data-stage="fixture"
-        className="relative flex h-[580px] w-full max-w-[340px] flex-col overflow-hidden rounded-[36px] border border-border bg-surface shadow-2xl"
+        className="relative w-full max-w-[320px] overflow-hidden rounded-[32px] border-4 border-fg/20 bg-surface p-3 shadow-2xl"
       >
-        {/* Phone Notch */}
-        <div className="absolute top-3 left-1/2 z-30 h-4 w-28 -translate-x-1/2 rounded-full bg-border/40" />
-
-        {/* Status bar */}
-        <div className="flex items-center justify-between px-7 pt-4 pb-2 text-xs font-medium text-fg-muted">
-          <span>9:41</span>
-          <div className="flex items-center gap-1.5 text-[10px]">
-            <span>5G</span>
-            <span>100%</span>
+        <div className="flex items-center justify-between px-2 pb-3 pt-1">
+          <div>
+            <p className="text-[10px] font-medium tracking-wider text-fg-subtle uppercase">Inbox</p>
+            <h2 className="text-[14px] font-semibold text-fg">消息中心</h2>
           </div>
+          <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[10px] font-semibold text-accent">
+            2 未读
+          </span>
         </div>
 
-        {/* Header */}
-        <div className="px-5 pt-3 pb-2 border-b border-border/60">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold text-fg">收件箱</h2>
-            <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent">
-              2 未读
-            </span>
-          </div>
-          <p className="mt-0.5 text-[11px] text-fg-muted">向左滑动列表行露出快捷处理动作</p>
-        </div>
-
-        {/* Message List Rows */}
-        <div className="flex-1 overflow-y-auto divide-y divide-border/60 bg-surface">
-          {INITIAL_MESSAGES.map((msg) => {
+        <div className="overflow-hidden rounded-2xl border border-border/70 bg-surface-2/40">
+          {INITIAL_MESSAGES.slice(0, 4).map((msg) => {
             const isOpen = msg.id === openRowId;
 
             return (
-              <div key={msg.id} className="relative overflow-hidden bg-surface">
-                {/* Underlay Action Buttons */}
-                <div
-                  className="absolute inset-y-0 right-0 flex"
-                  style={{ width: overswipe ? "100%" : DEFAULT_ACTIONS_WIDTH }}
-                >
-                  {!overswipe && (
-                    <div className="flex flex-1 items-center justify-center bg-accent text-accent-contrast text-xs font-medium gap-1">
+              <div key={msg.id} className="relative overflow-hidden border-b border-border/70 last:border-b-0">
+                <div className="absolute inset-y-0 right-0 flex" style={{ width: isOpen ? tray : DEFAULT_ACTIONS_WIDTH }}>
+                  {!(overswipe && isOpen) && (
+                    <div className="flex flex-1 flex-col items-center justify-center gap-0.5 bg-accent text-[10px] font-medium text-accent-fg">
                       <CheckCheck className="size-3.5" />
                       <span>已读</span>
                     </div>
                   )}
-                  <div className="flex flex-1 items-center justify-center bg-wrong text-white text-xs font-medium gap-1">
+                  <div
+                    className={cn(
+                      "flex items-center justify-center gap-1 bg-wrong font-medium text-white",
+                      overswipe && isOpen ? "w-full text-[12px] font-semibold" : "flex-1 flex-col text-[10px]",
+                    )}
+                  >
                     <Trash2 className="size-3.5" />
-                    <span>{overswipe ? "松手直接删除" : "删除"}</span>
+                    <span>{overswipe && isOpen ? "松手直接删除" : "删除"}</span>
                   </div>
                 </div>
 
-                {/* Sliding Front Row Card */}
                 <div
                   className={cn(
-                    "relative z-10 flex items-start gap-3 bg-surface px-4 py-3.5 select-none transition-transform",
+                    "relative z-10 flex items-start gap-3 bg-surface px-3.5 py-3",
+                    overswipe && isOpen && "shadow-[inset_-8px_0_16px_-8px_rgb(225_29_72_/_0.35)]",
                   )}
-                  style={{
-                    transform: `translate3d(${isOpen ? offset : 0}px, 0, 0)`,
-                  }}
+                  style={{ transform: `translate3d(${isOpen ? offset : 0}px, 0, 0)` }}
                 >
-                  <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-2 border border-border/80 font-bold text-xs text-accent">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full border border-border/80 bg-surface-2 text-[11px] font-bold text-accent">
                     {msg.avatarText}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between">
-                      <p className="truncate text-xs font-semibold text-fg">{msg.sender}</p>
-                      <span className="text-[10px] text-fg-subtle">{msg.time}</span>
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="truncate text-[12px] font-semibold text-fg">{msg.sender}</p>
+                      <span className="shrink-0 text-[10px] text-fg-subtle">{msg.time}</span>
                     </div>
-                    <p className="truncate text-xs font-medium text-fg/90 mt-0.5">{msg.subject}</p>
-                    <p className="truncate text-[11px] text-fg-muted mt-0.5">{msg.preview}</p>
+                    <p className="mt-0.5 truncate text-[11px] font-medium text-fg/90">{msg.subject}</p>
+                    <p className="mt-0.5 truncate text-[10px] text-fg-muted">{msg.preview}</p>
                   </div>
-                  {msg.unread && (
-                    <div className="mt-1 size-1.5 shrink-0 rounded-full bg-accent" />
-                  )}
+                  {msg.unread && <div className="mt-1 size-1.5 shrink-0 rounded-full bg-accent" />}
                 </div>
               </div>
             );
           })}
-        </div>
-
-        {/* Bottom tab bar simulation */}
-        <div className="border-t border-border bg-surface px-6 py-2 flex items-center justify-around text-xs text-fg-muted">
-          <span className="text-accent font-semibold">消息</span>
-          <span>通讯录</span>
-          <span>我的</span>
-        </div>
-
-        {/* Stage locked indicator */}
-        <div className="absolute top-14 right-4 z-20 rounded-full border border-border/60 bg-surface/90 px-2 py-0.5 text-[10px] font-mono text-fg-muted shadow-sm backdrop-blur-sm">
-          locked: row {openRowId} ({offset}px)
         </div>
       </div>
     </div>

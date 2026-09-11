@@ -51,6 +51,25 @@ export const INITIAL_MESSAGES: MessageItem[] = [
     time: "上周",
     unread: false,
   },
+  {
+    id: "5",
+    sender: "设计系统同步",
+    avatarText: "设",
+    subject: "Token 与侧滑阻尼对照表",
+    preview: "越界阻尼 0.25，右滑回弹同样套阻尼，避免把行拽出边界。",
+    time: "更早",
+    unread: false,
+    tag: "规范",
+  },
+  {
+    id: "6",
+    sender: "周会纪要",
+    avatarText: "纪",
+    subject: "列表手势本周验收清单",
+    preview: "请先纵滚浏览，再左滑任意一行，对照消歧与双阈值裁定。",
+    time: "更早",
+    unread: false,
+  },
 ];
 
 export const FORMULA = {
@@ -62,3 +81,40 @@ export const FORMULA = {
     "Swipe list row left: lock axis at 8px; snap to reveal read/delete past 45%; overswipe past threshold commits delete directly.",
   ),
 };
+
+export type SwipeFormula = {
+  id: string;
+  eyebrow: ReturnType<typeof loc>;
+  title: ReturnType<typeof loc>;
+  desc: ReturnType<typeof loc>;
+};
+
+export const SWIPE_FORMULAS: SwipeFormula[] = [
+  {
+    id: "lock",
+    eyebrow: loc("8px 死区", "8px deadband"),
+    title: loc("矢量消歧锁轴", "Vector axis lock"),
+    desc: loc(
+      "欧氏位移不足 8px 保持待定。|Δy| 占优立刻放行纵滚；|Δx| 占优才锁横轴、捕获指针。",
+      "Stay undecided while hypot(Δx, Δy) < 8px. Dominant |Δy| yields to scroll; dominant |Δx| locks horizontal and captures.",
+    ),
+  },
+  {
+    id: "dual",
+    eyebrow: loc("双阈值", "Dual threshold"),
+    title: loc("回弹 · 露出 · 提交", "Close · reveal · commit"),
+    desc: loc(
+      "松手不到 45%×148px 弹性归零；过门槛吸附露出已读/删除；越过 172px 整行变红，一步提交。",
+      "Release under 45% of 148px springs shut; past latch snaps the tray; past 172px the row goes red and commits.",
+    ),
+  },
+  {
+    id: "exclusive",
+    eyebrow: loc("单行互斥", "One row only"),
+    title: loc("点外收回", "Tap-outside close"),
+    desc: loc(
+      "同一屏最多一行敞开。碰另一行立刻回弹；点展开行正面或列表空白，低成本后悔。",
+      "At most one tray is open. Touching another row springs the first shut; tapping the face or empty list is a cheap undo.",
+    ),
+  },
+];
