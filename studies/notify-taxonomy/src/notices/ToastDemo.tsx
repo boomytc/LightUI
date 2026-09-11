@@ -4,6 +4,8 @@ import { useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { Action, AppNav, AvatarMark, Field, Frame } from "./Frame";
 
+const TOAST_LEAVE_MS = 240;
+
 export function ToastDemo({ state }: { state?: string } = {}) {
   const locale = useLocale();
   const nickId = useId();
@@ -25,7 +27,7 @@ export function ToastDemo({ state }: { state?: string } = {}) {
 
   useEffect(() => {
     if (!toast?.leaving) return;
-    const gone = window.setTimeout(() => setToast(null), 160);
+    const gone = window.setTimeout(() => setToast(null), TOAST_LEAVE_MS);
     return () => window.clearTimeout(gone);
   }, [toast]);
 
@@ -77,8 +79,8 @@ export function ToastDemo({ state }: { state?: string } = {}) {
         <div className="pointer-events-none absolute inset-x-0 top-3 z-30 flex justify-center px-4">
           <div
             className={cn(
-              "rounded-md bg-fg px-3 py-1.5 text-[12px] text-surface shadow-card transition duration-150",
-              toast.leaving ? "-translate-y-1 opacity-0" : "translate-y-0 opacity-100",
+              "notify-toast rounded-md bg-fg px-3 py-1.5 text-[12px] text-surface shadow-card",
+              toast.leaving && "is-leave",
             )}
           >
             {locale === "en" ? "Saved" : "保存成功"}

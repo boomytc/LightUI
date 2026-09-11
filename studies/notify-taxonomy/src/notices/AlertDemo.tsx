@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Check, TriangleAlert } from "lucide-react";
 import { stageOn } from "../lib/machines";
 import { useLocale } from "../lib/site-locale";
+import { usePresence } from "../lib/use-presence";
+import { cn } from "../lib/utils";
 import { Action, AppNav, AvatarMark, Frame } from "./Frame";
 
 export function AlertDemo({ state }: { state?: string } = {}) {
@@ -9,6 +11,7 @@ export function AlertDemo({ state }: { state?: string } = {}) {
   const startOn = state !== undefined && stageOn(state);
   const [visible, setVisible] = useState(startOn);
   const [resolved, setResolved] = useState(false);
+  const alert = usePresence(visible, 240);
 
   function scan() {
     setResolved(false);
@@ -47,10 +50,13 @@ export function AlertDemo({ state }: { state?: string } = {}) {
           )}
         </div>
 
-        {visible ? (
+        {alert.mounted ? (
           <div
             data-alert
-            className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-md bg-accent-soft px-3 py-2.5"
+            className={cn(
+              "notify-alert mt-4 flex flex-wrap items-center justify-between gap-2 rounded-md bg-accent-soft px-3 py-2.5",
+              alert.leaving && "is-leave",
+            )}
           >
             <div className="flex min-w-0 items-center gap-2 text-[13px] text-accent">
               <TriangleAlert className="size-4 shrink-0" />
@@ -78,7 +84,7 @@ export function AlertDemo({ state }: { state?: string } = {}) {
             ? "Pinned in the content until Reset now. Not a modal, and not a two-second toast."
             : "钉在内容区，直到「立即重置」。不是模态，也不是两秒就消失的轻提示。"}
         </p>
-        {!visible ? (
+        {!alert.mounted ? (
           <div className="mt-3">
             <Action onClick={scan}>{locale === "en" ? "Scan keys" : "扫描密钥"}</Action>
           </div>

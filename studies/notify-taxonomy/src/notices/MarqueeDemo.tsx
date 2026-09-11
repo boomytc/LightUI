@@ -2,7 +2,7 @@ import { MARQUEE_ITEMS } from "../lib/fixtures";
 import { stageOn } from "../lib/machines";
 import { pick, useLocale } from "../lib/site-locale";
 import { AppNav, AvatarMark, Frame, Stat } from "./Frame";
-import "./motion.css";
+import "./notify.css";
 
 export function MarqueeDemo({ state }: { state?: string } = {}) {
   const locale = useLocale();

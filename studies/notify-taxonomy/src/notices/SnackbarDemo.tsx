@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { INITIAL_DRAFTS, type Draft } from "../lib/fixtures";
 import { autoDismissMs, stageOn } from "../lib/machines";
 import { pick, useLocale } from "../lib/site-locale";
+import { cn } from "../lib/utils";
 import { AppNav, AvatarMark, Frame, Ghost } from "./Frame";
+
+const SNACK_LEAVE_MS = 260;
 
 export function SnackbarDemo({ state }: { state?: string } = {}) {
   const locale = useLocale();
@@ -10,22 +13,30 @@ export function SnackbarDemo({ state }: { state?: string } = {}) {
   const [drafts, setDrafts] = useState<Draft[]>(() =>
     locked ? INITIAL_DRAFTS.slice(1) : INITIAL_DRAFTS,
   );
-  const [snack, setSnack] = useState<{ draft: Draft; index: number } | null>(() =>
-    locked ? { draft: INITIAL_DRAFTS[0]!, index: 0 } : null,
+  const [snack, setSnack] = useState<{ draft: Draft; index: number; leaving: boolean } | null>(() =>
+    locked ? { draft: INITIAL_DRAFTS[0]!, index: 0, leaving: false } : null,
   );
 
   useEffect(() => {
-    if (!snack || locked) return;
-    const id = window.setTimeout(() => setSnack(null), autoDismissMs("snackbar"));
+    if (!snack || snack.leaving || locked) return;
+    const id = window.setTimeout(() => {
+      setSnack((curr) => (curr ? { ...curr, leaving: true } : null));
+    }, autoDismissMs("snackbar"));
     return () => window.clearTimeout(id);
   }, [snack, locked]);
+
+  useEffect(() => {
+    if (!snack?.leaving) return;
+    const gone = window.setTimeout(() => setSnack(null), SNACK_LEAVE_MS);
+    return () => window.clearTimeout(gone);
+  }, [snack]);
 
   function remove(id: string) {
     const index = drafts.findIndex((d) => d.id === id);
     if (index < 0) return;
     const draft = drafts[index]!;
     setDrafts(drafts.filter((d) => d.id !== id));
-    setSnack({ draft, index });
+    setSnack({ draft, index, leaving: false });
   }
 
   function undo() {
@@ -86,7 +97,12 @@ export function SnackbarDemo({ state }: { state?: string } = {}) {
 
       {snack ? (
         <div className="absolute inset-x-4 top-3 z-30">
-          <div className="flex items-center justify-between gap-3 rounded-md bg-fg px-3 py-2 text-surface shadow-card">
+          <div
+            className={cn(
+              "notify-snack flex items-center justify-between gap-3 rounded-md bg-fg px-3 py-2 text-surface shadow-card",
+              snack.leaving && "is-leave",
+            )}
+          >
             <span className="min-w-0 truncate text-[12px]">
               {locale === "en" ? "Draft deleted" : "草稿已删除"}
             </span>

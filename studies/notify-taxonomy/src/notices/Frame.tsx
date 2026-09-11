@@ -1,5 +1,6 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { useEffect, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { badgeLabel, hideBadge } from "../lib/machines";
+import { usePresence } from "../lib/use-presence";
 import { cn } from "../lib/utils";
 
 export function Frame({
@@ -35,10 +36,26 @@ export function Frame({
 }
 
 export function CountBadge({ count }: { count: number }) {
-  if (hideBadge(count)) return null;
+  const visible = !hideBadge(count);
+  const label = badgeLabel(count);
+  const [shown, setShown] = useState(label);
+  const { mounted, leaving } = usePresence(visible, 180);
+
+  useEffect(() => {
+    if (!label) return;
+    setShown(label);
+  }, [label]);
+
+  if (!mounted || !shown) return null;
   return (
-    <span className="absolute -top-1.5 -right-1.5 z-10 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold leading-none text-accent-fg tabular-nums">
-      {badgeLabel(count)}
+    <span
+      key={shown}
+      className={cn(
+        "notify-badge absolute -top-1.5 -right-1.5 z-10 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold leading-none text-accent-fg tabular-nums",
+        leaving && "is-leave",
+      )}
+    >
+      {shown}
     </span>
   );
 }

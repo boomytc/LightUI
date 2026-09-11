@@ -24,7 +24,7 @@ The lab mounts `StudyView` at `/s/notify-taxonomy`.
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — weight, dismiss, persist, badge label (no DOM)
-- `src/notices/` — the seven fixtures; playground Frame is 100% of the pane; kinds are top chips; spec is compact
+- `src/notices/` — the seven fixtures; playground is a weight ladder (glance → must-handle) plus Frame; spec is compact
 - `src/StageView.tsx` — one kind, one locked state, no chrome; fixture stays 390
 - `src/lib/stage-query.ts` — `kind=badge|toast|snackbar|marquee|inbox|alert|banner`, `state=on|off` (badge also `state=<count>`)
 

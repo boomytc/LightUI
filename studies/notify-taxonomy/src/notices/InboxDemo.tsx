@@ -3,6 +3,7 @@ import { Bell, Mail, MessageSquare } from "lucide-react";
 import { INITIAL_INBOX, type InboxItem } from "../lib/fixtures";
 import { stageOn } from "../lib/machines";
 import { loc, pick, useLocale } from "../lib/site-locale";
+import { usePresence } from "../lib/use-presence";
 import { cn } from "../lib/utils";
 import { Action, AppNav, AvatarMark, Frame, Ghost, IconBtn, Stat } from "./Frame";
 
@@ -13,6 +14,7 @@ export function InboxDemo({ state }: { state?: string } = {}) {
   const [open, setOpen] = useState(lockedOpen);
   const [page, setPage] = useState<"home" | "inbox">(lockedOpen ? "home" : "inbox");
   const unread = items.filter((item) => item.unread).length;
+  const popover = usePresence(open && page === "home", 200);
 
   function pushResult() {
     const next: InboxItem = {
@@ -61,10 +63,13 @@ export function InboxDemo({ state }: { state?: string } = {}) {
             <Bell className="size-4" />
           </IconBtn>
           <AvatarMark mark="S" />
-          {open && page === "home" ? (
+          {popover.mounted ? (
             <div
               data-inbox-popover
-              className="absolute right-3 top-11 z-30 w-80 max-w-[calc(100%-1.5rem)] rounded-lg border border-border bg-surface p-2 shadow-card"
+              className={cn(
+                "notify-pop absolute right-3 top-11 z-30 w-80 max-w-[calc(100%-1.5rem)] rounded-lg border border-border bg-surface p-2 shadow-card",
+                popover.leaving && "is-leave",
+              )}
               role="menu"
             >
               <div className="px-2 py-1.5 text-[11px] font-medium text-fg-muted">
@@ -72,7 +77,7 @@ export function InboxDemo({ state }: { state?: string } = {}) {
               </div>
               <ul className="flex flex-col">
                 {items.slice(0, 3).map((item) => (
-                  <li key={item.id} className="rounded-md px-2 py-2">
+                  <li key={item.id} className="notify-inbox-row rounded-md px-2 py-2">
                     <div className="flex items-start gap-2">
                       {item.unread ? (
                         <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent" />
@@ -117,7 +122,7 @@ export function InboxDemo({ state }: { state?: string } = {}) {
             {items.map((item) => (
               <li
                 key={item.id}
-                className="flex items-center justify-between gap-3 rounded-lg bg-surface-2 px-3 py-2.5"
+                className="notify-inbox-row flex items-center justify-between gap-3 rounded-lg bg-surface-2 px-3 py-2.5"
               >
                 <div className="flex min-w-0 items-start gap-2">
                   <span

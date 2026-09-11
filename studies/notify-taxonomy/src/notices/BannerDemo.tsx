@@ -3,6 +3,7 @@ import { Info, X } from "lucide-react";
 import { TEAM } from "../lib/fixtures";
 import { stageOn } from "../lib/machines";
 import { pick, useLocale } from "../lib/site-locale";
+import { usePresence } from "../lib/use-presence";
 import { cn } from "../lib/utils";
 import { Action, AppNav, Frame, Stat } from "./Frame";
 
@@ -12,6 +13,7 @@ export function BannerDemo({ state }: { state?: string } = {}) {
   const locale = useLocale();
   const [visible, setVisible] = useState(state === undefined ? true : stageOn(state));
   const [page, setPage] = useState<PageId>("desk");
+  const banner = usePresence(visible, 260);
 
   const tabs: { id: PageId; label: string }[] = [
     { id: "desk", label: locale === "en" ? "Desk" : "工作台" },
@@ -46,10 +48,13 @@ export function BannerDemo({ state }: { state?: string } = {}) {
         </AppNav>
       }
       bar={
-        visible ? (
+        banner.mounted ? (
           <div
             data-banner
-            className="flex h-8 w-full min-w-0 shrink-0 items-center gap-2 overflow-hidden bg-fg px-3 text-surface"
+            className={cn(
+              "notify-banner flex h-8 w-full min-w-0 shrink-0 items-center gap-2 overflow-hidden bg-fg px-3 text-surface",
+              banner.leaving && "is-leave",
+            )}
           >
             <Info className="size-3.5 shrink-0" />
             <p className="min-w-0 flex-1 truncate text-[12px]">
@@ -78,7 +83,7 @@ export function BannerDemo({ state }: { state?: string } = {}) {
             <Stat label={locale === "en" ? "Follows" : "新增关注"} value="1,028" hint="+9%" />
             <Stat label={locale === "en" ? "Rate" : "转化率"} value="3.8%" hint="—" />
           </div>
-          {!visible ? (
+          {!banner.mounted ? (
             <div className="mt-4">
               <Action onClick={() => setVisible(true)}>
                 {locale === "en" ? "Show banner" : "显示通知条"}
@@ -113,7 +118,7 @@ export function BannerDemo({ state }: { state?: string } = {}) {
               </div>
             ))}
           </div>
-          {!visible ? (
+          {!banner.mounted ? (
             <div className="mt-4">
               <Action onClick={() => setVisible(true)}>
                 {locale === "en" ? "Show banner" : "显示通知条"}
@@ -146,7 +151,7 @@ export function BannerDemo({ state }: { state?: string } = {}) {
               </li>
             ))}
           </ul>
-          {!visible ? (
+          {!banner.mounted ? (
             <div className="mt-4">
               <Action onClick={() => setVisible(true)}>
                 {locale === "en" ? "Show banner" : "显示通知条"}

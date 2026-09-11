@@ -15,6 +15,10 @@ export type KindMeta = {
   note?: Localized;
   tells: Localized;
   defaultState: string;
+  rung: Localized;
+  naive: Localized;
+  matched: Localized;
+  scale: number;
 };
 
 export const KINDS: KindMeta[] = [
@@ -44,6 +48,10 @@ export const KINDS: KindMeta[] = [
     ),
     tells: loc("0 卸掉，99+，不弹", "Unload at 0; 99+; no pop"),
     defaultState: "3",
+    rung: loc("瞄一眼", "A glance"),
+    naive: loc("每来一条就弹窗，工作被打断", "Every unread pops a dialog and stops the work"),
+    matched: loc("角标叠数字，瞄一眼。0 卸掉，不要留空圆点", "Stack a number. A glance. Unload at 0 — no empty dot"),
+    scale: 1,
   },
   {
     id: "toast",
@@ -68,6 +76,10 @@ export const KINDS: KindMeta[] = [
     note: loc("轻提示只报已经发生的结果。进度不是 toast，成功也不要做成必须点确定的弹窗。", "A toast reports a result that already happened. Progress is not a toast; success is not an OK dialog."),
     tells: loc("2.4 秒消失，表单不停", "Gone in 2.4s; the form keeps moving"),
     defaultState: "on",
+    rung: loc("自动消失", "Auto-dismiss"),
+    naive: loc("保存成功挡住表单，还要再点确定", "Saved blocks the form until they click OK"),
+    matched: loc("轻提示约 2.4 秒，手不离开输入", "A toast for about 2.4s; hands stay on the form"),
+    scale: 2,
   },
   {
     id: "snackbar",
@@ -91,6 +103,10 @@ export const KINDS: KindMeta[] = [
     note: loc("先做再给撤销。确认弹窗才是必须先处理才能继续。", "Do it, then offer undo. A confirm dialog is “handle this before you continue.”"),
     tells: loc("立刻删，5 秒内可撤销", "Delete now; undo for five seconds"),
     defaultState: "on",
+    rung: loc("还能撤销", "Undo still"),
+    naive: loc("删除先问「确定吗」，心流先断一截", "Ask “are you sure?” first and break the flow"),
+    matched: loc("立刻删，约 5 秒内可撤销", "Delete now; undo for about five seconds"),
+    scale: 3,
   },
   {
     id: "marquee",
@@ -115,6 +131,10 @@ export const KINDS: KindMeta[] = [
     note: loc("跑马灯在同一条里滚字。轮播会把整块画面切走。", "A marquee rotates copy in one strip. A carousel takes the whole view away."),
     tells: loc("同一条里滚字，悬停暂停", "Copy rotates in one strip; pause on hover"),
     defaultState: "on",
+    rung: loc("同一条里滚", "One strip"),
+    naive: loc("多条公告做成切画面的轮播", "Several notices become a carousel that swaps the view"),
+    matched: loc("页头同一条里滚字，悬停暂停", "Rotate copy in one strip; pause on hover"),
+    scale: 4,
   },
   {
     id: "inbox",
@@ -138,6 +158,10 @@ export const KINDS: KindMeta[] = [
     ),
     tells: loc("写进铃铛，随时回看", "Write it to the bell; look it up later"),
     defaultState: "on",
+    rung: loc("留档", "A log"),
+    naive: loc("导出完成闪一下就没了，回看不了", "Export-done flashes and vanishes — nowhere to look it up"),
+    matched: loc("写进消息中心，铃铛可回看", "Write it to the inbox; the bell keeps it"),
+    scale: 5,
   },
   {
     id: "alert",
@@ -162,6 +186,10 @@ export const KINDS: KindMeta[] = [
     note: loc("警告必须看见，但任务没被打断。必须先处理才能继续，才是弹窗。", "They must see the alert; the task is not blocked. “Handle this before you continue” is a dialog."),
     tells: loc("钉住直到立即重置", "Pinned until Reset now"),
     defaultState: "on",
+    rung: loc("必须处理", "Must handle"),
+    naive: loc("密钥风险用两秒就消失的轻提示", "A leaked key is a two-second toast"),
+    matched: loc("警告钉在内容区，点立即重置才走", "Pin the risk; it leaves only on Reset now"),
+    scale: 6,
   },
   {
     id: "banner",
@@ -185,6 +213,10 @@ export const KINDS: KindMeta[] = [
     ),
     tells: loc("换页还在，点 X 才关", "Survives a page change; X closes it"),
     defaultState: "on",
+    rung: loc("跨页常驻", "Across pages"),
+    naive: loc("系统维护只在当前页弹一次，换页就没了", "Maintenance pops once on this page, then dies"),
+    matched: loc("导航下的通知条，换页还在，点 X 才关", "Under the nav, across pages, until they close it"),
+    scale: 7,
   },
 ];
 
