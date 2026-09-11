@@ -7,7 +7,7 @@ export function readStageQuery(): { state: RefreshPhase; pull: number } {
     rawState === "pulling" || rawState === "ready" || rawState === "refreshing" || rawState === "settled"
       ? rawState
       : "ready";
-  const defaultPull = state === "pulling" ? 32 : state === "ready" ? 56 : state === "refreshing" ? 48 : 0;
+  const defaultPull = state === "pulling" ? 32 : state === "ready" ? 56 : state === "refreshing" ? 56 : 0;
   const rawPull = query.get("pull");
   const pull = rawPull !== null ? Number(rawPull) : defaultPull;
   return { state, pull };

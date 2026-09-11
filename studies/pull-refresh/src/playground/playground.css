@@ -1,0 +1,100 @@
+.pull-instrument {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgb(59 108 255 / 0.18), transparent 46%),
+    linear-gradient(180deg, #1c1d24 0%, var(--color-fg) 48%, #121318 100%);
+  color: var(--color-surface);
+}
+
+.pull-instrument::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.14;
+  background-image: repeating-linear-gradient(
+    -12deg,
+    transparent,
+    transparent 2px,
+    rgb(255 255 255 / 0.04) 2px,
+    rgb(255 255 255 / 0.04) 3px
+  );
+}
+
+.pull-phone {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.55), transparent 42%),
+    var(--color-surface);
+  box-shadow:
+    0 0 0 1px rgb(23 24 28 / 0.06),
+    0 18px 50px rgb(23 24 28 / 0.12);
+}
+
+.dark .pull-phone {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.04), transparent 42%),
+    var(--color-surface);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.06),
+    0 18px 50px rgb(0 0 0 / 0.45);
+}
+
+.pull-edge {
+  height: 3px;
+  border-radius: 999px;
+  transform-origin: center;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease;
+}
+
+.pull-edge-on {
+  background: var(--color-accent);
+  box-shadow: 0 0 16px var(--color-ring);
+}
+
+.pull-edge-ready {
+  background: var(--color-intent);
+  box-shadow: 0 0 16px rgb(22 163 74 / 0.45);
+}
+
+.pull-edge-busy {
+  background: var(--color-accent);
+  animation: pull-pin-pulse 1.2s ease-in-out infinite;
+}
+
+.pull-edge-off {
+  background: var(--color-border-strong);
+  opacity: 0.55;
+}
+
+.pull-ring-spin {
+  transform-origin: 18px 18px;
+  animation: pull-spin 0.8s linear infinite;
+}
+
+.pull-pin-pulse {
+  animation: pull-pin-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pull-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pull-pin-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pull-ring-spin,
+  .pull-pin-pulse,
+  .pull-edge-busy {
+    animation: none !important;
+  }
+}
