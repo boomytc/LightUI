@@ -30,16 +30,40 @@ export function Playground() {
                 : "同一张会员卡。对照的是路径：走边框，还是铺满。"}
             </p>
           </div>
-          <label className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-[13px]">
-            <span>{locale === "en" ? "Park the beam" : "停住"}</span>
-            <input
-              type="checkbox"
-              checked={park}
-              onChange={(e) => setPark(e.target.checked)}
-              className="accent-accent"
-            />
-          </label>
+          <div className="inline-flex rounded-full border border-border bg-surface p-0.5">
+            {(["run", "park"] as const).map((id) => {
+              const on = id === "park" ? park : !park;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setPark(id === "park")}
+                  className={cn(
+                    "rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors",
+                    on ? "bg-fg text-surface" : "text-fg-muted hover:text-fg",
+                  )}
+                >
+                  {id === "park"
+                    ? locale === "en"
+                      ? "Park"
+                      : "停住"
+                    : locale === "en"
+                      ? "Run"
+                      : "运转"}
+                </button>
+              );
+            })}
+          </div>
         </div>
+
+        {reduced ? (
+          <p className="mb-4 text-[12px] leading-relaxed text-fg-subtle">
+            {locale === "en"
+              ? "Reduced motion: the beam becomes a static accent stroke. The flood freezes as fog on the face."
+              : "已按系统设置关掉旋转。左边留下静态描边；右边冻成一层雾。"}
+          </p>
+        ) : null}
 
         <SpecCard text={pick(beam.spec, locale)} locale={locale} />
 
@@ -75,13 +99,29 @@ function KindColumn({
 
   return (
     <article className="beam-slot min-w-0" data-column={id}>
-      <p className={cn("font-mono text-[12px] tabular-nums", wrong ? "text-fg-subtle" : "text-accent")}>
-        {meta.index}
-        {wrong ? (locale === "en" ? " · wrong" : " · 错") : ""}
-      </p>
+      <div className="flex flex-wrap items-center gap-2">
+        <p className={cn("font-mono text-[12px] tabular-nums", wrong ? "text-fg-subtle" : "text-accent")}>
+          {meta.index}
+          {wrong ? (locale === "en" ? " · wrong" : " · 错") : ""}
+        </p>
+        <span
+          className={cn(
+            "rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide",
+            wrong ? "bg-wrong-soft text-wrong" : "bg-intent-soft text-intent",
+          )}
+        >
+          {wrong
+            ? locale === "en"
+              ? "Fill"
+              : "铺满"
+            : locale === "en"
+              ? "Edge"
+              : "走边"}
+        </span>
+      </div>
       <h3 className="mt-1 text-[1.15rem] font-semibold tracking-tight">{pick(meta.zh, locale)}</h3>
       <p className="mt-1 text-[13px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
-      <div className="mt-4 min-w-0">
+      <div className="beam-well" data-tone={wrong ? "wrong" : "right"}>
         <MembershipCard kind={id} state={state} reduced={reduced} locale={locale} />
       </div>
       <p className="mt-3 text-[12px] leading-relaxed text-fg-subtle">{pick(meta.tells, locale)}</p>

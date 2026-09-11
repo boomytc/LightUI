@@ -23,7 +23,7 @@ The lab mounts `StudyView` at `/s/border-beam`.
 
 - `idea.md` / `study.json` — travel the border, do not flood the card
 - `src/lib/machines.ts` — `pathOf` is `border` | `fill`; `shouldAnimate` is false when reduced (no DOM)
-- `src/beam.css` — imported from the card TSX (`@property` angle + conic-gradient). Work page compare grid is two slots of `min(100%, 22rem)`.
+- `src/beam.css` — imported from the card TSX (`@property` angle + conic-gradient, 72%–88% arc). Work page compare grid is two slots of `min(100%, 22rem)` with tone wells.
 - `src/StageView.tsx` — `kind=beam|fill`, `state=run|park`. Fixture stays 390.
 
 ## Rules

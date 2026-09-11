@@ -2,6 +2,33 @@ import { Playground } from "./Playground";
 import { buildSnippet } from "./lib/machines";
 import { useLocale } from "./lib/site-locale";
 
+const RULES = [
+  {
+    n: "1",
+    title: { zh: "路径是边框", en: "Path is the stroke" },
+    body: {
+      zh: "pathOf(beam) 是 border。铺满是 fill，那是错的路径。",
+      en: "pathOf(beam) is border. A flood is fill — the wrong path.",
+    },
+  },
+  {
+    n: "2",
+    title: { zh: "内层实心，外层光束", en: "Inner fill, outer beam" },
+    body: {
+      zh: "padding-box 是实心底。border-box 是圆锥光。字不进光束。",
+      en: "padding-box holds the solid card. border-box holds the conic. Type never sits in the light.",
+    },
+  },
+  {
+    n: "3",
+    title: { zh: "降动效是描边", en: "Reduced motion is a stroke" },
+    body: {
+      zh: "shouldAnimate(true) 为 false。光束变成静态描边，不是冻住的铺满。",
+      en: "shouldAnimate(true) is false. The beam becomes a static accent stroke, not a frozen flood.",
+    },
+  },
+];
+
 export function StudyView() {
   const locale = useLocale();
   const snippet = buildSnippet();
@@ -20,15 +47,44 @@ export function StudyView() {
               ? "Stack a conic beam in a transparent stroke. Keep a solid inner fill. Brand accent only."
               : "透明边框叠圆锥光束。内层实心底。只用品牌强调色。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["Travel the border", "Solid inner fill", "Brand accent, not a rainbow"]
+              : ["走边框", "内层实心底", "品牌强调色，不要彩虹"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Park the beam to sit it on a corner. Flooding the face is the naive glow."
-            : "停住可以把高光钉在一角。铺满整张卡是 naive 的发光。"}
+            ? "Park the beam to sit it on a corner. Flooding the face turns the accent into fog."
+            : "停住可以把高光钉在一角。铺满整张卡会把强调色变成一层雾。"}
         </p>
       </section>
 
       <Playground />
+
+      <section className="mt-8 grid gap-3 sm:grid-cols-3">
+        {RULES.map((item) => (
+          <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
+            <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
+              {item.n}
+            </span>
+            <h2 className="mt-3 text-[15px] font-semibold">
+              {locale === "en" ? item.title.en : item.title.zh}
+            </h2>
+            <p className="mt-1 text-[13px] text-fg-muted">
+              {locale === "en" ? item.body.en : item.body.zh}
+            </p>
+          </div>
+        ))}
+      </section>
 
       <section className="mt-14 grid min-w-0 gap-10 lg:grid-cols-2">
         <article className="min-w-0">
