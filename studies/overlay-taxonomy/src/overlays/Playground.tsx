@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { KINDS, type KindId } from "../lib/kinds";
-import { pick, useLocale } from "../lib/site-locale";
-import { cn } from "../lib/utils";
+import { pick, useLocale, type Locale } from "../lib/site-locale";
+import { AxisReadout, Matrix } from "./Matrix";
 import { DrawerDemo } from "./DrawerDemo";
 import { ModalDemo } from "./ModalDemo";
 import { PopoverDemo } from "./PopoverDemo";
@@ -14,44 +14,42 @@ export function Playground() {
   const [active, setActive] = useState<KindId>("modal");
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0];
 
-  return (
-    <div className="min-w-0 overflow-x-hidden">
-      <nav
-        aria-label={locale === "en" ? "Overlay kinds" : "浮层种类"}
-        className="flex flex-wrap gap-2"
-      >
-        {KINDS.map((kind) => {
-          const on = kind.id === active;
-          return (
-            <button
-              key={kind.id}
-              type="button"
-              data-kind={kind.id}
-              onClick={() => setActive(kind.id)}
-              className={cn(
-                "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-left transition-colors",
-                on
-                  ? "border-fg bg-fg text-surface"
-                  : "border-border bg-surface text-fg-muted hover:bg-surface-2 hover:text-fg",
-              )}
-            >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-surface/70" : "text-fg-subtle")}>
-                {kind.index}
-              </span>
-              <span className="text-[13px] font-medium">{kind.name}</span>
-              <span className={cn("text-[11px]", on ? "text-surface/70" : "text-fg-subtle")}>
-                {pick(kind.zh, locale)}
-              </span>
-            </button>
-          );
-        })}
-      </nav>
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
+      const n = Number(event.key);
+      if (n >= 1 && n <= KINDS.length) {
+        event.preventDefault();
+        setActive(KINDS[n - 1]!.id);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
-      <section className="mt-6 min-w-0">
+  return (
+    <div data-playground="overlay" data-kind={active} className="min-w-0 overflow-x-hidden">
+      <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+        <p className="text-[12px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+          {locale === "en" ? "Interrupt × attach" : "打断 × 贴附"}
+        </p>
+        <p className="hidden text-[11px] text-fg-subtle sm:block">
+          {locale === "en" ? "Keys 1–5 pick a leaf." : "数字键 1–5 选一档。"}
+        </p>
+      </div>
+
+      <Matrix active={active} locale={locale} onPick={setActive} />
+
+      <section className="mt-7 min-w-0">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
             <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 05</p>
             <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
+            <div className="mt-1.5">
+              <AxisReadout id={meta.id} locale={locale} />
+            </div>
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           </div>
           <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
@@ -72,7 +70,9 @@ export function Playground() {
 
         {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
 
-        <KindDemo key={meta.id} id={meta.id} />
+        <div key={meta.id} className="overlay-kind-in">
+          <KindDemo id={meta.id} />
+        </div>
 
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
@@ -91,7 +91,7 @@ export function Playground() {
   );
 }
 
-function SpecCard({ text, locale }: { text: string; locale: "zh" | "en" }) {
+function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {

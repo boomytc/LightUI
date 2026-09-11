@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
+import { Copy, ImageDown, MessageSquare } from "lucide-react";
 import { pick, useLocale } from "../lib/site-locale";
 import { Btn, DemoShell } from "./Frame";
 import { Sheet } from "./Overlay";
 
-const ACTIONS = [
-  { zh: "复制链接", en: "Copy link" },
-  { zh: "发送到聊天", en: "Send to chat" },
-  { zh: "保存图片", en: "Save image" },
+const ACTIONS: { zh: string; en: string; icon: ReactNode }[] = [
+  { zh: "复制链接", en: "Copy link", icon: <Copy className="size-4" /> },
+  { zh: "发送到聊天", en: "Send to chat", icon: <MessageSquare className="size-4" /> },
+  { zh: "保存图片", en: "Save image", icon: <ImageDown className="size-4" /> },
 ];
 
 export function SheetDemo({
@@ -43,8 +44,11 @@ export function SheetDemo({
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="flex h-11 w-full items-center rounded-xl bg-surface-2 px-3.5 text-left text-[14px] font-medium hover:bg-accent-soft"
+                  className="flex h-11 w-full items-center gap-3 rounded-xl bg-surface-2 px-3.5 text-left text-[14px] font-medium hover:bg-accent-soft"
                 >
+                  <span className="grid size-7 place-items-center rounded-lg bg-surface text-fg-muted">
+                    {item.icon}
+                  </span>
                   {pick({ zh: item.zh, en: item.en }, locale)}
                 </button>
               </li>
@@ -59,7 +63,7 @@ export function SheetDemo({
           {locale === "en" ? "Thumb-reach actions. Weak interrupt." : "拇指区操作。弱打断。"}
         </p>
       </div>
-      <div className="mx-4 mb-4 h-28 rounded-xl bg-accent-soft sm:mx-5" />
+      <div className="mx-4 mb-4 h-28 overflow-hidden rounded-xl bg-linear-to-br from-accent-soft via-play-glow to-bg-warm sm:mx-5" />
       <p className="px-4 pb-4 text-[13px] text-fg-muted sm:px-5">
         {locale === "en"
           ? "The page stays as context. The sheet is not stuck to the Share button."

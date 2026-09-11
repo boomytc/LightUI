@@ -53,6 +53,14 @@ function useFocusTrap(active: boolean, ref: RefObject<HTMLElement | null>) {
   }, [active, ref]);
 }
 
+const OUT = {
+  modal: 200,
+  drawer: 320,
+  popover: 160,
+  tooltip: 140,
+  sheet: 320,
+} as const;
+
 function Scrim({
   closing,
   tone,
@@ -64,8 +72,8 @@ function Scrim({
 }) {
   const className = cn(
     "absolute inset-0 z-40",
-    tone === "strong" ? "bg-fg/40" : "bg-fg/20",
-    closing ? "overlay-scrim-out" : "overlay-scrim-in",
+    tone === "strong" ? "bg-fg/45 backdrop-blur-[3px]" : "bg-fg/18",
+    closing ? (tone === "strong" ? "overlay-scrim-out" : "overlay-scrim-out-slow") : "overlay-scrim-in",
   );
   if (onClick) {
     return (
@@ -95,7 +103,7 @@ export function Modal({
   children: ReactNode;
   dismissOnScrim?: boolean;
 }) {
-  const { mounted, closing } = usePresence(open, 150);
+  const { mounted, closing } = usePresence(open, OUT.modal);
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const descId = useId();
@@ -115,7 +123,7 @@ export function Modal({
           aria-labelledby={titleId}
           aria-describedby={description ? descId : undefined}
           className={cn(
-            "pointer-events-auto w-[min(20rem,calc(100%-2rem))] rounded-xl border border-border bg-surface p-5 shadow-menu",
+            "pointer-events-auto w-[min(20rem,calc(100%-2rem))] rounded-xl border border-border bg-surface p-5 shadow-menu overscroll-contain",
             closing ? "overlay-modal-out" : "overlay-modal-in",
           )}
         >
@@ -149,7 +157,7 @@ export function Drawer({
   children: ReactNode;
   footer?: ReactNode;
 }) {
-  const { mounted, closing } = usePresence(open, 350);
+  const { mounted, closing } = usePresence(open, OUT.drawer);
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   useEsc(open, onClose);
@@ -166,7 +174,7 @@ export function Drawer({
         aria-modal="true"
         aria-labelledby={titleId}
         className={cn(
-          "absolute inset-y-0 right-0 z-50 flex w-[min(22rem,80%)] flex-col overflow-hidden border-l border-border bg-surface shadow-menu",
+          "absolute inset-y-0 right-0 z-50 flex w-[min(22rem,80%)] flex-col overflow-hidden border-l border-border bg-surface shadow-menu overscroll-contain",
           closing ? "overlay-drawer-out" : "overlay-drawer-in",
         )}
       >
@@ -206,7 +214,7 @@ export function PopoverMenu({
   onClose: () => void;
   children: ReactNode;
 }) {
-  const { mounted, closing } = usePresence(open, 150);
+  const { mounted, closing } = usePresence(open, OUT.popover);
   const ref = useRef<HTMLDivElement>(null);
   useEsc(open, onClose);
 
@@ -230,10 +238,14 @@ export function PopoverMenu({
       ref={ref}
       role="menu"
       className={cn(
-        "absolute top-full right-0 z-50 mt-1.5 w-44 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-border bg-surface py-1.5 shadow-menu",
+        "absolute top-full right-0 z-50 mt-1.5 w-44 max-w-[calc(100vw-2rem)] rounded-xl border border-border bg-surface py-1.5 shadow-menu",
         closing ? "overlay-pop-out" : "overlay-pop-in",
       )}
     >
+      <span
+        aria-hidden="true"
+        className="absolute -top-1.5 right-3 size-3 rotate-45 border-t border-l border-border bg-surface"
+      />
       {children}
     </div>
   );
@@ -242,25 +254,37 @@ export function PopoverMenu({
 export function Tooltip({
   open,
   text,
+  side = "top",
 }: {
   open: boolean;
   text: string;
+  side?: "top" | "bottom";
 }) {
-  const { mounted, closing } = usePresence(open, 80);
+  const { mounted, closing } = usePresence(open, OUT.tooltip);
   if (!mounted) return null;
   return (
     <div
-      role="tooltip"
       className={cn(
-        "pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[16rem] -translate-x-1/2 rounded-md bg-fg px-2.5 py-1.5 text-[12px] leading-snug text-surface shadow-menu",
-        closing ? "overlay-pop-out" : "overlay-pop-in",
+        "pointer-events-none absolute left-0 z-50 w-max max-w-64",
+        side === "top" ? "bottom-full mb-2" : "top-full mt-2",
       )}
     >
-      {text}
-      <span
-        aria-hidden="true"
-        className="absolute top-full left-1/2 -mt-px -translate-x-1/2 border-4 border-transparent border-t-fg"
-      />
+      <div
+        role="tooltip"
+        className={cn(
+          "relative rounded-md bg-fg px-2.5 py-1.5 text-[12px] leading-snug text-surface shadow-menu",
+          closing ? "overlay-tip-out" : "overlay-tip-in",
+        )}
+      >
+        {text}
+        <span
+          aria-hidden="true"
+          className={cn(
+            "absolute left-3 border-4 border-transparent",
+            side === "top" ? "top-full -mt-px border-t-fg" : "bottom-full -mb-px border-b-fg",
+          )}
+        />
+      </div>
     </div>
   );
 }
@@ -276,7 +300,7 @@ export function Sheet({
   title: string;
   children: ReactNode;
 }) {
-  const { mounted, closing } = usePresence(open, 350);
+  const { mounted, closing } = usePresence(open, OUT.sheet);
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   useEsc(open, onClose);
@@ -292,11 +316,11 @@ export function Sheet({
         aria-modal="true"
         aria-labelledby={titleId}
         className={cn(
-          "absolute inset-x-0 bottom-0 z-50 flex max-h-[70%] flex-col overflow-hidden rounded-t-2xl border-t border-border bg-surface shadow-menu",
+          "absolute inset-x-0 bottom-0 z-50 flex max-h-[70%] flex-col overflow-hidden rounded-t-2xl border-t border-border bg-surface shadow-menu overscroll-contain",
           closing ? "overlay-sheet-out" : "overlay-sheet-in",
         )}
       >
-        <div className="flex flex-col items-center pt-2">
+        <div className="flex flex-col items-center pt-2.5">
           <span className="h-1.5 w-10 rounded-full bg-border-strong" aria-hidden="true" />
         </div>
         <div className="flex items-start justify-between gap-3 px-4 pt-3 pb-2">
@@ -336,7 +360,9 @@ export function MenuItem({
       onClick={onClick}
       className={cn(
         "flex h-10 w-full items-center px-3.5 text-left text-[13px]",
-        tone === "danger" ? "font-medium text-fg hover:bg-surface-2" : "text-fg hover:bg-surface-2",
+        tone === "danger"
+          ? "font-medium text-wrong hover:bg-wrong-soft"
+          : "text-fg hover:bg-surface-2",
       )}
     >
       {children}

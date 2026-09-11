@@ -70,13 +70,14 @@ export function TooltipDemo({
                     onPointerLeave={hide}
                     onFocus={show}
                     onBlur={hide}
-                    className="grid size-6 place-items-center rounded-full border border-border text-[11px] text-fg-muted"
+                    className="grid size-6 place-items-center rounded-full border border-border bg-surface text-[11px] text-fg-muted"
                   >
                     i
                   </button>
                   <span id="overlay-tooltip">
                     <Tooltip
                       open={open}
+                      side={compact ? "bottom" : "top"}
                       text={
                         locale === "en"
                           ? "Shown next to comments. Not a login email."

@@ -35,7 +35,9 @@ export function PopoverDemo({
             aria-haspopup="menu"
             aria-label={locale === "en" ? "Account menu" : "账号菜单"}
             onClick={() => setMenuOpen((v) => !v)}
-            className="grid size-8 place-items-center rounded-full bg-accent text-[12px] font-semibold text-accent-fg"
+            className={`grid size-8 place-items-center rounded-full bg-accent text-[12px] font-semibold text-accent-fg transition-shadow ${
+              menuOpen ? "ring-2 ring-ring" : ""
+            }`}
           >
             A
           </button>
@@ -101,7 +103,9 @@ export function PopoverDemo({
                 {pick({ zh: row.hintZh, en: row.hintEn }, locale)}
               </p>
             </div>
-            <span className="shrink-0 text-[12px] text-fg-subtle">{locale === "en" ? "Edit" : "更改"}</span>
+            <span className="shrink-0 text-[12px] text-fg-subtle">
+              {locale === "en" ? "Edit" : "更改"}
+            </span>
           </li>
         ))}
       </ul>

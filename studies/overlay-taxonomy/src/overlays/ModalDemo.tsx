@@ -85,7 +85,15 @@ export function ModalDemo({
               pending === file.id && "bg-accent-soft",
             )}
           >
-            <span className="min-w-0 truncate py-3">{pick({ zh: file.zh, en: file.en }, locale)}</span>
+            <span className="flex min-w-0 items-center gap-2.5 py-3">
+              <span
+                className="grid h-6 w-8 shrink-0 place-items-center rounded-md bg-surface text-[9px] font-semibold tracking-wide text-fg-muted"
+                aria-hidden="true"
+              >
+                {file.en.split(".").pop()?.toUpperCase()}
+              </span>
+              <span className="min-w-0 truncate">{pick({ zh: file.zh, en: file.en }, locale)}</span>
+            </span>
             <span className="hidden truncate text-[12px] text-fg-subtle sm:block">{file.size}</span>
             <span className="hidden truncate text-[12px] text-fg-subtle sm:block">
               {pick({ zh: file.whenZh, en: file.whenEn }, locale)}

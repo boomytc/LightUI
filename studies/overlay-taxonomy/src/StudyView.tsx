@@ -7,9 +7,12 @@ export function StudyView() {
 
   return (
     <div className="page-width min-w-0 overflow-x-hidden pb-20">
-      <section className="grid gap-8 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
+      <section className="grid gap-8 pt-4 pb-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pt-8 lg:pb-12">
         <div className="min-w-0">
-          <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
+          <p className="mb-3 font-mono text-[11px] tracking-[0.18em] text-accent uppercase">
+            {locale === "en" ? "Interrupt × attach" : "打断 × 贴附"}
+          </p>
+          <h1 className="text-[2rem] leading-[1.15] font-semibold tracking-tight text-fg sm:text-[2.6rem]">
             {locale === "en"
               ? "They all float. They do not interrupt the same way."
               : "看起来都是浮层，打断程度却完全不同。"}
@@ -19,11 +22,24 @@ export function StudyView() {
               ? "“Make a dialog” describes the skin. The thing that breaks is interrupt versus attach: a blocking confirm, a weak side editor, or a few actions stuck to the trigger."
               : "「做个弹窗」说的是外观。真正会坏掉的是打不打断、贴不贴触发点：必须先处理、弱打断的侧栏编辑，还是贴着按钮的几项动作。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["Must handle · viewport", "Weak · right or bottom", "None · stuck to trigger"]
+              : ["必须先处理 · 视口", "弱打断 · 右侧或底边", "不打断 · 贴着触发点"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Name the model, name the scene, then name interrupt and anchor. The three contrasts below are live."
-            : "先说模型，再说场景，再说打不打断、贴不贴。下面三个对照可以点。"}
+            ? "Name the model, name the scene, then name interrupt and anchor. The matrix below is live — empty cells are mix-ups, not extra kinds."
+            : "先说模型，再说场景，再说打不打断、贴不贴。下面的矩阵可以点。空格是混用，不是多出来的一档。"}
         </p>
       </section>
 
@@ -31,14 +47,12 @@ export function StudyView() {
 
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
-          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
-            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
+          <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
+            <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
               {item.n}
             </span>
-            <div className="min-w-0">
-              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
-              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
-            </div>
+            <h2 className="mt-3 text-[15px] font-semibold">{pick(item.title, locale)}</h2>
+            <p className="mt-1 text-[13px] text-fg-muted">{pick(item.example, locale)}</p>
           </div>
         ))}
       </section>
@@ -80,25 +94,24 @@ export function StudyView() {
         </article>
 
         <article className="min-w-0 overflow-hidden rounded-2xl border border-border bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
-          <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-surface/45">
-            interruptKind
+          <p className="text-[12px] font-medium tracking-[0.12em] text-surface/45 uppercase">
+            interruptKind × anchorsToTrigger
           </p>
           <pre className="mt-3 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">
 {`function interruptKind(kind) {
   if (kind === "modal") return "block"
-  if (kind === "drawer") return "weak"
+  if (kind === "drawer" || kind === "sheet") return "weak"
   return "none"
 }
 
-function backdropDismiss(kind, dangerous) {
-  if (kind === "modal") return !dangerous
-  return kind === "drawer"
+function anchorsToTrigger(kind) {
+  return kind === "popover" || kind === "tooltip"
 }`}
           </pre>
           <p className="mt-4 text-[13px] leading-relaxed text-surface/55">
             {locale === "en"
-              ? "A dangerous modal does not close on the scrim. Only a popover sticks to the trigger. More than seven items is too many for a popover."
-              : "危险弹窗点遮罩关不掉。只有气泡贴着触发点。超过七项就不是气泡。"}
+              ? "A dangerous modal does not close on the scrim. Only a popover or tooltip sticks to the trigger. More than seven items is too many for a popover."
+              : "危险弹窗点遮罩关不掉。只有气泡和提示贴着触发点。超过七项就不是气泡。"}
           </p>
         </article>
       </section>

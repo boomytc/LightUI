@@ -21,7 +21,7 @@ export function DemoShell({
       data-overlay-page
       data-overlay-compact={compact ? "" : undefined}
       className={cn(
-        "relative isolate flex min-w-0 flex-col overflow-hidden overflow-x-hidden border border-border bg-surface",
+        "relative isolate flex min-w-0 flex-col overflow-hidden overflow-x-hidden border border-border bg-surface shadow-card",
         compact
           ? "min-h-[20rem] rounded-2xl shadow-card"
           : "h-[28rem] w-full rounded-2xl shadow-card sm:h-[32rem]",
@@ -51,7 +51,9 @@ export function DemoShell({
           {action}
         </div>
       )}
-      <div className="relative min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto">{children}</div>
+      <div className="relative min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto bg-surface-2">
+        {children}
+      </div>
       {overlay}
     </div>
   );
