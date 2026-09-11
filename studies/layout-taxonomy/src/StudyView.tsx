@@ -1,4 +1,4 @@
-import { FORMULA } from "./lib/kinds";
+import { CONTRASTS, FORMULA, KINDS } from "./lib/kinds";
 import { pick, useLocale } from "./lib/site-locale";
 import { Playground } from "./layouts/Playground";
 
@@ -19,26 +19,54 @@ export function StudyView() {
               ? "“Make a page” describes the skin. The thing that breaks is the skeleton: a reading column, landing bands, uneven masonry, one full-bleed shot, two panes, a KPI grid, or one-idea cards."
               : "「做个页面」说的是外观。真正会坏掉的是骨架：单栏、落地、瀑布、全屏、分栏、仪表盘，还是模块拼贴。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {KINDS.map((kind) => (
+              <li
+                key={kind.id}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {pick(kind.zh, locale)}
+                <span className="mx-1 text-fg-subtle">·</span>
+                {pick(kind.when, locale)}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Name the skeleton, name the scene, then name the rule. The seven contrasts below are live."
-            : "先说骨架，再说场景，再说规则。下面七个对照可以点。"}
+            ? "Scan the seven skeletons. Name the bone, then the rule. The contrasts below are live."
+            : "先扫七种骨架。再说场景，再说规则。下面的对照可以点。"}
         </p>
       </section>
 
       <Playground />
 
+      <section className="mt-8 overflow-hidden rounded-2xl border border-border bg-surface">
+        <div className="grid grid-cols-[minmax(0,0.75fr)_minmax(0,1fr)_minmax(0,1.15fr)] gap-2 border-b border-border bg-surface-2/70 px-4 py-2 text-[10px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+          <span>{locale === "en" ? "Scene" : "场景"}</span>
+          <span>{locale === "en" ? "Always two columns" : "一律左右栏"}</span>
+          <span>{locale === "en" ? "Match the skeleton" : "按骨架分"}</span>
+        </div>
+        {CONTRASTS.map((row) => (
+          <div
+            key={row.scene.zh}
+            className="grid grid-cols-[minmax(0,0.75fr)_minmax(0,1fr)_minmax(0,1.15fr)] gap-2 border-b border-border px-4 py-2.5 last:border-b-0"
+          >
+            <p className="text-[13px] font-medium text-fg">{pick(row.scene, locale)}</p>
+            <p className="text-[12px] text-fg-muted">{pick(row.naive, locale)}</p>
+            <p className="text-[12px] text-fg">{pick(row.matched, locale)}</p>
+          </div>
+        ))}
+      </section>
+
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
-          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
-            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
+          <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
+            <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
               {item.n}
             </span>
-            <div className="min-w-0">
-              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
-              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
-            </div>
+            <h2 className="mt-3 text-[15px] font-semibold">{pick(item.title, locale)}</h2>
+            <p className="mt-1 text-[13px] text-fg-muted">{pick(item.example, locale)}</p>
           </div>
         ))}
       </section>

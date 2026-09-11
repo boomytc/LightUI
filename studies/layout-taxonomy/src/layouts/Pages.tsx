@@ -93,7 +93,12 @@ function SinglePage() {
           ? "A large title, one column, pictures that do not outrun the type."
           : "主标题够大、正文一列、图片不喧宾夺主。"}
       </p>
-      <div className="h-24 rounded-xl bg-linear-to-br from-accent-soft to-surface-2" />
+      <figure className="overflow-hidden rounded-xl">
+        <div className="h-24 bg-linear-to-br from-accent-soft via-[#e8eeff] to-surface-2" />
+        <figcaption className="mt-2 text-[11px] text-fg-subtle">
+          {locale === "en" ? "Figure stays on the same axis." : "配图也落在同一条轴上。"}
+        </figcaption>
+      </figure>
       <blockquote className="border-l-2 border-accent bg-surface-2 px-3 py-2 text-[13px] text-fg">
         {locale === "en"
           ? "“Good type lets you forget you are reading.”"
@@ -200,7 +205,7 @@ function MasonryPage() {
 function FullscreenPage() {
   const locale = useLocale();
   return (
-    <section className="layout-full bg-linear-to-b from-surface to-accent-soft">
+    <section className="layout-full bg-linear-to-b from-[#f7f8fa] via-accent-soft to-[#dce6ff]">
       <div>
         <p className="text-[11px] font-medium tracking-[0.16em] text-accent uppercase">
           {locale === "en" ? "Autumn launch" : "秋季发布会"}

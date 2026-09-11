@@ -8,6 +8,8 @@ export type KindMeta = {
   index: string;
   name: string;
   zh: Localized;
+  when: Localized;
+  machine: Localized;
   oneLiner: Localized;
   scenes: Localized[];
   rules: Localized[];
@@ -23,6 +25,8 @@ export const KINDS: KindMeta[] = [
     index: "01",
     name: "Single",
     zh: loc("单栏", "Single column"),
+    when: loc("安静读完", "Read quietly"),
+    machine: loc("42rem 阅读轴", "42rem measure"),
     oneLiner: loc("一条轴，正文约 42rem，安静读完", "One axis, ~42rem measure, read quietly"),
     scenes: [
       loc("博客长文", "A long read"),
@@ -47,6 +51,8 @@ export const KINDS: KindMeta[] = [
     index: "02",
     name: "Landing",
     zh: loc("落地", "Landing"),
+    when: loc("转化、下载、预约", "Convert, download, book"),
+    machine: loc("承诺 → 证明 → CTA", "Promise → proof → CTA"),
     oneLiner: loc("首屏承诺，功能带跟上，按钮收尾", "Hero promise, proof bands, a closing button"),
     scenes: [
       loc("SaaS 官网", "A SaaS site"),
@@ -71,6 +77,8 @@ export const KINDS: KindMeta[] = [
     index: "03",
     name: "Masonry",
     zh: loc("瀑布", "Masonry"),
+    when: loc("图片高矮不一", "Pictures of uneven height"),
+    machine: loc("不等高 · 按列往下接", "Uneven · drop down columns"),
     oneLiner: loc("不等高卡片按列往下接，不是轮播", "Uneven cards drop down columns, not a carousel"),
     scenes: [
       loc("灵感墙", "An inspiration wall"),
@@ -95,6 +103,8 @@ export const KINDS: KindMeta[] = [
     index: "04",
     name: "Full-screen",
     zh: loc("全屏", "Full-screen"),
+    when: loc("海报、发布会", "A poster, a launch"),
+    machine: loc("一屏占满视口", "One shot fills the viewport"),
     oneLiner: loc("一屏占满视口，只留一句主标题", "One shot fills the viewport; one title stays"),
     scenes: [
       loc("品牌官网", "A brand site"),
@@ -119,6 +129,8 @@ export const KINDS: KindMeta[] = [
     index: "05",
     name: "Splitter",
     zh: loc("分栏", "Splitter"),
+    when: loc("两边都是工作区", "Both sides are work"),
+    machine: loc("两格 · 可见分隔", "Two panes · a visible divide"),
     oneLiner: loc("两格工作区，中间一条可见分隔", "Two workspaces, a visible divide between them"),
     scenes: [
       loc("代码编辑器", "A code editor"),
@@ -143,6 +155,8 @@ export const KINDS: KindMeta[] = [
     index: "06",
     name: "Dashboard",
     zh: loc("仪表盘", "Dashboard"),
+    when: loc("扫数字、比趋势", "Scan numbers, compare trends"),
+    machine: loc("KPI + 图 + 表", "KPI + chart + table"),
     oneLiner: loc("KPI、图、表拼成一页，用来扫数字", "KPI, chart, table — a page for scanning numbers"),
     scenes: [
       loc("经营日报", "A daily report"),
@@ -167,6 +181,8 @@ export const KINDS: KindMeta[] = [
     index: "07",
     name: "Modular",
     zh: loc("模块拼贴", "Modular cards"),
+    when: loc("一块一个主意", "One idea per card"),
+    machine: loc("卡片网格 · mt-auto", "Card grid · mt-auto"),
     oneLiner: loc("卡片落在网格上，一块一个主意", "Cards on a grid, one idea per card"),
     scenes: [
       loc("个人主页", "A personal home"),
@@ -185,6 +201,44 @@ export const KINDS: KindMeta[] = [
     note: loc("拼贴是卡片网格。单栏才是一篇文章。", "Modular is a card grid. Single is one article."),
     tells: loc("一行一样高，按钮贴在底", "One row, one height; actions sit on the bottom"),
     window: loc("阿屿的主页", "Ayu’s desk"),
+  },
+];
+
+export const CONTRASTS = [
+  {
+    scene: loc("设计周刊", "A design journal"),
+    naive: loc("左侧目录，正文被挤窄", "A left TOC squeezes the type"),
+    matched: loc("单栏 42rem，一条阅读轴", "A 42rem column, one axis"),
+  },
+  {
+    scene: loc("产品官网", "A product site"),
+    naive: loc("后台导航 + 空白主区", "Admin nav + an empty main"),
+    matched: loc("落地：首屏、功能带、CTA", "Landing: hero, bands, CTA"),
+  },
+  {
+    scene: loc("灵感墙", "An inspiration wall"),
+    naive: loc("等分九宫格或大图轮播", "Equal grid or a carousel"),
+    matched: loc("不等高瀑布，卡片不被拦腰截", "Uneven masonry, cards stay whole"),
+  },
+  {
+    scene: loc("发布会", "A launch"),
+    naive: loc("一屏塞满介绍", "A viewport stuffed with copy"),
+    matched: loc("一句主标题占满视口", "One title fills the shot"),
+  },
+  {
+    scene: loc("编辑器", "An editor"),
+    naive: loc("看起来像分栏，拖不动", "Looks split, cannot drag"),
+    matched: loc("两格工作区，中间一条可拖分隔", "Two panes, a draggable divide"),
+  },
+  {
+    scene: loc("经营日报", "A daily report"),
+    naive: loc("大标题营销页", "A marketing headline page"),
+    matched: loc("KPI + 图 + 表", "KPI + chart + table"),
+  },
+  {
+    scene: loc("个人主页", "A personal home"),
+    naive: loc("一篇长文", "One long article"),
+    matched: loc("一块一个主意的卡片网格", "A grid, one idea per card"),
   },
 ];
 
