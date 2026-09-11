@@ -1,6 +1,40 @@
 import { loc, type Localized } from "./site-locale";
 import { gestureClass, type GestureClass, type KindId } from "./machines";
 
+export const CLASS_ORDER: readonly GestureClass[] = [
+  "read",
+  "filter",
+  "range",
+  "window",
+  "path",
+];
+
+export const CLASS_META: Record<
+  GestureClass,
+  { label: Localized; ask: Localized }
+> = {
+  read: {
+    label: loc("读数", "Read"),
+    ask: loc("看一个点", "Read a point"),
+  },
+  filter: {
+    label: loc("过滤", "Filter"),
+    ask: loc("哪条线在场", "Which series stay"),
+  },
+  range: {
+    label: loc("框选", "Range"),
+    ask: loc("冻一段算均值", "Freeze a span"),
+  },
+  window: {
+    label: loc("窗口", "Window"),
+    ask: loc("切展示窗", "Slice the window"),
+  },
+  path: {
+    label: loc("路径", "Path"),
+    ask: loc("同一张图换层", "Same chart, new grain"),
+  },
+};
+
 export type KindMeta = {
   id: KindId;
   index: string;

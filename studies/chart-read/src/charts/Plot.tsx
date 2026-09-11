@@ -317,7 +317,7 @@ export function GestureChart({
             type="button"
             disabled={locked}
             onClick={() => setPath((p) => drillPop(p, 0))}
-            className="rounded-md px-1.5 py-0.5 text-fg-muted hover:bg-surface-2 hover:text-fg disabled:pointer-events-none"
+            className="chart-crumb rounded-md px-1.5 py-0.5 text-fg-muted hover:bg-surface-2 hover:text-fg disabled:pointer-events-none"
           >
             {locale === "en" ? "Channel" : "渠道"}
           </button>
@@ -328,7 +328,7 @@ export function GestureChart({
                 type="button"
                 disabled={locked}
                 onClick={() => setPath((p) => drillPop(p, i + 1))}
-                className="rounded-md px-1.5 py-0.5 text-fg-muted hover:bg-surface-2 hover:text-fg disabled:pointer-events-none"
+                className="chart-crumb rounded-md px-1.5 py-0.5 text-fg-muted hover:bg-surface-2 hover:text-fg disabled:pointer-events-none"
               >
                 {c.name}
               </button>
@@ -357,7 +357,8 @@ export function GestureChart({
             locale={locale}
             kind={kind}
             svgRef={svgRef}
-            series={kind === "legend" ? visibleSeries : [SERIES[0]!]}
+            series={kind === "legend" ? SERIES : [SERIES[0]!]}
+            hidden={kind === "legend" ? hidden : undefined}
             view={view}
             count={count}
             yMax={yMax}
@@ -396,7 +397,7 @@ export function GestureChart({
       ) : null}
 
       {hint ? (
-        <p className="mt-2 text-[12px] text-accent">
+        <p className="chart-hint mt-2 text-[12px] text-accent">
           {locale === "en" ? "The last visible series stays." : "最后一条可见系列留着。"}
         </p>
       ) : null}
@@ -435,6 +436,7 @@ function LinePlot({
   kind,
   svgRef,
   series,
+  hidden,
   view,
   count,
   yMax,
@@ -452,6 +454,7 @@ function LinePlot({
   kind: KindId;
   svgRef: RefObject<SVGSVGElement | null>;
   series: readonly (typeof SERIES)[number][];
+  hidden?: Set<string>;
   view: { start: number; end: number };
   count: number;
   yMax: number;
@@ -475,6 +478,20 @@ function LinePlot({
   const hiLocal = highlight !== null && inView(highlight) ? localOf(highlight) : null;
   const tipLocal = tooltip !== null && inView(tooltip) ? localOf(tooltip) : null;
 
+  const lastHair = useRef(0);
+  const lastTip = useRef({ x: 0, y: 0, abs: 0 });
+  const [layerOn, setLayerOn] = useState(false);
+
+  const liveRead = hairLocal !== null || tipLocal !== null;
+  useEffect(() => {
+    if (liveRead) {
+      setLayerOn(true);
+      return;
+    }
+    const id = window.setTimeout(() => setLayerOn(false), 160);
+    return () => window.clearTimeout(id);
+  }, [liveRead]);
+
   const brushLocal =
     brush && brush.end >= view.start && brush.start <= view.end
       ? {
@@ -484,9 +501,18 @@ function LinePlot({
       : null;
 
   const tipAbs = tooltip;
-  const tipX = tipLocal !== null ? xAt(tipLocal, count, PLOT.x0, PLOT.x1) : 0;
+  const tipX = tipLocal !== null ? xAt(tipLocal, count, PLOT.x0, PLOT.x1) : lastTip.current.x;
   const tipY =
-    tipAbs !== null ? yAt(series[0]!.values[tipAbs] ?? 0, yMax, PLOT.y0, PLOT.y1) : 0;
+    tipAbs !== null
+      ? yAt(series[0]!.values[tipAbs] ?? 0, yMax, PLOT.y0, PLOT.y1)
+      : lastTip.current.y;
+  if (tipLocal !== null && tipAbs !== null) lastTip.current = { x: tipX, y: tipY, abs: tipAbs };
+  if (hairLocal !== null) lastHair.current = hairLocal;
+
+  const hairX = xAt(hairLocal ?? lastHair.current, count, PLOT.x0, PLOT.x1);
+  const hairAbs = hair ?? view.start + lastHair.current;
+  const hairY = yAt(VISITS[Math.max(0, Math.min(DAY_COUNT - 1, hairAbs))] ?? 0, yMax, PLOT.y0, PLOT.y1);
+  const shownTipAbs = tipLocal !== null && tipAbs !== null ? tipAbs : lastTip.current.abs;
 
   const label =
     kind === "crosshair"
@@ -504,7 +530,7 @@ function LinePlot({
         viewBox={`0 0 ${PLOT.w} ${PLOT.h}`}
         role="img"
         aria-label={label}
-        className="chart-svg"
+        className={cn("chart-svg", kind !== "highlight" && "is-live")}
         preserveAspectRatio="xMidYMid meet"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -517,6 +543,7 @@ function LinePlot({
 
         {brushLocal ? (
           <rect
+            className="chart-brush-band"
             x={xAt(brushLocal.start, count, PLOT.x0, PLOT.x1)}
             y={PLOT.y0}
             width={Math.max(
@@ -540,16 +567,19 @@ function LinePlot({
             })
             .join(" ");
           const faded = highlight !== null;
+          const gone = hidden?.has(s.id);
           return (
             <path
-              key={s.id}
+              key={`${s.id}-${view.start}-${view.end}`}
               d={d}
               fill="none"
               stroke={s.color}
               strokeWidth={2}
               strokeLinejoin="round"
               strokeLinecap="round"
-              opacity={faded ? 0.28 : 1}
+              pathLength={1}
+              className="chart-line chart-line-draw"
+              opacity={gone ? 0 : faded ? 0.28 : 1}
             />
           );
         })}
@@ -565,6 +595,8 @@ function LinePlot({
               return (
                 <circle
                   key={abs}
+                  className="chart-dot"
+                  data-hi={onHi ? "true" : undefined}
                   cx={x}
                   cy={y}
                   r={onHi ? 6 : onHair ? 4.5 : 3}
@@ -575,11 +607,11 @@ function LinePlot({
             })
           : null}
 
-        {hairLocal !== null ? (
-          <g>
+        {kind === "crosshair" ? (
+          <g className={cn("chart-hair", hairLocal !== null && "is-on")}>
             <line
-              x1={xAt(hairLocal, count, PLOT.x0, PLOT.x1)}
-              x2={xAt(hairLocal, count, PLOT.x0, PLOT.x1)}
+              x1={hairX}
+              x2={hairX}
               y1={PLOT.y0}
               y2={PLOT.y1}
               stroke={ACCENT}
@@ -587,9 +619,9 @@ function LinePlot({
             />
             <line
               x1={PLOT.x0}
-              x2={xAt(hairLocal, count, PLOT.x0, PLOT.x1)}
-              y1={yAt(VISITS[hair!]!, yMax, PLOT.y0, PLOT.y1)}
-              y2={yAt(VISITS[hair!]!, yMax, PLOT.y0, PLOT.y1)}
+              x2={hairX}
+              y1={hairY}
+              y2={hairY}
               stroke={ACCENT}
               strokeWidth={1}
               strokeDasharray="3 3"
@@ -630,23 +662,23 @@ function LinePlot({
         ))}
       </svg>
 
-      {tipLocal !== null && tipAbs !== null ? (
+      {kind === "tooltip" ? (
         <div
-          className="chart-card"
+          className={cn("chart-card", layerOn && tipLocal !== null && "is-on")}
           style={{
             left: `${(tipX / PLOT.w) * 100}%`,
             top: `${(tipY / PLOT.h) * 100}%`,
             transform: tipX > PLOT.w * 0.62 ? "translate(-108%, -12px)" : "translate(8px, -12px)",
           }}
         >
-          <p className="text-[11px] text-fg-subtle">{dayLabel(tipAbs, locale)}</p>
-          <p className="mt-0.5 text-[13px] font-semibold tabular-nums">{VISITS[tipAbs]}</p>
+          <p className="text-[11px] text-fg-subtle">{dayLabel(shownTipAbs, locale)}</p>
+          <p className="mt-0.5 text-[13px] font-semibold tabular-nums">{VISITS[shownTipAbs]}</p>
         </div>
       ) : null}
 
       {brushLocal && stats && stats.count > 0 && brush?.frozen ? (
         <div
-          className="chart-card"
+          className="chart-card is-on"
           style={{
             left: `${(xAt(brushLocal.start, count, PLOT.x0, PLOT.x1) / PLOT.w) * 100}%`,
             top: "8px",
@@ -680,6 +712,7 @@ function BarPlot({
   const innerW = PLOT.x1 - PLOT.x0;
   const slot = innerW / n;
   const barW = slot * 0.55;
+  const [hot, setHot] = useState<string | null>(null);
 
   return (
     <div className="chart-frame">
@@ -687,8 +720,9 @@ function BarPlot({
         viewBox={`0 0 ${PLOT.w} ${PLOT.h}`}
         role="img"
         aria-label={locale === "en" ? "Source bars" : "来源柱"}
-        className="chart-svg"
+        className={cn("chart-svg", !locked && "is-live")}
         preserveAspectRatio="xMidYMid meet"
+        onPointerLeave={() => setHot(null)}
       >
         {[0, 1, 2, 3].map((i) => {
           const y = PLOT.y1 - ((PLOT.y1 - PLOT.y0) * i) / 3;
@@ -698,13 +732,22 @@ function BarPlot({
           const h = (item.value / max) * (PLOT.y1 - PLOT.y0);
           const x = PLOT.x0 + i * slot + (slot - barW) / 2;
           const y = PLOT.y1 - h;
+          const on = hot === item.id;
+          const dim = hot !== null && !on;
           return (
             <g key={item.id}>
               <path
                 d={roundTop(x, y, barW, h, 5)}
                 fill={ACCENT}
                 fillOpacity={item.hasChildren ? 1 : 0.7}
-                className={locked ? "cursor-default" : "cursor-pointer"}
+                className={cn(
+                  "chart-bar",
+                  locked ? "cursor-default" : "cursor-pointer",
+                  on && "is-hot",
+                  dim && "is-dim",
+                )}
+                style={{ animationDelay: `${i * 45}ms` }}
+                onPointerEnter={() => setHot(item.id)}
                 onClick={() => {
                   if (!locked) onPick(item.id);
                 }}
