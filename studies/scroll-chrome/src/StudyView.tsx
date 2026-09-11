@@ -23,8 +23,8 @@ export function StudyView() {
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Three leaves below. Native keeps the OS thumb. Cue unloads after the first screen. Track binds to this viewport."
-            : "下面三片叶子。系统条留下拇指。邀请离开顶上就卸。轨道绑在这一格视口上。"}
+            ? "The desk below keeps the two jobs apart. Native is the third leaf: the OS thumb stays."
+            : "下面对照台把两种任务拆开。系统条是第三片叶子：拇指留给操作系统。"}
         </p>
       </section>
 

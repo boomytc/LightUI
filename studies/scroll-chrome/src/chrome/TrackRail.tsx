@@ -26,6 +26,8 @@ export function TrackRail({
   const pieceRefs = useRef<(SVGLineElement | null)[]>([]);
   const hitRefs = useRef<(SVGRectElement | null)[]>([]);
   const countRef = useRef(6);
+  const zeroRef = useRef<SVGTextElement>(null);
+  const oneRef = useRef<SVGTextElement>(null);
 
   useLayoutEffect(() => {
     const viewport = viewportRef.current;
@@ -55,11 +57,11 @@ export function TrackRail({
       const y0 = (box.height - length) / 2;
       const spacing = length / n;
       const focus = focusDot(fraction(top, max), n);
-      return { n, axisX, y0, spacing, focus };
+      return { n, axisX, y0, spacing, focus, length };
     };
 
     const draw = (geom: NonNullable<ReturnType<typeof layout>>) => {
-      const { n, axisX, y0, spacing } = geom;
+      const { n, axisX, y0, spacing, length } = geom;
       for (let i = 0; i < MAX_DOTS; i++) {
         const el = pieceRefs.current[i];
         const hit = hitRefs.current[i];
@@ -82,6 +84,16 @@ export function TrackRail({
           hit.setAttribute("width", String(MAX_EXTEND + TICK + 16));
           hit.setAttribute("height", String(spacing));
         }
+      }
+      const zero = zeroRef.current;
+      const one = oneRef.current;
+      if (zero) {
+        zero.setAttribute("x", String(axisX - TICK - 4));
+        zero.setAttribute("y", String(y0 - 2));
+      }
+      if (one) {
+        one.setAttribute("x", String(axisX - TICK - 4));
+        one.setAttribute("y", String(y0 + length + 10));
       }
     };
 
@@ -178,10 +190,18 @@ export function TrackRail({
           className="scroll-track-hit"
           role="button"
           tabIndex={-1}
-          aria-label={locale === "en" ? `Jump to position ${i + 1}` : `跳到文稿位置 ${i + 1}`}
+          aria-label={
+            locale === "en" ? `Seek fraction tick ${i}` : `跳到比例点 ${i}`
+          }
           onClick={() => jump(i)}
         />
       ))}
+      <text ref={zeroRef} className="scroll-track-scale" aria-hidden="true">
+        0
+      </text>
+      <text ref={oneRef} className="scroll-track-scale" aria-hidden="true">
+        1
+      </text>
     </svg>
   );
 }

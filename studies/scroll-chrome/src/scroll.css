@@ -26,8 +26,48 @@
   display: none;
 }
 
+.scroll-desk {
+  gap: 1px;
+}
+
+.scroll-desk-col + .scroll-desk-col {
+  border-top: 1px solid var(--color-border);
+}
+
+@media (min-width: 48rem) {
+  .scroll-desk-col + .scroll-desk-col {
+    border-top: none;
+  }
+}
+
+.scroll-cue-wash {
+  pointer-events: none;
+  position: absolute;
+  inset: auto 0 0;
+  height: 7rem;
+  z-index: 1;
+  background: linear-gradient(to top, var(--color-accent-soft), transparent 72%);
+}
+
+.scroll-track-gutter {
+  pointer-events: none;
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 2.75rem;
+  z-index: 1;
+  background: linear-gradient(to left, var(--color-surface-2), transparent);
+}
+
 .scroll-cue {
   animation: scroll-cue-bob 2s ease-in-out infinite;
+}
+
+.scroll-track-scale {
+  fill: color-mix(in oklab, var(--color-fg-subtle) 85%, transparent);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-anchor: end;
 }
 
 @media (prefers-reduced-motion: reduce) {

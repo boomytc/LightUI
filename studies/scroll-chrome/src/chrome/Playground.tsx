@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { FORMULA, KINDS, type KindId } from "../lib/kinds";
+import { type StageState } from "../lib/machines";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
+import { Compare } from "./Compare";
 import { Pane } from "./Pane";
+
+const SCENES: StageState[] = ["start", "mid", "end", "fit"];
 
 export function Playground() {
   const locale = useLocale();
-  const [active, setActive] = useState<KindId>("track");
+  const [active, setActive] = useState<KindId>("cue");
+  const [scene, setScene] = useState<StageState>("start");
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0]!;
 
   useEffect(() => {
@@ -16,9 +21,9 @@ export function Playground() {
       const target = e.target as HTMLElement | null;
       if (target && ["INPUT", "TEXTAREA", "BUTTON"].includes(target.tagName)) return;
       const n = Number(e.key);
-      if (n >= 1 && n <= KINDS.length) {
+      if (n >= 1 && n <= SCENES.length) {
         e.preventDefault();
-        setActive(KINDS[n - 1]!.id);
+        setScene(SCENES[n - 1]!);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -27,62 +32,70 @@ export function Playground() {
 
   return (
     <div className="min-w-0 overflow-x-hidden">
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-        <div className="min-w-0">
-          <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 03</p>
-          <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{pick(meta.zh, locale)}</h2>
-          <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
+      <Compare locale={locale} scene={scene} onScene={setScene} />
+
+      <section className="mt-10">
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div className="min-w-0">
+            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 03</p>
+            <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{pick(meta.zh, locale)}</h2>
+            <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
+          </div>
+          <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
+            {pick(meta.tells, locale)}
+          </p>
         </div>
-        <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">{pick(meta.tells, locale)}</p>
-      </div>
 
-      <div className="mb-4 flex flex-wrap gap-1.5">
-        {KINDS.map((kind) => (
-          <button
-            key={kind.id}
-            type="button"
-            onClick={() => setActive(kind.id)}
-            className={cn(
-              "rounded-full px-3 py-1 text-[12px] font-medium",
-              kind.id === active
-                ? "bg-fg text-surface"
-                : "border border-border bg-surface text-fg-muted hover:text-fg",
-            )}
-          >
-            {pick(kind.zh, locale)}
-          </button>
-        ))}
-      </div>
+        <div className="mb-4 flex flex-wrap gap-1.5">
+          {KINDS.map((kind) => (
+            <button
+              key={kind.id}
+              type="button"
+              onClick={() => setActive(kind.id)}
+              className={cn(
+                "rounded-full px-3 py-1 text-[12px] font-medium",
+                kind.id === active
+                  ? "bg-fg text-surface"
+                  : "border border-border bg-surface text-fg-muted hover:text-fg",
+              )}
+            >
+              {pick(kind.zh, locale)}
+            </button>
+          ))}
+        </div>
 
-      <Pane key={meta.id} kind={meta.id} locale={locale} />
+        {active === "native" ? (
+          <div className="mb-5 max-w-xl">
+            <Pane kind="native" locale={locale} lock={scene === "fit" ? "fit" : "mid"} />
+          </div>
+        ) : null}
 
-      <div className="mt-5 flex flex-wrap gap-1.5">
-        {meta.scenes.map((scene) => (
-          <span
-            key={scene.zh}
-            className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
-          >
-            {pick(scene, locale)}
-          </span>
-        ))}
-      </div>
+        <div className="mb-4 flex flex-wrap gap-1.5">
+          {meta.scenes.map((scene) => (
+            <span
+              key={scene.zh}
+              className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-accent"
+            >
+              {pick(scene, locale)}
+            </span>
+          ))}
+        </div>
 
-      {meta.note ? <p className="mt-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
+        {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
 
-      <div className="mt-5">
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
-      </div>
 
-      <ul className="mt-4 flex flex-wrap gap-2">
-        {meta.rules.map((rule) => (
-          <li
-            key={rule.zh}
-            className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
-          >
-            {pick(rule, locale)}
-          </li>
-        ))}
-      </ul>
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {meta.rules.map((rule) => (
+            <li
+              key={rule.zh}
+              className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+            >
+              {pick(rule, locale)}
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (

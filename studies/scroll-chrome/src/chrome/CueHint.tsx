@@ -28,11 +28,14 @@ export function CueHint({
   return (
     <button
       type="button"
-      className="scroll-cue absolute bottom-4 right-3 z-10 grid size-9 place-items-center rounded-full border border-border bg-surface text-fg shadow-card"
+      className="scroll-cue absolute bottom-4 right-3 z-10 inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-surface px-3 text-fg shadow-card"
       aria-label={locale === "en" ? "Scroll one screen" : "滚下一屏"}
       onClick={go}
     >
-      <svg viewBox="0 0 24 24" className="size-4" fill="none" aria-hidden="true">
+      <span className="text-[12px] font-medium tracking-tight">
+        {locale === "en" ? "More below" : "下面还有"}
+      </span>
+      <svg viewBox="0 0 24 24" className="size-3.5" fill="none" aria-hidden="true">
         <path
           d="M6 9.5 12 15.5 18 9.5"
           stroke="currentColor"

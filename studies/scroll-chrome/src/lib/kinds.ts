@@ -100,3 +100,49 @@ export const FORMULA = [
     ),
   },
 ];
+
+export const SCENE_LOCKS = [
+  {
+    id: "start" as const,
+    zh: loc("顶上", "Top"),
+    hint: loc("邀请还在；轨道停在 0", "Cue is on; track sits at 0"),
+  },
+  {
+    id: "mid" as const,
+    zh: loc("中段", "Mid"),
+    hint: loc("邀请已卸；轨道报比例", "Cue gone; track reports a fraction"),
+  },
+  {
+    id: "end" as const,
+    zh: loc("结尾", "End"),
+    hint: loc("最后一点对准 1", "The last tick reads 1"),
+  },
+  {
+    id: "fit" as const,
+    zh: loc("装得下", "Fits"),
+    hint: loc("没有溢出，两根条都 hidden", "No overflow: both stay hidden"),
+  },
+];
+
+export const CONTRAST = [
+  {
+    when: loc("顶上", "At the top"),
+    naive: loc("已经是点列，人不知道下面还有", "Already a column of dots — “more below” is invisible"),
+    split: loc("邀请：下面还有", "Cue: there is more"),
+  },
+  {
+    when: loc("滚起来", "Moving"),
+    naive: loc("箭头还在，或点和箭头抢", "The arrow stays, or both fight"),
+    split: loc("轨道：现在在哪 · 比例", "Track: where you are · a fraction"),
+  },
+  {
+    when: loc("短文稿", "Short pane"),
+    naive: loc("装饰还在", "Decoration stays"),
+    split: loc("hidden", "hidden"),
+  },
+  {
+    when: loc("点一下", "A click"),
+    naive: loc("说不清跳到哪，点像章节", "Unclear landing; dots look like sections"),
+    split: loc("一屏，或 i / (n − 1)", "One screen, or i / (n − 1)"),
+  },
+];
