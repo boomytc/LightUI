@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Search, X } from "lucide-react";
 import { NoteCard } from "../components/NoteCard";
 import { Page } from "../components/Page";
+import { PageHero } from "../components/PageHero";
 import { CATEGORIES, type CategoryId } from "../lib/categories";
 import { messages } from "../lib/i18n";
 import { updateSearchParams, useSearchParams } from "../lib/nav";
@@ -47,88 +48,82 @@ export function Notes() {
   };
 
   const filteredNotes = filterNotes(allNotes, query, category);
+  const hasFilters = Boolean(query || category !== "all");
 
   return (
-    <Page as="main" className="pb-24 pt-10">
-      {/* Header */}
-      <header className="border-b border-border/80 pb-6">
-        <h1 className="text-[1.8rem] font-bold tracking-tight sm:text-[2.2rem]">
-          {copy.notesTitle}
-        </h1>
-        <p className="mt-2 max-w-[42rem] text-[14px] leading-relaxed text-fg-muted sm:text-[15px]">
-          {copy.notesLede}
-        </p>
-      </header>
-
-      {/* Filter and Search Controls */}
-      <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        {/* Category Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-border bg-surface-2 p-1">
-          {CATEGORIES.map((cat) => {
-            const isSelected = category === cat.id;
-            const title = locale === "en" ? cat.nameEn : cat.nameZh;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => handleCategoryChange(cat.id)}
-                className={
-                  isSelected
-                    ? "rounded-lg bg-surface px-3 py-1.5 text-[12px] font-semibold text-fg shadow-xs transition-all"
-                    : "rounded-lg px-3 py-1.5 text-[12px] font-medium text-fg-muted hover:text-fg transition-colors"
-                }
-              >
-                {title}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Search input */}
-        <div className="relative flex w-full items-center sm:w-72">
-          <Search className="pointer-events-none absolute left-3 size-3.5 text-fg-subtle" />
+    <Page as="main" className="pb-24 pt-10 sm:pt-12">
+      <PageHero title={copy.notesTitle} lede={copy.notesLede}>
+        <div className="relative w-full sm:w-72">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-fg-subtle" />
           <input
-            type="text"
+            type="search"
             value={query}
             onChange={(e) => handleQueryChange(e.target.value)}
             placeholder={copy.searchNotesPlaceholder}
-            className="w-full rounded-xl border border-border bg-surface py-1.5 pl-8 pr-8 text-[13px] text-fg outline-none transition-colors placeholder:text-fg-subtle focus:border-border-strong"
+            className="h-10 w-full rounded-xl border border-border bg-surface py-1.5 pl-8 pr-8 text-[13px] text-fg shadow-xs outline-none transition-colors duration-150 placeholder:text-fg-subtle focus:border-border-strong focus:ring-2 focus:ring-ring"
           />
           {query ? (
             <button
               type="button"
               onClick={() => handleQueryChange("")}
-              className="absolute right-2.5 text-fg-subtle hover:text-fg"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1 text-fg-subtle transition-colors hover:text-fg"
+              aria-label={copy.clearFilters}
             >
               <X className="size-3.5" />
             </button>
           ) : null}
         </div>
+      </PageHero>
+
+      <div className="mt-5 flex flex-wrap gap-1 rounded-xl border border-border bg-surface-2/80 p-1">
+        {CATEGORIES.map((cat) => {
+          const isSelected = category === cat.id;
+          const title = locale === "en" ? cat.nameEn : cat.nameZh;
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => handleCategoryChange(cat.id)}
+              aria-pressed={isSelected}
+              className={
+                isSelected
+                  ? "rounded-lg bg-surface px-3 py-1.5 text-[12px] font-semibold text-fg shadow-xs"
+                  : "rounded-lg px-3 py-1.5 text-[12px] font-medium text-fg-muted transition-colors duration-150 hover:text-fg"
+              }
+            >
+              {title}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Results Header / Counter */}
-      <div className="mt-5 flex items-center justify-between text-[12px] text-fg-subtle">
+      <div className="mt-4 flex items-center justify-between text-[12px] text-fg-subtle">
         <span>{copy.notesCount(filteredNotes.length)}</span>
-        {(query || category !== "all") && (
+        {hasFilters ? (
           <button
             type="button"
             onClick={handleClearAll}
-            className="text-[12px] font-medium text-accent hover:underline"
+            className="text-[12px] font-medium text-accent transition-colors hover:underline"
           >
             {copy.clearFilters}
           </button>
-        )}
+        ) : null}
       </div>
 
-      {/* Notes Grid */}
       {filteredNotes.length === 0 ? (
-        <div className="py-16 text-center text-[14px] text-fg-muted">
-          <p>{copy.emptyNote}</p>
+        <div className="mt-10 rounded-2xl border border-dashed border-border py-16 text-center text-[14px] text-fg-muted">
+          <p>{hasFilters ? copy.emptyFilteredNote : copy.emptyNote}</p>
         </div>
       ) : (
-        <div className="mt-4 grid gap-5 md:grid-cols-2">
-          {filteredNotes.map((note) => (
-            <NoteCard key={note.slug} note={note} locale={locale} />
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          {filteredNotes.map((note, i) => (
+            <div
+              key={note.slug}
+              className="lab-rise min-w-0"
+              style={{ animationDelay: `${40 + Math.min(i, 11) * 40}ms` }}
+            >
+              <NoteCard note={note} locale={locale} />
+            </div>
           ))}
         </div>
       )}

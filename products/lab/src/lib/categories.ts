@@ -1,3 +1,4 @@
+import type { Locale } from "./prefs";
 import type { StudyMeta } from "./study";
 
 export type CategoryId = "all" | "pointer" | "layout" | "controls" | "feedback" | "craft";
@@ -110,6 +111,12 @@ const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
 
 export function getStudyCategory(slug: string): CategoryId {
   return SLUG_CATEGORY_MAP[slug] ?? "craft";
+}
+
+export function categoryLabel(id: string, locale: Locale): string {
+  const cat = CATEGORIES.find((c) => c.id === id);
+  if (!cat || cat.id === "all") return id;
+  return locale === "en" ? cat.nameEn : cat.nameZh;
 }
 
 export function filterStudies(

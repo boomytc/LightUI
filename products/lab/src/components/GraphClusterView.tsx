@@ -67,13 +67,14 @@ export function GraphClusterView({
                 const isSelected = selectedSlug === meta.slug;
                 const asks = studyAsks(meta, locale);
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={meta.slug}
                     onClick={() => onSelectSlug(meta.slug)}
                     className={
                       isSelected
-                        ? "group relative flex cursor-pointer flex-col rounded-xl border border-accent bg-accent/10 p-3.5 shadow-xs transition-all"
-                        : "group relative flex cursor-pointer flex-col rounded-xl border border-border/70 bg-bg p-3.5 transition-all hover:border-border-strong hover:bg-surface-2"
+                        ? "group relative flex w-full cursor-pointer flex-col rounded-xl border border-accent bg-accent/10 p-3.5 text-left shadow-xs transition-colors duration-200"
+                        : "group relative flex w-full cursor-pointer flex-col rounded-xl border border-border/70 bg-bg p-3.5 text-left transition-colors duration-200 hover:border-border-strong hover:bg-surface-2"
                     }
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -94,7 +95,7 @@ export function GraphClusterView({
                         {asks}
                       </p>
                     ) : null}
-                  </div>
+                  </button>
                 );
               })}
             </div>

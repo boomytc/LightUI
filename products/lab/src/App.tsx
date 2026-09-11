@@ -27,14 +27,16 @@ export function App() {
   }
 
   return (
-    <Shell>
-      {route.name === "home" ? <Home /> : null}
-      {route.name === "studies" ? <Studies /> : null}
-      {route.name === "graph" ? <Graph /> : null}
-      {route.name === "study" ? <StudyPage slug={route.slug} /> : null}
-      {route.name === "notes" ? <Notes /> : null}
-      {route.name === "note" ? <NotePage slug={route.slug} /> : null}
-      {route.name === "missing" ? <NotFound path={route.path} /> : null}
+    <Shell study={route.name === "study"}>
+      <div key={path} className="lab-page">
+        {route.name === "home" ? <Home /> : null}
+        {route.name === "studies" ? <Studies /> : null}
+        {route.name === "graph" ? <Graph /> : null}
+        {route.name === "study" ? <StudyPage slug={route.slug} /> : null}
+        {route.name === "notes" ? <Notes /> : null}
+        {route.name === "note" ? <NotePage slug={route.slug} /> : null}
+        {route.name === "missing" ? <NotFound path={route.path} /> : null}
+      </div>
     </Shell>
   );
 }

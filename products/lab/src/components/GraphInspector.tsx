@@ -1,6 +1,6 @@
 import { ArrowRight, ArrowUpRight, ChevronRight, Compass, GitCommit, X } from "lucide-react";
 import { Link } from "./Link";
-import { getStudyCategory } from "../lib/categories";
+import { categoryLabel, getStudyCategory } from "../lib/categories";
 import { lineageOf, neighborsOf } from "../lib/graph";
 import { messages } from "../lib/i18n";
 import { linkWhen, studyAsks, studyTitle } from "../lib/localize";
@@ -36,7 +36,7 @@ export function GraphInspector({
   const contrastNeighbors = neighbors.filter((n) => n.rel === "contrast");
 
   return (
-    <aside className="sticky top-20 flex max-h-[calc(100vh-6rem)] w-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-xl transition-all duration-200 lg:w-96">
+    <aside className="lab-drawer sticky top-20 flex max-h-[calc(100vh-6rem)] w-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-menu lg:w-96">
       {/* Top Header */}
       <div className="flex items-center justify-between border-b border-border bg-surface-2/60 px-5 py-3.5">
         <div className="flex items-center gap-2">
@@ -62,8 +62,8 @@ export function GraphInspector({
         {/* Title & Metadata */}
         <div>
           <div className="flex items-center gap-2">
-            <span className="rounded-md bg-surface-2 px-2 py-0.5 font-mono text-[11px] text-fg-subtle">
-              {category}
+            <span className="rounded-md bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent">
+              {categoryLabel(category, locale)}
             </span>
             <span className="font-mono text-[11px] text-fg-subtle">/s/{current.slug}</span>
           </div>
@@ -122,7 +122,7 @@ export function GraphInspector({
                   </span>
                 );
               })}
-              <span className="rounded-md bg-accent px-2 py-0.5 font-semibold text-white">
+              <span className="rounded-md bg-accent px-2 py-0.5 font-semibold text-accent-fg">
                 {studyTitle(current, locale)}
               </span>
               {Array.from(lineage.descendants).map((descSlug) => {
@@ -212,7 +212,7 @@ export function GraphInspector({
         {/* Contrast Anti-patterns */}
         {contrastNeighbors.length > 0 ? (
           <div className="space-y-2">
-            <p className="text-[12px] font-semibold text-rose-500 uppercase tracking-wider">
+            <p className="text-[12px] font-semibold uppercase tracking-wider text-wrong">
               {copy.relatedContrast}
             </p>
             <div className="space-y-1.5">
@@ -225,13 +225,13 @@ export function GraphInspector({
                     key={item.slug}
                     type="button"
                     onClick={() => onSelectSlug(item.slug)}
-                    className="group flex w-full flex-col rounded-xl border border-rose-500/20 bg-rose-500/5 p-3 text-left transition-all hover:border-rose-500/40 hover:bg-rose-500/10"
+                    className="group flex w-full flex-col rounded-xl border border-wrong/20 bg-wrong-soft p-3 text-left transition-colors hover:border-wrong/40"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-[13px] font-semibold text-fg group-hover:text-rose-500 transition-colors">
+                      <span className="text-[13px] font-semibold text-fg transition-colors group-hover:text-wrong">
                         ≠ {studyTitle(target, locale)}
                       </span>
-                      <ArrowRight className="size-3 text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <ArrowRight className="size-3 text-wrong opacity-0 transition-opacity group-hover:opacity-100" />
                     </div>
                     {when ? <p className="mt-1 text-[11px] text-fg-muted">{when}</p> : null}
                   </button>

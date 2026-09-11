@@ -17,11 +17,11 @@ export function NotePagination({
   if (!prev && !next) return null;
 
   return (
-    <div className="mt-12 grid gap-4 border-t border-border/80 pt-8 sm:grid-cols-2">
+    <div className="mt-12 grid gap-3 border-t border-border/70 pt-8 sm:grid-cols-2">
       {prev ? (
         <Link
           href={`/notes/${prev.slug}`}
-          className="group flex flex-col justify-between rounded-2xl border border-border bg-surface p-4 text-left no-underline shadow-card transition-all duration-150 hover:border-border-strong hover:bg-surface-2"
+          className="group flex flex-col justify-between rounded-2xl border border-border bg-surface/80 p-4 text-left no-underline transition-[border-color,background-color] duration-200 hover:border-border-strong hover:bg-surface"
         >
           <div>
             <div className="flex items-center gap-1.5 text-[11px] font-medium text-fg-subtle">
@@ -45,7 +45,7 @@ export function NotePagination({
       {next ? (
         <Link
           href={`/notes/${next.slug}`}
-          className="group flex flex-col justify-between rounded-2xl border border-border bg-surface p-4 text-right no-underline shadow-card transition-all duration-150 hover:border-border-strong hover:bg-surface-2"
+          className="group flex flex-col justify-between rounded-2xl border border-border bg-surface/80 p-4 text-right no-underline transition-[border-color,background-color] duration-200 hover:border-border-strong hover:bg-surface"
         >
           <div>
             <div className="flex items-center justify-end gap-1.5 text-[11px] font-medium text-fg-subtle">

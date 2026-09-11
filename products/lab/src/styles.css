@@ -5,3 +5,242 @@
 /* Directory scan: brace globs miss study playground utilities. */
 @source "../../../studies";
 @source "../src";
+
+:root {
+  --lab-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lab-dur: 460ms;
+}
+
+html {
+  overflow-x: clip;
+}
+
+.lab-shell {
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(
+      72rem 32rem at 6% -12%,
+      color-mix(in oklab, var(--color-accent-soft) 85%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(
+      40rem 20rem at 100% -8%,
+      color-mix(in oklab, var(--color-bg-warm) 90%, transparent),
+      transparent 52%
+    );
+}
+
+@keyframes lab-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes lab-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lab-drawer-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes lab-drawer-side {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes lab-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.lab-page {
+  animation: lab-fade 280ms ease both;
+}
+
+.lab-rise {
+  animation: lab-rise var(--lab-dur) var(--lab-ease) both;
+}
+
+.lab-fade {
+  animation: lab-fade 320ms var(--lab-ease) both;
+}
+
+.lab-overlay {
+  animation: lab-fade 180ms ease both;
+}
+
+.lab-pop {
+  animation: lab-pop 220ms var(--lab-ease) both;
+}
+
+.lab-drawer {
+  animation: lab-drawer-up 300ms var(--lab-ease) both;
+}
+
+.lab-delay-1 {
+  animation-delay: 40ms;
+}
+
+.lab-delay-2 {
+  animation-delay: 110ms;
+}
+
+.lab-delay-3 {
+  animation-delay: 180ms;
+}
+
+.lab-delay-4 {
+  animation-delay: 250ms;
+}
+
+.lab-stagger > * {
+  animation: lab-rise var(--lab-dur) var(--lab-ease) both;
+}
+
+.lab-stagger > *:nth-child(1) {
+  animation-delay: 40ms;
+}
+.lab-stagger > *:nth-child(2) {
+  animation-delay: 80ms;
+}
+.lab-stagger > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+.lab-stagger > *:nth-child(4) {
+  animation-delay: 160ms;
+}
+.lab-stagger > *:nth-child(5) {
+  animation-delay: 200ms;
+}
+.lab-stagger > *:nth-child(6) {
+  animation-delay: 240ms;
+}
+.lab-stagger > *:nth-child(7) {
+  animation-delay: 280ms;
+}
+.lab-stagger > *:nth-child(8) {
+  animation-delay: 320ms;
+}
+.lab-stagger > *:nth-child(9) {
+  animation-delay: 360ms;
+}
+.lab-stagger > *:nth-child(10) {
+  animation-delay: 400ms;
+}
+.lab-stagger > *:nth-child(11) {
+  animation-delay: 430ms;
+}
+.lab-stagger > *:nth-child(n + 12) {
+  animation-delay: 460ms;
+}
+
+.lab-card {
+  transition:
+    transform 180ms var(--lab-ease),
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+}
+
+.study-chrome {
+  position: sticky;
+  top: 3rem;
+  z-index: 20;
+}
+
+.study-play {
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.study-panel:focus {
+  outline: none;
+}
+
+.study-panel:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+.graph-when {
+  max-width: 11.5rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-fg-muted);
+  font-size: 10px;
+  line-height: 1.35;
+  box-shadow: var(--shadow-card);
+}
+
+.graph-when-contrast {
+  border-color: color-mix(in srgb, var(--color-wrong) 35%, var(--color-border));
+  color: var(--color-wrong);
+}
+
+.note-prose p {
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.note-prose h2 {
+  scroll-margin-top: 6rem;
+}
+
+@media (min-width: 640px) {
+  .study-chrome {
+    top: 3.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lab-drawer {
+    animation-name: lab-drawer-side;
+  }
+}
+
+@media (max-width: 390px) {
+  .page-width,
+  .page-prose {
+    padding-inline: 1.1rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

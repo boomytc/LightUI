@@ -13,7 +13,7 @@ import {
   Sun,
   X,
 } from "lucide-react";
-import { getStudyCategory } from "../lib/categories";
+import { categoryLabel, getStudyCategory } from "../lib/categories";
 import { loadStudies } from "../lib/catalog";
 import { messages } from "../lib/i18n";
 import { studyAsks, studyTitle } from "../lib/localize";
@@ -170,7 +170,7 @@ export function CommandPalette({
         group: "study" as const,
         title: studyTitle(meta, locale),
         subtitle: studyAsks(meta, locale) || `/s/${meta.slug}`,
-        badge: category,
+        badge: categoryLabel(category, locale),
         icon: Sparkles,
         onSelect: () => {
           navigate(`/s/${meta.slug}`);
@@ -201,11 +201,20 @@ export function CommandPalette({
       },
     }));
 
+  const actionItems = filteredActions.filter((a) => a.group === "action");
+  const pageItems = filteredActions.filter((a) => a.group === "page");
   const allFilteredItems = [
-    ...filteredActions,
+    ...actionItems,
+    ...pageItems,
     ...filteredStudies,
     ...filteredNotes,
   ];
+  const grouped = [
+    { id: "action", label: copy.commandGroupActions, items: actionItems },
+    { id: "page", label: copy.commandGroupPages, items: pageItems },
+    { id: "study", label: copy.commandGroupStudies, items: filteredStudies },
+    { id: "note", label: copy.commandGroupNotes, items: filteredNotes },
+  ].filter((g) => g.items.length > 0);
 
   // Scroll active item into view when activeIndex changes
   useEffect(() => {
@@ -247,14 +256,12 @@ export function CommandPalette({
       aria-modal="true"
       className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 sm:p-6 sm:pt-24"
     >
-      {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/45 backdrop-blur-xs transition-opacity duration-200"
+        className="lab-overlay fixed inset-0 bg-black/45 backdrop-blur-xs"
         onClick={onClose}
       />
 
-      {/* Floating Modal Panel */}
-      <div className="relative flex max-h-[80vh] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl transition-all duration-200">
+      <div className="lab-pop relative flex max-h-[80vh] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-menu">
         {/* Search header */}
         <div className="flex items-center gap-3 border-b border-border px-4 py-3 sm:px-5">
           <Search className="size-4 shrink-0 text-fg-subtle" />
@@ -297,11 +304,20 @@ export function CommandPalette({
               <p>{copy.commandNoResults}</p>
             </div>
           ) : (
-            <div className="space-y-1">
-              {allFilteredItems.map((item, index) => {
-                const Icon = item.icon;
-                const isSelected = index === activeIndex;
+            <div className="space-y-3">
+              {grouped.map((group) => {
+                const start = allFilteredItems.findIndex((item) => item.id === group.items[0]?.id);
                 return (
+                  <div key={group.id}>
+                    <p className="px-3 pb-1.5 pt-1 text-[10px] font-semibold uppercase tracking-wider text-fg-subtle">
+                      {group.label}
+                    </p>
+                    <div className="space-y-0.5">
+                      {group.items.map((item, j) => {
+                        const index = start + j;
+                        const Icon = item.icon;
+                        const isSelected = index === activeIndex;
+                        return (
                   <button
                     key={item.id}
                     type="button"
@@ -310,8 +326,8 @@ export function CommandPalette({
                     onMouseEnter={() => setActiveIndex(index)}
                     className={
                       isSelected
-                        ? "flex w-full items-center justify-between rounded-xl bg-accent px-3 py-2.5 text-left text-white shadow-xs transition-colors"
-                        : "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-fg hover:bg-surface-2 transition-colors"
+                        ? "flex w-full items-center justify-between rounded-xl bg-accent px-3 py-2.5 text-left text-white shadow-xs transition-colors duration-150"
+                        : "flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-fg transition-colors duration-150 hover:bg-surface-2"
                     }
                   >
                     <div className="flex min-w-0 items-center gap-3">
@@ -345,8 +361,8 @@ export function CommandPalette({
                         <span
                           className={
                             isSelected
-                              ? "rounded-md bg-white/20 px-1.5 py-0.5 font-mono text-[10px] uppercase text-white"
-                              : "rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] uppercase text-fg-subtle"
+                              ? "rounded-md bg-white/20 px-1.5 py-0.5 text-[10px] font-medium text-white"
+                              : "rounded-md bg-surface-2 px-1.5 py-0.5 text-[10px] font-medium text-fg-subtle"
                           }
                         >
                           {item.badge}
@@ -361,6 +377,10 @@ export function CommandPalette({
                       />
                     </div>
                   </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 );
               })}
             </div>

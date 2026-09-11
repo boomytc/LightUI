@@ -12,5 +12,10 @@ export function Page({
   measure?: "wide" | "prose";
 }) {
   const base = measure === "prose" ? "page-prose" : "page-width";
-  return <Tag className={className ? `${base} ${className}` : base}>{children}</Tag>;
+  const isMain = Tag === "main";
+  return (
+    <Tag id={isMain ? "lab-main" : undefined} className={className ? `${base} ${className}` : base}>
+      {children}
+    </Tag>
+  );
 }

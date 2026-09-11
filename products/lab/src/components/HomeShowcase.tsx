@@ -9,9 +9,8 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
   const [activeTab, setActiveTab] = useState<DemoKey>("triangle");
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-border bg-surface p-5 shadow-card transition-all duration-300 sm:p-6">
-      {/* Header with mini tabs */}
-      <div className="flex items-center justify-between gap-2 border-b border-border/70 pb-3">
+    <div className="relative overflow-hidden rounded-3xl border border-border bg-surface/90 p-5 shadow-card sm:p-6">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/70 pb-3">
         <div className="flex items-center gap-1.5 text-[12px] font-semibold text-fg">
           <Sparkles className="size-3.5 text-accent" />
           <span>{locale === "en" ? "Interactive Lab Sampler" : "精选交互体验"}</span>
@@ -56,9 +55,11 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
 
       {/* Interactive stage area */}
       <div className="mt-4 flex min-h-[170px] items-center justify-center rounded-2xl border border-border/80 bg-bg p-4">
-        {activeTab === "triangle" && <TriangleMiniDemo locale={locale} />}
-        {activeTab === "beam" && <BeamMiniDemo locale={locale} />}
-        {activeTab === "weights" && <WeightsMiniDemo locale={locale} />}
+        <div key={activeTab} className="lab-fade w-full">
+          {activeTab === "triangle" ? <TriangleMiniDemo locale={locale} /> : null}
+          {activeTab === "beam" ? <BeamMiniDemo locale={locale} /> : null}
+          {activeTab === "weights" ? <WeightsMiniDemo locale={locale} /> : null}
+        </div>
       </div>
 
       {/* Footer link to full study */}
@@ -168,7 +169,7 @@ function WeightsMiniDemo({ locale }: { locale: Locale }) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-center gap-2">
         <button
           type="button"
           onClick={() => setClicked("solid")}

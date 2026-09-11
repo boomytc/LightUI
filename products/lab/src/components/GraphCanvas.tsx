@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { getStudyCategory } from "../lib/categories";
+import { categoryLabel, getStudyCategory } from "../lib/categories";
 import {
   afterEdges,
   contrastPairs,
@@ -7,7 +7,7 @@ import {
   lineageOf,
 } from "../lib/graph";
 import { messages } from "../lib/i18n";
-import { studyAsks, studyTitle } from "../lib/localize";
+import { linkWhen, studyAsks, studyTitle } from "../lib/localize";
 import type { Locale } from "../lib/prefs";
 import type { StudyMeta } from "../lib/study";
 
@@ -26,6 +26,8 @@ type DrawnEdge = {
   hot: boolean;
   when?: string;
   whenEn?: string;
+  mx: number;
+  my: number;
 };
 
 function boxOf(el: HTMLElement, root: DOMRect): Box {
@@ -69,6 +71,31 @@ function calcPath(from: Box, to: Box, wide: boolean, type: "after" | "contrast")
     const arc = Math.max(x1, x2) + 30;
     return `M ${x1} ${y1} C ${arc} ${y1}, ${arc} ${y2}, ${x2} ${y2}`;
   }
+}
+
+function calcMid(from: Box, to: Box, wide: boolean, type: "after" | "contrast"): { x: number; y: number } {
+  if (wide) {
+    if (type === "after") {
+      return {
+        x: (from.x + from.w + to.x) / 2,
+        y: (from.y + from.h / 2 + to.y + to.h / 2) / 2,
+      };
+    }
+    return {
+      x: (from.x + from.w / 2 + to.x + to.w / 2) / 2,
+      y: Math.max(from.y + from.h, to.y + to.h) + 18,
+    };
+  }
+  if (type === "after") {
+    return {
+      x: (from.x + from.w / 2 + to.x + to.w / 2) / 2,
+      y: (from.y + from.h + to.y) / 2,
+    };
+  }
+  return {
+    x: Math.max(from.x + from.w, to.x + to.w) + 18,
+    y: (from.y + from.h / 2 + to.y + to.h / 2) / 2,
+  };
 }
 
 export function GraphCanvas({
@@ -126,6 +153,7 @@ export function GraphCanvas({
         if (!from || !to) continue;
         const edgeKey = `after:${edge.from}>${edge.to}`;
         const isHot = !activeSlug || (lineage?.allActiveEdges.has(edgeKey) ?? false);
+        const mid = calcMid(from, to, wide, "after");
         drawn.push({
           key: edgeKey,
           d: calcPath(from, to, wide, "after"),
@@ -135,6 +163,8 @@ export function GraphCanvas({
           hot: isHot,
           when: edge.when,
           whenEn: edge.whenEn,
+          mx: mid.x,
+          my: mid.y,
         });
       }
 
@@ -145,6 +175,7 @@ export function GraphCanvas({
         if (!from || !to) continue;
         const edgeKey = `contrast:${pair.a}<>${pair.b}`;
         const isHot = !activeSlug || (lineage?.allActiveEdges.has(edgeKey) ?? false);
+        const mid = calcMid(from, to, wide, "contrast");
         drawn.push({
           key: edgeKey,
           d: calcPath(from, to, wide, "contrast"),
@@ -154,6 +185,8 @@ export function GraphCanvas({
           hot: isHot,
           when: pair.when,
           whenEn: pair.whenEn,
+          mx: mid.x,
+          my: mid.y,
         });
       }
 
@@ -188,7 +221,7 @@ export function GraphCanvas({
             <span className="text-fg-muted font-medium">{copy.flowLegend}</span>
           </span>
           <span className="inline-flex items-center gap-2">
-            <span className="h-0.5 w-6 border-b-2 border-dashed border-rose-400" />
+            <span className="h-0.5 w-6 border-b-2 border-dashed border-wrong" />
             <span className="text-fg-muted font-medium">{copy.contrastLegend}</span>
           </span>
         </div>
@@ -198,7 +231,7 @@ export function GraphCanvas({
       {/* Main Canvas Frame */}
       <div
         ref={rootRef}
-        className="relative overflow-x-auto rounded-2xl border border-border bg-surface p-6 sm:p-10 shadow-xs"
+        className="relative max-w-full overflow-x-auto overscroll-x-contain rounded-2xl border border-border bg-surface p-6 pb-14 shadow-xs sm:p-10"
       >
         <div className="relative inline-block min-w-full">
           <svg className="pointer-events-none absolute inset-0 size-full" aria-hidden="true">
@@ -222,7 +255,7 @@ export function GraphCanvas({
                   d={edge.d}
                   fill="none"
                   strokeDasharray={isContrast ? "5 4" : undefined}
-                  className={isContrast ? "stroke-rose-400" : "stroke-accent"}
+                  className={isContrast ? "stroke-wrong" : "stroke-accent"}
                   opacity={opacity}
                   strokeWidth={strokeWidth}
                   markerEnd={isContrast ? undefined : edge.hot && activeSlug ? "url(#graph-arrow)" : "url(#graph-arrow-faded)"}
@@ -230,6 +263,27 @@ export function GraphCanvas({
               );
             })}
           </svg>
+
+          {activeSlug
+            ? edges
+                .filter((edge) => edge.hot)
+                .map((edge) => {
+                  const label = linkWhen(edge.when, edge.whenEn, locale);
+                  if (!label) return null;
+                  return (
+                    <div
+                      key={`${edge.key}-when`}
+                      className={cn(
+                        "graph-when pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-1/2",
+                        edge.type === "contrast" && "graph-when-contrast",
+                      )}
+                      style={{ left: edge.mx, top: edge.my }}
+                    >
+                      {label}
+                    </div>
+                  );
+                })
+            : null}
 
           {/* Node Layers */}
           <div className="relative z-10 flex min-w-max flex-col gap-12 lg:flex-row lg:items-start lg:justify-between lg:gap-14">
@@ -255,15 +309,16 @@ export function GraphCanvas({
 
                   const opacityClass = activeSlug
                     ? isCurrent || isInLineage
-                      ? "opacity-100 scale-[1.02]"
-                      : "opacity-30"
+                      ? "opacity-100"
+                      : "opacity-40"
                     : "opacity-100";
 
                   const category = getStudyCategory(meta.slug);
                   const asks = studyAsks(meta, locale);
 
                   return (
-                    <div
+                    <button
+                      type="button"
                       key={meta.slug}
                       id={meta.slug}
                       ref={(el) => {
@@ -273,7 +328,7 @@ export function GraphCanvas({
                       onMouseLeave={() => setHoverSlug(undefined)}
                       onClick={() => onSelectSlug(meta.slug)}
                       className={cn(
-                        "group relative cursor-pointer rounded-xl border p-3.5 shadow-xs transition-all duration-150",
+                        "group relative w-full cursor-pointer rounded-xl border p-3.5 text-left shadow-xs transition-[opacity,transform,border-color,background-color,box-shadow] duration-200",
                         isSelected
                           ? "border-accent bg-accent/10 ring-2 ring-accent shadow-md"
                           : isCurrent
@@ -283,21 +338,21 @@ export function GraphCanvas({
                               : isDescendant
                                 ? "border-accent/60 bg-accent/5 ring-1 ring-accent/40"
                                 : isContrast
-                                  ? "border-rose-400/60 bg-rose-500/5 ring-1 ring-rose-400/40"
+                                  ? "border-wrong/60 bg-wrong-soft ring-1 ring-wrong/40"
                                   : "border-border bg-bg hover:border-border-strong hover:bg-surface-2",
                         opacityClass,
                       )}
                     >
                       <div className="flex items-center justify-between gap-1">
-                        <span className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] uppercase text-fg-subtle">
-                          {category}
+                        <span className="rounded bg-surface-2 px-1.5 py-0.5 text-[10px] font-medium text-fg-subtle">
+                          {categoryLabel(category, locale)}
                         </span>
                         {isAncestor ? (
                           <span className="font-mono text-[10px] text-accent font-semibold">{copy.graphAncestor}</span>
                         ) : isDescendant ? (
                           <span className="font-mono text-[10px] text-accent font-semibold">{copy.graphDescendant}</span>
                         ) : isContrast ? (
-                          <span className="font-mono text-[10px] text-rose-500 font-semibold">{copy.graphContrastBadge}</span>
+                          <span className="font-mono text-[10px] font-semibold text-wrong">{copy.graphContrastBadge}</span>
                         ) : null}
                       </div>
 
@@ -310,7 +365,7 @@ export function GraphCanvas({
                           {asks}
                         </p>
                       ) : null}
-                    </div>
+                    </button>
                   );
                 })}
               </div>

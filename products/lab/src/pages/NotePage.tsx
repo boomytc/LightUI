@@ -4,7 +4,7 @@ import { Link } from "../components/Link";
 import { NoteByline, relatedMetas } from "../components/NoteItem";
 import { NotePagination } from "../components/NotePagination";
 import { Page } from "../components/Page";
-import { getStudyCategory } from "../lib/categories";
+import { categoryLabel, getStudyCategory } from "../lib/categories";
 import { Markdown } from "../lib/Markdown";
 import { messages } from "../lib/i18n";
 import { studyAsks, studyTitle } from "../lib/localize";
@@ -37,39 +37,35 @@ export function NotePage({ slug }: { slug: string }) {
     .slice(0, 3);
 
   return (
-    <Page as="article" className="pb-24 pt-8">
-      <div className="mx-auto max-w-5xl lg:grid lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start lg:gap-x-12">
-        {/* Main Article Left Column */}
+    <Page as="main" className="pb-24 pt-8">
+      <article className="mx-auto max-w-5xl lg:grid lg:grid-cols-[minmax(0,1fr)_18.5rem] lg:items-start lg:gap-x-14">
         <div className="min-w-0">
           <BackLink
             fallback="/notes"
-            className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 -ml-2 text-[13px] text-fg-muted no-underline hover:bg-surface-2 hover:text-fg"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 -ml-2 text-[13px] text-fg-muted no-underline transition-colors duration-150 hover:bg-surface-2 hover:text-fg"
           />
-          <h1 className="mt-4 text-[1.8rem] font-bold tracking-tight sm:text-[2.3rem]">
+          <h1 className="mt-4 text-[1.85rem] font-semibold tracking-tight sm:text-[2.25rem]">
             {note.title}
           </h1>
           <NoteByline note={note} locale={locale} className="mt-3" />
 
           {note.summary ? (
-            <p className="mt-5 rounded-2xl border border-border/80 bg-surface p-4 text-[14px] leading-relaxed text-fg-muted shadow-xs">
+            <p className="mt-6 border-l-[3px] border-accent pl-4 text-[15px] leading-relaxed text-fg-muted">
               {note.summary}
             </p>
           ) : null}
 
-          <div className="mt-8 border-t border-border/70 pt-6">
+          <div className="note-prose mt-8 border-t border-border/70 pt-8">
             <Markdown source={note.body} />
           </div>
 
-          {/* Previous / Next Note Pagination */}
           <NotePagination slug={slug} locale={locale} />
         </div>
 
-        {/* Right Rail: Enhanced TryCard & Related Domain Notes */}
         <aside className="mt-12 space-y-6 lg:sticky lg:top-24 lg:mt-8">
-          {/* Related Studies Cards */}
           {related.length > 0 ? (
             <div className="space-y-3">
-              <p className="text-[12px] font-semibold text-fg-subtle uppercase tracking-wider">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-fg-subtle">
                 {copy.relatedStudyBadge}
               </p>
               {related.map((meta) => (
@@ -78,21 +74,20 @@ export function NotePage({ slug }: { slug: string }) {
             </div>
           ) : null}
 
-          {/* More Notes in this Domain */}
           {domainNotes.length > 0 ? (
-            <div className="rounded-2xl border border-border bg-surface p-5 shadow-card">
+            <div className="rounded-2xl border border-border bg-surface/80 p-5 shadow-card">
               <div className="flex items-center gap-2 border-b border-border/70 pb-3 text-[13px] font-semibold text-fg">
                 <BookOpen className="size-4 text-accent" />
                 <span>{copy.moreInDomain}</span>
               </div>
-              <div className="mt-3 divide-y divide-border/60">
+              <div className="mt-2">
                 {domainNotes.map((dNote) => (
                   <Link
                     key={dNote.slug}
                     href={`/notes/${dNote.slug}`}
-                    className="group block py-2.5 no-underline"
+                    className="group -mx-1.5 block rounded-lg px-1.5 py-2.5 no-underline transition-colors duration-150 hover:bg-surface-2"
                   >
-                    <p className="text-[13px] font-medium text-fg group-hover:text-accent transition-colors line-clamp-2">
+                    <p className="text-[13px] font-medium text-fg transition-colors duration-150 group-hover:text-accent line-clamp-2">
                       {dNote.title}
                     </p>
                     {dNote.summary ? (
@@ -106,7 +101,7 @@ export function NotePage({ slug }: { slug: string }) {
             </div>
           ) : null}
         </aside>
-      </div>
+      </article>
     </Page>
   );
 }
@@ -124,10 +119,10 @@ function TryCard({
   const asks = studyAsks(meta, locale);
 
   return (
-    <div className="rounded-2xl border border-border bg-surface p-5 shadow-card transition-all hover:border-border-strong">
+    <div className="rounded-2xl border border-border bg-surface/80 p-5 shadow-card transition-colors duration-200 hover:border-border-strong">
       <div className="flex items-center justify-between">
-        <span className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] uppercase text-fg-subtle">
-          {category}
+        <span className="rounded-md bg-accent-soft px-1.5 py-0.5 text-[10px] font-medium text-accent">
+          {categoryLabel(category, locale)}
         </span>
         <Sparkles className="size-3.5 text-accent" />
       </div>
@@ -142,10 +137,10 @@ function TryCard({
         </p>
       ) : null}
 
-      <div className="mt-4 flex items-center gap-2 pt-2 border-t border-border/60">
+      <div className="mt-4 flex items-center gap-2 border-t border-border/60 pt-3">
         <Link
           href={`/s/${meta.slug}`}
-          className="flex-1 inline-flex items-center justify-center gap-1 rounded-xl bg-fg px-3 py-1.5 text-[12px] font-semibold text-surface no-underline shadow-xs hover:opacity-90 transition-opacity"
+          className="inline-flex flex-1 items-center justify-center gap-1 rounded-xl bg-fg px-3 py-2 text-[12px] font-semibold text-surface no-underline shadow-xs transition-opacity duration-150 hover:opacity-90"
         >
           <span>{copy.tryWork}</span>
           <ArrowRight className="size-3" />
@@ -154,7 +149,7 @@ function TryCard({
           href={`/s/${meta.slug}/stage`}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center justify-center gap-1 rounded-xl border border-border bg-surface px-2.5 py-1.5 text-[12px] font-medium text-fg no-underline hover:bg-surface-2 transition-colors"
+          className="inline-flex items-center justify-center gap-1 rounded-xl border border-border bg-surface px-2.5 py-2 text-[12px] font-medium text-fg no-underline transition-colors duration-150 hover:bg-surface-2"
         >
           <span>{copy.inspectorStage}</span>
           <ArrowUpRight className="size-3 text-fg-subtle" />

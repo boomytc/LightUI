@@ -1,6 +1,6 @@
 import { ArrowUpRight, HelpCircle } from "lucide-react";
 import { DateStamp } from "./DateStamp";
-import { getStudyCategory } from "../lib/categories";
+import { categoryLabel, getStudyCategory } from "../lib/categories";
 import { messages } from "../lib/i18n";
 import { studyAsks, studySummary, studyTitle } from "../lib/localize";
 import { navigate } from "../lib/nav";
@@ -11,10 +11,12 @@ export function StudyCard({
   meta,
   locale,
   onSelectTag,
+  selectedTag,
 }: {
   meta: StudyMeta;
   locale: Locale;
   onSelectTag?: (tag: string) => void;
+  selectedTag?: string;
 }) {
   const href = `/s/${meta.slug}`;
   const copy = messages(locale);
@@ -29,23 +31,15 @@ export function StudyCard({
         e.preventDefault();
         navigate(href);
       }}
-      className="group relative flex flex-col justify-between rounded-2xl border border-border bg-surface p-5 shadow-card transition-all duration-150 hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-2"
+      className="lab-card group relative flex h-full flex-col justify-between rounded-2xl border border-border bg-surface p-5 shadow-card motion-safe:hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-2 hover:shadow-menu"
     >
       <div>
         <div className="flex items-start justify-between gap-3">
-          <div>
-            <div className="flex items-center gap-2">
-              {meta.eyebrow ? (
-                <p className="text-[11px] font-medium tracking-wide uppercase text-fg-subtle">
-                  {meta.eyebrow}
-                </p>
-              ) : (
-                <p className="text-[11px] font-medium tracking-wide uppercase text-accent/80">
-                  {categoryId}
-                </p>
-              )}
-            </div>
-            <h2 className="mt-0.5 text-[1.25rem] font-semibold tracking-tight text-fg group-hover:text-accent transition-colors">
+          <div className="min-w-0">
+            <p className="text-[11px] font-medium tracking-wide text-accent">
+              {meta.eyebrow || categoryLabel(categoryId, locale)}
+            </p>
+            <h2 className="mt-1 text-[1.2rem] font-semibold tracking-tight text-fg transition-colors duration-150 group-hover:text-accent">
               {studyTitle(meta, locale)}
             </h2>
           </div>
@@ -53,18 +47,18 @@ export function StudyCard({
         </div>
 
         {asks ? (
-          <div className="mt-2.5 flex items-start gap-1.5 rounded-lg bg-surface-2 px-2.5 py-1.5 text-[12px] font-medium text-fg">
-            <HelpCircle className="size-3.5 shrink-0 mt-0.5 text-accent" />
+          <div className="mt-3 flex items-start gap-1.5 rounded-lg bg-surface-2 px-2.5 py-1.5 text-[12px] font-medium text-fg">
+            <HelpCircle className="mt-0.5 size-3.5 shrink-0 text-accent" />
             <span className="leading-snug">{asks}</span>
           </div>
         ) : null}
 
-        <p className="mt-2.5 text-[13px] leading-relaxed text-fg-muted">
+        <p className="mt-2.5 text-[13px] leading-relaxed text-fg-muted line-clamp-3">
           {studySummary(meta, locale)}
         </p>
       </div>
 
-      <div className="mt-5 pt-3 border-t border-border/60 flex flex-wrap items-center justify-between gap-2">
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
         <div className="flex flex-wrap gap-1">
           {meta.tags?.slice(0, 3).map((tag) => (
             <button
@@ -79,7 +73,11 @@ export function StudyCard({
                   navigate(`/studies?tag=${tag}`);
                 }
               }}
-              className="rounded-md border border-border/80 bg-bg px-1.5 py-0.5 font-mono text-[10px] text-fg-subtle transition-colors hover:border-border-strong hover:text-fg cursor-pointer"
+              className={
+                selectedTag === tag
+                  ? "rounded-md border border-accent bg-accent-soft px-1.5 py-0.5 font-mono text-[10px] text-accent"
+                  : "rounded-md border border-border/80 bg-bg px-1.5 py-0.5 font-mono text-[10px] text-fg-subtle transition-colors duration-150 hover:border-border-strong hover:text-fg"
+              }
             >
               #{tag}
             </button>
@@ -108,4 +106,3 @@ export function StudyCard({
     </a>
   );
 }
-

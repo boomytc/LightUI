@@ -292,15 +292,15 @@ export function Markdown({ source }: { source: string }) {
   const blocks = parse(source);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6 [&>:first-child]:pt-0">
       {blocks.map((block, i) => {
         if (block.type === "h") {
           const cls =
             block.level === 1
-              ? "text-[1.8rem] font-bold tracking-tight text-fg"
+              ? "text-[1.7rem] font-semibold tracking-tight text-fg"
               : block.level === 2
-                ? "pt-4 text-[1.25rem] font-bold tracking-tight text-fg"
-                : "pt-2 text-[1.05rem] font-semibold tracking-tight text-fg";
+                ? "pt-6 text-[1.2rem] font-semibold tracking-tight text-fg"
+                : "pt-3 text-[1.05rem] font-semibold tracking-tight text-fg";
           const Tag = `h${block.level}` as const;
           return (
             <Tag key={i} className={cls}>
@@ -310,7 +310,7 @@ export function Markdown({ source }: { source: string }) {
         }
         if (block.type === "p") {
           return (
-            <p key={i} className="text-[15px] leading-[1.75] text-fg">
+            <p key={i} className="text-[15px] leading-[1.8] text-fg">
               {inline(block.text)}
             </p>
           );
@@ -319,7 +319,7 @@ export function Markdown({ source }: { source: string }) {
           return (
             <blockquote
               key={i}
-              className="rounded-r-xl border-l-[3px] border-accent bg-accent-soft/40 px-4 py-3 text-[14px] leading-relaxed text-fg italic"
+              className="rounded-r-xl border-l-[3px] border-accent bg-accent-soft/30 px-4 py-3 text-[14px] leading-relaxed text-fg-muted italic"
             >
               {inline(block.text)}
             </blockquote>

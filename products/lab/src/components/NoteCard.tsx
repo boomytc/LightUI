@@ -4,6 +4,7 @@ import { Link } from "./Link";
 import { CATEGORIES } from "../lib/categories";
 import { messages } from "../lib/i18n";
 import { studyTitle } from "../lib/localize";
+import { navigate } from "../lib/nav";
 import { estimateReadingTime, relatedMetas } from "./NoteItem";
 import { getNoteCategory, type Note } from "../lib/notes";
 import type { Locale } from "../lib/prefs";
@@ -21,15 +22,21 @@ export function NoteCard({
   const categoryName = catMeta ? (locale === "en" ? catMeta.nameEn : catMeta.nameZh) : "";
   const related = relatedMetas(note);
   const readTime = estimateReadingTime(note.body, locale);
+  const href = `/notes/${note.slug}`;
 
   return (
-    <article className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-md">
+    <article
+      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-menu"
+      onClick={(e) => {
+        if ((e.target as HTMLElement).closest("a")) return;
+        navigate(href);
+      }}
+    >
       <div>
-        {/* Top Metadata Row */}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             {categoryName ? (
-              <span className="rounded-md bg-surface-2 px-2 py-0.5 font-mono text-[11px] font-medium text-fg-muted">
+              <span className="rounded-md bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent">
                 {categoryName}
               </span>
             ) : null}
@@ -46,14 +53,12 @@ export function NoteCard({
           />
         </div>
 
-        {/* Note Title */}
-        <h2 className="mt-3 text-[16px] font-semibold tracking-tight text-fg transition-colors group-hover:text-accent">
-          <Link href={`/notes/${note.slug}`} className="no-underline">
+        <h2 className="mt-3 text-[16px] font-semibold tracking-tight text-fg transition-colors duration-150 group-hover:text-accent">
+          <Link href={href} className="no-underline">
             {note.title}
           </Link>
         </h2>
 
-        {/* Note Summary */}
         {note.summary ? (
           <p className="mt-2 text-[13px] leading-relaxed text-fg-muted line-clamp-3">
             {note.summary}
@@ -61,16 +66,18 @@ export function NoteCard({
         ) : null}
       </div>
 
-      {/* Bottom Row: Related Study Pill & Read Link */}
       <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
         {related.length > 0 ? (
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] text-fg-subtle">{copy.relatedStudyBadge}{locale === "en" ? ":" : "："}</span>
+            <span className="text-[11px] text-fg-subtle">
+              {copy.relatedStudyBadge}
+              {locale === "en" ? ":" : "："}
+            </span>
             {related.map((meta) => (
               <Link
                 key={meta.slug}
                 href={`/s/${meta.slug}`}
-                className="inline-flex items-center gap-1 rounded-md border border-border bg-bg px-2 py-0.5 text-[11px] font-medium text-fg-muted no-underline transition-colors hover:border-accent hover:text-accent"
+                className="inline-flex items-center gap-1 rounded-md border border-border bg-bg px-2 py-0.5 text-[11px] font-medium text-fg-muted no-underline transition-colors duration-150 hover:border-accent hover:text-accent"
               >
                 <Sparkles className="size-3 text-accent" />
                 <span>{studyTitle(meta, locale)}</span>
@@ -81,13 +88,10 @@ export function NoteCard({
           <div />
         )}
 
-        <Link
-          href={`/notes/${note.slug}`}
-          className="inline-flex items-center gap-1 text-[12px] font-medium text-fg-muted transition-colors group-hover:text-accent no-underline"
-        >
+        <span className="inline-flex items-center gap-1 text-[12px] font-medium text-fg-muted transition-colors duration-150 group-hover:text-accent">
           <span>{locale === "en" ? "Read" : "阅读"}</span>
-          <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-        </Link>
+          <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+        </span>
       </div>
     </article>
   );

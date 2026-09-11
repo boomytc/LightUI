@@ -26,7 +26,7 @@ export function GraphMatrixView({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-[13px] font-semibold text-fg">
-          <Scale className="size-4 text-rose-500" />
+          <Scale className="size-4 text-wrong" />
           <span>{copy.graphContrast} ({copy.graphPairs(pairs.length)})</span>
         </div>
       </div>
@@ -46,7 +46,7 @@ export function GraphMatrixView({
               {/* Header Context / When */}
               {when ? (
                 <div className="mb-4">
-                  <span className="inline-block rounded-md bg-rose-500/10 px-2 py-0.5 font-mono text-[11px] font-medium text-rose-500">
+                  <span className="inline-block rounded-md bg-wrong-soft px-2 py-0.5 font-mono text-[11px] font-medium text-wrong">
                     {copy.distinctionBadge}
                   </span>
                   <p className="mt-1.5 text-[14px] font-medium leading-snug text-fg">
@@ -58,9 +58,10 @@ export function GraphMatrixView({
               {/* Binary Contrast Duel Cards */}
               <div className="mt-auto grid grid-cols-2 gap-2.5 pt-2">
                 {/* Node A */}
-                <div
+                <button
+                  type="button"
                   onClick={() => onSelectSlug(a.slug)}
-                  className="flex cursor-pointer flex-col justify-between rounded-xl border border-border/80 bg-bg p-3 transition-colors hover:border-accent hover:bg-surface-2"
+                  className="flex cursor-pointer flex-col justify-between rounded-xl border border-border/80 bg-bg p-3 text-left transition-colors hover:border-accent hover:bg-surface-2"
                 >
                   <div>
                     <span className="block text-[13px] font-semibold text-fg leading-tight">
@@ -80,12 +81,12 @@ export function GraphMatrixView({
                     <span>{copy.tryWork}</span>
                     <ArrowUpRight className="size-3" />
                   </Link>
-                </div>
+                </button>
 
-                {/* Node B */}
-                <div
+                <button
+                  type="button"
                   onClick={() => onSelectSlug(b.slug)}
-                  className="flex cursor-pointer flex-col justify-between rounded-xl border border-border/80 bg-bg p-3 transition-colors hover:border-accent hover:bg-surface-2"
+                  className="flex cursor-pointer flex-col justify-between rounded-xl border border-border/80 bg-bg p-3 text-left transition-colors hover:border-accent hover:bg-surface-2"
                 >
                   <div>
                     <span className="block text-[13px] font-semibold text-fg leading-tight">
@@ -105,7 +106,7 @@ export function GraphMatrixView({
                     <span>{copy.tryWork}</span>
                     <ArrowUpRight className="size-3" />
                   </Link>
-                </div>
+                </button>
               </div>
             </div>
           );

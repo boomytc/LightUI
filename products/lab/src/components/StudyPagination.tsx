@@ -18,11 +18,11 @@ export function StudyPagination({ slug, locale }: { slug: string; locale: Locale
   if (!prev && !next) return null;
 
   return (
-    <div className="mt-10 grid gap-4 sm:grid-cols-2">
+    <div className="mt-8 grid gap-3 sm:grid-cols-2">
       {prev ? (
         <Link
           href={`/s/${prev.meta.slug}`}
-          className="group flex flex-col justify-between rounded-2xl border border-border bg-surface p-4 no-underline shadow-card transition-all duration-150 hover:border-border-strong hover:bg-surface-2"
+          className="group flex flex-col justify-between rounded-2xl border border-border bg-surface/80 p-4 no-underline transition-[border-color,background-color] duration-200 hover:border-border-strong hover:bg-surface"
         >
           <div>
             <div className="flex items-center gap-1.5 text-[11px] font-medium text-fg-subtle">
@@ -46,7 +46,7 @@ export function StudyPagination({ slug, locale }: { slug: string; locale: Locale
       {next ? (
         <Link
           href={`/s/${next.meta.slug}`}
-          className="group flex flex-col justify-between rounded-2xl border border-border bg-surface p-4 text-right no-underline shadow-card transition-all duration-150 hover:border-border-strong hover:bg-surface-2"
+          className="group flex flex-col justify-between rounded-2xl border border-border bg-surface/80 p-4 text-right no-underline transition-[border-color,background-color] duration-200 hover:border-border-strong hover:bg-surface"
         >
           <div>
             <div className="flex items-center justify-end gap-1.5 text-[11px] font-medium text-fg-subtle">

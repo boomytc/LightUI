@@ -21,17 +21,17 @@ export function RelatedDecisions({ slug, locale }: { slug: string; locale: Local
   const befores = neighbors.filter((n) => n.rel === "before");
 
   return (
-    <section className="mt-16 border-t border-border pt-12">
-      <div className="flex items-baseline justify-between gap-4">
+    <section className="mt-10 border-t border-border/70 pt-8">
+      <div className="flex items-end justify-between gap-4">
         <div>
-          <h2 className="text-[1.25rem] font-semibold tracking-tight">{copy.relatedHeading}</h2>
-          <p className="mt-1 text-[13px] text-fg-muted">
+          <h2 className="text-[15px] font-semibold tracking-tight text-fg">{copy.relatedHeading}</h2>
+          <p className="mt-1 text-[12px] text-fg-muted">
             {locale === "en"
               ? "The judgment graph connects this rule to its next questions and easy-to-mix alternatives."
               : "决策图谱将本则规则与后一步设问及易混淆方案相连。"}
           </p>
         </div>
-        <Link href="/graph" className="text-[13px] font-medium text-accent no-underline hover:underline">
+        <Link href="/graph" className="shrink-0 text-[13px] font-medium text-accent no-underline transition-colors hover:underline">
           {copy.homeSeeGraph} →
         </Link>
       </div>
@@ -73,7 +73,7 @@ function NeighborCard({
   return (
     <Link
       href={`/s/${target.slug}`}
-      className="group flex flex-col justify-between rounded-2xl border border-border bg-surface p-5 no-underline shadow-card transition-all duration-150 hover:border-border-strong hover:bg-surface-2"
+      className="group flex flex-col justify-between rounded-2xl border border-border bg-surface p-4 no-underline shadow-card transition-[border-color,background-color] duration-200 hover:border-border-strong hover:bg-surface-2"
     >
       <div>
         <div className="flex items-center justify-between gap-2">

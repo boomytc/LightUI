@@ -12,7 +12,7 @@ const NAV = [
   { href: "/notes", key: "navNotes" as const, match: (p: string) => p.startsWith("/notes") },
 ];
 
-export function Shell({ children }: { children: ReactNode }) {
+export function Shell({ children, study = false }: { children: ReactNode; study?: boolean }) {
   const path = usePath();
   const { theme, locale, toggleTheme, toggleLocale } = usePrefs();
   const copy = messages(locale);
@@ -41,12 +41,21 @@ export function Shell({ children }: { children: ReactNode }) {
   }, [paletteOpen]);
 
   return (
-    <div className="flex min-h-dvh flex-col bg-bg text-fg">
-      <header className="sticky top-0 z-30 border-b border-border bg-surface/85 backdrop-blur-md">
-        <div className="page-width flex h-14 items-center justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-5">
-            <Link href="/" className="flex items-center gap-2.5 no-underline">
-              <span className="grid size-7 place-items-center rounded-md bg-fg text-surface shadow-xs" aria-hidden="true">
+    <div className="lab-shell flex min-h-dvh flex-col overflow-x-clip text-fg">
+      <a
+        href="#lab-main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-fg focus:px-3 focus:py-2 focus:text-[13px] focus:font-medium focus:text-surface"
+      >
+        {copy.skipToContent}
+      </a>
+      <header className="sticky top-0 z-30 border-b border-border/80 bg-surface/80 backdrop-blur-md">
+        <div className="page-width flex h-12 items-center justify-between gap-4 sm:h-14">
+          <div className="flex min-w-0 items-center gap-4 sm:gap-5">
+            <Link href="/" className="group flex items-center gap-2.5 no-underline">
+              <span
+                className="grid size-7 place-items-center rounded-md bg-fg text-surface shadow-xs transition-transform duration-200 group-hover:scale-[1.04]"
+                aria-hidden="true"
+              >
                 <svg viewBox="0 0 24 24" className="size-3.5" fill="none">
                   <path
                     d="M5 19 19 5v14Z"
@@ -69,8 +78,8 @@ export function Shell({ children }: { children: ReactNode }) {
                     ariaCurrent={active ? "page" : undefined}
                     className={
                       active
-                        ? "rounded-md px-2.5 py-1 text-[13px] font-medium text-fg no-underline"
-                        : "rounded-md px-2.5 py-1 text-[13px] text-fg-muted no-underline hover:bg-surface-2 hover:text-fg"
+                        ? "rounded-md bg-surface-2 px-2.5 py-1 text-[13px] font-medium text-fg no-underline"
+                        : "rounded-md px-2.5 py-1 text-[13px] text-fg-muted no-underline transition-colors duration-150 hover:bg-surface-2/80 hover:text-fg"
                     }
                   >
                     {copy[item.key]}
@@ -80,11 +89,11 @@ export function Shell({ children }: { children: ReactNode }) {
             </nav>
           </div>
 
-          <div className="flex shrink-0 items-center gap-1.5">
+          <div className="flex shrink-0 items-center gap-1">
             <button
               type="button"
               onClick={() => setPaletteOpen(true)}
-              className="inline-flex h-8 items-center gap-2 rounded-lg border border-border bg-surface px-2.5 text-left text-[12px] text-fg-muted shadow-xs transition-colors hover:border-border-strong hover:bg-surface-2 hover:text-fg"
+              className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-surface px-2.5 text-left text-[12px] text-fg-muted shadow-xs transition-colors duration-150 hover:border-border-strong hover:bg-surface-2 hover:text-fg"
               aria-label={copy.searchShortcut}
             >
               <Search className="size-3.5" />
@@ -112,7 +121,7 @@ export function Shell({ children }: { children: ReactNode }) {
 
             <a
               href={GITHUB_URL}
-              className="inline-flex size-9 items-center justify-center rounded-lg text-fg-muted no-underline hover:bg-surface-2 hover:text-fg"
+              className="inline-flex size-9 items-center justify-center rounded-lg text-fg-muted no-underline transition-colors duration-150 hover:bg-surface-2 hover:text-fg"
               rel="noreferrer"
               target="_blank"
               aria-label={copy.github}
@@ -124,33 +133,43 @@ export function Shell({ children }: { children: ReactNode }) {
       </header>
 
       <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
-      <div className="page-width border-b border-border py-2 sm:hidden">
-        <nav className="flex items-center rounded-xl border border-border bg-surface-2 p-1" aria-label="mobile site">
-          {NAV.map((item) => {
-            const active = item.match(path);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                ariaCurrent={active ? "page" : undefined}
-                className={
-                  active
-                    ? "flex-1 rounded-lg bg-surface py-1.5 text-center text-[12px] font-semibold text-fg shadow-xs no-underline"
-                    : "flex-1 rounded-lg py-1.5 text-center text-[12px] font-medium text-fg-muted no-underline hover:text-fg"
-                }
-              >
-                {copy[item.key]}
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
-      <div className="min-w-0 flex-1">{children}</div>
-      <footer className="mt-auto border-t border-border">
-        <div className="page-width py-5">
-          <p className="text-[12px] text-fg-subtle">{copy.footer}</p>
+      {study ? null : (
+        <div className="page-width border-b border-border/80 py-2 sm:hidden">
+          <nav className="flex items-center rounded-xl border border-border bg-surface-2/80 p-1" aria-label="mobile site">
+            {NAV.map((item) => {
+              const active = item.match(path);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  ariaCurrent={active ? "page" : undefined}
+                  className={
+                    active
+                      ? "flex-1 rounded-lg bg-surface py-2 text-center text-[12px] font-semibold text-fg shadow-xs no-underline"
+                      : "flex-1 rounded-lg py-2 text-center text-[12px] font-medium text-fg-muted no-underline transition-colors duration-150 hover:text-fg"
+                  }
+                >
+                  {copy[item.key]}
+                </Link>
+              );
+            })}
+          </nav>
         </div>
-      </footer>
+      )}
+      <div className="min-w-0 flex-1">{children}</div>
+      {study ? null : (
+        <footer className="mt-auto border-t border-border/80">
+          <div className="page-width flex flex-wrap items-center justify-between gap-3 py-6">
+            <p className="text-[12px] text-fg-subtle">{copy.footer}</p>
+            <p className="text-[12px] text-fg-subtle">
+              {copy.searchShortcut}
+              <kbd className="ml-1.5 rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px]">
+                ⌘K
+              </kbd>
+            </p>
+          </div>
+        </footer>
+      )}
     </div>
   );
 }
@@ -170,7 +189,7 @@ function IconButton({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="inline-flex size-9 items-center justify-center rounded-lg text-fg-muted hover:bg-surface-2 hover:text-fg"
+      className="inline-flex size-9 items-center justify-center rounded-lg text-fg-muted transition-colors duration-150 hover:bg-surface-2 hover:text-fg"
     >
       {children}
     </button>

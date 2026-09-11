@@ -5,6 +5,7 @@ import { GraphClusterView } from "../components/GraphClusterView";
 import { GraphInspector } from "../components/GraphInspector";
 import { GraphMatrixView } from "../components/GraphMatrixView";
 import { Page } from "../components/Page";
+import { PageHero } from "../components/PageHero";
 import { loadStudies } from "../lib/catalog";
 import { messages } from "../lib/i18n";
 import { useHash } from "../lib/nav";
@@ -29,63 +30,48 @@ export function Graph() {
     }
   }, [focusHash, studies]);
 
+  const modes: { id: ViewMode; icon: typeof GitFork; label: string }[] = [
+    { id: "flow", icon: GitFork, label: copy.viewModeFlow },
+    { id: "cluster", icon: Layers, label: copy.viewModeCluster },
+    { id: "matrix", icon: Scale, label: copy.viewModeMatrix },
+  ];
+
   return (
-    <Page as="main" className="pb-24 pt-10">
-      {/* Header with Title and Perspective Tabs */}
-      <header className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between border-b border-border/80 pb-6">
-        <div>
-          <h1 className="text-[1.8rem] font-bold tracking-tight sm:text-[2.2rem]">
-            {copy.graphPageTitle}
-          </h1>
-          <p className="mt-2 max-w-[42rem] text-[14px] leading-relaxed text-fg-muted sm:text-[15px]">
-            {copy.graphPageLede}
-          </p>
+    <Page as="main" className="pb-24 pt-10 sm:pt-12">
+      <PageHero title={copy.graphPageTitle} lede={copy.graphPageLede}>
+        <div className="flex w-full items-center rounded-xl border border-border bg-surface-2/80 p-1 shadow-xs sm:w-auto">
+          {modes.map((mode) => {
+            const Icon = mode.icon;
+            const active = viewMode === mode.id;
+            return (
+              <button
+                key={mode.id}
+                type="button"
+                onClick={() => setViewMode(mode.id)}
+                aria-pressed={active}
+                className={
+                  active
+                    ? "flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-surface px-3 py-1.5 text-[12px] font-semibold text-fg shadow-xs sm:flex-none"
+                    : "flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-[12px] font-medium text-fg-muted transition-colors duration-150 hover:text-fg sm:flex-none"
+                }
+              >
+                <Icon
+                  className={
+                    mode.id === "flow"
+                      ? "size-3.5 text-accent"
+                      : mode.id === "cluster"
+                        ? "size-3.5 text-intent"
+                        : "size-3.5 text-wrong"
+                  }
+                />
+                <span className="whitespace-nowrap">{mode.label}</span>
+              </button>
+            );
+          })}
         </div>
+      </PageHero>
 
-        {/* View Mode Switcher */}
-        <div className="flex shrink-0 items-center rounded-xl border border-border bg-surface-2 p-1 shadow-xs">
-          <button
-            type="button"
-            onClick={() => setViewMode("flow")}
-            className={
-              viewMode === "flow"
-                ? "flex items-center gap-1.5 rounded-lg bg-surface px-3 py-1.5 text-[12px] font-semibold text-fg shadow-xs"
-                : "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12px] font-medium text-fg-muted hover:text-fg"
-            }
-          >
-            <GitFork className="size-3.5 text-accent" />
-            <span>{copy.viewModeFlow}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode("cluster")}
-            className={
-              viewMode === "cluster"
-                ? "flex items-center gap-1.5 rounded-lg bg-surface px-3 py-1.5 text-[12px] font-semibold text-fg shadow-xs"
-                : "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12px] font-medium text-fg-muted hover:text-fg"
-            }
-          >
-            <Layers className="size-3.5 text-emerald-500" />
-            <span>{copy.viewModeCluster}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode("matrix")}
-            className={
-              viewMode === "matrix"
-                ? "flex items-center gap-1.5 rounded-lg bg-surface px-3 py-1.5 text-[12px] font-semibold text-fg shadow-xs"
-                : "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12px] font-medium text-fg-muted hover:text-fg"
-            }
-          >
-            <Scale className="size-3.5 text-rose-500" />
-            <span>{copy.viewModeMatrix}</span>
-          </button>
-        </div>
-      </header>
-
-      {/* Main Perspective Body & Inspector Drawer */}
       <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-start">
-        {/* Left/Main Graph View Area */}
         <div className="min-w-0 flex-1">
           {viewMode === "flow" ? (
             <GraphCanvas
@@ -114,7 +100,6 @@ export function Graph() {
           )}
         </div>
 
-        {/* Right Decision Inspector Drawer (Desktop Sticky, Mobile Bottom) */}
         {selectedSlug ? (
           <GraphInspector
             slug={selectedSlug}

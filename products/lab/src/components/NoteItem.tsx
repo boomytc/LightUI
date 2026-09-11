@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { DateStamp } from "./DateStamp";
 import { Link } from "./Link";
 import { loadStudy } from "../lib/catalog";
@@ -11,30 +12,32 @@ export function NoteItem({
   locale,
   compact = false,
   className,
+  style,
 }: {
   note: Note;
   locale: Locale;
   compact?: boolean;
   className?: string;
+  style?: CSSProperties;
 }) {
   return (
-    <li className={className}>
+    <li className={className} style={style}>
       <Link
         href={`/notes/${note.slug}`}
-        className={compact ? "group block py-3.5 no-underline" : "group block py-4 no-underline"}
+        className="group block px-4 py-3.5 no-underline transition-colors duration-200 hover:bg-surface-2"
       >
         <span
           className={
             compact
-              ? "block text-[15px] font-medium tracking-tight text-fg group-hover:text-accent"
-              : "block text-[16px] font-medium tracking-tight text-fg group-hover:text-accent"
+              ? "block text-[15px] font-semibold tracking-tight text-fg transition-colors duration-150 group-hover:text-accent"
+              : "block text-[16px] font-semibold tracking-tight text-fg transition-colors duration-150 group-hover:text-accent"
           }
         >
           {note.title}
         </span>
         <NoteByline note={note} locale={locale} className="mt-1.5" />
         {note.summary ? (
-          <span className="mt-1.5 block text-[13px] leading-relaxed text-fg-muted break-keep">
+          <span className="mt-1.5 block text-[13px] leading-relaxed text-fg-muted break-keep line-clamp-2">
             {note.summary}
           </span>
         ) : null}
