@@ -69,6 +69,7 @@ export function Playground() {
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           </div>
           <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
+            {locale === "en" ? "Left vs right. " : "左错右对。"}
             {pick(meta.tells, locale)}
           </p>
         </div>

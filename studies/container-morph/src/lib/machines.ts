@@ -32,7 +32,7 @@ export type FixtureState = "collapsed" | "expanded" | ReverseName;
 export type MorphBox = { width: number; height: number; radius: number };
 
 /** CSS transition for a single morph. Reduced motion uses 0. */
-export const MORPH_MS = 400;
+export const MORPH_MS = 520;
 
 const AXIS: Record<KindId, MorphAxis> = {
   "circle-pill": "width",

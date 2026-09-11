@@ -1,7 +1,7 @@
 .morph-box {
   box-sizing: border-box;
-  --morph-ms: 400ms;
-  --morph-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --morph-ms: 520ms;
+  --morph-ease: cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -14,10 +14,25 @@
   text-align: left;
   font: inherit;
   cursor: pointer;
+  transform-origin: center;
   transition:
     width var(--morph-ms) var(--morph-ease),
     height var(--morph-ms) var(--morph-ease),
-    border-radius var(--morph-ms) var(--morph-ease);
+    border-radius var(--morph-ms) var(--morph-ease),
+    opacity calc(var(--morph-ms) * 0.7) var(--morph-ease),
+    transform calc(var(--morph-ms) * 0.7) var(--morph-ease);
+}
+
+.morph-box[data-anchor="center"] {
+  transform-origin: center;
+}
+
+.morph-box[data-anchor="top"] {
+  transform-origin: top center;
+}
+
+.morph-box[data-anchor="top-left"] {
+  transform-origin: top left;
 }
 
 .morph-box[data-locked="true"] {
@@ -26,6 +41,11 @@
 
 .morph-box[data-reduced="true"] {
   --morph-ms: 0ms;
+}
+
+.morph-box[data-faded="true"] {
+  opacity: 0;
+  transform: scale(0.96);
 }
 
 .morph-stage {
@@ -51,15 +71,39 @@
   align-items: start;
 }
 
+.morph-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-width: 0;
+  background: var(--color-border);
+}
+
+.morph-compare-pane {
+  display: flex;
+  min-width: 0;
+  min-height: 22rem;
+  flex-direction: column;
+  background: var(--color-surface);
+}
+
+.morph-compare-pane .morph-stage {
+  flex: 1;
+  min-height: 18rem;
+}
+
 .morph-late {
   opacity: 0;
-  transition: opacity calc(var(--morph-ms) * 0.4) var(--morph-ease);
+  transform: translateY(8px);
+  transition:
+    opacity calc(var(--morph-ms) * 0.5) var(--morph-ease),
+    transform calc(var(--morph-ms) * 0.5) var(--morph-ease);
   transition-delay: 0ms;
 }
 
 .morph-late[data-open="true"] {
   opacity: 1;
-  transition-delay: calc(var(--morph-ms) * 0.45);
+  transform: translateY(0);
+  transition-delay: calc(var(--morph-ms) * 0.42);
 }
 
 .morph-late[data-sync="true"] {
@@ -68,6 +112,7 @@
 
 .morph-late[data-sync="true"][data-open="true"] {
   opacity: 1;
+  transform: none;
 }
 
 .morph-extra {
@@ -93,7 +138,9 @@
   flex: 1;
   grid-template-columns: minmax(0, 1fr);
   gap: 0.75rem;
-  transition: grid-template-columns var(--morph-ms) var(--morph-ease);
+  transition:
+    grid-template-columns var(--morph-ms) var(--morph-ease),
+    gap var(--morph-ms) var(--morph-ease);
 }
 
 .morph-reflow[data-open="true"] {
@@ -104,8 +151,92 @@
   grid-row: 1 / span 2;
 }
 
+.morph-pill-face {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding-inline: 0;
+  transition:
+    gap var(--morph-ms) var(--morph-ease),
+    padding var(--morph-ms) var(--morph-ease);
+}
+
+.morph-pill-face[data-open="true"] {
+  justify-content: flex-start;
+  gap: 0.625rem;
+  padding-inline: 0.875rem;
+}
+
+.morph-pill-label {
+  min-width: 0;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 500;
+  transition:
+    max-width var(--morph-ms) var(--morph-ease),
+    opacity calc(var(--morph-ms) * 0.55) var(--morph-ease);
+}
+
+.morph-pill-face[data-open="true"] .morph-pill-label {
+  max-width: 14rem;
+  opacity: 1;
+}
+
+.morph-pop {
+  animation: morph-pop-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.morph-beat {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.morph-beat span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 11px;
+  color: var(--color-fg-muted);
+  background: var(--color-surface-2);
+}
+
+.morph-beat span[data-on="true"] {
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  font-weight: 600;
+}
+
+@keyframes morph-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .morph-compare {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .morph-box {
     --morph-ms: 0ms;
+  }
+
+  .morph-pop {
+    animation: none;
   }
 }

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { pick, useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 
 export function DemoShell({
@@ -20,7 +21,7 @@ export function DemoShell({
         "relative isolate flex min-w-0 flex-col overflow-hidden overflow-x-hidden border border-border bg-surface",
         compact
           ? "min-h-[22rem] rounded-2xl shadow-card"
-          : "h-[32rem] w-full rounded-2xl shadow-card sm:h-[34rem]",
+          : "min-h-[36rem] w-full rounded-2xl shadow-card",
       )}
     >
       {compact ? (
@@ -48,6 +49,35 @@ export function DemoShell({
         </div>
       )}
       <div className="relative min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto">{children}</div>
+    </div>
+  );
+}
+
+export function ComparePane({
+  tone,
+  hint,
+  children,
+}: {
+  tone: "right" | "wrong";
+  hint: string;
+  children: ReactNode;
+}) {
+  const locale = useLocale();
+  const right = tone === "right";
+  return (
+    <div className="morph-compare-pane" data-tone={tone}>
+      <div className="flex items-center justify-between gap-2 px-3 pt-3 sm:px-4">
+        <span
+          className={cn(
+            "rounded-full px-2 py-0.5 text-[11px] font-medium",
+            right ? "bg-intent-soft text-intent" : "bg-wrong-soft text-wrong",
+          )}
+        >
+          {right ? pick({ zh: "对", en: "Right" }, locale) : pick({ zh: "错", en: "Wrong" }, locale)}
+        </span>
+        <span className="truncate text-[11px] text-fg-subtle">{hint}</span>
+      </div>
+      {children}
     </div>
   );
 }

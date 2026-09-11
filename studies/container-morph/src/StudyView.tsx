@@ -22,8 +22,8 @@ export function StudyView() {
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Name the axis, name the scene, then name the path. The seven contrasts below are live."
-            : "先说轴，再说场景，再说路径。下面七个对照可以点。"}
+            ? "Each kind is a live pair: wrong axis on the left, named axis on the right. One click moves both."
+            : "每种都是现场对照：左边错的轴，右边点名的轴。点一次两边一起走。"}
         </p>
       </section>
 
