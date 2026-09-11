@@ -17,7 +17,7 @@ export default defineConfig({
   },
   server: {
     host: "127.0.0.1",
-    port: 5199,
+    port: 5224,
     strictPort: true,
     fs: { allow: [root, path.resolve(root, "../..")] },
   },

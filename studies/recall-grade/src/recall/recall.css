@@ -11,6 +11,9 @@
   width: 100%;
   min-width: 0;
   overflow-x: hidden;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 0%, var(--color-play-glow), transparent 70%),
+    var(--color-surface-2);
 }
 
 .recall-window-body {
@@ -18,8 +21,134 @@
   overflow-x: hidden;
 }
 
+.recall-due {
+  display: flex;
+  gap: 4px;
+}
+
+.recall-due-seg {
+  height: 3px;
+  flex: 1 1 0;
+  border-radius: 999px;
+  background: var(--color-border);
+}
+
+.recall-due-seg.is-done {
+  background: var(--color-intent);
+}
+
+.recall-due-seg.is-now {
+  background: var(--color-accent);
+}
+
+.recall-card-in {
+  animation: recall-card-in 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.recall-compare {
+  animation: recall-compare-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 .recall-commit {
-  animation: recall-commit-in 180ms ease;
+  animation: recall-commit-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.recall-empty {
+  animation: recall-card-in 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.recall-grade {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.recall-grade-btn {
+  border-radius: var(--radius-lg);
+  text-align: left;
+  border: 1px solid var(--color-border);
+  transition:
+    transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.recall-grade-btn[data-tone="again"] {
+  background: var(--color-wrong-soft);
+  color: var(--color-wrong);
+  border-color: transparent;
+}
+
+.recall-grade-btn[data-tone="hard"] {
+  background: var(--color-predict-soft);
+  color: var(--color-predict);
+  border-color: transparent;
+}
+
+.recall-grade-btn[data-tone="good"] {
+  background: var(--color-intent-soft);
+  color: var(--color-intent);
+  border-color: transparent;
+}
+
+.recall-grade-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+
+.recall-grade-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.recall-grade-key {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.2rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  background: rgb(23 24 28 / 0.08);
+  color: inherit;
+}
+
+.dark .recall-grade-key {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.recall-reveal {
+  transition:
+    transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 160ms ease;
+}
+
+.recall-reveal:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+
+@keyframes recall-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes recall-compare-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @keyframes recall-commit-in {
@@ -34,7 +163,26 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .recall-commit {
+  .recall-card-in,
+  .recall-compare,
+  .recall-commit,
+  .recall-empty {
     animation: none;
   }
+
+  .recall-grade-btn,
+  .recall-reveal {
+    transition: none;
+  }
+
+  .recall-grade-btn:hover:not(:disabled),
+  .recall-reveal:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+[data-locked="true"] .recall-card-in,
+[data-locked="true"] .recall-compare,
+[data-locked="true"] .recall-empty {
+  animation: none;
 }

@@ -1,8 +1,9 @@
 import { CircleCheck } from "lucide-react";
 import { formatDay } from "../lib/fixtures";
-import { DECK, GRADE_COPY } from "../lib/kinds";
+import { DECK, GRADE_COPY, GRADE_LANES } from "../lib/kinds";
 import {
   canGrade,
+  intervalDays,
   type Card,
   type Face,
   type Grade,
@@ -128,13 +129,13 @@ function CardPanel({
   const desk = layout === "desk";
 
   return (
-    <div className="min-w-0 overflow-x-hidden">
+    <div className="min-w-0 overflow-x-hidden" data-locked={locked ? "true" : "false"}>
       <div className="mb-3 flex items-center justify-between gap-3 text-[12px] text-fg-muted">
         <span className="tabular-nums">
           {locale === "en" ? `${shown} / ${total}` : `第 ${shown} / ${total} 题`}
         </span>
         {lastCommit ? (
-          <span className="recall-commit min-w-0 truncate text-accent">
+          <span className={cn("recall-commit min-w-0 truncate", commitTone(lastCommit.grade))}>
             {commitLine(lastCommit, locale)}
           </span>
         ) : (
@@ -144,11 +145,15 @@ function CardPanel({
         )}
       </div>
 
+      <DueTrack remaining={remaining} total={total} />
+
       <article
+        key={`${card.id}-${face}`}
         className={cn(
-          "min-w-0 rounded-xl border border-border bg-surface",
+          "recall-card-in min-w-0 rounded-xl border border-border bg-surface",
           desk ? "rounded-2xl px-5 py-6 shadow-card" : "bg-surface-2 px-3.5 py-4",
         )}
+        data-face={face}
       >
         <div className="mb-3 flex flex-wrap items-center gap-1.5">
           <span
@@ -165,13 +170,27 @@ function CardPanel({
                 ? "Due today"
                 : "今日到期"}
           </span>
+          <span
+            className={cn(
+              "rounded-full px-2 py-0.5 text-[10px] font-medium",
+              gradesOn ? "bg-intent-soft text-intent" : "bg-surface-2 text-fg-subtle",
+            )}
+          >
+            {gradesOn
+              ? locale === "en"
+                ? "Compare · grade"
+                : "对照 · 打分"
+              : locale === "en"
+                ? "Prompt"
+                : "问题"}
+          </span>
         </div>
         <p className={cn("leading-relaxed text-fg", desk ? "text-[1.125rem]" : "text-[15px]")}>
           {card.question}
         </p>
         {face === "answer" ? (
-          <dl className={cn("grid min-w-0 gap-2", desk ? "mt-5" : "mt-4")}>
-            <div className={cn("min-w-0 rounded-lg bg-surface-2", desk ? "px-4 py-3" : "bg-surface px-3 py-2")}>
+          <dl className={cn("recall-compare is-open grid min-w-0 gap-2", desk ? "mt-5" : "mt-4")}>
+            <div className={cn("recall-compare-inner min-w-0 rounded-lg bg-surface-2", desk ? "px-4 py-3" : "bg-surface px-3 py-2")}>
               <dt className="text-[11px] text-fg-subtle">
                 {locale === "en" ? "Mine" : "我的答案"}
               </dt>
@@ -179,7 +198,7 @@ function CardPanel({
                 {card.mine}
               </dd>
             </div>
-            <div className={cn("min-w-0 rounded-lg bg-surface-2", desk ? "px-4 py-3" : "bg-surface px-3 py-2")}>
+            <div className={cn("recall-compare-inner min-w-0 rounded-lg bg-surface-2", desk ? "px-4 py-3" : "bg-surface px-3 py-2")}>
               <dt className="text-[11px] text-fg-subtle">
                 {locale === "en" ? "Answer" : "正确答案"}
               </dt>
@@ -203,31 +222,27 @@ function CardPanel({
       </article>
 
       {gradesOn ? (
-        <div className={cn("grid min-w-0 grid-cols-3", desk ? "mt-4 gap-3" : "mt-3 gap-2")}>
-          <GradeButton
-            tone="again"
-            desk={desk}
-            disabled={locked}
-            onClick={() => onGrade?.("again")}
-          >
-            {pick(GRADE_COPY.again, locale)}
-          </GradeButton>
-          <GradeButton
-            tone="hard"
-            desk={desk}
-            disabled={locked}
-            onClick={() => onGrade?.("hard")}
-          >
-            {pick(GRADE_COPY.hard, locale)}
-          </GradeButton>
-          <GradeButton
-            tone="good"
-            desk={desk}
-            disabled={locked}
-            onClick={() => onGrade?.("good")}
-          >
-            {pick(GRADE_COPY.good, locale)}
-          </GradeButton>
+        <div className={cn("min-w-0", desk ? "mt-4" : "mt-3")}>
+          <p className={cn("mb-2 text-[11px] text-fg-subtle", desk && "mb-2.5")}>
+            {locale === "en"
+              ? "These three commit an interval — not the next frame."
+              : "三档提交的是间隔，不是下一张。"}
+          </p>
+          <div className={cn("recall-grade", desk ? "gap-3" : "gap-2")}>
+            {GRADE_LANES.map((lane) => (
+              <GradeButton
+                key={lane.id}
+                tone={lane.id}
+                desk={desk}
+                disabled={locked}
+                hint={gradeHint(card, lane.id, locale)}
+                kbd={lane.key}
+                onClick={() => onGrade?.(lane.id)}
+              >
+                {pick(lane.label, locale)}
+              </GradeButton>
+            ))}
+          </div>
         </div>
       ) : (
         <button
@@ -235,7 +250,7 @@ function CardPanel({
           disabled={locked}
           onClick={onFlip}
           className={cn(
-            "w-full font-medium text-surface disabled:opacity-100",
+            "recall-reveal w-full font-medium text-surface disabled:opacity-100",
             desk
               ? "mt-4 rounded-xl bg-fg px-4 py-3 text-[15px]"
               : "mt-3 rounded-xl bg-fg px-3 py-2.5 text-[14px]",
@@ -248,16 +263,37 @@ function CardPanel({
   );
 }
 
+function DueTrack({ remaining, total }: { remaining: number; total: number }) {
+  const done = Math.max(0, total - remaining);
+  return (
+    <div
+      className="recall-due mb-3"
+      aria-hidden="true"
+    >
+      {Array.from({ length: total }, (_, i) => (
+        <i
+          key={i}
+          className={cn("recall-due-seg", i < done && "is-done", i === done && remaining > 0 && "is-now")}
+        />
+      ))}
+    </div>
+  );
+}
+
 function GradeButton({
   tone,
   desk,
   disabled,
+  hint,
+  kbd,
   onClick,
   children,
 }: {
   tone: Grade;
   desk: boolean;
   disabled: boolean;
+  hint: string;
+  kbd: string;
   onClick: () => void;
   children: string;
 }) {
@@ -266,15 +302,21 @@ function GradeButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
+      data-tone={tone}
       className={cn(
-        "min-w-0 rounded-xl font-medium disabled:opacity-100",
-        desk ? "px-3 py-3 text-[14px]" : "truncate px-2 py-2.5 text-[13px]",
-        tone === "again" && "border border-border bg-surface text-fg",
-        tone === "hard" && (desk ? "bg-surface text-fg" : "bg-surface-2 text-fg"),
-        tone === "good" && "bg-fg text-surface",
+        "recall-grade-btn min-w-0 disabled:opacity-100",
+        desk ? "px-2.5 py-2.5" : "px-1.5 py-2",
       )}
     >
-      {children}
+      <span className="flex items-center justify-between gap-1">
+        <span className={cn("font-medium", desk ? "text-[14px]" : "truncate text-[13px]")}>
+          {children}
+        </span>
+        <kbd className="recall-grade-key">{kbd}</kbd>
+      </span>
+      <span className={cn("mt-1 block leading-snug text-current/70", desk ? "text-[11px]" : "text-[10px]")}>
+        {hint}
+      </span>
     </button>
   );
 }
@@ -294,13 +336,13 @@ function EmptyPanel({
   return (
     <div
       className={cn(
-        "flex min-w-0 flex-col items-center text-center",
+        "recall-empty flex min-w-0 flex-col items-center text-center",
         desk ? "px-4 py-10" : "px-3 py-8",
       )}
     >
       <span
         className={cn(
-          "grid place-items-center rounded-2xl bg-accent-soft text-accent",
+          "grid place-items-center rounded-2xl bg-intent-soft text-intent",
           desk ? "size-14" : "size-12",
         )}
         aria-hidden="true"
@@ -326,6 +368,23 @@ function EmptyPanel({
       </button>
     </div>
   );
+}
+
+function gradeHint(card: Card, grade: Grade, locale: Locale): string {
+  if (grade === "again") {
+    return locale === "en" ? "Today · reset" : "今天末尾 · 归零";
+  }
+  if (grade === "hard") {
+    return locale === "en" ? "Tomorrow · keep" : "明天 · 次数保留";
+  }
+  const days = intervalDays(card.reviewCount + 1);
+  return locale === "en" ? `${days}d · count +1` : `${days} 天 · 次数 +1`;
+}
+
+function commitTone(grade: Grade): string {
+  if (grade === "again") return "text-wrong";
+  if (grade === "hard") return "text-predict";
+  return "text-intent";
 }
 
 function commitLine(commit: LastCommit, locale: Locale): string {

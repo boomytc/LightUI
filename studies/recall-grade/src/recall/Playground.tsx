@@ -28,6 +28,9 @@ export function Playground() {
           </h2>
           <p className="mt-1 text-[14px] text-fg-muted">{pick(DECK.tells, locale)}</p>
         </div>
+        <p className="text-[12px] text-fg-subtle">
+          {locale === "en" ? "Enter reveals. 1 / 2 / 3 grade." : "回车翻开。1 / 2 / 3 打分。"}
+        </p>
       </div>
 
       <KindDemo layout="desk" />
@@ -95,6 +98,35 @@ export function KindDemo({
     setLastCommit(null);
     setSessionTotal(next.pile.length);
   }, [locale, locked, today]);
+
+  useEffect(() => {
+    if (locked) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && ["INPUT", "TEXTAREA"].includes(target.tagName)) return;
+      if (pile.length === 0) return;
+      if (!canGrade(face)) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          setFace("answer");
+        }
+        return;
+      }
+      if (e.key === "1") {
+        e.preventDefault();
+        grade("again");
+      } else if (e.key === "2") {
+        e.preventDefault();
+        grade("hard");
+      } else if (e.key === "3") {
+        e.preventDefault();
+        grade("good");
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [locked, face, pile]);
 
   function flip() {
     if (locked) return;

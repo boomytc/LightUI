@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-打开 `http://127.0.0.1:5199/`。
+打开 `http://127.0.0.1:5224/`。
 
 在 Lab 里打开：`make dev` → `http://127.0.0.1:5173/s/recall-grade`。
 

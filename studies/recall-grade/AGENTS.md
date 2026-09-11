@@ -11,7 +11,7 @@ Vite 8 + React 19 + TypeScript + Tailwind v4. No router, auth, or backend.
 From this directory, or `make dev-study STUDY=recall-grade` at repo root:
 
 ```bash
-npm run dev          # http://127.0.0.1:5199/
+npm run dev          # http://127.0.0.1:5224/
 npm test             # dueCards / canGrade / applyGrade / intervalDays / nextIndexAfterGrade
 npm run typecheck
 npm run build
@@ -38,7 +38,7 @@ The lab mounts `StudyView` at `/s/recall-grade`.
   Hard keeps the count and waits one day. Good steps `[1, 3, 7, 14, 30]`.
 - Empty copy is not 「暂无数据」. Grades are not a confirm dialog.
   Do not ship a live swipe carousel as a second product.
-- Bind the standalone server to `127.0.0.1:5199`.
+- Bind the standalone server to `127.0.0.1:5224`.
 - Work page: gradeable card at readable size, max ~28rem, centered in a
   full-width well with side air. Grade buttons under the card at natural
   size. Stage stays a 390 fixture. Stack, no horizontal scroll.

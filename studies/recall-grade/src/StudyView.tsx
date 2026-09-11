@@ -43,6 +43,37 @@ export function StudyView() {
         ))}
       </section>
 
+      <section className="mt-3 grid gap-2 sm:grid-cols-3">
+        {[
+          { tone: "again", title: locale === "en" ? "Forgot" : "忘了", body: locale === "en" ? "Today, count 0" : "今天末尾 · 归零" },
+          { tone: "hard", title: locale === "en" ? "Fuzzy" : "模糊", body: locale === "en" ? "Tomorrow, count kept" : "明天 · 次数保留" },
+          { tone: "good", title: locale === "en" ? "Knew" : "记得", body: locale === "en" ? "1 / 3 / 7 / 14 / 30" : "1 / 3 / 7 / 14 / 30 天" },
+        ].map((item) => (
+          <div
+            key={item.tone}
+            data-tone={item.tone}
+            className="rounded-xl border border-transparent px-3 py-2.5"
+            style={{
+              background:
+                item.tone === "again"
+                  ? "var(--color-wrong-soft)"
+                  : item.tone === "hard"
+                    ? "var(--color-predict-soft)"
+                    : "var(--color-intent-soft)",
+              color:
+                item.tone === "again"
+                  ? "var(--color-wrong)"
+                  : item.tone === "hard"
+                    ? "var(--color-predict)"
+                    : "var(--color-intent)",
+            }}
+          >
+            <p className="text-[13px] font-semibold">{item.title}</p>
+            <p className="mt-0.5 text-[12px] text-current/75">{item.body}</p>
+          </div>
+        ))}
+      </section>
+
       <section className="mt-14 grid min-w-0 gap-10 lg:grid-cols-2">
         <article className="min-w-0">
           <h2 className="text-[1.35rem] font-semibold tracking-tight">

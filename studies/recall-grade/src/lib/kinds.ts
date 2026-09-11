@@ -65,3 +65,27 @@ export const GRADE_COPY: Record<"again" | "hard" | "good", Localized> = {
   hard: loc("模糊", "Fuzzy"),
   good: loc("记得", "Knew"),
 };
+
+export const GRADE_LANES = [
+  {
+    id: "again" as const,
+    key: "1",
+    label: loc("忘了", "Forgot"),
+    when: loc("今天末尾", "End of today"),
+    count: loc("次数归零", "Count resets"),
+  },
+  {
+    id: "hard" as const,
+    key: "2",
+    label: loc("模糊", "Fuzzy"),
+    when: loc("明天", "Tomorrow"),
+    count: loc("次数保留", "Count kept"),
+  },
+  {
+    id: "good" as const,
+    key: "3",
+    label: loc("记得", "Knew"),
+    when: loc("按间隔走开", "Leaves on the interval"),
+    count: loc("次数 +1", "Count +1"),
+  },
+];
