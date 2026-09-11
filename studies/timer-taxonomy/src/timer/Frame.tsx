@@ -56,7 +56,7 @@ export function TimeChip({
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex h-7 max-w-[9.5rem] shrink-0 items-center gap-1.5 rounded-full bg-accent-soft px-2.5 text-[11px] font-medium text-accent tabular-nums"
+      className="timer-chip inline-flex h-7 max-w-[9.5rem] shrink-0 items-center gap-1.5 rounded-full bg-accent-soft px-2.5 text-[11px] font-medium text-accent tabular-nums"
     >
       <span
         className="timer-chip-dot size-1.5 shrink-0 rounded-full bg-accent"

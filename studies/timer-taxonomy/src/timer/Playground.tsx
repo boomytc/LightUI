@@ -21,6 +21,7 @@ import {
   type TimerState,
 } from "../lib/machines";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
+import { useReducedMotion } from "../lib/use-reduced-motion";
 import { cn } from "../lib/utils";
 import { InnerNav, KindPair, TimeChip, Well, Window } from "./Frame";
 import "./timer.css";
@@ -46,8 +47,10 @@ export function Playground() {
   }, []);
 
   return (
-    <div className="min-w-0 overflow-x-hidden">
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+    <div data-playground="timer" data-kind={active} className="min-w-0 overflow-x-hidden">
+      <DirectionPair locale={locale} active={active} onPick={setActive} />
+
+      <div className="mt-6 mb-4 flex flex-wrap items-end justify-between gap-3">
         <div className="min-w-0">
           <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 02</p>
           <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
@@ -58,7 +61,16 @@ export function Playground() {
         </p>
       </div>
 
-      <KindDemo key={meta.id} id={meta.id} onKind={setActive} layout="desk" />
+      <Contrast
+        locale={locale}
+        naive={pick(meta.naive, locale)}
+        matched={pick(meta.matched, locale)}
+        rung={pick(meta.zh, locale)}
+      />
+
+      <div key={meta.id} className="timer-kind-in mt-5">
+        <KindDemo id={meta.id} onKind={setActive} layout="desk" />
+      </div>
 
       <div className="mt-5 flex flex-wrap gap-1.5">
         {meta.scenes.map((scene) => (
@@ -87,6 +99,122 @@ export function Playground() {
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+function DirectionPair({
+  locale,
+  active,
+  onPick,
+}: {
+  locale: Locale;
+  active: KindId;
+  onPick: (id: KindId) => void;
+}) {
+  const reduce = useReducedMotion();
+  const heat = active === "stopwatch" ? 38 : 100;
+
+  return (
+    <div className="min-w-0">
+      <div className="mb-2 flex items-baseline justify-between gap-3">
+        <p className="text-[11px] font-medium tracking-wide text-intent">
+          {locale === "en" ? "Count up · no cap" : "正数累计 · 无上限"}
+        </p>
+        <p className="text-[11px] font-medium tracking-wide text-accent">
+          {locale === "en" ? "Count down · stop at 0" : "倒数专注 · 到 0 停"}
+        </p>
+      </div>
+
+      <div className="relative mb-3 h-1.5 overflow-hidden rounded-full bg-surface-2">
+        <div
+          className={cn("absolute inset-y-0 left-0 rounded-full", reduce ? "" : "timer-heat")}
+          style={{
+            width: `${heat}%`,
+            background:
+              "linear-gradient(90deg, var(--color-intent) 0%, var(--color-accent) 100%)",
+          }}
+        />
+      </div>
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        {KINDS.map((kind) => {
+          const on = kind.id === active;
+          const up = kind.id === "stopwatch";
+          return (
+            <button
+              key={kind.id}
+              type="button"
+              data-kind={kind.id}
+              aria-pressed={on}
+              onClick={() => onPick(kind.id)}
+              className={cn(
+                "flex items-start gap-3 rounded-2xl border px-4 py-3.5 text-left transition-colors",
+                on
+                  ? "border-border-strong bg-play-glow shadow-card"
+                  : "border-border bg-surface hover:bg-surface-2",
+              )}
+            >
+              <span
+                className={cn("timer-dir-mark mt-0.5", on ? "text-accent" : "text-fg-subtle", reduce && "is-still")}
+                data-dir={up ? "up" : "down"}
+                aria-hidden="true"
+              >
+                <i />
+                <i />
+                <i />
+              </span>
+              <span className="min-w-0">
+                <span className={cn("font-mono text-[10px] tracking-[0.14em] uppercase", on ? "text-accent" : "text-fg-subtle")}>
+                  {up ? (locale === "en" ? "up" : "往上") : locale === "en" ? "down" : "往下"}
+                </span>
+                <span className="mt-1 block text-[15px] font-semibold tracking-tight">
+                  {pick(kind.zh, locale)}
+                </span>
+                <span className="mt-1 block text-[13px] leading-snug text-fg-muted">
+                  {up
+                    ? locale === "en"
+                      ? "From 0 up. No session percent."
+                      : "从 0 往上。没有会话百分比。"
+                    : locale === "en"
+                      ? "From N down. Stops at 0 — no toast."
+                      : "从 N 往下。到 0 停住，不要 toast。"}
+                </span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function Contrast({
+  locale,
+  naive,
+  matched,
+  rung,
+}: {
+  locale: Locale;
+  naive: string;
+  matched: string;
+  rung: string;
+}) {
+  return (
+    <div className="grid gap-2 sm:grid-cols-2">
+      <aside className="rounded-xl border border-border bg-surface-2/70 px-3.5 py-3">
+        <p className="text-[10px] font-medium tracking-wide text-fg-subtle uppercase">
+          {locale === "en" ? "One moving number" : "一律一个走着的数字"}
+        </p>
+        <p className="mt-1.5 text-[13px] leading-relaxed text-fg-muted">{naive}</p>
+      </aside>
+      <aside className="rounded-xl border border-intent/30 bg-intent-soft px-3.5 py-3">
+        <p className="text-[10px] font-medium tracking-wide text-intent uppercase">
+          {locale === "en" ? "This direction" : "这一向"}
+          <span className="ml-1.5 font-sans normal-case tracking-normal text-intent/70">{rung}</span>
+        </p>
+        <p className="mt-1.5 text-[13px] leading-relaxed text-fg">{matched}</p>
+      </aside>
     </div>
   );
 }
@@ -142,6 +270,7 @@ export function KindDemo({
   layout?: "desk" | "stage";
 }) {
   const locale = useLocale();
+  const reduced = useReducedMotion();
   const snap = lock ?? (state !== undefined ? stageSnapshot(id, stageState(state, id)) : null);
   const locked = snap !== null;
   const desk = layout === "desk";
@@ -153,9 +282,18 @@ export function KindDemo({
 
   useEffect(() => {
     if (locked || !live.running) return;
-    const tick = window.setInterval(() => setClock(nowSeconds()), 200);
-    return () => window.clearInterval(tick);
-  }, [locked, live.running]);
+    if (reduced) {
+      const tick = window.setInterval(() => setClock(nowSeconds()), 200);
+      return () => window.clearInterval(tick);
+    }
+    let raf = 0;
+    const loop = () => {
+      setClock(nowSeconds());
+      raf = window.requestAnimationFrame(loop);
+    };
+    raf = window.requestAnimationFrame(loop);
+    return () => window.cancelAnimationFrame(raf);
+  }, [locked, live.running, reduced]);
 
   useEffect(() => {
     if (locked) return;
@@ -249,7 +387,9 @@ export function KindDemo({
             />
           </div>
         </div>
-        {body}
+        <div key={pane} className="timer-pane-in">
+          {body}
+        </div>
       </Well>
     );
   }
@@ -266,7 +406,9 @@ export function KindDemo({
         />
       }
     >
-      {body}
+      <div key={pane} className="timer-pane-in">
+        {body}
+      </div>
     </Window>
   );
 }
@@ -341,7 +483,11 @@ function TimerPane({
         <span
           className={cn(
             "rounded-full px-2 py-0.5 text-[11px] font-medium",
-            status === "running" ? "bg-accent-soft text-accent" : "bg-surface-2 text-fg-muted",
+            status === "running"
+              ? "bg-accent-soft text-accent"
+              : status === "done"
+                ? "bg-intent-soft text-intent"
+                : "bg-surface-2 text-fg-muted",
           )}
         >
           {statusLabel}
@@ -350,17 +496,13 @@ function TimerPane({
 
       <div className={cn("flex flex-col items-center", desk && "min-h-[18rem] justify-center")}>
         {progress == null ? (
-          <p
-            className={cn(
-              "font-semibold tracking-tight tabular-nums",
-              desk ? "text-[4.5rem] leading-none sm:text-[5.5rem]" : "text-[2.75rem] sm:text-[3.1rem]",
-            )}
-            aria-live="polite"
-          >
-            {shown}
-          </p>
+          <TickDigits
+            value={shown}
+            dir="up"
+            className={desk ? "text-[4.5rem] leading-none sm:text-[5.5rem]" : "text-[2.75rem] sm:text-[3.1rem]"}
+          />
         ) : (
-          <FocusRing progress={progress} label={shown} size={desk ? 240 : 176} />
+          <FocusRing progress={progress} label={shown} size={desk ? 240 : 176} done={status === "done"} />
         )}
         <p className={cn("text-[12px] text-fg-muted", desk ? "mt-4" : "mt-2")}>{caption}</p>
       </div>
@@ -392,21 +534,57 @@ function TimerPane({
       ) : (
         <p className="mt-4 text-center text-[11px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "The ring is this session, not today’s goal. Hitting 0 stops the clock."
-            : "环是这一段会话，不是今日目标。到 0 自己停住。"}
+            ? "The ring is this session, not today’s goal. Hitting 0 stops the clock — not a toast."
+            : "环是这一段会话，不是今日目标。到 0 自己停住，不是一条 toast。"}
         </p>
       )}
     </div>
   );
 }
 
-function FocusRing({ progress, label, size }: { progress: number; label: string; size: number }) {
+function TickDigits({
+  value,
+  dir,
+  className,
+}: {
+  value: string;
+  dir: "up" | "down";
+  className?: string;
+}) {
+  return (
+    <p className={cn("timer-digits font-semibold tracking-tight", className)} aria-live="polite" aria-label={value}>
+      {value.split("").map((ch, i) =>
+        ch === ":" ? (
+          <span key={`c-${i}`} className="timer-colon">
+            :
+          </span>
+        ) : (
+          <span key={`${i}-${ch}`} className={cn("timer-digit", dir === "down" && "is-down")}>
+            {ch}
+          </span>
+        ),
+      )}
+    </p>
+  );
+}
+
+function FocusRing({
+  progress,
+  label,
+  size,
+  done,
+}: {
+  progress: number;
+  label: string;
+  size: number;
+  done: boolean;
+}) {
   const stroke = size >= 224 ? 9 : 7;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const offset = c * (1 - progress);
   return (
-    <div className="relative" style={{ width: size, height: size }}>
+    <div className={cn("timer-ring relative", done && "is-done")} style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
         <circle
           cx={size / 2}
@@ -417,6 +595,7 @@ function FocusRing({ progress, label, size }: { progress: number; label: string;
           strokeWidth={stroke}
         />
         <circle
+          className="timer-ring-progress"
           cx={size / 2}
           cy={size / 2}
           r={r}
@@ -429,15 +608,11 @@ function FocusRing({ progress, label, size }: { progress: number; label: string;
         />
       </svg>
       <div className="absolute inset-0 grid place-items-center">
-        <p
-          className={cn(
-            "font-semibold tracking-tight tabular-nums",
-            size >= 224 ? "text-[2.75rem]" : "text-[2.35rem]",
-          )}
-          aria-live="polite"
-        >
-          {label}
-        </p>
+        <TickDigits
+          value={label}
+          dir="down"
+          className={size >= 224 ? "text-[2.75rem]" : "text-[2.35rem]"}
+        />
       </div>
     </div>
   );

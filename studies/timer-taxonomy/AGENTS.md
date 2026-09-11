@@ -24,7 +24,7 @@ The lab mounts `StudyView` at `/s/timer-taxonomy`.
 - `idea.md` / `study.json` — extracted rule + catalog metadata
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — liveSeconds, remaining, start / pause / end (no DOM)
-- `src/timer/` — two leaves in a full-width desk well; stage still uses a window frame
+- `src/timer/` — two leaves in a full-width desk well; direction pair (up / down) above the clock; stage still uses a window frame
 - `src/StageView.tsx` — one kind, one locked snapshot, no chrome, 390 fixture
 - `src/lib/stage-query.ts` — `kind=stopwatch|focus`, `state=idle|running|paused|done`
 

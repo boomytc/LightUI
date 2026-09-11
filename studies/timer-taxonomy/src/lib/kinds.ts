@@ -17,6 +17,8 @@ export type KindMeta = {
   window: Localized;
   caption: Localized;
   hint: Localized;
+  naive: Localized;
+  matched: Localized;
 };
 
 export const KINDS: KindMeta[] = [
@@ -48,6 +50,8 @@ export const KINDS: KindMeta[] = [
     window: loc("工位 · 计时", "Desk · timer"),
     caption: loc("已经过了多久", "Elapsed this session"),
     hint: loc("没有上限", "No cap"),
+    naive: loc("画成 25 分钟上限的假番茄，到点假装完成", "Drawn as a 25-minute fake pomodoro that pretends to finish"),
+    matched: loc("从 0 往上，没有会话上限，数字是已经过了多久", "From 0 up, no session cap; the number is how long has passed"),
   },
   {
     id: "focus",
@@ -77,6 +81,8 @@ export const KINDS: KindMeta[] = [
     window: loc("工位 · 计时", "Desk · timer"),
     caption: loc("还剩多久", "Remaining this session"),
     hint: loc("专注 1 分钟", "Focus · 1 minute"),
+    naive: loc("数字越走越大，到点弹一条 toast，还可能变成负数", "The number grows; zero fires a toast, and it may go negative"),
+    matched: loc("从 N 往下，到 0 自己停住，不要变负，也不要 toast", "From N down; stop at 0 — never negative, never a toast"),
   },
 ];
 

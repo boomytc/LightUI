@@ -9,6 +9,9 @@ export function StudyView() {
     <div className="page-width min-w-0 overflow-x-hidden pb-20">
       <section className="grid gap-8 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
         <div className="min-w-0">
+          <p className="mb-3 font-mono text-[11px] tracking-[0.18em] text-accent uppercase">
+            {locale === "en" ? "Stopwatch · Focus" : "累计 · 专注"}
+          </p>
           <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
             {locale === "en"
               ? "Does this session count up, or count down?"
@@ -19,6 +22,19 @@ export function StudyView() {
               ? "“Make a timer” describes the skin. What breaks is direction: elapsed from 0, or remaining from N — not a spinner, not a toast at zero."
               : "「做个计时器」说的是外观。真正会坏掉的是方向：从 0 往上，还是从 N 往下。不是转圈，到点也不是一条 toast。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["From 0 up · no cap", "From N down · stop at 0", "Chrome still shows it"]
+              : ["从 0 往上 · 无上限", "从 N 往下 · 到 0 停", "顶栏仍露出"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
