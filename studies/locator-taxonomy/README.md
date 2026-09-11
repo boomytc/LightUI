@@ -10,4 +10,4 @@ make dev-study STUDY=locator-taxonomy
 npm run dev --workspace=@lightui/locator-taxonomy
 ```
 
-Standalone playground runs at `http://127.0.0.1:5212/`.
+Standalone playground runs at `http://127.0.0.1:5192/`.

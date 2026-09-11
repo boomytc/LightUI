@@ -21,7 +21,7 @@ export function App() {
           </span>
         </div>
       </header>
-      <div className="mx-auto max-w-5xl px-6 py-8">
+      <div className="py-6">
         <StudyView />
       </div>
     </main>

@@ -1,82 +1,96 @@
-import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { useLayoutEffect, useState } from "react";
+import { useLocatorCopy, useReportLocator } from "../../lib/feedback";
 import { cn } from "../../lib/utils";
 
 const FAQS = [
   {
     q: "如何建立不会让人迷路的长页面？",
-    a: "先根据用户意图分类：连续阅读用阅读进度与返回顶部；结构检索用侧边锚点大纲；复杂表单用步骤向导；低频参数用折叠面板；精准查找用行内检索。",
-    tags: ["知识库", "信息架构"],
+    a: "先按意图分类：连续阅读用进度与回顶；结构检索用侧边大纲；复杂表单用步骤向导；低频说明用折叠；精准查找用行内检索。",
+    tags: ["信息架构", "意图"],
   },
   {
     q: "哪些内容适合默认折叠收拢？",
-    a: "低频参数说明、进阶配置、常见 FAQ 与故障排查细节。关键标题必须保持可见以供扫读，答案只在点击时按需展开，避免一次性冲淡核心主干。",
-    tags: ["渐进披露", "折叠面板"],
+    a: "低频参数、进阶配置、FAQ 与排障细节。标题必须先在，供扫读；答案只在点击时展开，避免一次冲淡主干。",
+    tags: ["渐进披露"],
   },
   {
     q: "折叠面板的高度过渡该怎么做？",
-    a: "推荐采用现代 CSS 的 grid-template-rows: 0fr / 1fr 过渡方案。相比 JS 动态测量 scrollHeight，CSS Grid 能够避免重排抖动并完美适配动态内容变化。",
-    tags: ["CSS Grid", "动画细节"],
+    a: "用 grid-template-rows: 0fr / 1fr。比起用脚本量 scrollHeight，网格行能跟着内容变，且少一次重排抖动。",
+    tags: ["CSS Grid"],
   },
   {
     q: "页面结构调整时，旧锚点会失效吗？",
-    a: "应当尽量保留旧锚点 ID 并设置平滑重定向，避免用户已收藏或分享的 URL Hash 无法正确定位到对应段落。",
-    tags: ["锚点维护", "URL Hash"],
+    a: "尽量保留旧锚点 ID，并给失效地址一条平滑去向，避免收藏或分享的 hash 落到空白。",
+    tags: ["锚点", "URL"],
   },
   {
-    q: "移动端窄屏如何适配大纲导航？",
-    a: "窄屏下不宜占用双栏空间，可将大纲目录收纳为顶部横向滚动药丸（Pills）或抽屉浮层，保留至少 44px 触控热区。",
-    tags: ["移动端", "响应式"],
+    q: "窄屏上大纲怎么放？",
+    a: "不要硬挤双栏。收成顶部横滑药丸或抽屉，触控热区至少 44px。大纲仍是页内跳转，不是站点导航。",
+    tags: ["窄屏"],
   },
 ];
 
 export function AccordionDemo() {
+  const report = useReportLocator();
+  const { t } = useLocatorCopy();
   const [open, setOpen] = useState<number | null>(1);
+  const current = open === null ? null : FAQS[open];
+
+  useLayoutEffect(() => {
+    report({
+      metric: t("展开条目", "Open item"),
+      value: current ? `${open! + 1} / ${FAQS.length}` : t("全部收起", "All folded"),
+      hint: current ? current.q : t("标题先在，正文按需", "Titles first, bodies on demand"),
+      ratio: current ? (open! + 1) / FAQS.length : 0,
+    });
+  }, [current, open, report, t]);
 
   return (
-    <div className="h-full overflow-y-auto px-4 py-4 sm:px-6">
-      <div className="mb-4">
-        <h3 className="text-base font-semibold text-fg">常见问题与排查指南</h3>
-        <p className="mt-0.5 text-xs text-fg-muted">默认收起细节，标题先成为快速扫读线索</p>
+    <div data-scroller="locator" className="h-full overflow-y-auto px-4 py-5 sm:px-6">
+      <div className="mb-4 flex items-end justify-between gap-3">
+        <div>
+          <h3 className="text-base font-semibold tracking-tight text-fg">常见问题</h3>
+          <p className="mt-1 text-[12px] text-fg-muted">默认只露标题。扫完再打开一条。</p>
+        </div>
+        <p className="font-mono text-[11px] text-fg-subtle">
+          {open === null ? "0" : "1"} / {FAQS.length} 展开
+        </p>
       </div>
 
-      <ul className="divide-y divide-border rounded-xl border border-border bg-surface">
-        {FAQS.map((item, i) => {
-          const expanded = open === i;
+      <ul className="overflow-hidden rounded-2xl border border-border bg-surface">
+        {FAQS.map((item, index) => {
+          const expanded = open === index;
           return (
-            <li key={item.q}>
+            <li key={item.q} className={index > 0 ? "border-t border-border" : undefined}>
               <button
                 type="button"
                 aria-expanded={expanded}
-                onClick={() => setOpen(expanded ? null : i)}
+                onClick={() => setOpen(expanded ? null : index)}
                 className={cn(
-                  "flex min-h-12 w-full items-center justify-between gap-4 px-4 py-3 text-left text-sm transition-colors",
-                  expanded ? "bg-surface-2 font-medium text-fg" : "text-fg hover:bg-surface-2/60",
+                  "flex min-h-12 w-full items-center justify-between gap-4 px-4 py-3 text-left text-[13px] transition-colors",
+                  expanded ? "bg-play-glow font-medium text-fg" : "text-fg hover:bg-surface-2/70",
                 )}
               >
                 <span>{item.q}</span>
-                <span
-                  className="relative size-6 shrink-0 rounded-full border border-border bg-surface grid place-items-center"
+                <ChevronDown
                   aria-hidden="true"
-                >
-                  <span className="absolute h-px w-2.5 bg-fg-muted" />
-                  <span
-                    className={cn(
-                      "absolute h-2.5 w-px bg-fg-muted transition-transform duration-200",
-                      expanded && "scale-y-0",
-                    )}
-                  />
-                </span>
+                  className={cn(
+                    "size-4 shrink-0 text-fg-subtle transition-transform duration-200",
+                    expanded && "rotate-180 text-accent",
+                  )}
+                />
               </button>
               <div
                 className={cn(
-                  "grid transition-[grid-template-rows] duration-200 ease-out",
+                  "grid transition-[grid-template-rows] duration-[280ms] ease-out",
                   expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
                 )}
               >
-                <div className="overflow-hidden">
-                  <div className="border-t border-border/50 bg-surface-2/30 px-4 py-3.5">
-                    <p className="text-xs leading-relaxed text-fg-muted">{item.a}</p>
-                    <div className="mt-2.5 flex flex-wrap gap-1.5">
+                <div className="min-h-0 overflow-hidden">
+                  <div className="border-t border-border/60 bg-surface-2/40 px-4 py-3.5">
+                    <p className="text-[13px] leading-relaxed text-fg-muted">{item.a}</p>
+                    <div className="mt-3 flex flex-wrap gap-1.5">
                       {item.tags.map((tag) => (
                         <span
                           key={tag}

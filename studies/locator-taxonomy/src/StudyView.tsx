@@ -1,213 +1,134 @@
-import { useState } from "react";
-import { BrowserFrame } from "./components/browser-frame";
-import { AccordionDemo } from "./components/demos/accordion";
-import { AnchorNavDemo } from "./components/demos/anchor-nav";
-import { BackToTopDemo } from "./components/demos/back-to-top";
-import { ReadingProgressDemo } from "./components/demos/reading-progress";
-import { SearchDemo } from "./components/demos/search";
-import { StatusFilterDemo } from "./components/demos/status-filter";
-import { StepperDemo } from "./components/demos/stepper";
-import { INTENTS, PATTERNS, type PatternSlug } from "./lib/kinds";
+import { FORMULA, SCENES } from "./lib/kinds";
 import { pick, useLocale } from "./lib/site-locale";
-import { cn } from "./lib/utils";
+import { Playground } from "./components/playground";
 
 export function StudyView() {
   const locale = useLocale();
-  const [selected, setSelected] = useState<PatternSlug>("anchor");
-  const [seed, setSeed] = useState(0);
-
-  const current = PATTERNS.find((p) => p.slug === selected) ?? PATTERNS[0];
-
-  function renderDemo() {
-    switch (selected) {
-      case "progress":
-        return <ReadingProgressDemo key={seed} />;
-      case "back-to-top":
-        return <BackToTopDemo key={seed} />;
-      case "anchor":
-        return <AnchorNavDemo key={seed} />;
-      case "stepper":
-        return <StepperDemo key={seed} />;
-      case "accordion":
-        return <AccordionDemo key={seed} />;
-      case "search":
-        return <SearchDemo key={seed} />;
-      case "status-filter":
-        return <StatusFilterDemo key={seed} />;
-      default:
-        return null;
-    }
-  }
 
   return (
     <div className="page-width min-w-0 overflow-x-hidden pb-20">
-      {/* Header Introduction */}
-      <section className="grid gap-8 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
+      <section className="grid gap-8 pt-4 pb-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pt-8 lg:pb-12">
         <div className="min-w-0">
-          <p className="text-xs font-mono font-semibold tracking-wider text-accent uppercase">
-            {locale === "en" ? "In-Page Navigation Taxonomy" : "页面内定位器机制"}
-          </p>
-          <h1 className="mt-2 text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
+          <h1 className="text-[2rem] leading-[1.15] font-semibold tracking-tight text-fg sm:text-[2.6rem]">
             {locale === "en"
-              ? "Long pages scroll. Locators clarify intent."
-              : "长页面只是滚动。定位器才给出意图。"}
+              ? "A longer page is only more scroll. First name the intent."
+              : "页面变长只是滚动更多。先定意图，再给定位器。"}
           </h1>
           <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
             {locale === "en"
-              ? "AI and rich docs easily generate monolithic pages. What prevents scroll fatigue is matching user intent: continuous reading, outline jumps, stepwise wizards, or live retrieval."
-              : "AI 与富文档极易生成一滚到底的单页。真正解决空间迷失的，是按用户意图匹配定位器：沉浸阅读、大纲直达、步骤推进还是即时检索。"}
+              ? "“Add a scrollbar” describes the overflow. What breaks is orientation: keep reading, jump a section, fold details, or search and slice — each job needs a different locator."
+              : "「再加一点滚动」说的是溢出。真正会坏掉的是位置：连续阅读、结构跳转、折叠展开，还是行内检索筛选——意图不同，定位器就不同。"}
           </p>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Switch between the 7 locator models below to see live interaction, container thresholds, and DOM-free algorithms."
-            : "在下方 7 种定位器模型间切换，体验实时容器联动、阈值判定与无 DOM 算法。"}
+            ? "Four intents below. Pick the job first, then the model. The strip reports where you are while you move."
+            : "下面先问四种意图，再选模型。顶上那条会跟着你的位置开口：完成度、阈值、当前节、步骤、命中或切片。"}
         </p>
       </section>
 
-      {/* Main Interactive Stage */}
-      <section className="grid gap-6 lg:grid-cols-[300px_1fr]">
-        {/* Left Column: Intent Groups & Selector */}
-        <div className="space-y-4">
-          {INTENTS.map((intent) => (
-            <div key={intent.key} className="rounded-xl border border-border bg-surface p-3.5 shadow-sm">
-              <h2 className="text-xs font-mono font-semibold tracking-wider text-fg-subtle uppercase">
-                {pick(intent.title, locale)}
-              </h2>
-              <p className="mt-0.5 text-[11px] text-fg-muted">{pick(intent.desc, locale)}</p>
+      <Playground />
 
-              <div className="mt-2.5 space-y-1.5">
-                {intent.slugs.map((slug) => {
-                  const pat = PATTERNS.find((p) => p.slug === slug);
-                  if (!pat) return null;
-                  const active = selected === slug;
-
-                  return (
-                    <button
-                      key={slug}
-                      type="button"
-                      onClick={() => {
-                        setSelected(slug);
-                        setSeed((n) => n + 1);
-                      }}
-                      className={cn(
-                        "flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs transition-all",
-                        active
-                          ? "bg-accent text-accent-fg font-medium shadow-sm"
-                          : "bg-surface-2/60 text-fg-muted hover:bg-surface-2 hover:text-fg",
-                      )}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-[10px] opacity-70">{pat.id}</span>
-                        <span>{pick(pat.name, locale)}</span>
-                      </div>
-                      <span className="text-[10px] font-mono opacity-80">{pick(pat.eyebrow, locale).split(" · ")[0]}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Right Column: Active Interactive Frame & Card Info */}
-        <div className="space-y-4">
-          <BrowserFrame
-            title={pick(current.name, locale)}
-            eyebrow={`Locator Model 0${current.id}`}
-            badge={
-              <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-[11px] font-medium text-accent">
-                {pick(current.eyebrow, locale)}
-              </span>
-            }
-            onReset={() => setSeed((n) => n + 1)}
-          >
-            {renderDemo()}
-          </BrowserFrame>
-
-          <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
-            <div className="flex items-start gap-3">
-              <span className="inline-flex size-6 shrink-0 items-center justify-center rounded-md bg-fg text-xs font-semibold text-surface">
-                {current.id}
-              </span>
-              <div className="min-w-0">
-                <h3 className="text-xs font-semibold text-fg">
-                  {pick(current.purpose, locale)}
-                </h3>
-                <p className="mt-1 text-[11px] leading-relaxed text-fg-muted">
-                  💡 <strong className="text-fg">{locale === "en" ? "Rule: " : "核心规则："}</strong>
-                  {pick(current.coreRule, locale)}
-                </p>
-                <p className="mt-0.5 text-[11px] text-accent">
-                  👉 <strong className="text-fg">{locale === "en" ? "Hint: " : "互动提示："}</strong>
-                  {pick(current.hint, locale)}
-                </p>
-              </div>
+      <section className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {FORMULA.map((item) => (
+          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
+            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
+              {item.n}
+            </span>
+            <div className="min-w-0">
+              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
+              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
             </div>
           </div>
-        </div>
+        ))}
       </section>
 
-      {/* Distinction Matrix */}
-      <section className="mt-14 grid min-w-0 gap-8 lg:grid-cols-2">
+      <section className="mt-6 overflow-hidden rounded-2xl border border-border bg-surface">
+        <div className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,1.1fr)] gap-2 border-b border-border bg-surface-2/70 px-4 py-2 text-[10px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+          <span>{locale === "en" ? "Scene" : "场景"}</span>
+          <span>{locale === "en" ? "Only scroll" : "一律长滚"}</span>
+          <span>{locale === "en" ? "Match the intent" : "按意图匹配"}</span>
+        </div>
+        {SCENES.map((row) => (
+          <div
+            key={row.scene.zh}
+            className="grid grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,1.1fr)] gap-2 border-b border-border px-4 py-2.5 last:border-b-0"
+          >
+            <p className="text-[13px] font-medium text-fg">{pick(row.scene, locale)}</p>
+            <p className="text-[12px] text-fg-muted">{pick(row.naive, locale)}</p>
+            <p className="text-[12px] text-fg">{pick(row.matched, locale)}</p>
+          </div>
+        ))}
+      </section>
+
+      <section className="mt-14 grid min-w-0 gap-10 lg:grid-cols-2">
         <article className="min-w-0">
           <h2 className="text-[1.35rem] font-semibold tracking-tight">
-            {locale === "en" ? "How to tell locators apart" : "怎么把定位器与相近概念区分"}
+            {locale === "en" ? "How to tell locators apart" : "怎么把定位器与相近概念分开"}
           </h2>
           <ol className="mt-5 space-y-4 text-[14px] leading-relaxed text-fg-muted">
             <li>
-              <strong className="text-fg">
+              <span className="font-medium text-fg">
                 {locale === "en" ? "1. In-page TOC is not site routing" : "1. 页面内大纲不是整站全局路由"}
-              </strong>
+              </span>
               <br />
               {locale === "en"
-                ? "Outlines and scrollspy guide navigation within a document. Top bars and hamburger menus route between views and products."
-                : "大纲目录与滚动联动解决的是单篇长内容内的段落直达与位置反馈；顶部导航栏和汉堡菜单解决的是跨路由的站点架构。"}
+                ? "Outlines and scrollspy stay inside one document. Top bars and hamburger menus change the route."
+                : "大纲与滚动高亮解决的是一篇里的段落直达；顶栏和汉堡解决的是跨路由的站点架构。"}
             </li>
             <li>
-              <strong className="text-fg">
+              <span className="font-medium text-fg">
                 {locale === "en" ? "2. Reading progress is not a scrollbar" : "2. 阅读进度不是滚动条皮肤"}
-              </strong>
+              </span>
               <br />
               {locale === "en"
-                ? "Scrollbars show physical window placement. Reading progress expresses cognitive task completion and remaining depth."
-                : "滚动条表达视口在容器里的物理坐标；阅读进度条用极低侵入性反馈用户在整个阅读旅程中的完成比例。"}
+                ? "A scrollbar maps the viewport to a track. Progress reports remaining depth of the reading job."
+                : "滚动条是视口在轨道上的物理映射；阅读进度报的是这篇还剩多深。"}
             </li>
             <li>
-              <strong className="text-fg">
-                {locale === "en" ? "3. Accordions are not lazy tabs" : "3. 折叠面板不是页签切换"}
-              </strong>
+              <span className="font-medium text-fg">
+                {locale === "en" ? "3. Outline anchors are not tabs" : "3. 大纲锚点不是页签切换"}
+              </span>
               <br />
               {locale === "en"
-                ? "Tabs switch between distinct sibling views. Accordions progressively disclose details while keeping titles in a scannable single flow."
-                : "页签切换会切断上下文并替换主视图；折叠面板保留标题连续扫描流，仅在用户需要时局部展开细节。"}
+                ? "Tabs replace the main view and cut context. Anchors keep the page and move you inside it."
+                : "页签会切断上下文并换掉主视图；锚点保留整页，只把你送到那一节。"}
+            </li>
+            <li>
+              <span className="font-medium text-fg">
+                {locale === "en" ? "4. A stepper is not field disclosure" : "4. 步骤向导不是表单字段披露"}
+              </span>
+              <br />
+              {locale === "en"
+                ? "A stepper is a staged machine with a forward lock. Field disclosure opens more on one page."
+                : "向导是带阶段提交和顺序约束的状态机；字段披露是同一页里按需展开。"}
             </li>
           </ol>
         </article>
 
-        <article className="min-w-0 overflow-hidden rounded-2xl border border-border bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
-          <p className="text-[12px] font-mono font-medium uppercase tracking-[0.12em] text-surface/50">
-            pure_algorithms.ts
+        <article className="min-w-0 overflow-hidden rounded-2xl border border-fg bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
+          <p className="text-[12px] font-medium tracking-[0.12em] text-surface/45 uppercase">
+            calculateProgressRatio
           </p>
-          <pre className="mt-3 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/90">
-{`function calculateProgressRatio(scrollTop, scrollHeight, clientHeight) {
-  const max = scrollHeight - clientHeight;
-  if (max <= 0) return 1;
-  return Math.min(1, Math.max(0, scrollTop / max));
+          <pre className="mt-3 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">
+{`function calculateProgressRatio(top, height, view) {
+  const max = height - view
+  if (max <= 0) return 1
+  return min(1, max(0, top / max))
 }
 
-function shouldShowBackToTop(scrollTop, threshold = 240) {
-  return scrollTop > threshold;
+function shouldShowBackToTop(top, threshold = 240) {
+  return top > threshold
 }
 
 function canNavigateStep(target, current) {
-  return target <= current;
+  return target <= current
 }`}
           </pre>
-          <p className="mt-4 text-[12px] leading-relaxed text-surface/60">
+          <p className="mt-4 text-[13px] leading-relaxed text-surface/55">
             {locale === "en"
-              ? "All geometry calculations, thresholds, and stepper validations stay isolated in pure DOM-free algorithms."
-              : "所有滚动深度计算、回顶阈值与步骤校验均封装在无 DOM 纯算法中，便于单元测试与跨端复用。"}
+              ? "Depth, threshold, and step lock stay in DOM-free helpers. The widget only reports what those functions already know."
+              : "深度、阈值和步锁留在无 DOM 的纯函数里。界面只把这些函数已经知道的位置说出来。"}
           </p>
         </article>
       </section>

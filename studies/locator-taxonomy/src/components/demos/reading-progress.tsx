@@ -1,87 +1,138 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLocatorCopy, useReportLocator } from "../../lib/feedback";
 import { calculateProgressRatio } from "../../lib/machines";
+import { useContainerScroll } from "../../lib/use-container-scroll";
+import { cn } from "../../lib/utils";
 
 const CHAPTERS = [
   {
-    title: "1. 为什么阅读进度能降低不确定感？",
-    body: "阅读长文或研究报告时，用户最容易产生的心理顾虑是「这条路还有多长」。底部或顶部的纤细进度条以极低的视觉侵入性，提供了持续、可预测的完成度参照。",
+    title: "为什么阅读进度能降低不确定感",
+    body: "阅读长文时，最先冒出的顾虑是「这条路还有多长」。贴边的细进度以极低侵入性，持续给出可预测的完成度，而不是让人猜滚动条还剩几截。",
   },
   {
-    title: "2. 进度计算分母的常见陷阱",
-    body: "分母必须是 scrollHeight - clientHeight，而不是直接用 scrollHeight。如果用 scrollHeight，滚动到最底部时进度只能到达 (scrollHeight - clientHeight)/scrollHeight，永远无法达到 100%。",
+    title: "进度计算分母的常见陷阱",
+    body: "分母必须是 scrollHeight − clientHeight。若直接除以 scrollHeight，滚到最底也只能停在一个永远小于 1 的比例，读完却到不了 100%。",
   },
   {
-    title: "3. 贴边固定与正文留白",
-    body: "阅读进度指示器应当贴合在容器底边或顶边，并带轻微的半透明磨砂背景，避免遮盖正文最后一行文字，且读完 100% 后依然稳定呈现，而不是突兀消失。",
+    title: "贴边固定与正文留白",
+    body: "指示器贴在容器底边，带一层薄背景，不盖住最后一行。读完 100% 后仍然留驻，告诉人这篇已经走完，而不是突然消失。",
   },
   {
-    title: "4. 到达终点后的下一步指引",
-    body: "当进度达到 100% 时，界面应当提供明确的下一步去向（如相关文档推荐、返回目录、提交操作），而不是把用户扔在空白底部。",
+    title: "到达终点后的下一步",
+    body: "进度到 100% 时，页面应给出下一去向：相关篇目、返回目录、或提交。不要把人扔在空白底部。",
   },
   {
-    title: "5. 性能优化与 requestAnimationFrame",
-    body: "在滚动高频触发的场景下，结合 passive: true 监听与 requestAnimationFrame 节流计算，确保即使在低功耗设备上也能保持 60fps 丝滑渲染。",
+    title: "滚动高频下的节流",
+    body: "scroll 用 passive 监听，计算放进 requestAnimationFrame，低功耗设备上也能稳住帧率。进度报的是任务深度，不是把滚动条换个皮。",
   },
 ];
 
 export function ReadingProgressDemo() {
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const [ratio, setRatio] = useState(0);
+  const report = useReportLocator();
+  const { t } = useLocatorCopy();
+  const snap = useContainerScroll(scrollerRef);
+  const [chapter, setChapter] = useState(0);
+
+  const ratio = calculateProgressRatio(snap.scrollTop, snap.scrollHeight, snap.clientHeight);
+  const pct = Math.round(ratio * 100);
 
   useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
+    const root = scrollerRef.current;
+    if (!root) return;
 
-    const update = () => {
-      setRatio(calculateProgressRatio(el.scrollTop, el.scrollHeight, el.clientHeight));
-    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        const index = Number((visible.target as HTMLElement).dataset.chapter);
+        if (Number.isFinite(index)) setChapter(index);
+      },
+      { root, rootMargin: "-20% 0px -55% 0px", threshold: [0.15, 0.4, 0.75] },
+    );
 
-    update();
-    el.addEventListener("scroll", update, { passive: true });
-    return () => el.removeEventListener("scroll", update);
+    root.querySelectorAll("[data-chapter]").forEach((node) => io.observe(node));
+    return () => io.disconnect();
   }, []);
 
-  const pct = Math.round(ratio * 100);
+  useLayoutEffect(() => {
+    const done = pct >= 100;
+    const title = CHAPTERS[chapter]?.title ?? CHAPTERS[0].title;
+    report({
+      metric: t("阅读完成度", "Reading completion"),
+      value: done ? t("100% · 已读完，进度留驻", "100% · finished, still here") : `${pct}%`,
+      hint: done ? t("可以离开这篇", "Ready to leave") : `${chapter + 1} / ${CHAPTERS.length} · ${title}`,
+      ratio,
+    });
+  }, [chapter, pct, ratio, report, t]);
 
   return (
     <div className="relative h-full">
-      <div ref={scrollerRef} className="h-full overflow-y-auto px-5 pt-5 pb-16 sm:px-8">
-        <p className="text-[11px] font-mono tracking-wide text-fg-subtle">
-          Longform Essay · 20 min read
+      <div ref={scrollerRef} data-scroller="locator" className="h-full overflow-y-auto px-5 pt-5 pb-20 sm:px-8">
+        <p className="font-mono text-[11px] tracking-[0.14em] text-fg-subtle uppercase">
+          Longform · 连续阅读
         </p>
-
-        <article className="mt-2 max-w-xl space-y-6">
-          <h2 className="text-xl font-bold tracking-tight text-fg">
-            连续阅读体验与进度反馈
-          </h2>
-          <p className="text-sm leading-relaxed text-fg-muted">
-            向下滚动阅读文章，观察底部进度条的实时推进。
+        <article className="mt-2 max-w-xl">
+          <h2 className="text-xl font-semibold tracking-tight text-fg">连续阅读与剩余深度</h2>
+          <p className="mt-2 text-[13px] leading-relaxed text-fg-muted">
+            向下读。底部细条报的是这篇还剩多深，不是滚动条换了皮肤。
           </p>
 
-          {CHAPTERS.map((ch) => (
-            <section key={ch.title} className="space-y-2 border-t border-border/60 pt-4">
-              <h3 className="text-sm font-semibold text-fg">{ch.title}</h3>
-              <p className="text-xs leading-relaxed text-fg-muted">{ch.body}</p>
+          {CHAPTERS.map((ch, index) => (
+            <section
+              key={ch.title}
+              data-chapter={index}
+              className={cn(
+                "mt-6 border-t border-border/70 pt-5 transition-colors",
+                chapter === index && "border-accent/40",
+              )}
+            >
+              <p className="font-mono text-[10px] tracking-[0.14em] text-accent">
+                {String(index + 1).padStart(2, "0")} / {String(CHAPTERS.length).padStart(2, "0")}
+              </p>
+              <h3 className="mt-1 text-[15px] font-semibold text-fg">{ch.title}</h3>
+              <p className="mt-2 text-[13px] leading-relaxed text-fg-muted">{ch.body}</p>
             </section>
           ))}
 
-          <div className="rounded-xl border border-border bg-surface-2/60 p-4 text-xs text-fg-muted">
-            🎉 你已读完本篇内容。可以尝试点击左侧菜单体验其他定位器。
+          <div className="mt-8 rounded-xl border border-border bg-surface-2/70 px-4 py-4">
+            <p className="text-[13px] font-medium text-fg">这篇已经走完</p>
+            <p className="mt-1 text-[12px] leading-relaxed text-fg-muted">
+              进度停在 100%，不卸下。下一步可以是相关篇目，或换一种意图看别的定位器。
+            </p>
           </div>
         </article>
       </div>
 
-      {/* Bottom Sticky Progress Bar */}
       <div className="absolute inset-x-0 bottom-0 border-t border-border bg-surface/90 px-4 py-2.5 backdrop-blur-sm">
-        <div className="flex items-center justify-between text-[11px] text-fg-muted">
-          <span className="font-medium">阅读进度 {pct}%</span>
-          <span className="font-mono">{pct >= 100 ? "已完成" : "继续向下浏览"}</span>
+        <div className="flex items-center justify-between gap-3 text-[11px]">
+          <span className="font-medium text-fg">
+            {pct >= 100 ? "已读完" : `阅读进度 ${pct}%`}
+          </span>
+          <span className="truncate font-mono text-fg-muted">
+            {pct >= 100 ? "留驻" : CHAPTERS[chapter]?.title}
+          </span>
         </div>
-        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
+        <div className="relative mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
           <div
-            className="h-full rounded-full bg-accent transition-[width] duration-100 ease-out"
+            className="absolute inset-y-0 left-0 rounded-full bg-accent transition-[width] duration-150 ease-out"
             style={{ width: `${pct}%` }}
+            role="meter"
+            aria-label="阅读进度"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={pct}
           />
+          {CHAPTERS.map((_, index) => (
+            <span
+              key={index}
+              aria-hidden="true"
+              className="absolute top-0 h-full w-px bg-surface/70"
+              style={{ left: `${((index + 1) / CHAPTERS.length) * 100}%` }}
+            />
+          ))}
         </div>
       </div>
     </div>
