@@ -15,8 +15,8 @@ export function StudyView() {
         </h1>
         <p className="max-w-md text-[13px] leading-relaxed text-fg-muted">
           {locale === "en"
-            ? "Name the cut first. The eight motions below are live — the stage is the page."
-            : "先给切法起名。下面八种运动是活的——舞台就是这一页。"}
+            ? "Name the cut first. The eight tiles above are the contrast — open one to see how that cut moves."
+            : "先给切法起名。上面八格是切法对照，点进去再看这一刀怎么走。"}
         </p>
       </header>
 

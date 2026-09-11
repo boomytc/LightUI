@@ -49,8 +49,8 @@ export function Controls({
             >
               <span
                 className={cn(
-                  "size-2.5 rounded-full transition-[transform,background-color] duration-200",
-                  on ? "scale-110 bg-fg" : "bg-border-strong",
+                  "rounded-full transition-[width,background-color,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                  on ? "h-2 w-5 bg-fg" : "size-2 bg-border-strong",
                 )}
               />
             </button>

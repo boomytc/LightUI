@@ -14,6 +14,9 @@ export type KindMeta = {
   spec: Localized;
   note?: Localized;
   tells: Localized;
+  cut: Localized;
+  naive: Localized;
+  matched: Localized;
 };
 
 export const KINDS: KindMeta[] = [
@@ -34,10 +37,13 @@ export const KINDS: KindMeta[] = [
       loc("悬停暂停自动播放；减少动效则关掉并跳切", "Hover pauses autoplay; reduced motion jumps"),
     ],
     spec: loc(
-      "做经典左右滑轮播。四张画面整页水平平移，只动画 transform: translateX，过渡约 480ms。底部圆点与当前页双向绑定，左右箭头切换。自动播放时悬停暂停；系统减少动效时关掉自动播放并直接跳到下一张。不要淡入或 3D。",
-      "A classic slide carousel. Four frames translateX as whole pages, transform only, ~480ms. Dots stay bound to the index; arrows step. Hover pauses autoplay; reduced motion kills autoplay and jumps. No fade, no 3D.",
+      "做经典左右滑轮播。四张画面整页水平平移，只动画 transform: translateX，过渡约 560ms，过缝走最短路径。底部圆点与当前页双向绑定，左右箭头切换。自动播放时悬停暂停；系统减少动效时关掉自动播放并直接跳到下一张。不要淡入或 3D。",
+      "A classic slide carousel. Four frames translateX as whole pages, transform only, ~560ms, shortest path on wrap. Dots stay bound to the index; arrows step. Hover pauses autoplay; reduced motion kills autoplay and jumps. No fade, no 3D.",
     ),
     tells: loc("整页在轨道上平移", "Whole pages move on a track"),
+    cut: loc("平移", "Slide"),
+    naive: loc("一律左右滑，中间闪一刀也无所谓", "Always slide — a hard cut in the middle is fine"),
+    matched: loc("整页平移，圆点同步当前页", "Whole frames translateX; dots stay on the page"),
   },
   {
     id: "fade",
@@ -61,6 +67,9 @@ export const KINDS: KindMeta[] = [
     ),
     note: loc("淡入不是平移变慢。切法是透明度，不是轨道。", "Fade is not a slower slide. The cut is opacity, not a track."),
     tells: loc("画面在原位交叉淡入", "Frames crossfade in place"),
+    cut: loc("淡入", "Fade"),
+    naive: loc("品牌大图也被做成硬切的左右滑", "A brand hero is still a hard sideways cut"),
+    matched: loc("叠在原位交叉淡入，布局不跳", "Crossfade in place; the layout does not jump"),
   },
   {
     id: "coverflow",
@@ -83,6 +92,9 @@ export const KINDS: KindMeta[] = [
       "A 3D coverflow. The center card is largest and faces you; sides scale down and rotateY ~40° with perspective. Click a side card or an arrow to bring it to center. Dots sync the center. Not a flat track.",
     ),
     tells: loc("侧面有体积，不是扁的轨道", "The sides have volume, not a flat track"),
+    cut: loc("木马", "Coverflow"),
+    naive: loc("作品橱窗被压成一条扁轨道", "A portfolio is flattened onto a track"),
+    matched: loc("中间大、两侧转出体积", "Center large; the sides rotate into volume"),
   },
   {
     id: "stack",
@@ -106,6 +118,9 @@ export const KINDS: KindMeta[] = [
     ),
     note: loc("叠卡是剥顶。平移才是轨道。", "A stack peels the top. A track is a slide."),
     tells: loc("处理的是顶上那一张", "You handle the card on top"),
+    cut: loc("叠卡", "Stack"),
+    naive: loc("推荐卡片排成 Banner，只能按箭头", "Picks become a banner you can only arrow through"),
+    matched: loc("把顶卡剥走，下一张抬起来", "Peel the top card; the next one lifts"),
   },
   {
     id: "flip",
@@ -128,6 +143,9 @@ export const KINDS: KindMeta[] = [
       "A page-flip lookbook. Both pages visible, like an open magazine. Next turns the right page rotateY(-180deg) on the spine. Dots sync the spread. Not a sideways slide.",
     ),
     tells: loc("有书脊，不是轨道", "There is a spine, not a track"),
+    cut: loc("翻页", "Flip"),
+    naive: loc("画册被做成平移，没有书脊", "A lookbook slides sideways and loses its spine"),
+    matched: loc("沿书脊翻过去，左右两页同时在", "Turn on the spine; both pages stay in view"),
   },
   {
     id: "accordion",
@@ -151,6 +169,9 @@ export const KINDS: KindMeta[] = [
     ),
     note: loc("手风琴还看得见旁边。轨道会把整块切走。", "An accordion still shows neighbors. A track takes the view away."),
     tells: loc("旁边还露着，没有切走", "Neighbors stay; the view is not cut away"),
+    cut: loc("手风琴", "Accordion"),
+    naive: loc("摄影墙被塞进圆点轮播，一次只露一张", "A photo wall is forced into a one-frame track"),
+    matched: loc("当前展开，旁边还露一条", "The current column grows; neighbors keep a strip"),
   },
   {
     id: "spin",
@@ -174,6 +195,9 @@ export const KINDS: KindMeta[] = [
     ),
     note: loc("360 转的是物体。木马转的是一组卡片。", "360 rotates an object. Coverflow rotates a set of cards."),
     tells: loc("按住转一圈，不是翻下一张", "Hold and turn — you are not paging"),
+    cut: loc("360", "360°"),
+    naive: loc("产品 360 被做成四张侧面照片左右滑", "A product turn becomes four side photos on a track"),
+    matched: loc("按住转一圈，转的是角度", "Hold and turn; you rotate an angle"),
   },
   {
     id: "parallax",
@@ -196,6 +220,9 @@ export const KINDS: KindMeta[] = [
       "A parallax carousel. Background, mid, and foreground shift at 0.3 / 0.7 / 1.0 on one progress. Dots sync the scene. A brand hero, not a single-layer slide.",
     ),
     tells: loc("远的慢、近的快", "Far is slow; near is fast"),
+    cut: loc("视差", "Parallax"),
+    naive: loc("主视觉只有一层在动", "The hero only moves one layer"),
+    matched: loc("远近层用 0.3 / 0.7 / 1.0 错速", "Near and far move at 0.3 / 0.7 / 1.0"),
   },
 ];
 

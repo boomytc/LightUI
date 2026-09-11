@@ -1,46 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { KINDS, type KindId } from "../lib/kinds";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
-import { cn } from "../lib/utils";
 import { CarouselDemo } from "./CarouselDemo";
+import { Contrast, CutMap } from "./CutMap";
+import "./slides.css";
 
 export function Playground() {
   const locale = useLocale();
   const [active, setActive] = useState<KindId>("classic");
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0];
 
-  return (
-    <div className="min-w-0">
-      <nav
-        aria-label={locale === "en" ? "Carousel kinds" : "轮播种类"}
-        className="flex flex-wrap gap-1.5"
-      >
-        {KINDS.map((kind) => {
-          const on = kind.id === active;
-          return (
-            <button
-              key={kind.id}
-              type="button"
-              data-kind={kind.id}
-              onClick={() => setActive(kind.id)}
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] transition-colors",
-                on
-                  ? "border-fg bg-fg text-surface"
-                  : "border-border bg-surface text-fg-muted hover:border-border-strong hover:text-fg",
-              )}
-            >
-              <span className={cn("font-mono text-[10px] tabular-nums", on ? "text-surface/65" : "text-fg-subtle")}>
-                {kind.index}
-              </span>
-              <span className="font-medium">{kind.name}</span>
-            </button>
-          );
-        })}
-      </nav>
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
+      const n = Number(e.key);
+      if (n >= 1 && n <= KINDS.length) {
+        e.preventDefault();
+        setActive(KINDS[n - 1]!.id);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
-      <div className="mt-4 mb-3 flex min-w-0 flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+  return (
+    <div data-playground="carousel" data-kind={active} className="min-w-0">
+      <CutMap active={active} locale={locale} onPick={setActive} />
+
+      <div className="mt-5 mb-3 flex min-w-0 flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <div className="min-w-0">
           <p className="font-mono text-[11px] tabular-nums text-accent">{meta.index} / 08</p>
           <h2 className="mt-0.5 text-[1.25rem] font-semibold tracking-tight">{meta.name}</h2>
@@ -51,11 +41,20 @@ export function Playground() {
         </p>
       </div>
 
-      <KindDemo id={meta.id} />
+      <Contrast
+        locale={locale}
+        naive={pick(meta.naive, locale)}
+        matched={pick(meta.matched, locale)}
+        cut={pick(meta.cut, locale)}
+      />
+
+      {meta.note ? <p className="mt-3 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
+
+      <div key={meta.id} className="slide-kind-in mt-4">
+        <KindDemo id={meta.id} />
+      </div>
 
       <SpecCard text={pick(meta.spec, locale)} locale={locale} />
-
-      {meta.note ? <p className="mt-2 text-[12px] text-accent">{pick(meta.note, locale)}</p> : null}
 
       <ul className="mt-3 flex flex-wrap gap-1.5">
         {meta.scenes.map((scene) => (

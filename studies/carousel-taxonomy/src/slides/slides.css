@@ -91,12 +91,395 @@
 }
 
 .slide-tween {
-  transition: transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
 .slide-fade-layer {
-  transition: opacity 800ms ease-in-out;
+  transition: opacity 720ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.slide-kind-in {
+  animation: slide-kind-in 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slide-kind-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.cut-map {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .cut-map {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.cut-tile {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  padding: 0.65rem 0.7rem 0.7rem;
+  text-align: left;
+  transition:
+    border-color 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.cut-tile:hover {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-2);
+}
+
+.cut-tile.is-on {
+  border-color: var(--color-border-strong);
+  background: var(--color-play-glow);
+  box-shadow: var(--shadow-card);
+}
+
+.cut-glyph {
+  position: relative;
+  display: block;
+  height: 2.75rem;
+  margin-top: 0.45rem;
+  overflow: hidden;
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--color-surface-2) 80%, var(--color-fg) 4%);
+}
+
+.cut-glyph i,
+.cut-glyph b,
+.cut-glyph em {
+  display: block;
+  pointer-events: none;
+}
+
+.cut-glyph-classic {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow: hidden;
+}
+
+.cut-glyph-classic i {
+  flex: 0 0 42%;
+  margin: 0.45rem 0 0.45rem 0.4rem;
+  border-radius: 4px;
+  background: var(--color-fg);
+  opacity: 0.18;
+}
+
+.cut-glyph-classic i:nth-child(2) {
+  opacity: 0.92;
+}
+
+.cut-glyph-classic.is-on i {
+  animation: cut-slide 1.35s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.cut-glyph-fade i {
+  position: absolute;
+  inset: 0.4rem;
+  border-radius: 5px;
+}
+
+.cut-glyph-fade i:first-child {
+  background: var(--color-fg);
+  opacity: 0.22;
+}
+
+.cut-glyph-fade i:last-child {
+  background: var(--color-accent);
+  opacity: 0.95;
+}
+
+.cut-glyph-fade.is-on i:last-child {
+  animation: cut-fade 1.4s ease-in-out infinite;
+}
+
+.cut-glyph-coverflow {
+  perspective: 140px;
+}
+
+.cut-glyph-coverflow i {
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  width: 28%;
+  border-radius: 4px;
+  background: var(--color-fg);
+  opacity: 0.28;
+  transform-origin: center center;
+}
+
+.cut-glyph-coverflow i:nth-child(1) {
+  left: 12%;
+  transform: rotateY(38deg) scale(0.86);
+}
+
+.cut-glyph-coverflow i:nth-child(2) {
+  left: 36%;
+  background: var(--color-accent);
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.cut-glyph-coverflow i:nth-child(3) {
+  left: 60%;
+  transform: rotateY(-38deg) scale(0.86);
+}
+
+.cut-glyph-coverflow.is-on i:nth-child(2) {
+  animation: cut-cover 1.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.cut-glyph-stack i {
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  height: 58%;
+  border-radius: 5px;
+  background: var(--color-fg);
+}
+
+.cut-glyph-stack i:nth-child(1) {
+  top: 28%;
+  opacity: 0.2;
+  transform: rotate(-6deg) scale(0.92);
+}
+
+.cut-glyph-stack i:nth-child(2) {
+  top: 20%;
+  opacity: 0.38;
+  transform: rotate(4deg) scale(0.96);
+}
+
+.cut-glyph-stack i:nth-child(3) {
+  top: 12%;
+  background: var(--color-accent);
+  opacity: 1;
+}
+
+.cut-glyph-stack.is-on i:nth-child(3) {
+  animation: cut-peel 1.45s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.cut-glyph-flip {
+  perspective: 160px;
+}
+
+.cut-glyph-flip i {
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  width: 42%;
+  background: var(--color-fg);
+  opacity: 0.22;
+}
+
+.cut-glyph-flip i:first-child {
+  left: 8%;
+  border-radius: 4px 0 0 4px;
+}
+
+.cut-glyph-flip i:last-of-type {
+  right: 8%;
+  border-radius: 0 4px 4px 0;
+  background: var(--color-accent);
+  opacity: 0.95;
+  transform-origin: left center;
+}
+
+.cut-glyph-flip b {
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  left: 50%;
+  width: 1px;
+  background: var(--color-border-strong);
+}
+
+.cut-glyph-flip.is-on i:last-of-type {
+  animation: cut-flip 1.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.cut-glyph-accordion {
+  display: grid;
+  grid-template-columns: 2.2fr 0.55fr 0.55fr 0.55fr;
+  gap: 3px;
+  padding: 0.4rem;
+}
+
+.cut-glyph-accordion i {
+  min-width: 0;
+  border-radius: 3px;
+  background: var(--color-fg);
+  opacity: 0.22;
+}
+
+.cut-glyph-accordion i:first-child {
+  background: var(--color-accent);
+  opacity: 1;
+}
+
+.cut-glyph-accordion.is-on {
+  animation: cut-acc 1.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.cut-glyph-spin {
+  perspective: 120px;
+}
+
+.cut-glyph-spin i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: -0.575rem 0 0 -0.575rem;
+  border-radius: 3px;
+  background: var(--color-accent);
+  transform: rotateX(-18deg) rotateY(22deg);
+}
+
+.cut-glyph-spin i:last-child {
+  background: var(--color-fg);
+  opacity: 0.2;
+  transform: rotateX(-18deg) rotateY(112deg);
+}
+
+.cut-glyph-spin.is-on i:first-child {
+  animation: cut-spin 1.8s linear infinite;
+}
+
+.cut-glyph-parallax i {
+  position: absolute;
+  border-radius: 4px;
+}
+
+.cut-glyph-parallax i:nth-child(1) {
+  inset: 0.35rem 0.7rem auto 0.35rem;
+  height: 0.7rem;
+  background: var(--color-fg);
+  opacity: 0.16;
+}
+
+.cut-glyph-parallax i:nth-child(2) {
+  inset: 1rem 1.15rem auto 0.7rem;
+  height: 0.7rem;
+  background: var(--color-fg);
+  opacity: 0.38;
+}
+
+.cut-glyph-parallax i:nth-child(3) {
+  inset: 1.65rem 0.45rem auto 1.15rem;
+  height: 0.7rem;
+  background: var(--color-accent);
+  opacity: 1;
+}
+
+.cut-glyph-parallax.is-on i:nth-child(1) {
+  animation: cut-para 1.5s ease-in-out infinite;
+}
+
+.cut-glyph-parallax.is-on i:nth-child(2) {
+  animation: cut-para 1.5s ease-in-out 80ms infinite;
+}
+
+.cut-glyph-parallax.is-on i:nth-child(3) {
+  animation: cut-para 1.5s ease-in-out 160ms infinite;
+}
+
+@keyframes cut-slide {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-38%);
+  }
+}
+
+@keyframes cut-fade {
+  0%,
+  100% {
+    opacity: 0.95;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes cut-cover {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes cut-peel {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+  50% {
+    transform: translateX(28%) rotate(8deg);
+  }
+}
+
+@keyframes cut-flip {
+  0%,
+  100% {
+    transform: rotateY(0);
+  }
+  50% {
+    transform: rotateY(-70deg);
+  }
+}
+
+@keyframes cut-acc {
+  0%,
+  100% {
+    grid-template-columns: 2.2fr 0.55fr 0.55fr 0.55fr;
+  }
+  50% {
+    grid-template-columns: 0.55fr 2.2fr 0.55fr 0.55fr;
+  }
+}
+
+@keyframes cut-spin {
+  to {
+    transform: rotateX(-18deg) rotateY(382deg);
+  }
+}
+
+@keyframes cut-para {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
 }
 
 .coverflow-scene {
@@ -136,7 +519,7 @@
 }
 
 .stack-card {
-  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
@@ -203,7 +586,7 @@
 .acc-grid {
   display: grid;
   gap: 6px;
-  transition: grid-template-columns 450ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: grid-template-columns 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .acc-spine {
@@ -278,9 +661,17 @@
   }
 }
 
+.para-wash {
+  transition: opacity 640ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.para-wash.is-jump {
+  transition: none;
+}
+
 .para-layer {
   will-change: transform;
-  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .para-layer.is-jump {
@@ -299,11 +690,29 @@
   .acc-grid,
   .cube,
   .cube.is-ease,
-  .para-layer {
+  .para-layer,
+  .para-wash {
     transition: none;
   }
 
   .slide-fade-layer {
     transition: opacity 200ms linear;
+  }
+
+  .slide-kind-in {
+    animation: none;
+  }
+
+  .cut-glyph-classic.is-on i,
+  .cut-glyph-fade.is-on i:last-child,
+  .cut-glyph-coverflow.is-on i:nth-child(2),
+  .cut-glyph-stack.is-on i:nth-child(3),
+  .cut-glyph-flip.is-on i:last-of-type,
+  .cut-glyph-accordion.is-on,
+  .cut-glyph-spin.is-on i:first-child,
+  .cut-glyph-parallax.is-on i:nth-child(1),
+  .cut-glyph-parallax.is-on i:nth-child(2),
+  .cut-glyph-parallax.is-on i:nth-child(3) {
+    animation: none;
   }
 }

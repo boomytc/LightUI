@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { pick, type Locale } from "../lib/site-locale";
 import type { Slide } from "../lib/fixtures";
 import { cn } from "../lib/utils";
@@ -6,17 +7,19 @@ export function SlideArt({
   slide,
   locale,
   className,
+  style,
   compact = false,
   labeled = true,
 }: {
   slide: Slide;
   locale: Locale;
   className?: string;
+  style?: CSSProperties;
   compact?: boolean;
   labeled?: boolean;
 }) {
   return (
-    <div className={cn("slide-art", `slide-tone-${slide.tone}`, className)}>
+    <div className={cn("slide-art", `slide-tone-${slide.tone}`, className)} style={style}>
       <span className="slide-orb" aria-hidden="true" />
       <span className="slide-slash" aria-hidden="true" />
       <span className="slide-chip" aria-hidden="true" />

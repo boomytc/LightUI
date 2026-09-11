@@ -33,10 +33,11 @@ const FACE_BG = [
 
 export function ClassicMotion({ index, next, prev, jump, locale }: MotionProps) {
   const start = useRef<{ x: number; y: number } | null>(null);
+  const count = SLIDES.length;
 
   return (
     <div
-      className="slide-stage overflow-hidden select-none touch-pan-y"
+      className="slide-stage relative isolate overflow-hidden select-none touch-pan-y"
       onPointerDown={(e) => {
         start.current = { x: e.clientX, y: e.clientY };
       }}
@@ -50,19 +51,27 @@ export function ClassicMotion({ index, next, prev, jump, locale }: MotionProps) 
         else next();
       }}
     >
-      <div
-        className={cn("flex h-full", !jump && "slide-tween")}
-        style={{ transform: `translateX(-${index * 100}%)` }}
-      >
-        {SLIDES.map((slide) => (
+      {SLIDES.map((slide, i) => {
+        const offset = shortestOffset(i, index, count);
+        const far = Math.abs(offset) > 1;
+        return (
           <SlideArt
             key={slide.id}
             slide={slide}
             locale={locale}
-            className="h-full w-full shrink-0"
+            className={cn(
+              "absolute inset-0 w-full",
+              !jump && !far && "slide-tween",
+              far && "pointer-events-none",
+            )}
+            style={{
+              transform: `translateX(${offset * 100}%)`,
+              opacity: far ? 0 : 1,
+              zIndex: offset === 0 ? 2 : 1,
+            }}
           />
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }
@@ -141,7 +150,7 @@ export function StackMotion({ index, next, prev, jump, locale }: MotionProps) {
       setFly(null);
       setDrag({ x: 0, y: 0, active: false });
       lock.current = false;
-    }, motionMs(false, 280));
+    }, motionMs(false, 420));
   }
 
   function onDown(e: PointerEvent<HTMLDivElement>) {
@@ -177,7 +186,7 @@ export function StackMotion({ index, next, prev, jump, locale }: MotionProps) {
         const rotating = isTop ? x * 0.04 : layer.rotate;
         return (
           <div
-            key={`${slide.id}-${depth}`}
+            key={slide.id}
             onPointerDown={isTop ? onDown : undefined}
             onPointerMove={isTop ? onMove : undefined}
             onPointerUp={isTop ? onUp : undefined}
@@ -367,7 +376,7 @@ export function AccordionMotion({ index, go, jump, locale }: MotionProps) {
             />
             <span
               className={cn(
-                "acc-spine pointer-events-none absolute bottom-3 left-1/2 z-10 origin-bottom -translate-x-1/2 text-[12px] font-medium tracking-widest text-accent-fg drop-shadow",
+                "acc-spine pointer-events-none absolute bottom-3 left-1/2 z-10 origin-bottom -translate-x-1/2 text-[12px] font-medium tracking-widest text-accent-fg drop-shadow transition-opacity duration-300",
                 open ? "opacity-0" : "opacity-100",
               )}
             >
@@ -483,7 +492,14 @@ export function ParallaxMotion({ index, jump, locale }: MotionProps) {
       }}
       onPointerLeave={() => setMouse({ x: 0, y: 0 })}
     >
-      <div className={cn("absolute inset-0", `slide-tone-${slide.tone}`)} />
+      {SLIDES.map((layer, i) => (
+        <div
+          key={layer.id}
+          className={cn("para-wash absolute inset-0", `slide-tone-${layer.tone}`, jump && "is-jump")}
+          style={{ opacity: i === index ? 1 : 0 }}
+          aria-hidden={i !== index}
+        />
+      ))}
       <div
         className={cn("para-layer pointer-events-none absolute -top-8 -right-8 h-36 w-36 rounded-full bg-accent/50", jump && "is-jump")}
         style={{
