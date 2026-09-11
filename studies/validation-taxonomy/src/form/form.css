@@ -1,0 +1,87 @@
+.form-enter {
+  animation: form-rise 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.form-err {
+  animation: form-msg 220ms ease both;
+}
+
+.form-pop {
+  transform-origin: top center;
+  animation: form-pop 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.form-success {
+  animation: form-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.form-success-item {
+  animation: form-rise 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.form-success-item:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.form-success-item:nth-child(3) {
+  animation-delay: 110ms;
+}
+
+.form-success-item:nth-child(4) {
+  animation-delay: 160ms;
+}
+
+.form-control {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+@keyframes form-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes form-msg {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes form-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-enter,
+  .form-err,
+  .form-pop,
+  .form-success,
+  .form-success-item,
+  .form-success-item:nth-child(n) {
+    animation: none;
+  }
+
+  .form-control {
+    transition: none;
+  }
+}

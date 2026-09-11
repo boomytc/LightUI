@@ -1,9 +1,11 @@
 import { useId, useMemo, useRef, useState } from "react";
-import { CalendarDays, Check, ChevronDown } from "lucide-react";
+import { CalendarDays, Check, ChevronDown, CircleAlert } from "lucide-react";
 import {
   EMPTY_TOUCHED,
   EMPTY_VALUES,
+  FIELD_KEYS,
   STAGE_TODAY,
+  charCount,
   isFormReady,
   shownByLesson,
   stageSnapshot,
@@ -18,7 +20,7 @@ import { ERROR_COPY, TYPE_OPTIONS } from "../lib/kinds";
 import { pick, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { Calendar } from "./Calendar";
-import { FieldLabel, fieldClass } from "./Frame";
+import { FieldLabel, fieldTone } from "./Frame";
 
 export function ActivityForm({
   lesson,
@@ -52,8 +54,15 @@ export function ActivityForm({
     [lesson, values, touched, submitted, today],
   );
   const ready = isFormReady(values, today);
-  const errorCount = Object.keys(errors).length;
+  const errorKeys = FIELD_KEYS.filter((key) => errors[key]);
+  const errorCount = errorKeys.length;
   const typeMeta = TYPE_OPTIONS.find((item) => item.value === values.type);
+  const nameLen = charCount(values.name);
+
+  function delayFor(key: FieldKey) {
+    const index = errorKeys.indexOf(key);
+    return `${Math.max(index, 0) * 45}ms`;
+  }
 
   function mark(key: FieldKey) {
     if (lesson === "submit") return;
@@ -91,27 +100,37 @@ export function ActivityForm({
 
   if (success) {
     return (
-      <div className="flex min-h-72 flex-col items-center justify-center px-2 py-8 text-center">
-        <span className="grid size-12 place-items-center rounded-full bg-fg text-surface">
+      <div className="form-success flex min-h-72 flex-col items-center justify-center px-2 py-8 text-center">
+        <span className="form-success-item grid size-12 place-items-center rounded-full bg-intent-soft text-intent">
           <Check className="size-6" strokeWidth={2.5} />
         </span>
-        <h3 className="mt-4 text-[1.2rem] font-semibold">
+        <h3 className="form-success-item mt-4 text-[1.2rem] font-semibold">
           {pick({ zh: "活动已发布", en: "Activity published" }, locale)}
         </h3>
-        <p className="mt-2 max-w-xs text-[13px] text-fg-muted">
-          {values.name}
-          <span className="mx-1.5 text-fg-subtle">·</span>
-          {typeMeta ? pick(typeMeta.label, locale) : values.type}
-          <span className="mx-1.5 text-fg-subtle">·</span>
-          {values.date}
-        </p>
-        <button
-          type="button"
-          onClick={reset}
-          className="mt-6 h-11 rounded-lg bg-fg px-5 text-[13px] font-medium text-surface"
-        >
-          {pick({ zh: "再配一场", en: "Configure another" }, locale)}
-        </button>
+        <div className="form-success-item mt-4 w-full max-w-xs text-left">
+          <p className="text-[10px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+            {pick({ zh: "发生了什么", en: "What happened" }, locale)}
+          </p>
+          <p className="mt-1 text-[13px] text-fg-muted">
+            {values.name}
+            <span className="mx-1.5 text-fg-subtle">·</span>
+            {typeMeta ? pick(typeMeta.label, locale) : values.type}
+            <span className="mx-1.5 text-fg-subtle">·</span>
+            {values.date}
+          </p>
+        </div>
+        <div className="form-success-item mt-5">
+          <p className="mb-2 text-[10px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+            {pick({ zh: "下一步", en: "Next step" }, locale)}
+          </p>
+          <button
+            type="button"
+            onClick={reset}
+            className="h-11 rounded-full bg-fg px-5 text-[13px] font-medium text-surface"
+          >
+            {pick({ zh: "再配一场", en: "Configure another" }, locale)}
+          </button>
+        </div>
       </div>
     );
   }
@@ -144,7 +163,26 @@ export function ActivityForm({
 
       <div className="grid min-w-0 gap-4">
         <div className="min-w-0">
-          <FieldLabel htmlFor={nameId} required>
+          <FieldLabel
+            htmlFor={nameId}
+            required
+            extra={
+              lesson === "blur" ? (
+                <span
+                  className={cn(
+                    "font-mono text-[11px] tabular-nums",
+                    errors.name
+                      ? "text-wrong"
+                      : nameLen >= 4
+                        ? "text-intent"
+                        : "text-fg-subtle",
+                  )}
+                >
+                  {nameLen} / 4
+                </span>
+              ) : null
+            }
+          >
             {pick({ zh: "活动名称", en: "Activity name" }, locale)}
           </FieldLabel>
           <input
@@ -160,8 +198,7 @@ export function ActivityForm({
             data-invalid={errors.name ? "true" : "false"}
             data-highlight={lesson === "blur" ? "true" : "false"}
             className={cn(
-              fieldClass,
-              errors.name && "border-fg",
+              fieldTone(Boolean(errors.name)),
               lesson === "blur" && !errors.name && "ring-2 ring-accent/25",
             )}
             onChange={(event) => patch({ name: event.target.value })}
@@ -174,8 +211,14 @@ export function ActivityForm({
             onBlur={() => mark("name")}
           />
           {errors.name ? (
-            <p id={`${nameId}-error`} className="mt-2 text-[13px] text-fg" role="alert">
-              {pick(ERROR_COPY[errors.name], locale)}
+            <FieldError
+              id={`${nameId}-error`}
+              delay={delayFor("name")}
+              text={pick(ERROR_COPY[errors.name], locale)}
+            />
+          ) : lesson === "blur" && !touched.name ? (
+            <p className="mt-2 text-[12px] text-fg-subtle">
+              {pick({ zh: "还在打字 · 离开这一格才说", en: "Still typing · speaks after leave" }, locale)}
             </p>
           ) : null}
         </div>
@@ -193,8 +236,8 @@ export function ActivityForm({
             aria-describedby={errors.type ? `${typeId}-error` : undefined}
             data-invalid={errors.type ? "true" : "false"}
             className={cn(
-              "flex min-h-11 w-full min-w-0 items-center justify-between gap-2 rounded-lg border bg-surface px-3 text-left text-[14px] outline-none",
-              errors.type ? "border-fg" : typeOpen ? "border-accent" : "border-border-strong",
+              "flex min-h-11 w-full min-w-0 items-center justify-between gap-2 rounded-lg border px-3 text-left text-[14px] outline-none",
+              fieldTone(Boolean(errors.type), typeOpen),
             )}
             onClick={() => {
               if (dateOpen) mark("date");
@@ -211,13 +254,18 @@ export function ActivityForm({
                 ? pick(typeMeta.label, locale)
                 : pick({ zh: "请选择活动类型", en: "Choose a type" }, locale)}
             </span>
-            <ChevronDown className="size-4 shrink-0 text-fg-muted" />
+            <ChevronDown
+              className={cn(
+                "size-4 shrink-0 text-fg-muted transition-transform duration-200",
+                typeOpen && "rotate-180",
+              )}
+            />
           </button>
           {typeOpen ? (
             <ul
               role="listbox"
               aria-label={pick({ zh: "活动类型", en: "Activity type" }, locale)}
-              className="mt-1 overflow-hidden rounded-lg border border-border bg-surface"
+              className="form-pop mt-1 overflow-hidden rounded-lg border border-border bg-surface"
             >
               {TYPE_OPTIONS.map((option) => {
                 const on = values.type === option.value;
@@ -228,7 +276,7 @@ export function ActivityForm({
                       role="option"
                       aria-selected={on}
                       className={cn(
-                        "flex w-full items-center justify-between px-3 py-2.5 text-left text-[14px]",
+                        "flex w-full items-center justify-between px-3 py-2.5 text-left text-[14px] transition-colors",
                         on ? "bg-accent-soft text-accent" : "hover:bg-surface-2",
                       )}
                       onClick={() => {
@@ -246,9 +294,11 @@ export function ActivityForm({
             </ul>
           ) : null}
           {errors.type ? (
-            <p id={`${typeId}-error`} className="mt-2 text-[13px] text-fg" role="alert">
-              {pick(ERROR_COPY[errors.type], locale)}
-            </p>
+            <FieldError
+              id={`${typeId}-error`}
+              delay={delayFor("type")}
+              text={pick(ERROR_COPY[errors.type], locale)}
+            />
           ) : null}
         </div>
 
@@ -266,8 +316,8 @@ export function ActivityForm({
             data-invalid={errors.date ? "true" : "false"}
             data-highlight={lesson === "inline" ? "true" : "false"}
             className={cn(
-              "flex min-h-11 w-full min-w-0 items-center justify-between gap-2 rounded-lg border bg-surface px-3 text-left text-[14px] outline-none",
-              errors.date ? "border-fg" : dateOpen ? "border-accent" : "border-border-strong",
+              "flex min-h-11 w-full min-w-0 items-center justify-between gap-2 rounded-lg border px-3 text-left text-[14px] outline-none",
+              fieldTone(Boolean(errors.date), dateOpen),
               lesson === "inline" && !errors.date && "ring-2 ring-accent/25",
             )}
             onClick={() => {
@@ -303,8 +353,14 @@ export function ActivityForm({
             </div>
           ) : null}
           {errors.date ? (
-            <p id={`${dateId}-error`} className="mt-2 text-[13px] text-fg" role="alert">
-              {pick(ERROR_COPY[errors.date], locale)}
+            <FieldError
+              id={`${dateId}-error`}
+              delay={delayFor("date")}
+              text={pick(ERROR_COPY[errors.date], locale)}
+            />
+          ) : lesson === "inline" && !touched.date ? (
+            <p className="mt-2 text-[12px] text-fg-subtle">
+              {pick({ zh: "选完收起 · 这一栏立刻说", en: "Closes · this column speaks at once" }, locale)}
             </p>
           ) : null}
         </div>
@@ -323,11 +379,11 @@ export function ActivityForm({
               aria-describedby={errors.confirmed ? `${confirmId}-error` : undefined}
               data-invalid={errors.confirmed ? "true" : "false"}
               className={cn(
-                "grid size-4 shrink-0 place-items-center rounded-sm border",
+                "grid size-4 shrink-0 place-items-center rounded-sm border transition-colors duration-150",
                 values.confirmed
                   ? "border-accent bg-accent text-accent-fg"
                   : errors.confirmed
-                    ? "border-fg bg-surface"
+                    ? "border-wrong bg-wrong-soft"
                     : "border-border-strong bg-surface",
               )}
               onClick={() => {
@@ -343,9 +399,11 @@ export function ActivityForm({
             </span>
           </label>
           {errors.confirmed ? (
-            <p id={`${confirmId}-error`} className="mt-2 text-[13px] text-fg" role="alert">
-              {pick(ERROR_COPY[errors.confirmed], locale)}
-            </p>
+            <FieldError
+              id={`${confirmId}-error`}
+              delay={delayFor("confirmed")}
+              text={pick(ERROR_COPY[errors.confirmed], locale)}
+            />
           ) : null}
         </div>
       </div>
@@ -365,15 +423,25 @@ export function ActivityForm({
               )
         }
         className={cn(
-          "mt-6 h-11 w-full rounded-lg text-[14px] font-medium tracking-wide",
-          ready ? "bg-accent text-accent-fg" : "bg-fg-subtle text-surface",
+          "mt-6 h-11 w-full rounded-lg text-[14px] font-medium tracking-wide transition-colors duration-200",
+          ready ? "bg-accent text-accent-fg" : "bg-fg-subtle text-surface hover:bg-fg-muted",
           lesson === "submit" && !ready && "ring-2 ring-accent/30 ring-offset-2 ring-offset-surface",
         )}
       >
         {pick({ zh: "保存并发布", en: "Save & publish" }, locale)}
+        {!ready && lesson === "submit" ? (
+          <span className="ml-2 text-[11px] font-normal opacity-80">
+            {pick({ zh: "仍可点", en: "still clickable" }, locale)}
+          </span>
+        ) : null}
       </button>
 
-      <p className="mt-3 min-h-5 text-center text-[12px] leading-5 text-fg-muted">
+      <p
+        className={cn(
+          "mt-3 min-h-5 text-center text-[12px] leading-5",
+          lesson === "submit" && submitted && errorCount > 0 ? "form-err font-medium text-wrong" : "text-fg-muted",
+        )}
+      >
         {ready
           ? pick({ zh: "三项都过了，可以发布", en: "Every slot passed — ready to publish" }, locale)
           : lesson === "submit" && submitted
@@ -397,5 +465,27 @@ export function ActivityForm({
                   )}
       </p>
     </form>
+  );
+}
+
+function FieldError({
+  id,
+  text,
+  delay,
+}: {
+  id: string;
+  text: string;
+  delay: string;
+}) {
+  return (
+    <p
+      id={id}
+      className="form-err mt-2 flex items-start gap-1.5 text-[13px] text-wrong"
+      role="alert"
+      style={{ animationDelay: delay }}
+    >
+      <CircleAlert className="mt-0.5 size-3.5 shrink-0" strokeWidth={2.2} aria-hidden="true" />
+      <span>{text}</span>
+    </p>
   );
 }

@@ -6,7 +6,7 @@ export function StudyView() {
   const locale = useLocale();
 
   return (
-    <div className="page-width min-w-0 pb-20">
+    <div className="page-width min-w-0 overflow-x-hidden pb-20">
       <section className="grid gap-8 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
         <div className="min-w-0">
           <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
@@ -19,6 +19,19 @@ export function StudyView() {
               ? "“Add form validation” describes the result. The thing that breaks is when it speaks: after the field is left, under that column as a bad pick closes, or every miss at once on submit."
               : "「做个表单校验」说的是结果。真正会坏掉的是开口时机：离开这一格、这一栏选完立刻说，还是提交时一次说完。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["On blur · after leave", "Inline · as it closes", "On submit · every miss"]
+              : ["失焦 · 离开才说", "行内 · 收起立刻说", "提交 · 一次说完"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
@@ -31,14 +44,12 @@ export function StudyView() {
 
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
-          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
-            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
+          <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
+            <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
               {item.n}
             </span>
-            <div className="min-w-0">
-              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
-              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
-            </div>
+            <h2 className="mt-3 text-[15px] font-semibold">{pick(item.title, locale)}</h2>
+            <p className="mt-1 text-[13px] text-fg-muted">{pick(item.example, locale)}</p>
           </div>
         ))}
       </section>

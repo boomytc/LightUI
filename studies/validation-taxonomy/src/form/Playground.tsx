@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { KINDS, type KindId } from "../lib/kinds";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { ActivityForm } from "./ActivityForm";
 import { Window } from "./Frame";
+import "./form.css";
 
 export function Playground() {
   const locale = useLocale();
@@ -17,6 +18,21 @@ export function Playground() {
     setFormKey((n) => n + 1);
   }
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
+      const n = Number(e.key);
+      if (n >= 1 && n <= KINDS.length) {
+        e.preventDefault();
+        select(KINDS[n - 1]!.id);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
     <div
       data-playground="validation"
@@ -24,7 +40,7 @@ export function Playground() {
       className="grid min-w-0 gap-8 lg:grid-cols-[minmax(28rem,32rem)_minmax(0,1fr)] lg:items-start lg:gap-10"
     >
       <section data-pane="lesson" className="min-w-0 lg:order-2">
-        <p className="mb-3 text-[12px] font-medium uppercase tracking-[0.12em] text-fg-subtle">
+        <p className="mb-3 text-[12px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
           {locale === "en" ? "When to speak" : "何时开口"}
         </p>
 
@@ -39,15 +55,16 @@ export function Playground() {
                 {i < KINDS.length - 1 ? (
                   <span
                     aria-hidden="true"
-                    className="absolute left-[1.75rem] top-[2.85rem] hidden h-[calc(100%-0.55rem)] w-px bg-border lg:block"
+                    className="absolute top-[2.85rem] left-[1.75rem] hidden h-[calc(100%-0.55rem)] w-px bg-border lg:block"
                   />
                 ) : null}
                 <button
                   type="button"
                   data-kind={kind.id}
+                  aria-pressed={on}
                   onClick={() => select(kind.id)}
                   className={cn(
-                    "flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-colors",
+                    "flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-[border-color,background-color,box-shadow] duration-200",
                     on
                       ? "border-border-strong bg-surface shadow-card"
                       : "border-transparent bg-transparent hover:bg-surface-2",
@@ -55,7 +72,7 @@ export function Playground() {
                 >
                   <span
                     className={cn(
-                      "relative z-[1] grid size-8 shrink-0 place-items-center rounded-full font-mono text-[11px] tabular-nums",
+                      "relative z-[1] grid size-8 shrink-0 place-items-center rounded-full font-mono text-[11px] tabular-nums transition-colors duration-200",
                       on ? "bg-accent text-accent-fg" : "bg-surface-2 text-fg-subtle",
                     )}
                   >
@@ -164,15 +181,15 @@ export function KindDemo({
   state?: string;
 }) {
   const locked = state === "ok" || state === "error" ? state : undefined;
+  const meta = KINDS.find((k) => k.id === id);
   return (
-    <Window
-      title={
-        locale === "en"
-          ? "Activity · when to speak"
-          : "配置活动 · 校验时机"
-      }
-    >
-      <ActivityForm lesson={id} locale={locale} locked={locked} />
-    </Window>
+    <div className={locked ? undefined : "form-enter"}>
+      <Window
+        kicker={meta ? pick(meta.zh, locale) : undefined}
+        title={locale === "en" ? "Activity · when to speak" : "配置活动 · 校验时机"}
+      >
+        <ActivityForm lesson={id} locale={locale} locked={locked} />
+      </Window>
+    </div>
   );
 }

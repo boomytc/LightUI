@@ -11,7 +11,7 @@ Vite 8 + React 19 + TypeScript + Tailwind v4. No router, auth, or backend.
 From this directory, or `make dev-study STUDY=validation-taxonomy` at repo root:
 
 ```bash
-npm run dev          # http://127.0.0.1:5185/
+npm run dev          # http://127.0.0.1:5194/
 npm test             # validateField / visibleErrors / shownByLesson
 npm run typecheck
 npm run build
@@ -37,4 +37,4 @@ The lab mounts `StudyView` at `/s/validation-taxonomy`.
 - When to speak is not fill versus pick. An inline miss is not a toast.
   Marking every miss on submit is not a confirm modal.
 - The idle-looking submit still receives a click (`aria-disabled`, not `disabled`).
-- Bind the standalone server to `127.0.0.1:5185`.
+- Bind the standalone server to `127.0.0.1:5194`.

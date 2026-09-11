@@ -45,7 +45,7 @@ export function Calendar({
     locale === "en" ? `${MONTHS_EN[month]} ${year}` : `${year} 年 ${month + 1} 月`;
 
   return (
-    <div className="min-w-0 rounded-xl border border-border bg-surface-2 p-3">
+    <div className="form-pop min-w-0 rounded-xl border border-border bg-surface-2 p-3">
       <div className="mb-2 flex items-center justify-between gap-2">
         <button
           type="button"
@@ -82,10 +82,11 @@ export function Calendar({
               type="button"
               onClick={() => onPick(cell.iso)}
               className={cn(
-                "aspect-square w-full rounded-full text-[13px] tabular-nums",
+                "aspect-square w-full rounded-full text-[13px] tabular-nums transition-colors duration-150",
                 isPast && !isSelected && "text-fg-subtle",
                 isToday && !isSelected && "font-medium ring-1 ring-accent/40",
                 isSelected && "bg-accent font-medium text-accent-fg",
+                isPast && isSelected && "bg-wrong text-accent-fg",
                 !isSelected && "hover:bg-accent-soft",
               )}
             >
