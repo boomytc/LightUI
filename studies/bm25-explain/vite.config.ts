@@ -12,7 +12,7 @@ export default defineConfig({
   cacheDir: path.join(root, ".cache/vite"),
   server: {
     host: "127.0.0.1",
-    port: 5201,
+    port: 5195,
     strictPort: true,
     fs: { allow: [root, path.resolve(root, "../..")] },
   },

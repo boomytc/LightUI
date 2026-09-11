@@ -34,7 +34,22 @@ export const useLabStore = create<LabState>()((set) => ({
   selectedDocId: "d2",
   docsOpen: false,
   ...DEFAULT_OPTIONS,
-  setQuery: (query) => set({ query }),
+  setQuery: (query) =>
+    set((state) => {
+      const bundle = search(state.documents, query, {
+        k1: state.k1,
+        b: state.b,
+        rrfK: state.rrfK,
+        subword: state.subword,
+        dropStopwords: state.dropStopwords,
+        fusion: state.fusion,
+        bm25Weight: state.bm25Weight,
+      });
+      const top =
+        bundle.bm25.find((h) => h.score > 1e-9) ??
+        bundle.vector.find((h) => (h.cosine ?? 0) > 0.05);
+      return { query, selectedDocId: top?.docId ?? state.selectedDocId };
+    }),
   setTab: (tab) => set({ tab }),
   setSelectedDocId: (selectedDocId) => set({ selectedDocId }),
   setK1: (k1) => set({ k1 }),

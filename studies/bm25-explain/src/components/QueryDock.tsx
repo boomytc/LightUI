@@ -28,22 +28,26 @@ export function QueryDock() {
           onChange={(e) => {
             if (!composing.current) setQuery(e.target.value);
           }}
-          placeholder={locale === "en" ? "Enter search query, e.g. 二零二四年第三季度营收" : "输入查询，例如：二零二四年第三季度营收"}
-          className="h-11 w-full rounded-xl bg-surface border border-border pl-10 pr-4 text-sm text-fg placeholder:text-fg-subtle shadow-xs outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+          placeholder={
+            locale === "en"
+              ? "Enter a query, e.g. 二零二四年第三季度营收"
+              : "输入查询，例如：二零二四年第三季度营收"
+          }
+          className="h-12 w-full rounded-xl border border-border bg-surface-2/40 pr-4 pl-10 text-[15px] text-fg shadow-xs outline-none placeholder:text-fg-subtle focus-visible:ring-2 focus-visible:ring-accent/40"
           aria-label={locale === "en" ? "Search query" : "检索查询"}
         />
       </div>
-      <div className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex gap-2 overflow-x-auto pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {PRESET_QUERIES.map((p) => (
           <button
             key={p.q}
             type="button"
             onClick={() => setQuery(p.q)}
             className={cn(
-              "h-8 shrink-0 rounded-full px-3 text-xs font-medium border border-border shadow-xs transition-colors duration-150 cursor-pointer",
+              "h-8 shrink-0 rounded-full border px-3 text-xs font-medium transition-colors duration-200",
               query === p.q
-                ? "bg-accent text-accent-fg border-transparent font-semibold"
-                : "bg-surface text-fg-muted hover:text-fg hover:bg-surface-2",
+                ? "border-transparent bg-fg font-semibold text-surface"
+                : "border-border bg-surface text-fg-muted hover:bg-surface-2 hover:text-fg",
             )}
           >
             {locale === "en" ? p.labelEn : p.labelZh}

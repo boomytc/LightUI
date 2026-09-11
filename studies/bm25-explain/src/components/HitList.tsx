@@ -21,17 +21,19 @@ export function HitList({
   const setSelected = useLabStore((s) => s.setSelectedDocId);
   const byId = new Map(docs.map((d) => [d.id, d]));
   const max = Math.max(...hits.map((h) => h.score), 1e-9);
-  const bar = tone === "bm25" ? "bg-bm25" : tone === "vector" ? "bg-vector" : "bg-accent";
+  const bar =
+    tone === "bm25" ? "is-bm25" : tone === "vector" ? "is-vector" : "is-accent";
   const badgeTone =
     tone === "bm25"
       ? "bg-bm25/15 text-bm25 border-bm25/30"
       : tone === "vector"
         ? "bg-vector/15 text-vector border-vector/30"
-        : "bg-accent/15 text-accent border-accent/30";
+        : "bg-accent-soft text-accent border-accent/30";
+  const scoreTone = tone === "bm25" ? "text-bm25" : tone === "vector" ? "text-vector" : "text-accent";
 
   if (hits.length === 0) {
     return (
-      <p className="rounded-xl bg-surface px-4 py-5 text-sm text-fg-muted border border-border shadow-sm">
+      <p className="rounded-xl border border-border bg-surface-2/50 px-4 py-5 text-sm text-fg-muted">
         {locale === "en" ? "No documents matched the query terms." : "没有一篇命中查询词。"}
       </p>
     );
@@ -39,7 +41,7 @@ export function HitList({
 
   return (
     <div>
-      <ol className="space-y-2.5 list-none p-0 m-0">
+      <ol className="m-0 list-none space-y-2 p-0">
         {hits.map((h) => {
           const doc = byId.get(h.docId);
           const active = selected === h.docId;
@@ -49,26 +51,26 @@ export function HitList({
                 type="button"
                 onClick={() => setSelected(h.docId)}
                 className={cn(
-                  "w-full rounded-xl bg-surface p-3.5 text-left border border-border shadow-sm transition-all duration-150 cursor-pointer",
+                  "w-full rounded-xl border px-3.5 py-3 text-left transition-[border-color,background-color,box-shadow] duration-200",
                   active
-                    ? "border-accent ring-2 ring-accent/30 bg-accent/[0.02]"
-                    : "hover:border-border-strong hover:bg-surface-2/60",
+                    ? "border-border-strong bg-surface shadow-card"
+                    : "border-border bg-surface-2/40 hover:bg-surface",
                 )}
               >
-                <div className="flex items-baseline justify-between gap-3">
-                  <span className="font-semibold text-sm text-fg">
-                    <span className="mr-2 font-mono text-xs tabular-nums text-fg-subtle font-normal">
-                      #{h.rank}
-                    </span>
-                    {doc?.title ?? h.docId}
-                  </span>
-                  <span className="font-mono text-xs tabular-nums text-fg-muted font-medium">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-mono text-[10px] tabular-nums text-fg-subtle">#{h.rank}</p>
+                    <p className="mt-0.5 truncate text-[13px] font-semibold text-fg">
+                      {doc?.title ?? h.docId}
+                    </p>
+                  </div>
+                  <p className={cn("font-mono text-lg font-semibold tabular-nums tracking-tight", scoreTone)}>
                     {scoreLabel(h)}
-                  </span>
+                  </p>
                 </div>
-                <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-surface-2">
+                <div className="bm25-bar-track mt-2.5">
                   <div
-                    className={cn("h-full rounded-full transition-all duration-300", bar)}
+                    className={cn("bm25-bar-fill", bar)}
                     style={{ width: `${Math.max(4, (h.score / max) * 100)}%` }}
                   />
                 </div>
@@ -77,7 +79,7 @@ export function HitList({
                     <span
                       key={`m-${t}`}
                       className={cn(
-                        "inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[11px] font-medium border",
+                        "inline-flex items-center rounded-full border px-2 py-0.5 font-mono text-[11px] font-medium",
                         badgeTone,
                       )}
                     >
@@ -87,19 +89,19 @@ export function HitList({
                   {h.missingTerms.map((t) => (
                     <span
                       key={`x-${t}`}
-                      className="inline-flex items-center rounded-full bg-surface-2 px-2 py-0.5 font-mono text-[11px] text-fg-subtle line-through opacity-60 border border-border"
+                      className="inline-flex items-center rounded-full border border-border bg-surface-2 px-2 py-0.5 font-mono text-[11px] text-fg-subtle line-through opacity-60"
                     >
                       {t}
                     </span>
                   ))}
                   {h.bm25Rank != null || h.vectorRank != null ? (
-                    <span className="inline-flex items-center rounded-full bg-surface-2 px-2 py-0.5 font-mono text-[11px] text-fg-muted border border-border">
+                    <span className="inline-flex items-center rounded-full border border-border bg-surface-2 px-2 py-0.5 font-mono text-[11px] text-fg-muted">
                       {h.bm25Rank ? `B#${h.bm25Rank}` : "B–"} · {h.vectorRank ? `V#${h.vectorRank}` : "V–"}
                     </span>
                   ) : null}
                 </div>
                 {doc?.note ? (
-                  <p className="mt-1.5 text-xs text-fg-muted leading-relaxed">
+                  <p className="mt-1.5 text-[12px] leading-relaxed text-fg-muted">
                     {locale === "en" ? doc.noteEn ?? doc.note : doc.note}
                   </p>
                 ) : null}

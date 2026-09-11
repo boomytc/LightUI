@@ -74,7 +74,7 @@ export function PipelineView() {
 
   return (
     <div className="space-y-6">
-      <p className="max-w-2xl text-sm leading-relaxed text-fg-muted">
+      <p className="max-w-2xl text-[15px] leading-relaxed text-fg-muted">
         {locale === "en"
           ? "The retrieval pipeline transforms text in two stages: Tokenization (Analyzer) standardizes tokens and handles stopwords/subwords; Inverted Index (Postings) links terms to document occurrences for instant candidate matching."
           : "检索流水线包含两大阶段：分词分析（Analyzer）负责词法归一与停用词/子词切分；倒排索引（Inverted Index）将词项映射至文档拉链，支撑毫秒级候选集检索与布尔对照。"}
@@ -82,7 +82,7 @@ export function PipelineView() {
 
       {/* Analyzer Controls */}
       <div className="grid gap-3 sm:grid-cols-2">
-        <label className="flex items-center justify-between rounded-xl bg-surface px-4 py-3 border border-border shadow-sm cursor-pointer">
+        <label className="flex cursor-pointer items-center justify-between rounded-2xl border border-border bg-surface px-4 py-3 shadow-card">
           <span className="text-xs font-semibold text-fg">
             {locale === "en" ? "Index Subword Expansion (Dict + 2-grams)" : "索引侧子词扩展（词典子串 + 二字）"}
           </span>
@@ -93,7 +93,7 @@ export function PipelineView() {
             className="size-4 accent-accent cursor-pointer"
           />
         </label>
-        <label className="flex items-center justify-between rounded-xl bg-surface px-4 py-3 border border-border shadow-sm cursor-pointer">
+        <label className="flex cursor-pointer items-center justify-between rounded-2xl border border-border bg-surface px-4 py-3 shadow-card">
           <span className="text-xs font-semibold text-fg">
             {locale === "en" ? "Drop Stopwords (的 / 是 / the etc.)" : "丢掉停用词（的 / 是 / the 等）"}
           </span>
@@ -117,7 +117,7 @@ export function PipelineView() {
           </h2>
         </div>
 
-        <section className="rounded-xl bg-surface p-4 border border-border shadow-sm sm:p-5">
+        <section className="rounded-2xl border border-border bg-surface p-4 shadow-card sm:p-5">
           <h3 className="text-sm font-semibold text-fg">
             {locale === "en" ? "Granularity Comparison (e.g. 自然语言处理)" : "分词粒度对比（以「自然语言处理」为例）"}
           </h3>
@@ -139,7 +139,7 @@ export function PipelineView() {
           </div>
         </section>
 
-        <section className="rounded-xl bg-surface p-4 border border-border shadow-sm sm:p-5">
+        <section className="rounded-2xl border border-border bg-surface p-4 shadow-card sm:p-5">
           <h3 className="text-sm font-semibold text-fg">
             {locale === "en" ? "Current Query Tokens" : "当前查询分词"}
           </h3>
@@ -159,7 +159,7 @@ export function PipelineView() {
           </div>
         </section>
 
-        <section className="rounded-xl bg-surface p-4 border border-border shadow-sm sm:p-5">
+        <section className="rounded-2xl border border-border bg-surface p-4 shadow-card sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-sm font-semibold text-fg">
               {locale === "en" ? "Selected Document Tokens" : "选中文档分词"}
@@ -195,7 +195,7 @@ export function PipelineView() {
           </h2>
         </div>
 
-        <section className="rounded-xl bg-surface p-4 border border-border shadow-sm sm:p-5">
+        <section className="rounded-2xl border border-border bg-surface p-4 shadow-card sm:p-5">
           <h3 className="text-sm font-semibold text-fg">
             {locale === "en" ? "Query Terms Postings Zippers" : "查询词倒排拉链"}
           </h3>
@@ -247,7 +247,7 @@ export function PipelineView() {
               <dt className="font-mono text-[11px] tracking-wide text-fg-muted uppercase font-semibold">
                 {locale === "en" ? "OR · At Least One Term" : "OR · 至少命中一词"}
               </dt>
-              <dd className="mt-1 font-mono text-xs font-semibold text-fg">
+              <dd className="mt-1 font-mono text-lg font-semibold tabular-nums text-fg">
                 {locale === "en"
                   ? `${bundle.orCandidates.length} docs enter BM25 scoring`
                   : `${bundle.orCandidates.length} 篇进入 BM25 打分`}
@@ -257,7 +257,7 @@ export function PipelineView() {
               <dt className="font-mono text-[11px] tracking-wide text-fg-muted uppercase font-semibold">
                 {locale === "en" ? "AND · All Query Terms" : "AND · 全部命中"}
               </dt>
-              <dd className="mt-1 font-mono text-xs font-semibold text-fg">
+              <dd className="mt-1 font-mono text-lg font-semibold tabular-nums text-fg">
                 {bundle.candidates.length} {locale === "en" ? "docs" : "篇"}
                 {andTitles.length ? `：${andTitles.join("、")}` : bundle.queryTerms.length ? (locale === "en" ? " (no full match)" : "（无全部命中文档）") : ""}
               </dd>
@@ -265,7 +265,7 @@ export function PipelineView() {
           </dl>
         </section>
 
-        <section className="rounded-xl bg-surface p-4 border border-border shadow-sm sm:p-5">
+        <section className="rounded-2xl border border-border bg-surface p-4 shadow-card sm:p-5">
           <h3 className="text-sm font-semibold text-fg">
             {locale === "en" ? `Forward Terms · ${selectedTitle}` : `正排词表 · ${selectedTitle || "未选择"}`}
           </h3>
@@ -311,7 +311,7 @@ export function PipelineView() {
           </span>
         </div>
 
-        <div className="min-w-0 overflow-x-auto rounded-xl bg-surface border border-border shadow-sm">
+        <div className="min-w-0 overflow-x-auto rounded-2xl border border-border bg-surface shadow-card">
           <table className="w-full min-w-2xl text-left text-xs">
             <thead className="border-b border-border bg-surface-2/40 text-[11px] tracking-wide text-fg-muted uppercase font-semibold">
               <tr>

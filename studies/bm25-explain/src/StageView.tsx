@@ -14,8 +14,8 @@ export function StageView() {
       data-stage="root"
       className="grid min-h-dvh place-items-center overflow-x-hidden bg-bg px-4 py-8 sm:px-6"
     >
-      <div data-stage="fixture" className="w-full max-w-4xl min-w-0 overflow-x-hidden space-y-4">
-        <div className="rounded-2xl bg-surface p-4 border border-border shadow-sm">
+      <div data-stage="fixture" className="w-full max-w-4xl min-w-0 space-y-4 overflow-x-hidden">
+        <div className="rounded-2xl border border-border bg-surface p-4 shadow-card">
           <QueryDock />
         </div>
         {kind === "score" ? <ScoreView /> : <CompareView />}

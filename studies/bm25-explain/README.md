@@ -5,7 +5,7 @@ Isolated study and interactive playground for Lucene BM25 scoring, term saturati
 ## Development
 
 ```bash
-# Standalone dev server (http://127.0.0.1:5201/)
+# Standalone dev server (http://127.0.0.1:5195/)
 npm run dev
 
 # Run unit tests
