@@ -35,9 +35,9 @@ The two pairs people mix up:
 
 To specify one wait, say three things:
 
-1. **Name** — not “a loading state”: a skeleton, or an empty state
-2. **Scene** — content still arriving, or arrived and this set is empty
-3. **Rules** — blocks match layout, background shimmer, short crossfade; or a human title plus one primary
+1. **Name** — not “a loading state”: a skeleton, an empty state, or a page veil
+2. **Scene** — content still arriving, arrived and this set is empty, or the shell itself is unknown
+3. **Rules** — blocks match layout; a human title plus one primary; or cover the page and do not draw a fake bar
 
 Those three, in one sentence, are the “Say it this way” card.
 
@@ -49,6 +49,7 @@ Those three, in one sentence, are the “Say it this way” card.
 | Reduced motion | The shimmer still flashes | Stop the shimmer; leave gray blocks |
 | No briefs yet | “No data”, or a white board | “No briefs yet” + guidance + New brief |
 | Work still computing | A skeleton as progress | Progress is another question; this study does not spin |
+| First launch | An empty skeleton or a fake bar | A full-page veil; fade out when the shell arrives |
 
 ## The machines
 

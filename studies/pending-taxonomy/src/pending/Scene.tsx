@@ -101,26 +101,39 @@ export function BriefList({ briefs, locale }: { briefs: readonly Brief[]; locale
   );
 }
 
-export function PageVeil({ locale }: { locale: Locale }) {
+export function PageVeil({
+  locale,
+  leaving = false,
+  onReveal,
+}: {
+  locale: Locale;
+  leaving?: boolean;
+  onReveal?: () => void;
+}) {
   return (
     <div
-      className="pending-occupy px-3 py-8"
+      className="pending-veil"
       data-region="veil"
+      data-leaving={leaving ? "true" : undefined}
       aria-busy="true"
       aria-live="polite"
     >
-      <span
-        className="grid size-12 place-items-center rounded-2xl bg-fg text-[15px] font-semibold text-surface"
-        aria-hidden="true"
-      >
+      <span className="pending-veil-mark" aria-hidden="true">
         O
       </span>
-      <h3 className="mt-4 text-[15px] font-semibold tracking-tight">
-        {locale === "en" ? "Orbit" : "Orbit"}
-      </h3>
+      <h3 className="mt-4 text-[15px] font-semibold tracking-tight">Orbit</h3>
       <p className="mt-1.5 max-w-[16rem] text-[13px] leading-relaxed text-fg-muted">
         {locale === "en" ? "Preparing the workspace" : "正在准备工作台"}
       </p>
+      {onReveal && !leaving ? (
+        <button
+          type="button"
+          onClick={onReveal}
+          className="mt-5 text-[12px] font-medium text-fg underline decoration-border-strong underline-offset-4 hover:decoration-fg"
+        >
+          {locale === "en" ? "Workspace is ready" : "工坊已经就绪"}
+        </button>
+      ) : null}
     </div>
   );
 }
@@ -134,10 +147,7 @@ export function EmptyPanel({
 }) {
   return (
     <div className="pending-occupy px-3 py-8" data-region="empty">
-      <span
-        className="grid size-12 place-items-center rounded-2xl bg-accent-soft text-accent"
-        aria-hidden="true"
-      >
+      <span className="pending-empty-mark" aria-hidden="true">
         <Inbox className="size-5" strokeWidth={1.75} />
       </span>
       <h3 className="mt-4 text-[15px] font-semibold tracking-tight">
@@ -150,7 +160,7 @@ export function EmptyPanel({
         <button
           type="button"
           onClick={onCreate}
-          className="mt-4 rounded-full bg-fg px-3.5 py-1.5 text-[13px] font-medium text-surface"
+          className="mt-4 rounded-full bg-fg px-3.5 py-1.5 text-[13px] font-medium text-surface transition-transform duration-200 hover:bg-fg/90 active:scale-[0.98]"
         >
           {pick(EMPTY_COPY.action, locale)}
         </button>

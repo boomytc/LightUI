@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Name the wait: skeleton holds layout, empty offers a next step",
+  "description": "Name the wait: skeleton holds layout, empty offers a next step, veil covers an unknown shell",
   "engines": {
     "node": ">=20"
   },

@@ -110,11 +110,26 @@ export const FORMULA = [
   {
     n: "2",
     title: loc("场景", "Scene"),
-    example: loc("内容还在路上，还是已经到了、这一份是空的", "Content still arriving, or arrived and this set is empty"),
+    example: loc("内容还在路上、已经到了但是空的，还是壳本身未知", "Still arriving, arrived empty, or the shell itself is unknown"),
   },
   {
     n: "3",
     title: loc("规则", "Rules"),
-    example: loc("占位贴布局、背景扫光、短淡入；或人话标题加一个主按钮", "Blocks match layout, background shimmer, short fade; or a human title plus one primary"),
+    example: loc("占位贴布局；人话标题加一个主按钮；整页挡住、不要假条", "Blocks match layout; a human title plus one primary; cover the page, no fake bar"),
+  },
+];
+
+export const OCCUPANCY_ASKS = [
+  {
+    id: "skeleton" as const,
+    ask: loc("结构已知，内容还在路上", "Structure known, payload still arriving"),
+  },
+  {
+    id: "empty" as const,
+    ask: loc("已经到了，这一份是空的", "It arrived — this set is empty"),
+  },
+  {
+    id: "page" as const,
+    ask: loc("第一次打开，壳本身未知", "First open — the shell is unknown"),
   },
 ];

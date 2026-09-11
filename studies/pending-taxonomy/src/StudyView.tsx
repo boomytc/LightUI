@@ -16,14 +16,27 @@ export function StudyView() {
           </h1>
           <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
             {locale === "en"
-              ? "“Make a loading state” describes the skin. The thing that breaks is occupancy: a skeleton that holds layout, or an empty state that offers a next step — not a spinner, not “no data”."
-              : "「做个 loading」说的是外观。真正会坏掉的是占位：骨架占着布局，或空状态给出下一步。不是转圈，也不是「暂无数据」。"}
+              ? "“Make a loading state” describes the skin. The thing that breaks is occupancy: a skeleton that holds layout, an empty state that offers a next step, or a veil over an unknown shell — not a spinner, not a fake bar."
+              : "「做个 loading」说的是外观。真正会坏掉的是占位：骨架占着布局，空状态给出下一步，壳未知时整页遮罩。不是转圈，也不是假进度条。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["Skeleton · holds seats", "Empty · one next step", "Veil · unknown shell"]
+              : ["骨架屏 · 占着位子", "空状态 · 给出下一步", "整页遮罩 · 壳还未知"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Name the occupancy, name the scene, then name the rule. The two leaves below are live."
-            : "先说占位，再说场景，再说规则。下面两片叶子可以点。"}
+            ? "Name the occupancy first. The three leaves below are live. None of them spin."
+            : "先说占位。下面三片叶子可以点。三片都不转圈。"}
         </p>
       </section>
 
@@ -69,14 +82,12 @@ export function StudyView() {
             </li>
             <li>
               <span className="font-medium text-fg">
-                {locale === "en"
-                  ? "3. Arriving is not empty"
-                  : "3. 还在路上不是已经空了"}
+                {locale === "en" ? "3. A page veil is not a skeleton" : "3. 整页遮罩不是骨架"}
               </span>
               <br />
               {locale === "en"
-                ? "If the structure is known and the payload is late, reserve the seats. If this set is empty, speak and offer one primary."
-                : "结构已知、内容未到，先占位子。这一份已经是空的，就说人话并给一个主按钮。"}
+                ? "A skeleton reserves a known layout. Cover the page only while the shell itself is unknown. Do not draw a fake bar."
+                : "骨架在结构已知时占位子。壳还没到、不知道会铺成什么样，才盖整页。不要画一条假进度。"}
             </li>
           </ol>
         </article>
@@ -86,22 +97,20 @@ export function StudyView() {
             occupancy
           </p>
           <pre className="mt-3 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">
-{`function reservesLayout(kind) {
-  return kind === "skeleton"
+{`function occupancy(kind, state) {
+  if (kind === "skeleton")
+    return state === "ready" ? "content" : "skeleton"
+  if (kind === "page")
+    return state === "ready" ? "content" : "veil"
+  return state === "ready" ? "content" : "empty"
 }
 
-function hasAction(kind) {
-  return kind === "empty"
-}
-
-function allowsSpinner(kind) {
-  return false
-}`}
+allowsSpinner(kind) === false`}
           </pre>
           <p className="mt-4 text-[13px] leading-relaxed text-surface/55">
             {locale === "en"
-              ? "Skeleton holds the seat. Empty offers a next step. A spinner is progress, not occupancy. Shimmer is background-position; reduced motion leaves gray blocks."
-              : "骨架占位子。空状态给下一步。转圈是进度，不是占位。扫光用背景位置；减少动效时留下灰块。"}
+              ? "Skeleton holds the seat. Empty offers a next step. Veil covers an unknown shell. A spinner is progress, not occupancy. Shimmer is background-position; reduced motion leaves gray blocks. No fake bar on the veil."
+              : "骨架占位子。空状态给下一步。遮罩盖未知的壳。转圈是进度，不是占位。扫光用背景位置；减少动效时留下灰块。遮罩上不要假条。"}
           </p>
         </article>
       </section>
