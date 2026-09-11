@@ -5,8 +5,10 @@ import { KINDS, type KindId } from "../lib/kinds";
 import {
   EMPTY_SELECTION,
   canExpand,
+  layerOf,
   selectionForStage,
   stageState,
+  type Layer,
   type Selection,
 } from "../lib/machines";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
@@ -46,7 +48,9 @@ export function Playground() {
         ) : null}
       </p>
 
-      <KindDemo key={meta.id} id={meta.id} />
+      <div key={meta.id} className="board-kind-in">
+        <KindDemo id={meta.id} />
+      </div>
 
       <ul className="mt-4 flex flex-wrap gap-2">
         {meta.scenes.map((scene) => (
@@ -84,40 +88,70 @@ function KindPair({
   onChange: (id: KindId) => void;
 }) {
   return (
-    <div
-      role="tablist"
-      aria-label={locale === "en" ? "Board kinds" : "看板种类"}
-      className="mb-4 grid grid-cols-2 gap-1 rounded-2xl border border-border bg-surface-2 p-1"
-    >
-      {KINDS.map((kind) => {
-        const on = kind.id === active;
-        return (
-          <button
-            key={kind.id}
-            type="button"
-            role="tab"
-            data-kind={kind.id}
-            aria-selected={on}
-            onClick={() => onChange(kind.id)}
-            className={cn(
-              "rounded-xl px-3 py-2.5 text-left transition-colors sm:px-4",
-              on ? "bg-surface shadow-card" : "hover:bg-surface/70",
-            )}
-          >
-            <span
-              className={cn(
-                "block text-[14px] font-semibold tracking-tight",
-                on ? "text-fg" : "text-fg-muted",
-              )}
+    <div className="mb-4">
+      <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+        <p className="text-[12px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+          {locale === "en" ? "Drill or platter" : "下钻还是一盘端"}
+        </p>
+        <p className="hidden text-[11px] text-fg-subtle sm:block">
+          {locale === "en" ? "Keys 1–2 pick a leaf." : "数字键 1–2 选一片叶子。"}
+        </p>
+      </div>
+      <div
+        role="tablist"
+        aria-label={locale === "en" ? "Board kinds" : "看板种类"}
+        className="grid grid-cols-2 gap-2"
+      >
+        {KINDS.map((kind) => {
+          const on = kind.id === active;
+          return (
+            <button
+              key={kind.id}
+              type="button"
+              role="tab"
+              data-kind={kind.id}
+              aria-selected={on}
+              onClick={() => onChange(kind.id)}
+              className="board-pair-card"
             >
-              {pick(kind.zh, locale)}
-            </span>
-            <span className="mt-0.5 block text-[12px] leading-snug text-fg-subtle">
-              {pick(kind.oneLiner, locale)}
-            </span>
-          </button>
-        );
-      })}
+              <span
+                className={cn(
+                  "font-mono text-[10px] tracking-[0.14em]",
+                  on ? "text-accent" : "text-fg-subtle",
+                )}
+              >
+                {kind.index}
+              </span>
+              <span
+                className={cn(
+                  "mt-1 block text-[14px] font-semibold tracking-tight",
+                  on ? "text-fg" : "text-fg-muted",
+                )}
+              >
+                {pick(kind.zh, locale)}
+              </span>
+              <span className="mt-0.5 block text-[12px] leading-snug text-fg-subtle">
+                {pick(kind.oneLiner, locale)}
+              </span>
+              {kind.id === "layered" ? (
+                <span className="board-mini-depth" aria-hidden="true">
+                  <span />
+                  <i />
+                  <span />
+                  <i />
+                  <span />
+                </span>
+              ) : (
+                <span className="board-mini-platter" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -155,6 +189,15 @@ function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   );
 }
 
+function nowLabel(view: KindId, layer: Layer, locale: Locale): string {
+  if (view === "platter") {
+    return locale === "en" ? "All in view" : "全部在场";
+  }
+  if (layer === "kpi") return locale === "en" ? "Results only" : "只见结果";
+  if (layer === "dim") return locale === "en" ? "At dimension" : "已到维度";
+  return locale === "en" ? "At detail" : "已到明细";
+}
+
 export function KindDemo({ id, state }: { id: KindId; state?: string }) {
   const locked = state === "kpi" || state === "dim" || state === "all";
   const locale = useLocale();
@@ -166,24 +209,50 @@ export function KindDemo({ id, state }: { id: KindId; state?: string }) {
       : { kpi: DEFAULT_KPI, dim: null };
   const [sel, setSel] = useState<Selection>(start);
   const selection = locked ? start : sel;
+  const layer = layerOf(id, selection);
 
   function pickKpi(kpiId: string) {
-    if (locked || !canExpand(id)) return;
+    if (locked) return;
+    if (!canExpand(id)) {
+      setSel({ kpi: kpiId, dim: null });
+      return;
+    }
     setSel((cur) =>
       cur.kpi === kpiId && !cur.dim ? EMPTY_SELECTION : { kpi: kpiId, dim: null },
     );
   }
 
   function pickDim(dimId: string) {
-    if (locked || !canExpand(id)) return;
+    if (locked) return;
+    if (!canExpand(id)) {
+      setSel((cur) => ({
+        kpi: cur.kpi ?? DEFAULT_KPI,
+        dim: cur.dim === dimId ? null : dimId,
+      }));
+      return;
+    }
     setSel((cur) => ({
       kpi: cur.kpi ?? DEFAULT_KPI,
       dim: cur.dim === dimId ? null : dimId,
     }));
   }
 
+  function retreat(to: "kpi" | "dim") {
+    if (locked || !canExpand(id)) return;
+    if (to === "kpi") setSel(EMPTY_SELECTION);
+    else setSel((cur) => ({ kpi: cur.kpi, dim: null }));
+  }
+
   return (
-    <Window title={pick(meta.window, locale)}>
+    <Window
+      kind={id}
+      title={pick(meta.window, locale)}
+      action={
+        <span className="board-now" data-view={id} data-layer={layer} aria-live="polite">
+          {nowLabel(id, layer, locale)}
+        </span>
+      }
+    >
       <Board
         view={id}
         selection={selection}
@@ -191,6 +260,7 @@ export function KindDemo({ id, state }: { id: KindId; state?: string }) {
         locked={locked}
         onSelectKpi={pickKpi}
         onSelectDim={pickDim}
+        onRetreat={retreat}
       />
     </Window>
   );

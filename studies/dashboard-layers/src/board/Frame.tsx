@@ -1,17 +1,23 @@
 import type { ReactNode } from "react";
+import type { KindId } from "../lib/machines";
 
 export function Window({
   title,
   action,
+  kind,
   children,
 }: {
   title: string;
   action?: ReactNode;
+  kind?: KindId;
   children: ReactNode;
 }) {
   return (
-    <div className="board-window overflow-hidden rounded-2xl border border-border bg-surface shadow-card">
-      <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-2.5">
+    <div
+      data-kind={kind}
+      className="board-window overflow-hidden rounded-2xl border border-border bg-surface shadow-card"
+    >
+      <div className="board-window-bar">
         <div className="flex min-w-0 items-center gap-3">
           <span className="flex gap-1" aria-hidden="true">
             <i className="size-2 rounded-full bg-[#ff5f57]" />

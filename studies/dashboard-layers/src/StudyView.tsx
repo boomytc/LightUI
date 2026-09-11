@@ -19,6 +19,19 @@ export function StudyView() {
               ? "KPI, chart, and table on open is a scan. A drill waits: click a result, then the dimension, then a short detail."
               : "一打开就铺满 KPI、图、表，那是扫一眼。层递要等：点一个结果，才展开维度，再给短明细。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["Layered · wait for a click", "Platter · all in view", "Drill changes grain, not the mark"]
+              : ["层递 · 点了才展开", "一盘端 · 同时在场", "下钻换粒度，不换图种"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
@@ -31,14 +44,12 @@ export function StudyView() {
 
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
-          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
-            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
+          <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
+            <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
               {item.n}
             </span>
-            <div className="min-w-0">
-              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
-              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
-            </div>
+            <h2 className="mt-3 text-[15px] font-semibold">{pick(item.title, locale)}</h2>
+            <p className="mt-1 text-[13px] text-fg-muted">{pick(item.example, locale)}</p>
           </div>
         ))}
       </section>

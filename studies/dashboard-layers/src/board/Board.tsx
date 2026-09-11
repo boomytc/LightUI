@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import {
   BOARD,
@@ -14,6 +15,7 @@ import {
   showsDetail,
   showsDimTable,
   type KindId,
+  type Layer,
   type Selection,
 } from "../lib/machines";
 import { pick, type Locale } from "../lib/site-locale";
@@ -26,6 +28,7 @@ export function Board({
   locked = false,
   onSelectKpi,
   onSelectDim,
+  onRetreat,
 }: {
   view: KindId;
   selection: Selection;
@@ -33,6 +36,7 @@ export function Board({
   locked?: boolean;
   onSelectKpi?: (id: string) => void;
   onSelectDim?: (id: string) => void;
+  onRetreat?: (to: "kpi" | "dim") => void;
 }) {
   const layer = layerOf(view, selection);
   const kpi = findKpi(selection.kpi);
@@ -53,42 +57,71 @@ export function Board({
             ? `For ${pick(BOARD.role, locale)}`
             : `给${pick(BOARD.role, locale)}`}
         </h3>
-        <LayerStrip view={view} layer={layer} locale={locale} />
+        <LayerStrip
+          view={view}
+          layer={layer}
+          locale={locale}
+          interactive={interactive}
+          onRetreat={onRetreat}
+        />
       </header>
 
       <div className="board-kpi-col">
         <KpiGrid
+          view={view}
           selection={selection}
           locale={locale}
-          interactive={interactive && canExpand(view)}
+          interactive={interactive}
           onSelect={onSelectKpi}
         />
       </div>
 
       <div className="board-grain">
-        {showsChart(view) ? <MiniChart kpi={kpi} locale={locale} /> : null}
+        {showsChart(view) ? <MiniChart key={kpi.id} kpi={kpi} locale={locale} /> : null}
 
         <div className="board-dim-slot">
-          {showsDimTable(view, selection) ? (
+          {canExpand(view) ? (
+            <Reveal open={layer === "kpi"}>
+              <WaitCue locale={locale} />
+            </Reveal>
+          ) : null}
+          <Reveal open={showsDimTable(view, selection)}>
             <DimTable
               selection={selection}
               locale={locale}
-              interactive={interactive && canExpand(view)}
+              interactive={interactive}
               onSelect={onSelectDim}
             />
-          ) : (
-            <p className="rounded-xl border border-dashed border-border px-3 py-3 text-[12px] leading-relaxed text-fg-muted">
-              {locale === "en"
-                ? "Click a KPI. The channel table waits."
-                : "点一张 KPI。渠道表还没上场。"}
-            </p>
-          )}
+          </Reveal>
         </div>
 
-        {showsDetail(view, selection) ? (
-          <DetailCard id={selection.dim} locale={locale} />
+        {canExpand(view) ? (
+          <Reveal open={showsDetail(view, selection)} late>
+            <DetailCard id={selection.dim} locale={locale} />
+          </Reveal>
         ) : null}
       </div>
+    </div>
+  );
+}
+
+function Reveal({
+  open,
+  late = false,
+  children,
+}: {
+  open: boolean;
+  late?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className={cn("board-reveal", late && "board-reveal-late")}
+      data-open={open || undefined}
+      aria-hidden={!open}
+      {...(!open ? { inert: true } : {})}
+    >
+      <div className="board-reveal-inner">{children}</div>
     </div>
   );
 }
@@ -97,50 +130,88 @@ function LayerStrip({
   view,
   layer,
   locale,
+  interactive,
+  onRetreat,
 }: {
   view: KindId;
-  layer: string;
+  layer: Layer;
   locale: Locale;
+  interactive: boolean;
+  onRetreat?: (to: "kpi" | "dim") => void;
 }) {
   if (view === "platter") {
+    const pips =
+      locale === "en"
+        ? [
+            { id: "kpi", label: "KPI" },
+            { id: "chart", label: "Chart" },
+            { id: "table", label: "Table" },
+          ]
+        : [
+            { id: "kpi", label: "KPI" },
+            { id: "chart", label: "图" },
+            { id: "table", label: "表" },
+          ];
     return (
-      <p className="mt-1 text-[12px] text-fg-muted">
-        {locale === "en" ? "All in view · no drill" : "全部在场 · 不钻"}
-      </p>
+      <div className="board-presence">
+        {pips.map((pip) => (
+          <span key={pip.id} className="board-presence-pip">
+            <i aria-hidden="true" />
+            {pip.label}
+          </span>
+        ))}
+        <p className="text-[12px] text-fg-muted">
+          {locale === "en" ? "All in view · no drill" : "全部在场 · 不钻"}
+        </p>
+      </div>
     );
   }
+
   const steps =
     locale === "en"
       ? [
-          { id: "kpi", label: "Result" },
-          { id: "dim", label: "Dimension" },
-          { id: "detail", label: "Detail" },
+          { id: "kpi" as const, label: "Result" },
+          { id: "dim" as const, label: "Dimension" },
+          { id: "detail" as const, label: "Detail" },
         ]
       : [
-          { id: "kpi", label: "结果" },
-          { id: "dim", label: "维度" },
-          { id: "detail", label: "明细" },
+          { id: "kpi" as const, label: "结果" },
+          { id: "dim" as const, label: "维度" },
+          { id: "detail" as const, label: "明细" },
         ];
+
   return (
-    <ol className="mt-2 flex min-w-0 flex-wrap items-center gap-1.5 text-[11px]">
+    <ol className="board-track" aria-label={locale === "en" ? "Drill depth" : "下钻深度"}>
       {steps.map((step, i) => {
         const on = step.id === layer;
         const passed =
           (layer === "dim" && step.id === "kpi") ||
           (layer === "detail" && step.id !== "detail");
+        const retreatTo = step.id === "kpi" || step.id === "dim" ? step.id : null;
+        const live =
+          Boolean(interactive && retreatTo && onRetreat) &&
+          ((step.id === "kpi" && layer !== "kpi") || (step.id === "dim" && layer === "detail"));
+
         return (
-          <li key={step.id} className="flex items-center gap-1.5">
-            {i > 0 ? <span className="text-fg-subtle">→</span> : null}
-            <span
-              className={cn(
-                "rounded-full px-2 py-0.5",
-                on && "bg-fg text-surface",
-                passed && "bg-accent-soft text-accent",
-                !on && !passed && "bg-surface-2 text-fg-subtle",
-              )}
+          <li key={step.id} className="flex items-center">
+            {i > 0 ? (
+              <span className="board-track-rail" data-filled={passed || on || undefined} aria-hidden="true">
+                <i />
+              </span>
+            ) : null}
+            <button
+              type="button"
+              className="board-track-step"
+              data-on={on}
+              data-passed={passed}
+              data-live={live}
+              aria-current={on ? "step" : undefined}
+              disabled={!live}
+              onClick={live && retreatTo ? () => onRetreat?.(retreatTo) : undefined}
             >
-              {step.label}
-            </span>
+              <span className="board-track-dot" aria-hidden="true" />
+              <span className="board-track-label">{step.label}</span>
+            </button>
           </li>
         );
       })}
@@ -148,21 +219,45 @@ function LayerStrip({
   );
 }
 
+function WaitCue({ locale }: { locale: Locale }) {
+  return (
+    <div className="board-wait" data-wait="dim">
+      <p className="board-wait-kicker">
+        {locale === "en" ? "Next layer waits" : "下一层在等"}
+      </p>
+      <p className="mt-1 text-[12px] leading-relaxed text-fg-muted">
+        {locale === "en"
+          ? "Click a KPI. The channel table waits."
+          : "点一张 KPI。渠道表还没上场。"}
+      </p>
+      <div className="board-wait-ghost" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </div>
+    </div>
+  );
+}
+
 function KpiGrid({
+  view,
   selection,
   locale,
   interactive,
   onSelect,
 }: {
+  view: KindId;
   selection: Selection;
   locale: Locale;
   interactive: boolean;
   onSelect?: (id: string) => void;
 }) {
+  const drill = canExpand(view);
   return (
     <div className="board-kpis">
       {BOARD.kpis.map((kpi) => {
         const on = selection.kpi === kpi.id;
+        const muted = drill && Boolean(selection.kpi) && !on;
         return (
           <button
             key={kpi.id}
@@ -170,9 +265,10 @@ function KpiGrid({
             data-kpi={kpi.id}
             onClick={interactive ? () => onSelect?.(kpi.id) : undefined}
             className={cn(
-              "min-w-0 rounded-xl border bg-surface p-3 text-left",
-              on ? "border-accent ring-1 ring-accent" : "border-border",
-              interactive && "hover:border-border-strong",
+              "board-kpi",
+              on && "board-kpi-on",
+              muted && "board-kpi-dim",
+              interactive && "board-kpi-live",
               !interactive && "cursor-default",
             )}
           >
@@ -183,9 +279,17 @@ function KpiGrid({
             <p className="mt-1 text-[1.2rem] font-semibold tabular-nums tracking-tight">
               {formatValue(kpi.value, kpi.unit)}
             </p>
-            <p className="mt-1 flex flex-wrap gap-x-2 text-[11px] text-fg-subtle">
+            <p className="mt-1 flex flex-wrap items-center gap-x-2 text-[11px] text-fg-subtle">
               <Delta value={kpi.mom} />
+              {on ? (
+                <span className="truncate">{pick(kpi.hint, locale)}</span>
+              ) : null}
             </p>
+            {drill && interactive && !selection.kpi ? (
+              <span className="board-kpi-go">
+                {locale === "en" ? "Open grain" : "展开下一层"}
+              </span>
+            ) : null}
           </button>
         );
       })}
@@ -196,7 +300,7 @@ function KpiGrid({
 function MiniChart({ kpi, locale }: { kpi: KpiRow; locale: Locale }) {
   const max = Math.max(...kpi.spark);
   return (
-    <section className="min-w-0 rounded-xl border border-border p-3">
+    <section className="min-w-0 rounded-xl border border-border bg-surface p-3">
       <p className="text-[12px] font-medium">
         {locale === "en"
           ? `7-day ${pick(kpi.label, locale)}`
@@ -206,7 +310,10 @@ function MiniChart({ kpi, locale }: { kpi: KpiRow; locale: Locale }) {
         {kpi.spark.map((n, i) => (
           <span
             key={i}
-            style={{ height: `${Math.max(8, (n / max) * 100)}%` }}
+            style={{
+              height: `${Math.max(8, (n / max) * 100)}%`,
+              animationDelay: `${i * 42}ms`,
+            }}
           />
         ))}
       </div>
@@ -226,7 +333,7 @@ function DimTable({
   onSelect?: (id: string) => void;
 }) {
   return (
-    <section className="min-w-0 overflow-x-hidden rounded-xl border border-border">
+    <section className="min-w-0 overflow-x-hidden rounded-xl border border-border bg-surface">
       <div className="board-table border-b border-border bg-surface-2 px-3 py-1.5 text-[11px] text-fg-subtle">
         <span className="truncate">{pick(BOARD.dimension, locale)}</span>
         <span className="truncate text-right">{pick(BOARD.primaryLabel, locale)}</span>
@@ -271,7 +378,7 @@ function DimLine({
       data-dim={row.id}
       onClick={interactive ? () => onSelect?.(row.id) : undefined}
       className={cn(
-        "board-table grid w-full items-center border-b border-border px-3 py-2 text-left text-[12px] last:border-b-0",
+        "board-table board-table-line grid w-full items-center border-b border-border px-3 text-left text-[12px] last:border-b-0",
         culprit && "bg-accent-soft/60",
         active && "bg-accent-soft",
         interactive && !active && "hover:bg-surface-2",
@@ -364,9 +471,17 @@ function Spark({ data }: { data: number[] }) {
       return `${x.toFixed(1)},${y.toFixed(1)}`;
     })
     .join(" ");
-  const up = (data[data.length - 1] ?? 0) >= (data[0] ?? 0);
+  const first = data[0] ?? 0;
+  const last = data[data.length - 1] ?? 0;
+  const up = last >= first;
+  const area = `0,${h} ${pts} ${w},${h}`;
   return (
     <svg viewBox={`0 0 ${w} ${h}`} width={w} height={h} className="shrink-0" aria-hidden>
+      <polygon
+        points={area}
+        fill={up ? "var(--color-intent)" : "var(--color-fg-muted)"}
+        opacity="0.16"
+      />
       <polyline
         points={pts}
         fill="none"
