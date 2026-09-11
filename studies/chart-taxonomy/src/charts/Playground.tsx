@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { KINDS, type KindMeta } from "../lib/kinds";
 import {
@@ -7,6 +7,7 @@ import {
   stageState,
   type Followup,
   type KindId,
+  type Mark,
 } from "../lib/machines";
 import { loc, pick, useLocale, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
@@ -19,8 +20,26 @@ export function Playground() {
   const [active, setActive] = useState<KindId>("change");
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0];
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
+      const n = Number(e.key);
+      if (n >= 1 && n <= KINDS.length) {
+        e.preventDefault();
+        setActive(KINDS[n - 1]!.id);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
-    <div className="chart-playground">
+    <div data-playground="chart-taxonomy" className="chart-playground">
+      <p className="mb-3 text-[12px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+        {locale === "en" ? "Name the intent, then the mark" : "先定要看什么，再选痕迹"}
+      </p>
       <nav
         aria-label={locale === "en" ? "Chart intents" : "图表意图"}
         data-intent-row=""
@@ -28,20 +47,29 @@ export function Playground() {
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
+          const mark = markFor(kind.id, "primary");
           return (
             <button
               key={kind.id}
               type="button"
               data-kind={kind.id}
+              aria-pressed={on}
               onClick={() => setActive(kind.id)}
-              className={cn(
-                "min-w-0 truncate rounded-xl border px-2 py-2 text-center text-[13px] font-medium transition-colors",
-                on
-                  ? "border-border-strong bg-surface shadow-card text-fg"
-                  : "border-transparent bg-transparent text-fg-muted hover:bg-surface-2 hover:text-fg",
-              )}
+              className={cn("chart-intent", on && "is-on")}
             >
-              {pick(kind.zh, locale)}
+              <span
+                className={cn(
+                  "font-mono text-[10px] tracking-[0.14em]",
+                  on ? "text-accent" : "text-fg-subtle",
+                )}
+              >
+                {kind.index}
+              </span>
+              <IntentGlyph mark={mark} />
+              <span className="truncate text-[13px] font-semibold tracking-tight text-fg">
+                {pick(kind.zh, locale)}
+              </span>
+              <span className="truncate font-mono text-[10px] text-fg-subtle">{mark}</span>
             </button>
           );
         })}
@@ -72,6 +100,74 @@ export function Playground() {
         ))}
       </ul>
     </div>
+  );
+}
+
+function IntentGlyph({ mark }: { mark: Mark }) {
+  const stroke = "currentColor";
+  return (
+    <svg viewBox="0 0 48 22" className="chart-intent-glyph" aria-hidden="true">
+      {mark === "line" || mark === "area" ? (
+        <path
+          d="M2 16 10 12 18 14 26 7 34 9 46 3"
+          fill={mark === "area" ? "currentColor" : "none"}
+          fillOpacity={mark === "area" ? 0.22 : 1}
+          stroke={stroke}
+          strokeWidth="1.7"
+          strokeLinejoin="round"
+        />
+      ) : null}
+      {mark === "column" || mark === "bar" ? (
+        mark === "column" ? (
+          <>
+            <rect x="4" y="10" width="6" height="10" rx="1.2" fill={stroke} />
+            <rect x="14" y="4" width="6" height="16" rx="1.2" fill={stroke} opacity="0.72" />
+            <rect x="24" y="8" width="6" height="12" rx="1.2" fill={stroke} opacity="0.5" />
+            <rect x="34" y="6" width="6" height="14" rx="1.2" fill={stroke} opacity="0.85" />
+          </>
+        ) : (
+          <>
+            <rect x="4" y="3" width="38" height="4" rx="1.2" fill={stroke} />
+            <rect x="4" y="9" width="28" height="4" rx="1.2" fill={stroke} opacity="0.7" />
+            <rect x="4" y="15" width="18" height="4" rx="1.2" fill={stroke} opacity="0.45" />
+          </>
+        )
+      ) : null}
+      {mark === "pie" ? (
+        <path
+          d="M24 2 A9 9 0 1 1 15.4 17.4 L24 11 Z"
+          fill={stroke}
+          fillOpacity="0.28"
+          stroke={stroke}
+          strokeWidth="1.4"
+        />
+      ) : null}
+      {mark === "scatter" ? (
+        <>
+          <circle cx="10" cy="15" r="2" fill={stroke} />
+          <circle cx="18" cy="11" r="2" fill={stroke} opacity="0.75" />
+          <circle cx="26" cy="9" r="2" fill={stroke} />
+          <circle cx="34" cy="6" r="2" fill={stroke} opacity="0.7" />
+          <circle cx="40" cy="4" r="2" fill={stroke} />
+        </>
+      ) : null}
+      {mark === "funnel" ? (
+        <>
+          <path d="M6 3 H42 L38 9 H10 Z" fill={stroke} />
+          <path d="M12 11 H36 L33 16 H15 Z" fill={stroke} opacity="0.65" />
+          <path d="M17 18 H31 L29 21 H19 Z" fill={stroke} opacity="0.4" />
+        </>
+      ) : null}
+      {mark === "radar" ? (
+        <path
+          d="M24 3 L34 9 L31 19 L17 19 L14 9 Z"
+          fill={stroke}
+          fillOpacity="0.2"
+          stroke={stroke}
+          strokeWidth="1.3"
+        />
+      ) : null}
+    </svg>
   );
 }
 
@@ -149,7 +245,9 @@ export function KindDemo({ id, state }: { id: KindId; state?: string }) {
         <h3 className="mt-1 text-[1.15rem] font-semibold tracking-tight">{scene.headline}</h3>
         <p className="mt-1 text-[13px] text-fg-muted">{scene.sub}</p>
         <div className="chart-pane mt-4" data-chart-pane="">
-          <ChartMark mark={mark} locale={locale} />
+          <div key={mark} className="chart-enter">
+            <ChartMark mark={mark} locale={locale} />
+          </div>
         </div>
       </div>
     </Window>

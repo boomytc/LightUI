@@ -1,4 +1,11 @@
-import { useLayoutEffect, useRef, useState, type ReactNode, type Ref } from "react";
+import {
+  useLayoutEffect,
+  useRef,
+  useState,
+  type PointerEvent,
+  type ReactNode,
+  type Ref,
+} from "react";
 import {
   AREA_DATA,
   BAR_DATA,
@@ -18,6 +25,7 @@ import {
 } from "../lib/catalog";
 import type { Mark } from "../lib/machines";
 import { pick, type Locale } from "../lib/site-locale";
+import { cn } from "../lib/utils";
 
 const ACCENT = "var(--color-accent)";
 const GRID = "var(--color-border)";
@@ -51,17 +59,75 @@ function useChartBox(ratio: number, minWidth = 160) {
   return [ref, box] as const;
 }
 
+function pointerX(e: PointerEvent<SVGSVGElement>, width: number): number {
+  const rect = e.currentTarget.getBoundingClientRect();
+  return ((e.clientX - rect.left) / Math.max(rect.width, 1)) * width;
+}
+
+function nearestI(xs: number[], px: number): number {
+  let best = 0;
+  let dist = Infinity;
+  xs.forEach((x, i) => {
+    const d = Math.abs(x - px);
+    if (d < dist) {
+      dist = d;
+      best = i;
+    }
+  });
+  return best;
+}
+
+function ChartTip({
+  on,
+  x,
+  y,
+  width,
+  height,
+  title,
+  value,
+}: {
+  on: boolean;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  title: string;
+  value: string;
+}) {
+  return (
+    <div
+      className={cn("chart-tip", on && "is-on")}
+      style={{
+        left: `${(x / width) * 100}%`,
+        top: `${(y / height) * 100}%`,
+        transform: x > width * 0.62 ? "translate(-108%, -12px)" : "translate(8px, -12px)",
+      }}
+    >
+      <p className="text-[11px] text-fg-subtle">{title}</p>
+      <p className="mt-0.5 text-[13px] font-semibold tabular-nums">{value}</p>
+    </div>
+  );
+}
+
 function ChartSvg({
   boxRef,
   label,
   width,
   height,
+  live = false,
+  onPointerMove,
+  onPointerLeave,
+  overlay,
   children,
 }: {
   boxRef: Ref<HTMLDivElement>;
   label: string;
   width: number;
   height: number;
+  live?: boolean;
+  onPointerMove?: (e: PointerEvent<SVGSVGElement>) => void;
+  onPointerLeave?: () => void;
+  overlay?: ReactNode;
   children: ReactNode;
 }) {
   return (
@@ -70,11 +136,14 @@ function ChartSvg({
         viewBox={`0 0 ${width} ${height}`}
         role="img"
         aria-label={label}
-        className="chart-svg"
+        className={cn("chart-svg", live && "is-live")}
         preserveAspectRatio="xMidYMid meet"
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
       >
         {children}
       </svg>
+      {overlay}
     </div>
   );
 }
@@ -124,6 +193,7 @@ function SeriesLine({
   fill?: boolean;
 }) {
   const [boxRef, box] = useChartBox(0.55);
+  const [hot, setHot] = useState<number | null>(null);
   const pad = { l: 8, r: 12, t: 14, b: 28 };
   const W = box.width;
   const H = box.height;
@@ -134,14 +204,50 @@ function SeriesLine({
   const ys = data.map((d) => yAt(d.value, max, pad.t, innerH));
   const line = xs.map((x, i) => `${i === 0 ? "M" : "L"} ${x} ${ys[i]}`).join(" ");
   const area = `${line} L ${xs[xs.length - 1]} ${pad.t + innerH} L ${xs[0]} ${pad.t + innerH} Z`;
+  const tip = hot !== null ? data[hot] : null;
 
   return (
-    <ChartSvg boxRef={boxRef} label={label} width={W} height={H}>
+    <ChartSvg
+      boxRef={boxRef}
+      label={label}
+      width={W}
+      height={H}
+      live
+      onPointerMove={(e) => setHot(nearestI(xs, pointerX(e, W)))}
+      onPointerLeave={() => setHot(null)}
+      overlay={
+        <ChartTip
+          on={tip !== null}
+          x={hot !== null ? xs[hot]! : 0}
+          y={hot !== null ? ys[hot]! : 0}
+          width={W}
+          height={H}
+          title={tip ? pick(tip.name, locale) : ""}
+          value={tip ? String(tip.value) : ""}
+        />
+      }
+    >
       {hGrid(pad.l, W - pad.r, pad.t, pad.t + innerH)}
-      {fill ? <path d={area} fill={ACCENT} fillOpacity={0.22} /> : null}
-      <path d={line} fill="none" stroke={ACCENT} strokeWidth={2} strokeLinejoin="round" />
+      {fill ? <path className="chart-area-in" d={area} fill={ACCENT} fillOpacity={0.22} /> : null}
+      <path
+        d={line}
+        fill="none"
+        stroke={ACCENT}
+        strokeWidth={2}
+        strokeLinejoin="round"
+        pathLength={1}
+        className="chart-line-draw"
+      />
       {xs.map((x, i) => (
-        <circle key={data[i]!.name.zh} cx={x} cy={ys[i]} r={3} fill={ACCENT} />
+        <circle
+          key={data[i]!.name.zh}
+          className="chart-dot"
+          cx={x}
+          cy={ys[i]}
+          r={hot === i ? 5 : 3}
+          fill={ACCENT}
+          opacity={hot !== null && hot !== i ? 0.35 : 1}
+        />
       ))}
       {data.map((d, i) => {
         const last = i === data.length - 1;
@@ -166,6 +272,7 @@ function SeriesLine({
 
 function ColumnMark({ locale }: { locale: Locale }) {
   const [boxRef, box] = useChartBox(0.55);
+  const [hot, setHot] = useState<number | null>(null);
   const pad = { l: 8, r: 8, t: 18, b: 28 };
   const W = box.width;
   const H = box.height;
@@ -174,17 +281,44 @@ function ColumnMark({ locale }: { locale: Locale }) {
   const max = Math.max(...COLUMN_DATA.map((d) => d.value), 1) * 1.12;
   const slot = innerW / COLUMN_DATA.length;
   const barW = slot * 0.55;
+  const tip = hot !== null ? COLUMN_DATA[hot] : null;
+  const tipX = hot !== null ? pad.l + hot * slot + slot / 2 : 0;
+  const tipY =
+    hot !== null ? pad.t + innerH - (COLUMN_DATA[hot]!.value / max) * innerH : 0;
 
   return (
-    <ChartSvg boxRef={boxRef} label={locale === "en" ? "Units by category" : "品类销量"} width={W} height={H}>
+    <ChartSvg
+      boxRef={boxRef}
+      label={locale === "en" ? "Units by category" : "品类销量"}
+      width={W}
+      height={H}
+      live
+      onPointerLeave={() => setHot(null)}
+      overlay={
+        <ChartTip
+          on={tip !== null}
+          x={tipX}
+          y={tipY}
+          width={W}
+          height={H}
+          title={tip ? pick(tip.name, locale) : ""}
+          value={tip ? String(tip.value) : ""}
+        />
+      }
+    >
       {hGrid(pad.l, W - pad.r, pad.t, pad.t + innerH)}
       {COLUMN_DATA.map((d, i) => {
         const h = (d.value / max) * innerH;
         const x = pad.l + i * slot + (slot - barW) / 2;
         const y = pad.t + innerH - h;
         return (
-          <g key={d.name.zh}>
-            <path d={roundTop(x, y, barW, h, 4)} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+          <g key={d.name.zh} onPointerEnter={() => setHot(i)}>
+            <path
+              d={roundTop(x, y, barW, h, 4)}
+              fill={CHART_COLORS[i % CHART_COLORS.length]}
+              className={cn("chart-grow chart-mark", hot !== null && (hot === i ? "is-hot" : "is-dim"))}
+              style={{ animationDelay: `${i * 40}ms` }}
+            />
             <text x={x + barW / 2} y={H - 8} textAnchor="middle" fill={MUTED} fontSize={11}>
               {pick(d.name, locale)}
             </text>
@@ -200,6 +334,7 @@ function ColumnMark({ locale }: { locale: Locale }) {
 
 function BarMark({ locale }: { locale: Locale }) {
   const [boxRef, box] = useChartBox(0.58);
+  const [hot, setHot] = useState<number | null>(null);
   const W = box.width;
   const H = box.height;
   const pad = { l: Math.min(132, Math.max(104, Math.round(W * 0.28))), r: 36, t: 8, b: 8 };
@@ -208,14 +343,35 @@ function BarMark({ locale }: { locale: Locale }) {
   const max = Math.max(...BAR_DATA.map((d) => d.value), 1);
   const slot = innerH / BAR_DATA.length;
   const barH = slot * 0.46;
+  const tip = hot !== null ? BAR_DATA[hot] : null;
+  const tipX = hot !== null ? pad.l + (BAR_DATA[hot]!.value / max) * innerW : 0;
+  const tipY = hot !== null ? pad.t + hot * slot + slot / 2 : 0;
 
   return (
-    <ChartSvg boxRef={boxRef} label={locale === "en" ? "City ranking" : "城市订单榜"} width={W} height={H}>
+    <ChartSvg
+      boxRef={boxRef}
+      label={locale === "en" ? "City ranking" : "城市订单榜"}
+      width={W}
+      height={H}
+      live
+      onPointerLeave={() => setHot(null)}
+      overlay={
+        <ChartTip
+          on={tip !== null}
+          x={tipX}
+          y={tipY}
+          width={W}
+          height={H}
+          title={tip ? pick(tip.name, locale) : ""}
+          value={tip ? String(tip.value) : ""}
+        />
+      }
+    >
       {BAR_DATA.map((d, i) => {
         const w = (d.value / max) * innerW;
         const y = pad.t + i * slot + (slot - barH) / 2;
         return (
-          <g key={d.name.zh}>
+          <g key={d.name.zh} onPointerEnter={() => setHot(i)}>
             <text
               x={pad.l - 8}
               y={y + barH / 2 + 4}
@@ -225,7 +381,12 @@ function BarMark({ locale }: { locale: Locale }) {
             >
               {pick(d.name, locale)}
             </text>
-            <path d={roundRight(pad.l, y, w, barH, 5)} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+            <path
+              d={roundRight(pad.l, y, w, barH, 5)}
+              fill={CHART_COLORS[i % CHART_COLORS.length]}
+              className={cn("chart-grow-x chart-mark", hot !== null && (hot === i ? "is-hot" : "is-dim"))}
+              style={{ animationDelay: `${i * 40}ms` }}
+            />
             <text x={pad.l + w + 6} y={y + barH / 2 + 4} fill={MUTED} fontSize={10}>
               {d.value}
             </text>
@@ -259,6 +420,7 @@ function donutSlice(
 function PieMark({ locale }: { locale: Locale }) {
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState(220);
+  const [hot, setHot] = useState<number | null>(null);
 
   useLayoutEffect(() => {
     const el = ref.current;
@@ -298,26 +460,34 @@ function PieMark({ locale }: { locale: Locale }) {
           viewBox={`0 0 ${size} ${size}`}
           role="img"
           aria-label={locale === "en" ? "Budget mix" : "预算构成"}
-          className="chart-svg"
+          className="chart-svg is-live"
+          onPointerLeave={() => setHot(null)}
         >
           {slices.map((s) => (
             <path
               key={s.d.name.zh}
-              d={donutSlice(cx, cy, rIn, rOut, s.a0, s.a1)}
+              d={donutSlice(cx, cy, rIn, hot === s.i ? rOut + 4 : rOut, s.a0, s.a1)}
               fill={CHART_COLORS[s.i % CHART_COLORS.length]}
+              className={cn("chart-mark", hot !== null && (hot === s.i ? "is-hot" : "is-dim"))}
+              onPointerEnter={() => setHot(s.i)}
             />
           ))}
           <text x={cx} y={cy - 4} textAnchor="middle" fill={ACCENT} fontSize={18} fontWeight={600}>
-            {total}%
+            {hot !== null ? `${PIE_DATA[hot]!.value}%` : `${total}%`}
           </text>
           <text x={cx} y={cy + 14} textAnchor="middle" fill={MUTED} fontSize={10}>
-            {locale === "en" ? "mix" : "构成"}
+            {hot !== null ? pick(PIE_DATA[hot]!.name, locale) : locale === "en" ? "mix" : "构成"}
           </text>
         </svg>
       </div>
       <ul className="chart-legend">
         {PIE_DATA.map((d, i) => (
-          <li key={d.name.zh}>
+          <li
+            key={d.name.zh}
+            className={cn(hot === i && "is-hot", hot !== null && hot !== i && "is-dim")}
+            onPointerEnter={() => setHot(i)}
+            onPointerLeave={() => setHot(null)}
+          >
             <span
               className="chart-swatch shrink-0 rounded-sm"
               style={{ background: CHART_COLORS[i % CHART_COLORS.length] }}
@@ -333,6 +503,7 @@ function PieMark({ locale }: { locale: Locale }) {
 
 function ScatterMark({ locale }: { locale: Locale }) {
   const [boxRef, box] = useChartBox(0.55);
+  const [hot, setHot] = useState<number | null>(null);
   const pad = { l: 28, r: 12, t: 14, b: 28 };
   const W = box.width;
   const H = box.height;
@@ -346,17 +517,39 @@ function ScatterMark({ locale }: { locale: Locale }) {
   const yMax = Math.max(...ys) * 1.08;
   const px = (x: number) => pad.l + ((x - xMin) / (xMax - xMin)) * innerW;
   const py = (y: number) => pad.t + innerH - ((y - yMin) / (yMax - yMin)) * innerH;
+  const tip = hot !== null ? SCATTER_DATA[hot] : null;
 
   return (
-    <ChartSvg boxRef={boxRef} label={locale === "en" ? "Spend vs sales" : "投放 vs 销量"} width={W} height={H}>
+    <ChartSvg
+      boxRef={boxRef}
+      label={locale === "en" ? "Spend vs sales" : "投放 vs 销量"}
+      width={W}
+      height={H}
+      live
+      onPointerLeave={() => setHot(null)}
+      overlay={
+        <ChartTip
+          on={tip !== null}
+          x={tip ? px(tip.x) : 0}
+          y={tip ? py(tip.y) : 0}
+          width={W}
+          height={H}
+          title={locale === "en" ? "spend · sales" : "投放 · 销量"}
+          value={tip ? `${tip.x} · ${tip.y}` : ""}
+        />
+      }
+    >
       {hGrid(pad.l, W - pad.r, pad.t, pad.t + innerH)}
       {SCATTER_DATA.map((d, i) => (
         <circle
           key={`${d.x}-${d.y}`}
+          className="chart-dot"
           cx={px(d.x)}
           cy={py(d.y)}
-          r={4.5}
+          r={hot === i ? 6.5 : 4.5}
           fill={i % 2 === 0 ? ACCENT : CHART_COLORS[1]}
+          opacity={hot !== null && hot !== i ? 0.35 : 1}
+          onPointerEnter={() => setHot(i)}
         />
       ))}
       <text x={W / 2} y={H - 6} textAnchor="middle" fill={MUTED} fontSize={10}>
@@ -378,6 +571,9 @@ function ScatterMark({ locale }: { locale: Locale }) {
 
 function StackedMark({ locale }: { locale: Locale }) {
   const [boxRef, box] = useChartBox(0.58);
+  const [hot, setHot] = useState<{ col: number; key: (typeof STACK_SERIES)[number]["key"] } | null>(
+    null,
+  );
   const pad = { l: 8, r: 8, t: 18, b: 56 };
   const W = box.width;
   const H = box.height;
@@ -389,9 +585,29 @@ function StackedMark({ locale }: { locale: Locale }) {
   const barW = slot * 0.5;
   const legendSlot = 72;
   const legendX0 = Math.max(8, (W - STACK_SERIES.length * legendSlot) / 2);
+  const hotCol = hot ? STACKED_DATA[hot.col] : null;
+  const hotSeries = hot ? STACK_SERIES.find((s) => s.key === hot.key) : null;
 
   return (
-    <ChartSvg boxRef={boxRef} label={locale === "en" ? "Quarter mix" : "季度构成"} width={W} height={H}>
+    <ChartSvg
+      boxRef={boxRef}
+      label={locale === "en" ? "Quarter mix" : "季度构成"}
+      width={W}
+      height={H}
+      live
+      onPointerLeave={() => setHot(null)}
+      overlay={
+        <ChartTip
+          on={hot !== null}
+          x={hot ? pad.l + hot.col * slot + slot / 2 : 0}
+          y={pad.t + 18}
+          width={W}
+          height={H}
+          title={hotCol && hotSeries ? `${pick(hotCol.name, locale)} · ${pick(hotSeries.name, locale)}` : ""}
+          value={hotCol && hot ? String(hotCol[hot.key]) : ""}
+        />
+      }
+    >
       {hGrid(pad.l, W - pad.r, pad.t, pad.t + innerH)}
       {STACKED_DATA.map((d, i) => {
         const x = pad.l + i * slot + (slot - barW) / 2;
@@ -411,6 +627,11 @@ function StackedMark({ locale }: { locale: Locale }) {
                 width={barW}
                 height={Math.max(0, layer.h)}
                 fill={layer.color}
+                className={cn(
+                  "chart-grow chart-mark",
+                  hot !== null && (hot.col === i && hot.key === layer.key ? "is-hot" : "is-dim"),
+                )}
+                onPointerEnter={() => setHot({ col: i, key: layer.key })}
               />
             ))}
             <text x={x + barW / 2} y={pad.t + innerH + 16} textAnchor="middle" fill={MUTED} fontSize={11}>
@@ -433,6 +654,7 @@ function StackedMark({ locale }: { locale: Locale }) {
 
 function HeatmapMark({ locale }: { locale: Locale }) {
   const [boxRef, box] = useChartBox(0.55);
+  const [hot, setHot] = useState<{ r: number; c: number } | null>(null);
   const pad = { l: 22, r: 8, t: 18, b: 8 };
   const W = box.width;
   const H = box.height;
@@ -443,9 +665,32 @@ function HeatmapMark({ locale }: { locale: Locale }) {
   const cw = innerW / cols;
   const ch = innerH / rows;
   const max = Math.max(...HEAT_VALUES, 1);
+  const hotValue = hot ? (HEAT_VALUES[hot.r * cols + hot.c] ?? 0) : 0;
 
   return (
-    <ChartSvg boxRef={boxRef} label={locale === "en" ? "Week × hour" : "周 × 时段"} width={W} height={H}>
+    <ChartSvg
+      boxRef={boxRef}
+      label={locale === "en" ? "Week × hour" : "周 × 时段"}
+      width={W}
+      height={H}
+      live
+      onPointerLeave={() => setHot(null)}
+      overlay={
+        <ChartTip
+          on={hot !== null}
+          x={hot ? pad.l + hot.c * cw + cw / 2 : 0}
+          y={hot ? pad.t + hot.r * ch : 0}
+          width={W}
+          height={H}
+          title={
+            hot
+              ? `${pick(HEAT_DAYS[hot.r]!, locale)} · ${pick(HEAT_SLOTS[hot.c]!, locale)}`
+              : ""
+          }
+          value={String(hotValue)}
+        />
+      }
+    >
       {HEAT_SLOTS.map((slot, c) => (
         <text
           key={slot.zh}
@@ -472,15 +717,18 @@ function HeatmapMark({ locale }: { locale: Locale }) {
           {HEAT_SLOTS.map((slot, c) => {
             const value = HEAT_VALUES[r * cols + c] ?? 0;
             const t = value / max;
+            const on = hot?.r === r && hot?.c === c;
             return (
               <rect
                 key={`${day.zh}-${slot.zh}`}
+                className={cn("chart-heat", on && "is-hot", hot !== null && !on && "is-dim")}
                 x={pad.l + c * cw + 1.5}
                 y={pad.t + r * ch + 1.5}
                 width={Math.max(0, cw - 3)}
                 height={Math.max(0, ch - 3)}
                 rx={2}
                 fill={`color-mix(in srgb, ${ACCENT} ${Math.round(18 + t * 82)}%, var(--color-accent-soft))`}
+                onPointerEnter={() => setHot({ r, c })}
               />
             );
           })}
@@ -491,6 +739,8 @@ function HeatmapMark({ locale }: { locale: Locale }) {
 }
 
 function FunnelMark({ locale }: { locale: Locale }) {
+  const [hot, setHot] = useState<number | null>(null);
+
   return (
     <div className="chart-funnel">
       {FUNNEL_DATA.map((d, i) => {
@@ -498,13 +748,23 @@ function FunnelMark({ locale }: { locale: Locale }) {
         const rate = i === 0 ? 100 : Math.round((d.value / prev) * 100);
         const width = FUNNEL_WIDTHS[i] ?? 28;
         return (
-          <div key={d.name.zh} className="chart-funnel-row">
+          <div
+            key={d.name.zh}
+            className={cn(
+              "chart-funnel-row",
+              hot === i && "is-hot",
+              hot !== null && hot !== i && "is-dim",
+            )}
+            onPointerEnter={() => setHot(i)}
+            onPointerLeave={() => setHot(null)}
+          >
             <div className="chart-funnel-track">
               <div
                 className="chart-funnel-band"
                 style={{
                   width: `${width}%`,
                   background: CHART_COLORS[i % CHART_COLORS.length],
+                  animationDelay: `${i * 50}ms`,
                 }}
               />
             </div>
@@ -524,6 +784,7 @@ function FunnelMark({ locale }: { locale: Locale }) {
 
 function RadarMark({ locale }: { locale: Locale }) {
   const [boxRef, box] = useChartBox(0.78);
+  const [hot, setHot] = useState<number | null>(null);
   const W = box.width;
   const H = box.height;
   const cx = W / 2;
@@ -544,9 +805,29 @@ function RadarMark({ locale }: { locale: Locale }) {
       const p = pt(i, d.value / 100);
       return `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`;
     }).join(" ") + " Z";
+  const tip = hot !== null ? RADAR_DATA[hot] : null;
+  const tipPt = hot !== null ? pt(hot, RADAR_DATA[hot]!.value / 100) : { x: 0, y: 0 };
 
   return (
-    <ChartSvg boxRef={boxRef} label={locale === "en" ? "Product scores" : "产品评测"} width={W} height={H}>
+    <ChartSvg
+      boxRef={boxRef}
+      label={locale === "en" ? "Product scores" : "产品评测"}
+      width={W}
+      height={H}
+      live
+      onPointerLeave={() => setHot(null)}
+      overlay={
+        <ChartTip
+          on={tip !== null}
+          x={tipPt.x}
+          y={tipPt.y}
+          width={W}
+          height={H}
+          title={tip ? pick(tip.name, locale) : ""}
+          value={tip ? String(tip.value) : ""}
+        />
+      }
+    >
       {rings.map((t) => (
         <path key={t} d={ringPath(t)} fill="none" stroke={GRID} strokeWidth={1} />
       ))}
@@ -554,14 +835,32 @@ function RadarMark({ locale }: { locale: Locale }) {
         const p = pt(i, 1);
         return <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke={GRID} strokeWidth={1} />;
       })}
-      <path d={valuePath} fill={ACCENT} fillOpacity={0.22} stroke={ACCENT} strokeWidth={2} />
+      <path
+        className="chart-area-in"
+        d={valuePath}
+        fill={ACCENT}
+        fillOpacity={0.22}
+        stroke={ACCENT}
+        strokeWidth={2}
+      />
       {RADAR_DATA.map((d, i) => {
         const p = polar(cx, cy, labelR, angle(i));
+        const v = pt(i, d.value / 100);
         const anchor = p.x < cx - 8 ? "end" : p.x > cx + 8 ? "start" : "middle";
         return (
-          <text key={d.name.zh} x={p.x} y={p.y + 4} textAnchor={anchor} fill={FG} fontSize={11}>
-            {pick(d.name, locale)}
-          </text>
+          <g key={d.name.zh} onPointerEnter={() => setHot(i)}>
+            <circle
+              className="chart-dot"
+              cx={v.x}
+              cy={v.y}
+              r={hot === i ? 5 : 3}
+              fill={ACCENT}
+              opacity={hot !== null && hot !== i ? 0.35 : 1}
+            />
+            <text x={p.x} y={p.y + 4} textAnchor={anchor} fill={FG} fontSize={11}>
+              {pick(d.name, locale)}
+            </text>
+          </g>
         );
       })}
     </ChartSvg>

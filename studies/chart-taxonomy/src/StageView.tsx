@@ -1,6 +1,7 @@
 import { KindDemo } from "./charts/Playground";
 import { KIND_IDS, isKindId, stageState } from "./lib/machines";
 import { readStageQuery } from "./lib/stage-query";
+import "./charts/charts.css";
 
 const IDS = new Set<string>(KIND_IDS);
 
