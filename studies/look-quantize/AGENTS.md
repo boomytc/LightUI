@@ -11,7 +11,7 @@ Vite 8 + React 19 + TypeScript + Tailwind v4. No router, auth, game shell, or tw
 From this directory, or `make dev-study STUDY=look-quantize` at repo root:
 
 ```bash
-npm run dev          # http://127.0.0.1:5180/
+npm run dev          # http://127.0.0.1:5225/
 npm test             # look vector / cell unit tests
 npm run typecheck
 npm run build
@@ -30,4 +30,4 @@ The lab mounts `StudyView` at `/s/look-quantize`.
 
 - Keep `targetFromOffset` and `lookToCell` free of React.
 - Relative imports only. Tokens from `design/tokens.css`.
-- This is not a mascot product. Bind `127.0.0.1:5180`.
+- This is not a mascot product. Bind `127.0.0.1:5225`.

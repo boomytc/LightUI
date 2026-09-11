@@ -18,11 +18,24 @@ export function StudyView() {
               ? "Offset over radius, smooth, then quantize to 12×3. A blink is the other row of the same cell."
               : "偏移除以半径，平滑，再量化到 12×3。眨眼是同一格的另一行。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["Clamp to the circle", "Smooth, then snap", "Blink = other row"]
+              : ["夹到圆上", "先平滑再吸附", "眨眼走另一行"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Outside the radius the look vector stays on the circle. Show cells to see the atlas grain."
-            : "半径外看向夹在圆上。打开格子能看见图集的颗粒。"}
+            ? "Outside the radius the look vector stays on the circle. The 12×3 map is the grain; a blink lights the other row."
+            : "半径外看向夹在圆上。旁边 12×3 是图集颗粒；眨眼点亮另一行。"}
         </p>
       </section>
 

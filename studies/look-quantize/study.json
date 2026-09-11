@@ -8,6 +8,6 @@
   "asksEn": "Should gaze rotate continuously, or land on a cell?",
   "status": "active",
   "created": "2026-08-21",
-  "updated": "2026-08-21",
+  "updated": "2026-09-11",
   "tags": ["pointer", "quantize", "atlas"]
 }

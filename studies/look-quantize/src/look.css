@@ -1,0 +1,110 @@
+.look-stage {
+  min-width: 0;
+}
+
+.look-well {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 18%, var(--color-play-glow), transparent 62%),
+    var(--color-bg-warm);
+  box-shadow: var(--shadow-card);
+}
+
+.look-canvas {
+  display: block;
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-border);
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 18%, var(--color-play-glow), transparent 62%),
+    var(--color-bg-warm);
+}
+
+.look-well .look-canvas {
+  border: none;
+  background: transparent;
+}
+
+.look-hud {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .look-hud {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.look-hud-card {
+  min-width: 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.look-hud-card[data-on="true"] {
+  border-color: transparent;
+  background: var(--color-accent-soft);
+}
+
+.look-atlas {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.look-atlas-cell {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  background: color-mix(in oklab, var(--color-fg) 8%, transparent);
+}
+
+.look-atlas-cell.is-on {
+  background: var(--color-accent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-accent) 45%, transparent);
+}
+
+.look-atlas-cell.is-blink {
+  background: var(--color-intent);
+}
+
+.look-atlas[data-band="blink"] .look-atlas-cell {
+  background: color-mix(in oklab, var(--color-fg) 5%, transparent);
+}
+
+.look-atlas[data-band="blink"] .look-atlas-cell.is-on {
+  background: var(--color-intent);
+}
+
+.look-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  font-size: 13px;
+}
+
+.look-toggle[aria-pressed="true"] {
+  border-color: transparent;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.look-slider {
+  display: block;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  font-size: 12px;
+  color: var(--color-fg-muted);
+}
