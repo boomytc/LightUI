@@ -4,6 +4,7 @@ import { KINDS, type KindId } from "../lib/kinds";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { GuideScene } from "./Scene";
+import { advanceVerb } from "./Status";
 import "./guide.css";
 
 export function Playground() {
@@ -30,7 +31,7 @@ export function Playground() {
     <div className="min-w-0 overflow-x-hidden">
       <nav
         aria-label={locale === "en" ? "Guide kinds" : "引导种类"}
-        className="flex flex-wrap gap-2"
+        className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-6"
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
@@ -39,20 +40,21 @@ export function Playground() {
               key={kind.id}
               type="button"
               data-kind={kind.id}
+              aria-pressed={on}
               onClick={() => setActive(kind.id)}
               className={cn(
-                "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-left transition-colors",
+                "flex min-h-[4.75rem] flex-col rounded-2xl border px-3 py-2.5 text-left transition-colors",
                 on
-                  ? "border-fg bg-fg text-surface"
-                  : "border-border bg-surface text-fg-muted hover:bg-surface-2 hover:text-fg",
+                  ? "border-fg bg-fg text-surface shadow-card"
+                  : "border-border bg-surface text-fg-muted hover:border-border-strong hover:bg-surface-2 hover:text-fg",
               )}
             >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-surface/70" : "text-fg-subtle")}>
+              <span className={cn("font-mono text-[10px] tabular-nums", on ? "text-surface/65" : "text-fg-subtle")}>
                 {kind.index}
               </span>
-              <span className="text-[13px] font-medium">{kind.name}</span>
-              <span className={cn("text-[11px]", on ? "text-surface/70" : "text-fg-subtle")}>
-                {pick(kind.zh, locale)}
+              <span className="mt-1 text-[14px] font-semibold tracking-tight">{pick(kind.zh, locale)}</span>
+              <span className={cn("mt-0.5 text-[11px] leading-snug", on ? "text-surface/65" : "text-fg-subtle")}>
+                {advanceVerb(kind.id, locale)}
               </span>
             </button>
           );

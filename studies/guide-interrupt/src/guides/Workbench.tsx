@@ -19,6 +19,7 @@ export function Workbench({
   permission,
   shipped,
   locked = false,
+  pin = null,
   onTitle,
   onPermission,
   onPublish,
@@ -34,6 +35,7 @@ export function Workbench({
   permission: boolean;
   shipped: boolean;
   locked?: boolean;
+  pin?: TargetId | null;
   onTitle: (value: string) => void;
   onPermission: (value: boolean) => void;
   onPublish: () => void;
@@ -66,6 +68,7 @@ export function Workbench({
                 className={cn(
                   "relative inline-flex h-8 shrink-0 items-center gap-1 rounded-md px-2.5 text-[12px] font-medium",
                   feature ? "text-fg" : "text-fg-muted hover:bg-surface-2 hover:text-fg",
+                  feature && pin === "feature" && "guide-target-pin",
                   locked && "cursor-default",
                 )}
               >
@@ -82,13 +85,16 @@ export function Workbench({
 
         <div
           className={cn(
-            "grid min-h-0 gap-3 overflow-y-auto p-3 sm:p-4",
+            "grid min-h-0 items-start gap-3 overflow-y-auto p-3 sm:p-4",
             rail ? "sm:grid-cols-[9.5rem_minmax(0,1fr)_13rem]" : "sm:grid-cols-[9.5rem_minmax(0,1fr)]",
           )}
         >
           <article
             ref={(el) => register("metric", el)}
-            className="rounded-xl border border-border bg-surface-2 px-3 py-3"
+            className={cn(
+              "rounded-xl border border-border bg-surface-2 px-3 py-3",
+              pin === "metric" && "guide-target-pin",
+            )}
           >
             <p className="text-[11px] text-fg-subtle">
               {pick(loc("本周发布", "Shipped this week"), locale)}
@@ -104,7 +110,7 @@ export function Workbench({
             <input
               id="guide-title"
               ref={(el) => register("title", el)}
-              className={cn(fieldClass, "mt-1")}
+              className={cn(fieldClass, "mt-1", pin === "title" && "guide-target-pin")}
               value={title}
               disabled={locked}
               placeholder={pick(loc("给这一次发布起名", "Name this release"), locale)}
@@ -116,11 +122,14 @@ export function Workbench({
             <select
               id="guide-permission"
               ref={(el) => register("permission", el)}
-              className={cn(fieldClass, "mt-1")}
+              className={cn(fieldClass, "mt-1", pin === "permission" && "guide-target-pin")}
               value={permission ? "team" : "self"}
               disabled={locked}
               onPointerDown={() => onTarget("permission")}
-              onChange={(e) => onPermission(e.target.value === "team")}
+              onChange={(e) => {
+                onPermission(e.target.value === "team");
+                onTarget("permission");
+              }}
             >
               <option value="self">{pick(loc("仅自己", "Only me"), locale)}</option>
               <option value="team">{pick(loc("团队可见", "Team"), locale)}</option>

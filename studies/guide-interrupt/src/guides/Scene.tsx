@@ -3,9 +3,6 @@ import {
   TOUR_COUNT,
   allowsSkip,
   checklistProgress,
-  guideAdvance,
-  guideBlocksOutside,
-  guidePersists,
   hintActive,
   hotspotNext,
   stageLock,
@@ -15,7 +12,8 @@ import {
 } from "../lib/machines";
 import { loc, pick, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
-import { AnchorCard, HoleScrim, HotspotDot } from "./Hole";
+import { AnchorCard, HoleScrim, HotspotDot, PinRing } from "./Hole";
+import { GuideHud, GuideLeftover } from "./Status";
 import { Workbench, type TargetId } from "./Workbench";
 import { useCutout } from "./use-cutout";
 
@@ -117,6 +115,16 @@ function pinOf(
   }
 }
 
+function TourDots({ step, count }: { step: number; count: number }) {
+  return (
+    <ol className="guide-dots" aria-hidden="true">
+      {Array.from({ length: count }, (_, i) => (
+        <li key={i} className={cn("guide-dot", i < step && "is-done", i === step && "is-now")} />
+      ))}
+    </ol>
+  );
+}
+
 export function GuideScene({
   kind,
   lock = "",
@@ -153,7 +161,6 @@ export function GuideScene({
   const pin = pinOf(kind, tour, coachOn, hotspot, spot, hint);
   const target = pin ? (nodes.current[pin] ?? null) : null;
   const { hole, hostSize } = useCutout(kind, target, hostEl);
-  const blocking = guideBlocksOutside(kind);
 
   const teaching =
     (kind === "tour" && !tour.done) ||
@@ -208,19 +215,29 @@ export function GuideScene({
       ? pick(loc("入门完成", "Ready"), locale)
       : pick(loc("入门清单", "Getting started"), locale);
 
-  const overlay = hole ? renderOverlay() : null;
+  const overlay = (
+    <>
+      {hole ? renderOverlay() : null}
+      {finished && kind !== "checklist" ? (
+        <GuideLeftover kind={kind} locale={locale} compact={compact} locked={locked} onReplay={replay} />
+      ) : null}
+    </>
+  );
 
   function renderOverlay(): ReactNode {
     if (!hole) return null;
     if (kind === "tour" && !tour.done) {
       return (
         <HoleScrim hole={hole} blockHole>
-          <AnchorCard hole={hole} host={hostSize}>
-            <div className="rounded-xl bg-fg px-3 py-3 text-surface shadow-menu">
+          <AnchorCard hole={hole} host={hostSize} tone="ink">
+            <div className="px-3.5 py-3">
               <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-[11px] tabular-nums text-surface/50">
-                  {tour.step + 1}/{TOUR_COUNT}
-                </span>
+                <div className="flex items-center gap-2">
+                  <TourDots step={tour.step} count={TOUR_COUNT} />
+                  <span className="font-mono text-[11px] tabular-nums text-surface/50">
+                    {tour.step + 1}/{TOUR_COUNT}
+                  </span>
+                </div>
                 {allowsSkip(kind) ? (
                   <button
                     type="button"
@@ -232,7 +249,9 @@ export function GuideScene({
                   </button>
                 ) : null}
               </div>
-              <p className="mt-1.5 text-[13px] leading-snug">{pick(TOUR_COPY[tour.step]!, locale)}</p>
+              <p key={tour.step} className="guide-copy-in mt-2 text-[13px] leading-snug">
+                {pick(TOUR_COPY[tour.step]!, locale)}
+              </p>
               <div className="mt-3 flex justify-end">
                 <button
                   type="button"
@@ -252,11 +271,16 @@ export function GuideScene({
     }
     if (kind === "spotlight" && spot < 2) {
       return (
-        <HoleScrim hole={hole} blockHole={false}>
-          <AnchorCard hole={hole} host={hostSize}>
-            <p className="rounded-xl bg-fg px-3 py-2.5 text-[13px] leading-snug text-surface shadow-menu">
-              {pick(SPOT_COPY[spot] ?? SPOT_COPY[0]!, locale)}
-            </p>
+        <HoleScrim hole={hole} blockHole={false} invite>
+          <AnchorCard hole={hole} host={hostSize} tone="ink">
+            <div className="px-3.5 py-3">
+              <p className="text-[11px] font-medium tracking-wide text-surface/45">
+                {pick(loc("没有下一步", "No Next"), locale)}
+              </p>
+              <p key={spot} className="guide-copy-in mt-1.5 text-[13px] leading-snug">
+                {pick(SPOT_COPY[spot] ?? SPOT_COPY[0]!, locale)}
+              </p>
+            </div>
           </AnchorCard>
         </HoleScrim>
       );
@@ -264,8 +288,9 @@ export function GuideScene({
     if (kind === "coach" && coachOn) {
       return (
         <div className="pointer-events-none absolute inset-0 z-30">
-          <AnchorCard hole={hole} host={hostSize}>
-            <div className="rounded-xl border border-border bg-surface px-3 py-3 shadow-menu">
+          <PinRing hole={hole} />
+          <AnchorCard hole={hole} host={hostSize} tone="paper">
+            <div className="px-3.5 py-3">
               <p className="text-[13px] leading-snug">
                 {pick(loc("发布会立刻同步给成员。看过这一下就行。", "Publish syncs to the team at once. One look is enough."), locale)}
               </p>
@@ -297,8 +322,8 @@ export function GuideScene({
             />
           ) : null}
           {hotspot === "open" ? (
-            <AnchorCard hole={hole} host={hostSize}>
-              <div className="rounded-xl border border-border bg-surface px-3 py-3 shadow-menu">
+            <AnchorCard hole={hole} host={hostSize} tone="paper">
+              <div className="px-3.5 py-3">
                 <p className="text-[13px] leading-snug">
                   {pick(
                     loc("新：模板库。从现成结构起稿，不必从空白页开始。", "New: Templates. Start from a structure, not a blank page."),
@@ -324,8 +349,9 @@ export function GuideScene({
     if (kind === "hint" && hint) {
       return (
         <div className="pointer-events-none absolute inset-0 z-30">
-          <AnchorCard hole={hole} host={hostSize} width={220}>
-            <p className="rounded-xl border border-accent/30 bg-accent-soft px-3 py-2.5 text-[12px] leading-snug text-fg shadow-card">
+          <PinRing hole={hole} />
+          <AnchorCard hole={hole} host={hostSize} width={220} tone="hint">
+            <p key={hint} className="guide-copy-in px-3.5 py-2.5 text-[12px] leading-snug">
               {hint === "title"
                 ? pick(loc("先写标题。填上之后这条会自己卸掉。", "Write a title first. Filling it unmounts this hint."), locale)
                 : pick(loc("标题有了，再选可见范围。", "Title is in. Now pick visibility."), locale)}
@@ -341,12 +367,19 @@ export function GuideScene({
     kind === "checklist" ? (
       <aside className="rounded-xl border border-border bg-surface px-3 py-3">
         <div className="flex items-baseline justify-between gap-2">
-          <h3 className="text-[13px] font-semibold tracking-tight">{listTitle}</h3>
+          <div className="flex min-w-0 items-center gap-2">
+            <h3 className="text-[13px] font-semibold tracking-tight">{listTitle}</h3>
+            {ratio === 1 ? (
+              <span className="rounded-full bg-intent-soft px-1.5 py-px text-[10px] font-medium text-intent">
+                {pick(loc("仍留着", "Stays"), locale)}
+              </span>
+            ) : null}
+          </div>
           <span className="font-mono text-[11px] tabular-nums text-fg-subtle">
             {checks.length}/{CHECKLIST_TASKS.length}
           </span>
         </div>
-        <div className="guide-bar mt-2">
+        <div className={cn("guide-bar mt-2", ratio === 1 && "is-done")}>
           <div className="guide-bar-fill" style={{ transform: `scaleX(${ratio})` }} />
         </div>
         <ul className="mt-3 space-y-1.5">
@@ -354,9 +387,10 @@ export function GuideScene({
             const on = checks.includes(task.id);
             return (
               <li key={task.id}>
-                <label className="flex cursor-pointer items-center gap-2 text-[12px]">
+                <label className="guide-task flex cursor-pointer items-center gap-2 text-[12px]">
                   <input
                     type="checkbox"
+                    className="guide-check"
                     checked={on}
                     disabled={locked}
                     onChange={() => {
@@ -378,7 +412,11 @@ export function GuideScene({
     ) : null;
 
   return (
-    <div>
+    <div
+      data-guide-kind={kind}
+      data-guide-teaching={teaching ? "" : undefined}
+      data-guide-finished={finished ? "" : undefined}
+    >
       <Workbench
         compact={compact}
         locale={locale}
@@ -386,6 +424,7 @@ export function GuideScene({
         permission={permission}
         shipped={shipped}
         locked={locked}
+        pin={pin}
         onTitle={setTitle}
         onPermission={setPermission}
         onPublish={() => setShipped(true)}
@@ -396,20 +435,17 @@ export function GuideScene({
         rail={rail}
       />
       {compact ? null : (
-        <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-          <p className="font-mono text-[11px] text-fg-subtle">
-            {guideAdvance(kind)}
-            {blocking ? " · blocks" : " · open"}
-            {guidePersists(kind) ? " · persists" : ""}
-            {allowsSkip(kind) ? " · skip" : ""}
-            {teaching && kind === "tour" ? ` · ${tour.step + 1}/${TOUR_COUNT}` : ""}
-          </p>
-          {finished && !locked ? (
-            <button type="button" className="text-[12px] text-accent hover:underline" onClick={replay}>
-              {pick(loc("再看一遍", "Replay"), locale)}
-            </button>
-          ) : null}
-        </div>
+        <GuideHud
+          kind={kind}
+          locale={locale}
+          pin={pin}
+          teaching={teaching}
+          finished={finished}
+          tour={tour}
+          hotspot={hotspot}
+          checks={checks.length}
+          total={CHECKLIST_TASKS.length}
+        />
       )}
     </div>
   );

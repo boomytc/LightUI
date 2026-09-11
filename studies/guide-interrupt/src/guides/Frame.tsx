@@ -40,8 +40,11 @@ export function DemoShell({
       ) : (
         <div className="flex h-12 shrink-0 items-center justify-between gap-3 border-b border-border px-4 sm:px-5">
           <div className="flex min-w-0 items-center gap-2.5">
-            <span className="grid size-6 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
-              G
+            <span className="grid size-6 shrink-0 place-items-center rounded-md bg-fg text-surface" aria-hidden="true">
+              <svg viewBox="0 0 24 24" className="size-3.5" fill="none">
+                <circle cx="12" cy="12" r="7" stroke="currentColor" strokeWidth="1.6" />
+                <circle cx="12" cy="12" r="2.6" fill="currentColor" />
+              </svg>
             </span>
             <p className="truncate text-[13px] font-semibold tracking-tight">{brand}</p>
             <span className="hidden truncate text-[12px] text-fg-subtle sm:inline">{title}</span>
@@ -67,7 +70,7 @@ export const Btn = forwardRef<HTMLButtonElement, BtnProps>(function Btn(
       ref={ref}
       type={type}
       className={cn(
-        "inline-flex h-9 shrink-0 items-center justify-center rounded-lg px-3 text-[13px] font-medium outline-none",
+        "inline-flex h-9 shrink-0 items-center justify-center rounded-lg px-3 text-[13px] font-medium outline-none transition-colors",
         tone === "primary" && "bg-fg text-surface",
         tone === "outline" && "border border-border-strong bg-surface text-fg hover:bg-surface-2",
         tone === "ghost" && "h-8 px-2 text-fg-muted hover:bg-surface-2 hover:text-fg",

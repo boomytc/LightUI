@@ -1,49 +1,178 @@
 @keyframes guide-pulse {
   0% {
     transform: scale(1);
-    opacity: 0.5;
+    opacity: 0.55;
   }
   70% {
-    transform: scale(2.6);
+    transform: scale(2.5);
     opacity: 0;
   }
   100% {
-    transform: scale(2.6);
+    transform: scale(2.5);
     opacity: 0;
   }
 }
 
-.guide-pane {
-  background: rgb(23 24 28 / 0.52);
-  transition:
-    left 200ms ease,
-    right 200ms ease,
-    top 200ms ease,
-    width 200ms ease,
-    height 200ms ease;
+@keyframes guide-invite {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 2px var(--color-accent),
+      0 0 0 6px rgb(59 108 255 / 0.2),
+      0 0 0 200vmax rgb(23 24 28 / 0.52);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px var(--color-accent),
+      0 0 0 11px rgb(59 108 255 / 0.28),
+      0 0 0 200vmax rgb(23 24 28 / 0.52);
+  }
 }
 
-.dark .guide-pane {
-  background: rgb(0 0 0 / 0.58);
+@keyframes guide-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.guide-ring {
+@keyframes guide-copy {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes guide-check-in {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.guide-hit {
+  pointer-events: auto;
+}
+
+.guide-aperture {
   border-radius: 10px;
   box-shadow:
     0 0 0 2px var(--color-accent),
-    0 0 0 6px rgb(59 108 255 / 0.22);
+    0 0 0 6px rgb(59 108 255 / 0.2),
+    0 0 0 200vmax rgb(23 24 28 / 0.52);
   transition:
-    left 200ms ease,
-    top 200ms ease,
-    width 200ms ease,
-    height 200ms ease;
+    left 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    top 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guide-aperture.is-invite {
+  animation: guide-invite 1.8s ease-out infinite;
+}
+
+.dark .guide-aperture {
+  box-shadow:
+    0 0 0 2px var(--color-accent),
+    0 0 0 6px rgb(107 140 255 / 0.28),
+    0 0 0 200vmax rgb(0 0 0 / 0.58);
+}
+
+.guide-task:has(input:focus-visible) .guide-check {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.guide-pin-ring {
+  position: absolute;
+  z-index: 25;
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 2px var(--color-accent),
+    0 0 0 6px rgb(59 108 255 / 0.16);
+  pointer-events: none;
+  transition:
+    left 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    top 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guide-float {
+  transition:
+    left 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    top 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guide-caret {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.guide-caret.is-above {
+  top: -4px;
+}
+
+.guide-caret.is-below {
+  bottom: -4px;
+}
+
+.guide-caret.is-ink {
+  background: var(--color-fg);
+}
+
+.guide-caret.is-paper {
+  background: var(--color-surface);
+  box-shadow: -1px -1px 0 var(--color-border);
+}
+
+.guide-caret.is-hint {
+  background: var(--color-accent-soft);
+}
+
+.guide-copy-in {
+  animation: guide-copy 220ms ease both;
+}
+
+.guide-leftover {
+  position: absolute;
+  z-index: 20;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  animation: guide-rise 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .guide-hotspot {
   position: absolute;
   z-index: 30;
-  width: 16px;
-  height: 16px;
+  width: 28px;
+  height: 28px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -55,7 +184,7 @@
   display: block;
   width: 10px;
   height: 10px;
-  margin: 3px;
+  margin: 9px;
   border-radius: 999px;
   background: var(--color-accent);
   box-shadow: 0 0 0 2px var(--color-surface);
@@ -83,18 +212,117 @@
   transform: scaleX(0);
   transform-origin: left center;
   background: var(--color-accent);
-  transition: transform 200ms ease;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.guide-bar.is-done .guide-bar-fill {
+  background: var(--color-intent);
+}
+
+.guide-dots {
+  display: flex;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guide-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.22);
+}
+
+.guide-dot.is-done {
+  background: rgb(255 255 255 / 0.55);
+}
+
+.guide-dot.is-now {
+  width: 14px;
+  background: var(--color-surface);
+}
+
+.guide-check {
+  display: grid;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  appearance: none;
+  place-items: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 5px;
+  background: var(--color-surface);
+  color: var(--color-surface);
+}
+
+.guide-check:checked {
+  border-color: var(--color-intent);
+  background: var(--color-intent);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M3.5 8.2 6.4 11 12.5 4.8'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.guide-check:checked {
+  animation: guide-check-in 180ms ease both;
+}
+
+.guide-target-pin {
+  background-color: var(--color-play-glow);
+}
+
+.guide-hud {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+@media (min-width: 640px) {
+  .guide-hud {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .guide-hotspot-core::after {
+  .guide-hotspot-core::after,
+  .guide-aperture.is-invite,
+  .guide-copy-in,
+  .guide-leftover,
+  .guide-check:checked {
     animation: none;
-    opacity: 0;
   }
 
-  .guide-pane,
-  .guide-ring,
+  .guide-aperture,
+  .guide-pin-ring,
+  .guide-float,
   .guide-bar-fill {
     transition: none;
+  }
+}
+
+.dark .guide-aperture.is-invite {
+  animation: guide-invite-dark 1.8s ease-out infinite;
+}
+
+@keyframes guide-invite-dark {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 2px var(--color-accent),
+      0 0 0 6px rgb(107 140 255 / 0.28),
+      0 0 0 200vmax rgb(0 0 0 / 0.58);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px var(--color-accent),
+      0 0 0 11px rgb(107 140 255 / 0.4),
+      0 0 0 200vmax rgb(0 0 0 / 0.58);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dark .guide-aperture.is-invite {
+    animation: none;
   }
 }
