@@ -1,8 +1,15 @@
 export const STYLES = ["classic", "aurora", "flame"] as const;
 export type ShimmerStyle = (typeof STYLES)[number];
 
+export const PATHS = ["glyph", "box"] as const;
+export type SweepPath = (typeof PATHS)[number];
+
 export const GRADIENT_SIZE = "300% 100%";
 export const SPREAD_UNIT = "ch";
+
+/** Naive box sheen: one duration and a pixel band for every line. */
+export const BOX_DURATION_S = 1.8;
+export const BOX_SPREAD_PX = 72;
 
 /** Seconds per character. Larger = slower sweep. */
 export const PER_CHAR_SLOW = 0.2;
@@ -11,6 +18,32 @@ export const PER_CHAR_DEFAULT = 0.12;
 
 export function durationSeconds(charCount: number, secondsPerChar: number): number {
   return Math.max(1, charCount) * secondsPerChar;
+}
+
+export function isSweepPath(value: string): value is SweepPath {
+  return (PATHS as readonly string[]).includes(value);
+}
+
+/** Glyph path follows letters. Box path floods the element — the naive alternative. */
+export function pathOf(path: SweepPath): SweepPath {
+  return path;
+}
+
+export function isNaivePath(path: SweepPath): boolean {
+  return path === "box";
+}
+
+/** Glyph duration scales with length. Box duration is a fixed box-level sheen. */
+export function durationFor(
+  path: SweepPath,
+  charCount: number,
+  secondsPerChar: number,
+): number {
+  return path === "box" ? BOX_DURATION_S : durationSeconds(charCount, secondsPerChar);
+}
+
+export function spreadUnitOf(path: SweepPath): "ch" | "px" {
+  return path === "box" ? "px" : SPREAD_UNIT;
 }
 
 /**

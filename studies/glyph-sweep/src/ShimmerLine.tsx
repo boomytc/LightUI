@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
-import type { ShimmerStyle } from "./lib/shimmer";
+import type { ShimmerStyle, SweepPath } from "./lib/shimmer";
 import "./sweep.css";
 
 type Props = {
@@ -10,7 +10,10 @@ type Props = {
   angle: number;
   park: boolean;
   position: number;
+  path?: SweepPath;
+  running?: boolean;
   editable?: boolean;
+  onChange?: (text: string) => void;
   onCommit?: (text: string) => void;
 };
 
@@ -22,7 +25,10 @@ export function ShimmerLine({
   angle,
   park,
   position,
+  path = "glyph",
+  running = true,
   editable = false,
+  onChange,
   onCommit,
 }: Props) {
   const ref = useRef<HTMLParagraphElement>(null);
@@ -31,9 +37,9 @@ export function ShimmerLine({
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (el.textContent !== text) el.textContent = text;
+    if (path === "glyph" && el.textContent !== text) el.textContent = text;
     setLen(Math.max(text.length, 1));
-  }, [text]);
+  }, [text, path]);
 
   const vars = {
     "--gsweep-len": String(len),
@@ -43,10 +49,25 @@ export function ShimmerLine({
     "--gsweep-position": String(position),
   } as CSSProperties;
 
+  if (path === "box") {
+    return (
+      <p
+        className="gsweep-box"
+        data-path="box"
+        data-park={park ? "true" : "false"}
+        data-running={running ? "true" : "false"}
+        style={vars}
+      >
+        {text}
+      </p>
+    );
+  }
+
   return (
     <p
       ref={ref}
       className="gsweep-line"
+      data-path="glyph"
       data-style={style}
       data-park={park ? "true" : "false"}
       contentEditable={editable}
@@ -54,7 +75,9 @@ export function ShimmerLine({
       spellCheck={false}
       style={vars}
       onInput={() => {
-        setLen(Math.max(ref.current?.textContent?.length ?? 0, 1));
+        const next = ref.current?.textContent ?? "";
+        setLen(Math.max(next.length, 1));
+        onChange?.(next);
       }}
       onBlur={() => onCommit?.(ref.current?.textContent ?? "")}
       onKeyDown={(e) => {

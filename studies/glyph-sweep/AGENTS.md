@@ -22,8 +22,9 @@ The lab mounts `StudyView` at `/s/glyph-sweep`.
 ## Layout
 
 - `idea.md` / `study.json` — follow glyphs, not the box
-- `src/lib/shimmer.ts` — duration = length × seconds per glyph, spread in `ch` (no DOM)
-- `src/StageView.tsx` — `kind=classic|aurora|flame`, `state=run|park`
+- `src/lib/shimmer.ts` — duration = length × seconds per glyph, spread in `ch` (no DOM). Box path is a fixed 1.8s / 72px sheen.
+- `src/sweep.css` — glyph clip geometry unchanged; compare grid is two wells (跟字形 | 扫整块).
+- `src/StageView.tsx` — `kind=classic|aurora|flame`, `state=run|park`. Stage stays the glyph path.
 
 ## Rules
 

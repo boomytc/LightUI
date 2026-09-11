@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  BOX_DURATION_S,
+  BOX_SPREAD_PX,
   GRADIENT_SIZE,
   PER_CHAR_DEFAULT,
   PER_CHAR_FAST,
@@ -8,11 +10,15 @@ import {
   SPREAD_UNIT,
   bandStops,
   buildSnippet,
+  durationFor,
   durationSeconds,
+  isNaivePath,
   paceFromSecondsPerChar,
+  pathOf,
   secondsPerCharFromPace,
   spreadCh,
   spreadOffsetCss,
+  spreadUnitOf,
 } from "./shimmer";
 
 describe("durationSeconds", () => {
@@ -39,6 +45,29 @@ describe("secondsPerCharFromPace", () => {
     const pace = paceFromSecondsPerChar(PER_CHAR_DEFAULT);
     assert.ok(Math.abs(secondsPerCharFromPace(pace) - PER_CHAR_DEFAULT) < 1e-9);
     assert.ok(pace > 0 && pace < 1);
+  });
+});
+
+describe("pathOf", () => {
+  it("keeps glyph as the letter path and box as the naive flood", () => {
+    assert.equal(pathOf("glyph"), "glyph");
+    assert.equal(pathOf("box"), "box");
+    assert.equal(isNaivePath("glyph"), false);
+    assert.equal(isNaivePath("box"), true);
+  });
+
+  it("gives the box a fixed duration that ignores character count", () => {
+    assert.equal(durationFor("box", 3, 0.12), BOX_DURATION_S);
+    assert.equal(durationFor("box", 24, 0.05), BOX_DURATION_S);
+    assert.equal(durationFor("glyph", 10, 0.12), durationSeconds(10, 0.12));
+    assert.ok(durationFor("glyph", 24, 0.12) > durationFor("glyph", 8, 0.12));
+  });
+
+  it("keeps glyph spread in ch and the box sheen in px", () => {
+    assert.equal(spreadUnitOf("glyph"), "ch");
+    assert.equal(spreadUnitOf("box"), "px");
+    assert.equal(BOX_SPREAD_PX, 72);
+    assert.equal(SPREAD_UNIT, "ch");
   });
 });
 

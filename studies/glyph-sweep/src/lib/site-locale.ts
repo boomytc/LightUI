@@ -18,3 +18,13 @@ export function useLocale(): Locale {
 
   return locale;
 }
+
+export type Localized = { zh: string; en: string };
+
+export function loc(zh: string, en: string): Localized {
+  return { zh, en };
+}
+
+export function pick(text: Localized, locale: Locale): string {
+  return text[locale];
+}
