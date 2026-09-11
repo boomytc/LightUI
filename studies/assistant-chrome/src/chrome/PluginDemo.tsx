@@ -125,7 +125,7 @@ export function PluginDemo({ open = false }: { open?: boolean }) {
                 : { left: toolbar!.x, top: toolbar!.below ? toolbar!.y : toolbar!.y - 8 }
             }
           >
-            <div className="flex items-center gap-0.5 rounded-lg border border-accent/30 bg-surface px-1 py-1 shadow-card">
+            <div className="chrome-plugin-pop flex items-center gap-0.5 rounded-lg border border-accent/30 bg-surface px-1 py-1 shadow-card">
               {PLUGIN_ACTIONS.map((a) => (
                 <button
                   key={a.id}

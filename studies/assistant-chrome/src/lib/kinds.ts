@@ -164,6 +164,50 @@ export const KINDS: KindMeta[] = [
   },
 ];
 
+export const CONTRASTS: {
+  id: KindId;
+  scene: Localized;
+  naive: Localized;
+  matched: Localized;
+}[] = [
+  {
+    id: "chat",
+    scene: loc("还没想清楚", "Ideas still loose"),
+    naive: loc("合适", "Fits"),
+    matched: loc("整页消息列表；组字中的 Enter 不上屏就提交", "A full-page list; Enter while composing does not send"),
+  },
+  {
+    id: "panel",
+    scene: loc("写代码、改文档", "Write code, edit a doc"),
+    naive: loc("选区丢了，建议变成闲聊", "Selection is lost; advice becomes chat"),
+    matched: loc("左干活，右一张建议卡；能应用、能撤销", "Work left, one card right; apply or undo"),
+  },
+  {
+    id: "plugin",
+    scene: loc("老产品", "An old product"),
+    naive: loc("改排版、加侧栏", "Restyle and add a rail"),
+    matched: loc("选中才出工具条；保存 Range", "Toolbar on select; save the Range"),
+  },
+  {
+    id: "float",
+    scene: loc("正在读的文档", "A document you are reading"),
+    naive: loc("跳进另一个应用", "Jump into another app"),
+    matched: loc("可拖的小窗，骨架不动", "A draggable float; the skeleton stays"),
+  },
+  {
+    id: "canvas",
+    scene: loc("头脑风暴", "A brainstorm"),
+    naive: loc("时间线气泡", "Timeline bubbles"),
+    matched: loc("画布上的节点和连线", "Nodes and edges on a canvas"),
+  },
+  {
+    id: "invisible",
+    scene: loc("相册分类", "Sort an album"),
+    naive: loc("多一块铬", "Another piece of chrome"),
+    matched: loc("快捷键；结果写回原处", "A shortcut; write results back in place"),
+  },
+];
+
 export const FORMULA = [
   {
     n: "1",

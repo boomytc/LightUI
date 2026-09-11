@@ -48,7 +48,7 @@ export function InvisibleDemo() {
             <figure key={p.id} className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-lg bg-surface-2">
               <div className={cn("relative min-h-12 min-w-0 flex-1", TONE[p.tone])}>
                 {tagged ? (
-                  <span className="absolute top-1.5 left-1.5 rounded-full bg-accent px-1.5 py-px text-[9px] text-accent-fg">
+                  <span className="chrome-tag-in absolute top-1.5 left-1.5 rounded-full bg-accent px-1.5 py-px text-[9px] text-accent-fg">
                     {pick(p.tag, locale)}
                   </span>
                 ) : null}

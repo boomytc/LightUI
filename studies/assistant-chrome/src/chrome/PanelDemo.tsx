@@ -70,7 +70,7 @@ export function PanelDemo() {
 
         <aside
           data-panel-rail
-          className="flex min-w-0 flex-col overflow-x-hidden overflow-y-auto border-l border-border p-3"
+          className="flex min-w-0 flex-col overflow-x-hidden overflow-y-auto border-l border-border bg-surface-2/80 p-3"
         >
           <p className="text-[11px] font-medium text-accent">{locale === "en" ? "Assist" : "AI 协作"}</p>
           {!range ? (

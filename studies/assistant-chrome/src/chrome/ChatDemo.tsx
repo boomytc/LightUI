@@ -81,7 +81,7 @@ export function ChatDemo() {
             <div
               key={m.id}
               className={cn(
-                "max-w-[min(82%,40rem)] whitespace-pre-wrap rounded-2xl px-3 py-2 text-[13px] leading-relaxed",
+                "chrome-msg-in max-w-[min(82%,40rem)] whitespace-pre-wrap rounded-2xl px-3 py-2 text-[13px] leading-relaxed",
                 m.role === "user"
                   ? "ml-auto rounded-tr-md bg-accent text-accent-fg"
                   : "rounded-tl-md bg-surface-2 text-fg",
