@@ -1,0 +1,106 @@
+.fill-enter {
+  animation: fill-rise 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fill-pair > :last-child {
+  animation-delay: 70ms;
+}
+
+.fill-msg-in {
+  animation: fill-msg 220ms ease both;
+}
+
+.fill-mark-in {
+  animation: fill-mark 200ms ease both;
+}
+
+.fill-success {
+  animation: fill-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fill-success-item {
+  animation: fill-rise 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fill-success-item:nth-child(2) {
+  animation-delay: 50ms;
+}
+
+.fill-success-item:nth-child(3) {
+  animation-delay: 100ms;
+}
+
+.fill-success-item:nth-child(4) {
+  animation-delay: 150ms;
+}
+
+.fill-success-item:nth-child(5) {
+  animation-delay: 200ms;
+}
+
+.fill-control {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.fill-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%238b909a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='m4 6 4 4 4-4'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+}
+
+.fill-phase-dot {
+  box-shadow: 0 0 0 3px var(--color-bg);
+}
+
+@keyframes fill-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fill-msg {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fill-mark {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill-enter,
+  .fill-pair > :last-child,
+  .fill-msg-in,
+  .fill-mark-in,
+  .fill-success,
+  .fill-success-item,
+  .fill-success-item:nth-child(n) {
+    animation: none;
+  }
+
+  .fill-control {
+    transition: none;
+  }
+}

@@ -6,7 +6,7 @@ export function StudyView() {
   const locale = useLocale();
 
   return (
-    <div className="page-width min-w-0 pb-20">
+    <div className="page-width min-w-0 overflow-x-hidden pb-20">
       <section className="grid gap-8 pt-4 pb-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pt-8 lg:pb-12">
         <div className="min-w-0">
           <h1 className="text-[2rem] leading-[1.15] font-semibold tracking-tight text-fg sm:text-[2.6rem]">
@@ -19,6 +19,19 @@ export function StudyView() {
               ? "“Make a form” describes the look. What breaks is silence at the wrong moment: a vanished placeholder, required named only on submit, a banner that points at no field, or “Success” with no next step."
               : "「做个表单」说的是外观。真正会坏掉的是该开口时沉默：占位符没了、必填到提交才说、页顶一句失败对不上栏，或只剩「成功」两个字。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["Before · label stays", "During · fix under the field", "After · next step"]
+              : ["填写前 · 标签常在", "填写中 · 错在栏下能改", "提交后 · 成功带下一步"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
@@ -31,14 +44,12 @@ export function StudyView() {
 
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
-          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
-            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
+          <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
+            <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
               {item.n}
             </span>
-            <div className="min-w-0">
-              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
-              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
-            </div>
+            <h2 className="mt-3 text-[15px] font-semibold">{pick(item.title, locale)}</h2>
+            <p className="mt-1 text-[13px] text-fg-muted">{pick(item.example, locale)}</p>
           </div>
         ))}
       </section>

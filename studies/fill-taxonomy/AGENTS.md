@@ -11,7 +11,7 @@ Vite 8 + React 19 + TypeScript + Tailwind v4. No router, auth, or backend.
 From this directory, or `make dev-study STUDY=fill-taxonomy` at repo root:
 
 ```bash
-npm run dev          # http://127.0.0.1:5208/
+npm run dev          # http://127.0.0.1:5193/
 npm test             # phaseOf / identityLost / shownCopy / sectionsFor / phoneRepair
 npm run typecheck
 npm run build
@@ -40,4 +40,4 @@ The lab mounts `StudyView` at `/s/fill-taxonomy`.
 - Repair names where the miss sits (`repairPlacement`), not when it speaks.
 - When `state` is `naive` or `clear`, pick that card from `state`. Snapshot
   only fills values.
-- Bind the standalone server to `127.0.0.1:5208`.
+- Bind the standalone server to `127.0.0.1:5193`.

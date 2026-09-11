@@ -28,6 +28,7 @@ import {
 import { pick, type Locale } from "../lib/site-locale";
 import { Field, FieldInput, FieldSelect } from "./Field";
 import { DemoCard, GhostButton } from "./Frame";
+import { cn } from "../lib/utils";
 
 export function DutyScene({
   id,
@@ -72,7 +73,7 @@ function Pair({
 }) {
   if (locked) return state === "naive" ? naive : clear;
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
+    <div className="fill-pair grid gap-3 sm:grid-cols-2">
       {naive}
       {clear}
     </div>
@@ -107,10 +108,17 @@ function LabelScene({
           ? "Placeholder only · type and the box goes anonymous"
           : "只靠占位符 · 输入后就不知道填什么"
       }
+      badge={locale === "en" ? "Wrong" : "错"}
+      tone="wrong"
     >
       <input
         data-demo="label-naive"
-        className="h-11 w-full rounded-lg border border-border-strong bg-surface px-3 text-[14px] outline-none placeholder:text-fg-subtle disabled:opacity-60"
+        className={cn(
+          "fill-control h-11 w-full rounded-lg border bg-surface px-3 text-[14px] outline-none placeholder:text-fg-subtle disabled:opacity-60",
+          lost
+            ? "border-wrong bg-wrong-soft"
+            : "border-border-strong focus:border-accent focus:shadow-[0_0_0_3px_var(--color-ring)]",
+        )}
         placeholder={locale === "en" ? "Please enter" : "请输入内容"}
         value={value}
         disabled={locked}
@@ -120,7 +128,10 @@ function LabelScene({
         }}
         aria-label={locale === "en" ? "Unlabeled field" : "没有标签的输入框"}
       />
-      <p className="mt-3 text-[12px] text-wrong" data-identity-lost={lost ? "true" : "false"}>
+      <p
+        className={cn("mt-3 text-[12px] leading-snug", lost ? "fill-msg-in text-wrong" : "text-fg-muted")}
+        data-identity-lost={lost ? "true" : "false"}
+      >
         {lost
           ? locale === "en"
             ? "The placeholder is gone. Name, company, or something else?"
@@ -132,7 +143,11 @@ function LabelScene({
     </DemoCard>
   );
   const clear = (
-    <DemoCard caption={locale === "en" ? "Sign-up · name" : "报名表单 · 姓名"}>
+    <DemoCard
+      caption={locale === "en" ? "Sign-up · name" : "报名表单 · 姓名"}
+      badge={locale === "en" ? "Clear" : "对"}
+      tone="intent"
+    >
       <Field
         id="demo-label"
         label={pick(FIELD_COPY.name, locale)}
@@ -233,6 +248,8 @@ function HelperScene({
           ? "Wrong · helper and error stacked"
           : "错 · 说明和错误叠了两行"
       }
+      badge={locale === "en" ? "Wrong" : "错"}
+      tone="wrong"
     >
       <Field
         id="demo-help-naive"
@@ -255,6 +272,8 @@ function HelperScene({
           ? "Clear · error replaces the helper, one line"
           : "对 · 错误替换说明，只留一行"
       }
+      badge={locale === "en" ? "Clear" : "对"}
+      tone="intent"
     >
       <Field
         id="demo-help"
@@ -302,7 +321,8 @@ function GroupScene({
         {sections.map((section) => (
           <fieldset key={section.group} className="min-w-0">
             {grouped && section.group !== "flat" ? (
-              <legend className="mb-2 text-[13px] font-semibold">
+              <legend className="mb-2 flex items-center gap-2 text-[13px] font-semibold">
+                <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
                 {section.group === "event"
                   ? locale === "en"
                     ? "Event"
@@ -359,8 +379,13 @@ function GroupField({
           ? pick(EVENT.dateLabel, locale)
           : pick(EVENT.place, locale);
     return (
-      <div className="rounded-lg bg-surface px-3 py-2.5">
-        <p className="text-[11px] text-fg-subtle">{label}</p>
+      <div className="rounded-lg border border-border/80 bg-surface px-3 py-2.5">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[11px] text-fg-subtle">{label}</p>
+          <span className="rounded-full bg-intent-soft px-1.5 py-0.5 text-[10px] font-medium text-intent">
+            {locale === "en" ? "Known" : "已知"}
+          </span>
+        </div>
         <p className="mt-0.5 text-[13px] font-medium">{value}</p>
       </div>
     );
@@ -462,7 +487,11 @@ function RepairScene({
   const live = phoneRepair(value);
   const message = repairCopy(live, locale);
   const field = (
-    <DemoCard caption={locale === "en" ? "Clear · miss under the field, with a fix" : "对 · 错在栏下，带改法"}>
+    <DemoCard
+      caption={locale === "en" ? "Clear · miss under the field, with a fix" : "对 · 错在栏下，带改法"}
+      badge={locale === "en" ? "Clear" : "对"}
+      tone="intent"
+    >
       <Field
         id="demo-repair"
         label={pick(FIELD_COPY.phone, locale)}
@@ -488,9 +517,13 @@ function RepairScene({
     </DemoCard>
   );
   const banner = (
-    <DemoCard caption={locale === "en" ? "Wrong · a banner that names no field" : "错 · 页顶一句失败，对不上栏"}>
+    <DemoCard
+      caption={locale === "en" ? "Wrong · a banner that names no field" : "错 · 页顶一句失败，对不上栏"}
+      badge={locale === "en" ? "Wrong" : "错"}
+      tone="wrong"
+    >
       <p
-        className="mb-3 rounded-lg bg-wrong-soft px-3 py-2 text-[13px] text-wrong"
+        className="fill-msg-in mb-3 rounded-lg bg-wrong-soft px-3 py-2 text-[13px] text-wrong"
         role="alert"
         data-placement={repairPlacement(false)}
       >
@@ -529,8 +562,12 @@ function DoneScene({
   };
   const showPanel = locked ? state === "clear" : submitted;
   const naive = (
-    <DemoCard caption={locale === "en" ? "Wrong · only the word Success" : "错 · 只弹「成功」"}>
-      <p className="py-6 text-center text-[1.4rem] font-semibold">{naiveOutcome.title}</p>
+    <DemoCard
+      caption={locale === "en" ? "Wrong · only the word Success" : "错 · 只弹「成功」"}
+      badge={locale === "en" ? "Wrong" : "错"}
+      tone="wrong"
+    >
+      <p className="py-6 text-center text-[1.4rem] font-semibold text-fg-muted">{naiveOutcome.title}</p>
       <p className="text-center text-[12px] text-fg-subtle">
         {locale === "en"
           ? `Complete? ${outcomeComplete(naiveOutcome) ? "yes" : "no — missing what and next"}`
@@ -539,26 +576,40 @@ function DoneScene({
     </DemoCard>
   );
   const clear = (
-    <DemoCard caption={locale === "en" ? "Clear · what happened + next step" : "对 · 发生了什么 + 下一步"}>
+    <DemoCard
+      caption={locale === "en" ? "Clear · what happened + next step" : "对 · 发生了什么 + 下一步"}
+      badge={locale === "en" ? "Clear" : "对"}
+      tone="intent"
+    >
       {showPanel ? (
-        <div className="px-1 py-2 text-center">
-          <span className="mx-auto grid size-12 place-items-center rounded-full bg-intent-soft text-intent">
+        <div className="fill-success px-1 py-2 text-center">
+          <span className="fill-success-item mx-auto grid size-12 place-items-center rounded-full bg-intent-soft text-intent">
             <svg viewBox="0 0 24 24" className="size-6" fill="none" aria-hidden="true">
               <path d="M5 12.5 10 17.5 19 7.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </span>
-          <h4 className="mt-4 text-[1.15rem] font-semibold">{clearOutcome.title}</h4>
-          <p className="mt-2 text-[13px] text-fg-muted">{clearOutcome.what}</p>
-          <div className="mt-4 rounded-xl bg-surface px-4 py-3 text-[13px] text-fg-muted">
+          <h4 className="fill-success-item mt-4 text-[1.15rem] font-semibold">{clearOutcome.title}</h4>
+          <div className="fill-success-item mt-3 text-left">
+            <p className="text-[10px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+              {locale === "en" ? "What happened" : "发生了什么"}
+            </p>
+            <p className="mt-1 text-[13px] text-fg-muted">{clearOutcome.what}</p>
+          </div>
+          <div className="fill-success-item mt-3 rounded-xl bg-surface px-4 py-3 text-[13px] text-fg-muted">
             {pick(EVENT.dateLabel, locale)} · {pick(EVENT.place, locale)}
           </div>
-          <button
-            type="button"
-            disabled={locked}
-            className="mt-4 inline-flex h-10 items-center rounded-lg bg-fg px-3 text-[13px] text-surface disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {clearOutcome.next}
-          </button>
+          <div className="fill-success-item mt-4">
+            <p className="mb-2 text-[10px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+              {locale === "en" ? "Next step" : "下一步"}
+            </p>
+            <button
+              type="button"
+              disabled={locked}
+              className="inline-flex h-10 items-center rounded-full bg-fg px-4 text-[13px] font-medium text-surface disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {clearOutcome.next}
+            </button>
+          </div>
         </div>
       ) : (
         <div>
