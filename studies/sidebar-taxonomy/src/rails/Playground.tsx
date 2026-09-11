@@ -1,60 +1,163 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { KINDS, type KindId } from "../lib/kinds";
-import { pick, useLocale } from "../lib/site-locale";
+import { expandLine, LANES, laneKinds, laneOf, mixedPair, type LaneId } from "../lib/lanes";
+import { pick, useLocale, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { CollapsibleDemo } from "./CollapsibleDemo";
 import { FloatingDemo } from "./FloatingDemo";
 import { MultiLevelDemo } from "./MultiLevelDemo";
 import { OffCanvasDemo } from "./OffCanvasDemo";
+import { SpaceBoard } from "./SpaceBoard";
 import { WheelDemo } from "./WheelDemo";
+import "./rail.css";
 
 export function Playground() {
   const locale = useLocale();
   const [active, setActive] = useState<KindId>("floating");
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0];
+  const lane = laneOf(active);
+  const pair = mixedPair(active);
+  const pairMeta = pair ? KINDS.find((k) => k.id === pair) : undefined;
+
+  function select(id: KindId) {
+    setActive(id);
+  }
+
+  function selectLane(next: LaneId) {
+    if (laneKinds(next).includes(active)) return;
+    const first = laneKinds(next)[0];
+    if (first) setActive(first);
+  }
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && ["INPUT", "TEXTAREA"].includes(target.tagName)) return;
+      const n = Number(e.key);
+      if (n >= 1 && n <= KINDS.length) {
+        e.preventDefault();
+        setActive(KINDS[n - 1]!.id);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
-    <div className="min-w-0">
-      <nav
-        aria-label={locale === "en" ? "Sidebar kinds" : "侧栏种类"}
-        className="mb-6 flex flex-wrap gap-1.5"
-      >
-        {KINDS.map((kind) => {
-          const on = kind.id === active;
+    <div data-playground="sidebar" data-kind={active} data-lane={lane} className="min-w-0">
+      <p className="mb-3 text-[12px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+        {locale === "en" ? "First name the space" : "先定空间"}
+      </p>
+
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {LANES.map((item) => {
+          const on = item.id === lane;
           return (
             <button
-              key={kind.id}
+              key={item.id}
               type="button"
-              data-kind={kind.id}
-              aria-pressed={on}
-              onClick={() => setActive(kind.id)}
+              data-lane={item.id}
+              onClick={() => selectLane(item.id)}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] transition-colors",
+                "rail-card min-h-[4.75rem] rounded-2xl border px-3.5 py-3 text-left",
                 on
-                  ? "border-border-strong bg-surface shadow-card"
-                  : "border-border bg-transparent hover:bg-surface-2",
+                  ? "border-border-strong bg-play-glow shadow-card"
+                  : "border-border bg-surface hover:bg-surface-2",
               )}
             >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
-                {kind.index}
+              <span
+                className={cn(
+                  "font-mono text-[10px] tracking-[0.14em]",
+                  on ? "text-accent" : "text-fg-subtle",
+                )}
+              >
+                {item.index}
               </span>
-              <span className="font-medium">{pick(kind.zh, locale)}</span>
+              <span className="mt-1 block text-[14px] font-semibold tracking-tight text-fg">
+                {pick(item.label, locale)}
+              </span>
+              <span className="mt-1 block text-[11px] leading-snug text-fg-muted">
+                {pick(item.ask, locale)}
+              </span>
             </button>
           );
         })}
+      </div>
+
+      <nav
+        aria-label={locale === "en" ? "Sidebar kinds" : "侧栏种类"}
+        className="mt-4 flex flex-col gap-3"
+      >
+        {LANES.map((item) => (
+          <div key={item.id} className="min-w-0">
+            <p
+              className={cn(
+                "mb-1.5 text-[10px] font-medium tracking-[0.12em] uppercase",
+                item.id === lane ? "text-accent" : "text-fg-subtle",
+              )}
+            >
+              {pick(item.label, locale)}
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {item.kinds.map((id) => {
+                const kind = KINDS.find((k) => k.id === id);
+                if (!kind) return null;
+                const on = kind.id === active;
+                return (
+                  <button
+                    key={kind.id}
+                    type="button"
+                    data-kind={kind.id}
+                    aria-pressed={on}
+                    onClick={() => select(kind.id)}
+                    className={cn(
+                      "inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-[12px]",
+                      on
+                        ? "border-fg bg-fg text-surface shadow-card"
+                        : "border-border bg-surface text-fg-muted hover:bg-surface-2 hover:text-fg",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "font-mono text-[11px] tabular-nums",
+                        on ? "text-surface/55" : "text-fg-subtle",
+                      )}
+                    >
+                      {kind.index}
+                    </span>
+                    <span className="font-medium">{pick(kind.zh, locale)}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
-      <section className="min-w-0">
+      <section className="mt-6 min-w-0">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
             <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 05</p>
             <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           </div>
-          <p className="max-w-xs text-[12px] leading-relaxed text-fg-subtle sm:text-right">
-            {pick(meta.occupies, locale)}
-          </p>
+          <div className="flex max-w-xs flex-col items-start gap-1.5 sm:items-end">
+            <p className="text-[12px] leading-relaxed text-fg-subtle sm:text-right">
+              {pick(expandLine(active), locale)}
+            </p>
+            {pairMeta ? (
+              <button
+                type="button"
+                onClick={() => select(pairMeta.id)}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted transition-colors hover:border-border-strong hover:text-fg"
+              >
+                {locale === "en" ? "Easy mix-up · " : "容易混 · "}
+                {pick(pairMeta.zh, locale)}
+              </button>
+            ) : null}
+          </div>
         </div>
 
         <div className="mb-4 flex flex-wrap gap-1.5">
@@ -70,9 +173,11 @@ export function Playground() {
 
         {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
 
+        <SpaceBoard kind={active} />
+
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
-        <div className="w-full min-w-0">
+        <div key={meta.id} className="rail-in w-full min-w-0">
           <KindDemo id={meta.id} />
         </div>
 
@@ -91,7 +196,7 @@ export function Playground() {
   );
 }
 
-function SpecCard({ text, locale }: { text: string; locale: "zh" | "en" }) {
+function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {

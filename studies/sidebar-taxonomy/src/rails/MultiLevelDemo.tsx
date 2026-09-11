@@ -90,7 +90,7 @@ export function MultiLevelDemo() {
                     {hasKids ? (
                       <ChevronDown
                         className={cn(
-                          "size-3.5 text-fg-subtle transition-transform duration-200",
+                          "size-3.5 text-fg-subtle transition-transform duration-300",
                           expanded ? "rotate-0" : "-rotate-90",
                         )}
                       />
@@ -98,7 +98,7 @@ export function MultiLevelDemo() {
                   </button>
                   {hasKids ? (
                     <div
-                      className="grid transition-[grid-template-rows] duration-200"
+                      className="rail-branch grid"
                       style={{ gridTemplateRows: expanded ? "1fr" : "0fr" }}
                     >
                       <div className="overflow-hidden">

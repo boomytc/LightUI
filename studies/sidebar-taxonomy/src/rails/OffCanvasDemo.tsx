@@ -4,6 +4,7 @@ import { loc, pick, useLocale } from "../lib/site-locale";
 import { dismissOverlay } from "../lib/space";
 import { cn } from "../lib/utils";
 import { Frame } from "./Frame";
+import "./rail.css";
 
 const TOC = [
   {
@@ -81,7 +82,7 @@ export function OffCanvasDemo({ defaultOpen = false }: { defaultOpen?: boolean }
       <div className="relative min-h-[28rem] w-full min-w-0 flex-1 overflow-hidden bg-surface">
         <div
           className={cn(
-            "absolute inset-0 z-[1] bg-fg/25 transition-opacity duration-300",
+            "rail-veil absolute inset-0 z-[1] bg-fg/30 backdrop-blur-[2px]",
             open ? "opacity-100" : "pointer-events-none opacity-0",
           )}
           onClick={close}
@@ -89,11 +90,10 @@ export function OffCanvasDemo({ defaultOpen = false }: { defaultOpen?: boolean }
 
         <aside
           id={panelId}
-          className="absolute inset-y-0 left-0 z-[2] flex w-64 max-w-[80%] flex-col bg-fg text-surface"
-          style={{
-            transform: open ? "translateX(0)" : "translateX(-100%)",
-            transition: "transform 400ms cubic-bezier(0.22, 1, 0.36, 1)",
-          }}
+          className={cn(
+            "rail-sheet absolute inset-y-0 left-0 z-[2] flex w-64 max-w-[80%] flex-col bg-fg text-surface shadow-menu",
+            open ? "translate-x-0" : "-translate-x-full",
+          )}
           aria-hidden={!open}
         >
           <div className="flex h-16 items-center px-5 pl-16">
@@ -149,7 +149,12 @@ export function OffCanvasDemo({ defaultOpen = false }: { defaultOpen?: boolean }
           </span>
         </button>
 
-        <article className="h-full min-h-[28rem] min-w-0 px-5 py-5">
+        <article
+          className={cn(
+            "h-full min-h-[28rem] min-w-0 px-5 py-5 transition-[filter,opacity] duration-300",
+            open ? "opacity-70" : "opacity-100",
+          )}
+        >
           <div className="mb-4 flex h-10 items-center pl-12">
             <p className="text-[11px] tracking-[0.16em] text-fg-subtle uppercase">Design Notes · 08</p>
           </div>

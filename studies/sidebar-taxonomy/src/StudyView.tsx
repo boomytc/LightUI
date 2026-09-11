@@ -23,7 +23,7 @@ export function StudyView() {
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
             ? "Name the model, name the scene, then name whether expand changes width or layer. The five contrasts below are live."
-            : "先说模型，再说场景，再说展开改的是宽度还是图层。下面五个对照可以点。"}
+            : "先说模型，再说场景，再说占不占位、展开改的是宽度还是图层。下面五个对照按空间分组。"}
         </p>
       </section>
 

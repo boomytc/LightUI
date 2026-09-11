@@ -41,7 +41,7 @@ export function CollapsibleDemo({ defaultOpen }: { defaultOpen?: boolean } = {})
           className="flex shrink-0 flex-col bg-fg text-surface"
           style={{
             width,
-            transition: "width 250ms cubic-bezier(0.22, 1, 0.36, 1)",
+            transition: "width 360ms cubic-bezier(0.22, 1, 0.36, 1)",
           }}
         >
           <div
@@ -77,7 +77,7 @@ export function CollapsibleDemo({ defaultOpen }: { defaultOpen?: boolean } = {})
               )}
             >
               <ChevronLeft
-                className={cn("size-3.5 transition-transform duration-200", open ? "" : "rotate-180")}
+                className={cn("size-3.5 transition-transform duration-300", open ? "" : "rotate-180")}
               />
             </button>
           </div>
@@ -104,7 +104,7 @@ export function CollapsibleDemo({ defaultOpen }: { defaultOpen?: boolean } = {})
                     )}
                     style={{
                       transition:
-                        "opacity 180ms cubic-bezier(0.22, 1, 0.36, 1), max-width 250ms cubic-bezier(0.22, 1, 0.36, 1)",
+                        "opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), max-width 360ms cubic-bezier(0.22, 1, 0.36, 1)",
                     }}
                   >
                     {pick(item.label, locale)}
