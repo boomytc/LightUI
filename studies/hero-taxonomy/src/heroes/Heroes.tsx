@@ -69,7 +69,7 @@ function ProductFold() {
             <span className="hero-cta hero-cta-ghost">{locale === "en" ? "See a demo" : "查看演示"}</span>
           </div>
         </div>
-        <div className="min-w-0 rounded-2xl bg-white/90 p-3 shadow-card @md:p-5">
+        <div className="hero-product-mock min-w-0 rounded-2xl bg-white/90 p-3 shadow-card @md:p-5">
           <div className="mb-2 flex items-center gap-2 @md:mb-3">
             <span className="grid size-6 place-items-center rounded-full bg-[#b55238] text-[10px] text-white @md:size-8 @md:text-[12px]">
               F
@@ -149,7 +149,14 @@ function PortfolioFold() {
         </p>
         <h3 className="hero-title mt-2 whitespace-pre-line">{pick(slide.title, locale)}</h3>
         <p className="hero-dek mt-3 max-w-[36rem] text-white/75">{pick(slide.body, locale)}</p>
-        <span className="hero-cta hero-cta-sheet mt-5 self-start">{locale === "en" ? "View work" : "查看作品"}</span>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <span className="hero-cta hero-cta-sheet">{locale === "en" ? "View work" : "查看作品"}</span>
+          <span className="flex gap-1.5" aria-hidden="true">
+            {PORTFOLIO_SLIDES.map((_, i) => (
+              <i key={i} className="hero-dot" data-on={i === index ? "true" : "false"} />
+            ))}
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -171,7 +178,7 @@ function EventFold() {
           ? "With working product leads, from idea to something live."
           : "与一线产品负责人一起，拆解从想法到落地。"}
       </p>
-      <p className="mt-5 text-[13px] text-white/80 @md:text-[15px]">
+      <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3 py-1 text-[12px] text-white/80 @md:text-[13px]">
         08 / 24 · 14:00 · {locale === "en" ? "Guangzhou" : "广州 · 海心沙"}
       </p>
       <span className="hero-cta hero-cta-terra mt-5 min-w-32">{locale === "en" ? "Register" : "立即报名"}</span>
@@ -186,7 +193,7 @@ function CommerceFold() {
   const locale = useLocale();
   return (
     <div data-hero="commerce" className="hero-fold hero-commerce grid min-h-0 grid-cols-1 @md:grid-cols-[1.1fr_0.9fr]">
-      <div className="min-h-[11rem] min-w-0 self-stretch bg-linear-to-br from-[#ead2b8] to-[#c56a52]/80 @md:min-h-0" />
+      <div className="hero-chair min-h-[11rem] min-w-0 self-stretch bg-linear-to-br from-[#ead2b8] via-[#e8c4a8] to-[#c56a52]/70 @md:min-h-0" />
       <div className="flex min-w-0 flex-col justify-center px-4 py-5 @md:px-8 @md:py-8">
         <p className="text-[10px] tracking-[0.16em] text-fg-subtle @md:text-[11px]">
           {locale === "en" ? "SEASONAL · ONE" : "当季主推 · 一件"}
@@ -229,7 +236,7 @@ function MediaFold() {
           {locale === "en" ? "Today 07:12 · Type Daily" : "今天 07:12 · Type Daily"}
         </p>
       </div>
-      <div className="min-h-[10rem] min-w-0 rounded-xl bg-linear-to-br from-accent-soft to-[#d4c8b8] @md:min-h-[18rem]" />
+      <div className="hero-media-shot min-h-[10rem] min-w-0 rounded-xl bg-linear-to-br from-accent-soft to-[#d4c8b8] @md:min-h-[18rem]" />
     </div>
   );
 }
@@ -257,7 +264,7 @@ function EducationFold() {
       </div>
       <ul className="grid min-w-0 grid-cols-3 gap-2">
         {COURSE_SLICES.map((item) => (
-          <li key={item.title.zh} className="min-w-0 overflow-hidden rounded-lg border border-border bg-surface">
+          <li key={item.title.zh} className="hero-slice min-w-0 overflow-hidden rounded-lg border border-border bg-surface">
             <div className={cn("h-16 w-full @md:h-28", item.tone)} />
             <p className="truncate px-1.5 pt-1.5 text-[11px] font-medium @md:px-2 @md:text-[12px]">
               {pick(item.title, locale)}
@@ -329,7 +336,8 @@ function CommunityFold() {
       <div className="min-w-0">
         <p className="text-[10px] tracking-[0.16em] text-fg-subtle @md:text-[11px]">MAKERS.CLUB</p>
         <h3 className="hero-title mt-2">{locale === "en" ? "Who is here this week" : "这周谁在这里"}</h3>
-        <p className="hero-dek mt-3 text-fg-muted">
+        <p className="hero-online hero-dek mt-3 text-fg-muted">
+          <i aria-hidden="true" />
           {locale === "en" ? "128 online" : "本周 128 人在线"}
         </p>
         <span className="hero-cta hero-cta-solid mt-5">{locale === "en" ? "Join" : "加入社区"}</span>

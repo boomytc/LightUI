@@ -8,6 +8,8 @@ export type KindMeta = {
   index: string;
   name: string;
   zh: Localized;
+  job: Localized;
+  shape: Localized;
   oneLiner: Localized;
   scenes: Localized[];
   rules: Localized[];
@@ -23,6 +25,8 @@ export const KINDS: KindMeta[] = [
     index: "01",
     name: "Product",
     zh: loc("产品介绍", "Product"),
+    job: loc("能解决什么？", "What can it solve?"),
+    shape: loc("左价值 · 右产品 · 底信任", "Value · product · trust"),
     oneLiner: loc("能解决什么？左价值、右产品、底信任", "What can it solve? Value, product, trust"),
     scenes: [
       loc("协作 SaaS", "A team SaaS"),
@@ -47,6 +51,8 @@ export const KINDS: KindMeta[] = [
     index: "02",
     name: "Portfolio",
     zh: loc("个人品牌", "Portfolio"),
+    job: loc("你是谁、做得怎样？", "Who are you, and how good?"),
+    shape: loc("杂志 Banner · 头像 · 代表作", "Magazine banner · avatar · work"),
     oneLiner: loc("你是谁、做得怎样？杂志 Banner、头像、代表作", "Who are you, and how good? Banner, avatar, work"),
     scenes: [
       loc("设计师主页", "A designer home"),
@@ -71,6 +77,8 @@ export const KINDS: KindMeta[] = [
     index: "03",
     name: "Event",
     zh: loc("活动召唤", "Event"),
+    job: loc("为什么现在参加？", "Why now?"),
+    shape: loc("主题 · 时间地点 · 唯一主行动 · 席位", "Theme · when/where · one action · seats"),
     oneLiner: loc("为什么现在参加？主题、时间地点、唯一主行动、席位", "Why now? Theme, when/where, one action, seats"),
     scenes: [
       loc("线下大会", "A conference"),
@@ -95,6 +103,8 @@ export const KINDS: KindMeta[] = [
     index: "04",
     name: "Commerce",
     zh: loc("电商", "Commerce"),
+    job: loc("卖什么、值不值得？", "What, and worth it?"),
+    shape: loc("一件主推 · 价格理由 · 立即购买", "One product · price reason · buy now"),
     oneLiner: loc("卖什么、值不值得？一件主推，不要五张海报", "What, and worth it? One product, not five posters"),
     scenes: [
       loc("独立店铺", "An independent shop"),
@@ -119,6 +129,8 @@ export const KINDS: KindMeta[] = [
     index: "05",
     name: "Media",
     zh: loc("媒体", "Media"),
+    job: loc("发生了什么？", "What happened?"),
+    shape: loc("头条 · 摘要 · 时间来源", "Headline · dek · time and source"),
     oneLiner: loc("发生了什么？头条、摘要、时间来源", "What happened? Headline, dek, time and source"),
     scenes: [
       loc("行业早报", "A trade brief"),
@@ -143,6 +155,8 @@ export const KINDS: KindMeta[] = [
     index: "06",
     name: "Education",
     zh: loc("课程", "Education"),
+    job: loc("能学到什么？", "What will I make?"),
+    shape: loc("成果承诺 · 作品切片 · 不是大纲", "Outcome · work slices · not a syllabus"),
     oneLiner: loc("能学到什么？成果承诺 + 作品切片，不是大纲", "What will I make? Outcome + slices, not a syllabus"),
     scenes: [
       loc("设计课", "A design course"),
@@ -167,6 +181,8 @@ export const KINDS: KindMeta[] = [
     index: "07",
     name: "Tool",
     zh: loc("工具", "Tool"),
+    job: loc("能帮我做什么？", "What can it do?"),
+    shape: loc("一句话能力 · 当场可试", "One line · try it here"),
     oneLiner: loc("能帮我做什么？一句话能力，当场可试", "What can it do? One line, try it here"),
     scenes: [
       loc("在线处理", "An in-browser tool"),
@@ -191,6 +207,8 @@ export const KINDS: KindMeta[] = [
     index: "08",
     name: "Community",
     zh: loc("社区", "Community"),
+    job: loc("谁在这里？", "Who is here?"),
+    shape: loc("人与话题 · 不是产品卖点", "People and topics · not a pitch"),
     oneLiner: loc("谁在这里？人与话题，不是产品卖点", "Who is here? People and topics, not a pitch"),
     scenes: [
       loc("独立开发者", "Indie makers"),
@@ -209,6 +227,49 @@ export const KINDS: KindMeta[] = [
     note: loc("社区首屏是人和话题。不要写成产品介绍。", "A community fold is people and topics. Do not write it as a product pitch."),
     tells: loc("看见谁在说话，在说什么", "You see who is talking, and about what"),
     window: loc("makers.club", "makers.club"),
+  },
+];
+
+export const CONTRASTS = [
+  {
+    scene: loc("协作产品", "A team product"),
+    naive: loc("口号 + 两个按钮", "A slogan and two buttons"),
+    matched: loc("左价值、右产品、底信任", "Value, product, trust"),
+  },
+  {
+    scene: loc("设计师主页", "A designer home"),
+    naive: loc("履历墙", "A CV dump"),
+    matched: loc("头像、代表作、风格", "Avatar, work, style"),
+  },
+  {
+    scene: loc("大会报名", "A conference"),
+    naive: loc("两个一样重的按钮", "Two equal buttons"),
+    matched: loc("主题、时间地点、唯一报名、席位", "Theme, time, one register, seats"),
+  },
+  {
+    scene: loc("家具店", "A furniture shop"),
+    naive: loc("五张海报轮播", "Five rotating posters"),
+    matched: loc("一件主推、价格理由、立即购买", "One product, a reason, buy now"),
+  },
+  {
+    scene: loc("行业早报", "A trade brief"),
+    naive: loc("导航、订阅、广告挤在首屏", "Nav, subscribe, and ads in the fold"),
+    matched: loc("头条、摘要、时间来源", "Headline, dek, time and source"),
+  },
+  {
+    scene: loc("设计课", "A design course"),
+    naive: loc("周次大纲列表", "A week-by-week syllabus"),
+    matched: loc("结课作品、切片、开课日", "Finished work, slices, start date"),
+  },
+  {
+    scene: loc("去背工具", "A cut-out tool"),
+    naive: loc("公司故事", "A company story"),
+    matched: loc("一句话能力，当场可试", "One line, try it here"),
+  },
+  {
+    scene: loc("开发者社区", "A makers’ club"),
+    naive: loc("平台卖点", "A platform pitch"),
+    matched: loc("此刻的人和话题", "People and topics, now"),
   },
 ];
 

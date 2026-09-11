@@ -11,7 +11,7 @@ Vite 8 + React 19 + TypeScript + Tailwind v4. No router, auth, or backend.
 From this directory, or `make dev-study STUDY=hero-taxonomy` at repo root:
 
 ```bash
-npm run dev          # http://127.0.0.1:5191/
+npm run dev          # http://127.0.0.1:5219/
 npm test             # questionOf / primaryCtaCount / allowsCarousel / tooManyBanners
 npm run typecheck
 npm run build
@@ -25,9 +25,10 @@ The lab mounts `StudyView` at `/s/hero-taxonomy`.
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — first-glance question, one primary, commerce banners (no DOM)
 - `src/heroes/` — eight first-folds. Playground fills the content column
-  (desktop min-height ~28rem; kinds are a chip row; spec is a caption
-  under the hero). Do not wrap the playground demo in `w-[390px]`.
-  StageView stays `w-[390px]`. Narrow containers stack; no horizontal scroll.
+  (desktop min-height ~28rem; kinds are a scan table of first-glance
+  questions; spec is a caption under the hero). Do not wrap the playground
+  demo in `w-[390px]`. StageView stays `w-[390px]`. Narrow containers
+  stack; no horizontal scroll.
 - `src/StageView.tsx` — one kind, `state=default`, no chrome
 - `src/lib/stage-query.ts` — `kind=product|portfolio|event|commerce|media|education|tool|community`, `state=default`
 
@@ -40,4 +41,4 @@ The lab mounts `StudyView` at `/s/hero-taxonomy`.
 - The first-fold job is not “make a fancy hero”. A landing skeleton is not
   what the first glance answers. The first fold is not a login card.
   Commerce must not rotate five posters.
-- Bind the standalone server to `127.0.0.1:5191`.
+- Bind the standalone server to `127.0.0.1:5219`.
