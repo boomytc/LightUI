@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { filled, weight, type KindId } from "../lib/machines";
 import { cn } from "../lib/utils";
 
+export type ButtonSkin = "round" | "pill";
+
 export function Window({
   title,
   children,
@@ -29,13 +31,16 @@ export function Window({
 export function ActionButton({
   kind,
   named,
+  skin = "round",
   children,
 }: {
   kind: KindId;
   named?: boolean;
+  skin?: ButtonSkin;
   children: ReactNode;
 }) {
   const rung = weight(kind);
+  const pill = skin === "pill";
   return (
     <button
       type="button"
@@ -43,12 +48,14 @@ export function ActionButton({
       data-weight={rung}
       data-filled={filled(kind) ? "true" : "false"}
       data-named={named ? "true" : undefined}
+      data-skin={skin}
       className={cn(
-        "inline-flex h-10 w-fit shrink-0 items-center justify-center whitespace-nowrap text-[13px] font-medium",
-        kind === "solid" && "rounded-lg bg-fg px-4 text-surface",
-        kind === "outline" && "rounded-lg border border-border-strong bg-transparent px-4 text-fg",
-        kind === "text" && "rounded-md px-2 text-fg-muted",
-        named && "ring-2 ring-accent ring-offset-2 ring-offset-surface",
+        "btn-action inline-flex h-10 w-fit shrink-0 items-center justify-center whitespace-nowrap text-[13px] font-medium",
+        kind === "solid" && "bg-fg px-4 text-surface",
+        kind === "outline" && "border border-border-strong bg-transparent px-4 text-fg hover:bg-surface-2",
+        kind === "text" && "px-2 text-fg-muted hover:text-fg",
+        kind === "text" ? (pill ? "rounded-full" : "rounded-md") : pill ? "rounded-full" : "rounded-lg",
+        named && "btn-named",
       )}
     >
       {children}

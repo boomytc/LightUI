@@ -1,0 +1,140 @@
+.btn-enter {
+  animation: btn-rise 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.btn-enter-late {
+  animation: btn-rise 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 70ms;
+}
+
+.btn-action {
+  transition:
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.btn-action:hover {
+  transform: translateY(-1px);
+}
+
+.btn-action:active {
+  transform: scale(0.97);
+}
+
+.btn-action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-ring);
+}
+
+.btn-action[data-kind="solid"]:hover {
+  box-shadow: 0 6px 16px rgb(23 24 28 / 0.16);
+}
+
+.btn-action[data-named="true"] {
+  box-shadow: 0 0 0 2px var(--color-accent), 0 0 0 4px var(--color-surface);
+}
+
+.btn-action[data-named="true"][data-kind="solid"]:hover {
+  box-shadow:
+    0 0 0 2px var(--color-accent),
+    0 0 0 4px var(--color-surface),
+    0 6px 16px rgb(23 24 28 / 0.16);
+}
+
+.btn-action[data-named="true"]:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-accent), 0 0 0 5px var(--color-ring);
+}
+
+.btn-clash {
+  animation: btn-clash 900ms ease-in-out infinite;
+}
+
+.btn-slot {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 4px;
+}
+
+.btn-slot-fill {
+  background: var(--color-fg);
+}
+
+.btn-slot-overflow {
+  background: var(--color-wrong);
+  animation: btn-slot-pop 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.btn-ink {
+  display: block;
+  height: 0.4rem;
+  border-radius: 999px;
+}
+
+.btn-ink-solid {
+  width: 2rem;
+  background: currentColor;
+}
+
+.btn-ink-outline {
+  width: 1.45rem;
+  box-shadow: inset 0 0 0 1.5px currentColor;
+  background: transparent;
+}
+
+.btn-ink-text {
+  width: 0.7rem;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+@keyframes btn-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes btn-clash {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(225 29 72 / 0);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgb(225 29 72 / 0.12);
+  }
+}
+
+@keyframes btn-slot-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-enter,
+  .btn-enter-late,
+  .btn-clash,
+  .btn-slot-overflow {
+    animation: none;
+  }
+
+  .btn-action,
+  .btn-action:hover,
+  .btn-action:active {
+    transition: none;
+    transform: none;
+  }
+}

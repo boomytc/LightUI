@@ -1,17 +1,23 @@
 import { TRIO, WRONG_BAR } from "../lib/fixtures";
-import { primaryCount, tooManyPrimaries, type KindId } from "../lib/machines";
+import { WEIGHT_LABEL } from "../lib/kinds";
+import { primaryCount, tooManyPrimaries, weight, type KindId } from "../lib/machines";
 import { pick, useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
-import { ActionButton, Window } from "./Frame";
+import { ActionButton, Window, type ButtonSkin } from "./Frame";
+import "./button.css";
 
 export type SceneState = "ok" | "wrong";
 
 export function ActionRow({
   named,
   state,
+  captioned,
+  skin = "round",
 }: {
   named?: KindId;
   state: SceneState;
+  captioned?: boolean;
+  skin?: ButtonSkin;
 }) {
   const locale = useLocale();
   const wrong = state === "wrong";
@@ -21,19 +27,30 @@ export function ActionRow({
   return (
     <div
       className={cn(
-        "flex w-fit max-w-full flex-wrap items-center gap-2",
-        crowded && "rounded-xl border border-dashed border-border-strong bg-surface-2 px-2.5 py-2",
+        "flex w-fit max-w-full flex-wrap items-end gap-2",
+        crowded && "btn-clash rounded-xl border border-dashed border-wrong/40 bg-wrong-soft px-2.5 py-2",
       )}
     >
-      {leaves.map((leaf, i) => (
-        <ActionButton
-          key={`${leaf.kind}-${leaf.label.zh}-${i}`}
-          kind={leaf.kind}
-          named={!wrong && named != null && leaf.kind === named}
-        >
-          {pick(leaf.label, locale)}
-        </ActionButton>
-      ))}
+      {leaves.map((leaf, i) => {
+        const on = !wrong && named != null && leaf.kind === named;
+        return (
+          <div key={`${leaf.kind}-${leaf.label.zh}-${i}`} className="flex flex-col items-center gap-1.5">
+            <ActionButton kind={leaf.kind} named={on} skin={skin}>
+              {pick(leaf.label, locale)}
+            </ActionButton>
+            {captioned ? (
+              <span
+                className={cn(
+                  "text-[10px] font-medium tracking-[0.12em] uppercase",
+                  wrong ? "text-wrong" : on ? "text-accent" : "text-fg-subtle",
+                )}
+              >
+                {pick(WEIGHT_LABEL[weight(leaf.kind)], locale)}
+              </span>
+            ) : null}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -62,11 +79,11 @@ export function Scene({
         </p>
 
         <div className="mt-5">
-          <ActionRow named={named} state={state} />
+          <ActionRow named={named} state={state} captioned />
         </div>
 
         {wrong ? (
-          <p className="mt-3 text-[12px] leading-relaxed text-accent">
+          <p className="mt-3 text-[12px] leading-relaxed text-wrong">
             {locale === "en"
               ? "Wrong: two solids in one bar. A region may have only one filled primary."
               : "错：同一条里两个面状。一区只能有一个实心主按钮。"}
