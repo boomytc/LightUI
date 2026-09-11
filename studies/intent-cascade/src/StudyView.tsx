@@ -11,9 +11,12 @@ export function StudyView() {
 
   return (
     <div className="page-width min-w-0 pb-20">
-      <section className="grid min-w-0 gap-10 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
+      <section className="grid min-w-0 gap-10 pt-4 pb-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pt-8 lg:pb-12">
         <div className="min-w-0">
-          <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
+          <p className="mb-3 font-mono text-[11px] tracking-[0.18em] text-accent uppercase">
+            {locale === "en" ? "Safe triangle · Intent corridor" : "安全三角 · 意图走廊"}
+          </p>
+          <h1 className="text-[2rem] leading-[1.15] font-semibold tracking-tight text-fg sm:text-[2.6rem]">
             {locale === "en"
               ? "Guess from the pointer path whether you are heading into the submenu."
               : "根据鼠标移动方向，推测你是不是要进子菜单。"}
@@ -23,6 +26,19 @@ export function StudyView() {
               ? "Classic cascade-menu problem: a diagonal slide into the second level briefly crosses other items and the menu switches. The safe triangle protects that diagonal."
               : "多级菜单的经典问题：从一级斜着滑向二级时，指针会短暂经过其它项，菜单被误切换。下面这套交互用「安全三角」保护那条斜线。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["Diagonal · protect", "Vertical · switch now", "Dwell · then abandon"]
+              : ["斜向 · 保护", "纵向 · 立刻换", "停驻 · 再放弃"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="rounded-2xl border border-border bg-surface p-4 shadow-card">
@@ -128,7 +144,7 @@ export function StudyView() {
         </article>
 
         <article className="min-w-0 overflow-hidden rounded-2xl border border-border bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
-          <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-surface/45">
+          <p className="text-[12px] font-medium tracking-[0.12em] text-surface/45 uppercase">
             predictsIntent
           </p>
           <pre className="mt-3 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">
@@ -160,8 +176,8 @@ export function StudyView() {
           </p>
           <p>
             {locale === "en"
-              ? "This page draws the corridor so you can see why a diagonal is protected and a vertical scan is not."
-              : "本页把走廊画出来，方便看出为什么斜线会被保护、纵向扫却立刻切换。"}
+              ? "This page draws the corridor so you can see why a diagonal is protected and a vertical scan is not. Crossed items are labeled “pass” and do not steal the open panel."
+              : "本页把走廊画出来，途经项标成「途经」，方便看出为什么斜线会被保护、纵向扫却立刻切换。"}
           </p>
         </div>
       </section>

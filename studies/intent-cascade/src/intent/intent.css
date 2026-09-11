@@ -1,0 +1,70 @@
+.intent-panel {
+  animation: intent-panel-in 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.intent-list-in {
+  animation: intent-list-in 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.intent-item {
+  position: relative;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease,
+    box-shadow 120ms ease,
+    transform 120ms ease;
+}
+
+.intent-item.is-open {
+  box-shadow: inset 2px 0 0 var(--color-accent);
+}
+
+.intent-item.is-crossing {
+  background: var(--color-predict-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-predict) 45%, transparent);
+}
+
+.intent-item.is-idle:hover {
+  transform: translateX(1px);
+}
+
+.intent-cue-slash {
+  stroke: var(--color-predict);
+  stroke-dasharray: 5 4;
+  fill: none;
+}
+
+@keyframes intent-panel-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes intent-list-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intent-panel,
+  .intent-list-in {
+    animation: none;
+  }
+
+  .intent-item,
+  .intent-item.is-idle:hover {
+    transition: none;
+    transform: none;
+  }
+}

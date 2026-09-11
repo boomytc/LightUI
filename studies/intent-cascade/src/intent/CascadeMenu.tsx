@@ -3,7 +3,8 @@ import { Check, ChevronRight, Search } from "lucide-react";
 import { cn } from "../lib/utils";
 import { TONE_CLASS, type MenuNode } from "../lib/menu-data";
 import { pick, type Locale } from "../lib/site-locale";
-import type { LevelSlice } from "./types";
+import type { AimDecision, LevelSlice } from "./types";
+import "./intent.css";
 
 type Props = {
   levels: LevelSlice[];
@@ -12,6 +13,7 @@ type Props = {
   hoveredId: string | null;
   selectedId: string | null;
   locale: Locale;
+  decision?: AimDecision;
   onSelectLeaf: (node: MenuNode, path: string[]) => void;
   onItemClick: (level: number, node: MenuNode) => void;
   registerPanel: (level: number, el: HTMLElement | null) => void;
@@ -35,6 +37,7 @@ export function CascadeMenu({
   registerPanel,
   registerItem,
   locale,
+  decision = "idle",
 }: Props) {
   const [queries, setQueries] = useState<Record<number, string>>({});
 
@@ -51,6 +54,7 @@ export function CascadeMenu({
           path={path}
           hoveredId={hoveredId}
           selectedId={selectedId}
+          decision={decision}
           onSelectLeaf={onSelectLeaf}
           onItemClick={onItemClick}
           registerPanel={registerPanel}
@@ -69,6 +73,7 @@ function Panel({
   path,
   hoveredId,
   selectedId,
+  decision,
   onSelectLeaf,
   onItemClick,
   registerPanel,
@@ -81,6 +86,7 @@ function Panel({
   path: string[];
   hoveredId: string | null;
   selectedId: string | null;
+  decision: AimDecision;
   onSelectLeaf: (node: MenuNode, path: string[]) => void;
   onItemClick: (level: number, node: MenuNode) => void;
   registerPanel: (level: number, el: HTMLElement | null) => void;
@@ -88,11 +94,12 @@ function Panel({
   locale: Locale;
 }) {
   const shown = useMemo(() => filterNodes(slice.nodes, query), [slice.nodes, query]);
+  const listKey = path.slice(0, slice.level).join("/") || "root";
 
   return (
     <div
       ref={(el) => registerPanel(slice.level, el)}
-      className="w-[232px] shrink-0 overflow-hidden rounded-xl border border-border bg-surface shadow-menu"
+      className="intent-panel w-[232px] shrink-0 overflow-hidden rounded-xl border border-border bg-surface shadow-menu"
     >
       <div className="border-b border-border px-3 py-2">
         <label className="flex items-center gap-2 text-fg-subtle">
@@ -105,7 +112,7 @@ function Panel({
           />
         </label>
       </div>
-      <ul className="flex flex-col p-1.5" role="menu">
+      <ul key={listKey} className="intent-list-in flex flex-col p-1.5" role="menu">
         {shown.length === 0 ? (
           <li className="px-2.5 py-3 text-center text-[12px] text-fg-subtle">
             {locale === "en" ? "No matches" : "无匹配项"}
@@ -115,6 +122,7 @@ function Panel({
             const active = slice.activeId === node.id;
             const hovered = hoveredId === node.id;
             const picked = selectedId === node.id;
+            const crossing = decision === "protected" && hovered && !active;
             const hasKids = !!node.children?.length;
             const Icon = node.icon;
             return (
@@ -123,16 +131,18 @@ function Panel({
                   type="button"
                   role="menuitem"
                   data-node={node.id}
+                  data-crossing={crossing ? "" : undefined}
                   ref={(el) => registerItem(node.id, el)}
                   onClick={() => {
                     onItemClick(slice.level, node);
                     if (!hasKids) onSelectLeaf(node, [...path.slice(0, slice.level), node.id]);
                   }}
                   className={cn(
-                    "flex h-9 w-full items-center gap-2 rounded-md px-2 text-left text-[13px] transition-colors duration-150",
-                    active || hovered || picked
-                      ? "bg-accent-soft text-fg"
-                      : "text-fg hover:bg-surface-2",
+                    "intent-item flex h-9 w-full items-center gap-2 rounded-md px-2 text-left text-[13px]",
+                    active && "is-open bg-accent-soft text-fg",
+                    crossing && "is-crossing text-fg",
+                    picked && !active && "text-fg",
+                    !active && !crossing && !picked && "is-idle text-fg hover:bg-surface-2",
                   )}
                 >
                   <Icon
@@ -140,8 +150,13 @@ function Panel({
                     strokeWidth={2}
                   />
                   <span className="min-w-0 flex-1 truncate font-medium">{pick(node.label, locale)}</span>
-                  {picked ? <Check className="size-3.5 text-accent" strokeWidth={2.4} /> : null}
-                  {hasKids ? <ChevronRight className="size-3.5 text-fg-subtle" strokeWidth={2} /> : null}
+                  {crossing ? (
+                    <span className="text-[10px] font-medium tracking-wide text-predict">
+                      {locale === "en" ? "pass" : "途经"}
+                    </span>
+                  ) : null}
+                  {picked && !crossing ? <Check className="size-3.5 text-accent" strokeWidth={2.4} /> : null}
+                  {hasKids && !crossing ? <ChevronRight className="size-3.5 text-fg-subtle" strokeWidth={2} /> : null}
                 </button>
               </li>
             );

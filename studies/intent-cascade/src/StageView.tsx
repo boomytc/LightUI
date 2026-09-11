@@ -33,6 +33,7 @@ export function StageView() {
             mouse={locked.mouse}
             bands={locked.bands}
             visible={locked.showTriangles}
+            locale={locked.locale}
             vertices={false}
           />
         </div>
