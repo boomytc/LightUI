@@ -24,6 +24,8 @@ The lab mounts `StudyView` at `/s/inverted-notch`.
 - `idea.md` / `study.json` — cut vs stitch
 - `src/StudyView.tsx` — teaching surface
 - `src/lib/geometry.ts` — notch size, shape()/path(), scoop contrast (no DOM)
+- `src/Playground.tsx` — stitch vs punch pair; well / frost reveal the seam
+- `src/StitchCard.tsx` — naive same-color patch (locked to paper)
 - `src/StageView.tsx` — one locked technique and chip/exploded state
 - `src/lib/stage-query.ts` — `kind=shape|path|scoop`, `state=closed|open|exploded`
 

@@ -11,6 +11,7 @@ import {
   type Geom,
   type Technique,
 } from "./lib/geometry";
+import { pick, useLocale } from "./lib/site-locale";
 import { cn } from "./lib/utils";
 import "./notch.css";
 
@@ -95,7 +96,9 @@ export function InvertedCard({
               technique === "shape" && !canShape && "is-path",
             )}
             style={{ clipPath: usingScoop ? undefined : clip }}
-          />
+          >
+            <CardCopy />
+          </div>
           {usingScoop ? null : (
             <div className="inotch-hatch">
               <div className="inotch-hatch-fill" />
@@ -120,6 +123,33 @@ export function InvertedCard({
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+export function CardCopy() {
+  const locale = useLocale();
+  return (
+    <div className="inotch-card-copy">
+      <p className="inotch-card-kicker">
+        {pick({ zh: "保险柜", en: "Vault" }, locale)}
+      </p>
+      <p className="inotch-card-title">
+        {pick({ zh: "夜间锁", en: "Night lock" }, locale)}
+      </p>
+      <p className="inotch-card-meta">
+        {pick({ zh: "3 人 · 私密", en: "3 people · private" }, locale)}
+      </p>
+      <ul className="inotch-card-keys">
+        <li>
+          <span>{pick({ zh: "主门", en: "Front" }, locale)}</span>
+          <span>···· 8321</span>
+        </li>
+        <li>
+          <span>{pick({ zh: "侧门", en: "Side" }, locale)}</span>
+          <span>···· 1044</span>
+        </li>
+      </ul>
     </div>
   );
 }

@@ -19,11 +19,24 @@ export function StudyView() {
               ? "A matching-color patch hides the notch until the background changes. The clip walks around the chip, so the page shows through the gap."
               : "同色补丁把缺口盖住，背景一变缝就露馅。裁切绕过锁标，网格从缝里透出来。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["Stitch · same-color patch", "Punch · parent clip", "Scoop · one radius"]
+              : ["缝 · 同色补丁", "挖 · 父级裁切", "scoop · 只凹一角"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "shape() and path() punch a hole. scoop only scoops one radius. Exploded shows the cut."
-            : "shape() 和 path() 挖孔。scoop 只凹一角。分解视图能看见被裁掉的角。"}
+            ? "Left is the costume. Right is the cut. Change the well — only the stitch shows a seam."
+            : "左边是化妆，右边是裁切。换底色，只有缝会露馅。"}
         </p>
       </section>
 

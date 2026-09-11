@@ -1,9 +1,96 @@
 .inotch-well {
-  background-color: var(--color-bg-warm);
+  --stitch: var(--color-bg-warm);
+  --card-fill: var(--color-surface);
+  --well: var(--color-bg-warm);
+  background-color: var(--well);
   background-image:
-    linear-gradient(var(--color-border-strong) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-border-strong) 1px, transparent 1px);
+    linear-gradient(var(--well-line, var(--color-border-strong)) 1px, transparent 1px),
+    linear-gradient(90deg, var(--well-line, var(--color-border-strong)) 1px, transparent 1px);
   background-size: 22px 22px;
+  transition:
+    background-color 320ms ease,
+    background-image 320ms ease;
+}
+
+.inotch-well[data-well="paper"] {
+  --well: var(--color-bg-warm);
+  --well-line: var(--color-border-strong);
+}
+
+.inotch-well[data-well="wash"] {
+  --well: #7b95e8;
+  --well-line: rgb(17 24 48 / 0.16);
+}
+
+.inotch-well[data-well="dusk"] {
+  --well: #16171c;
+  --well-line: rgb(255 255 255 / 0.1);
+}
+
+.inotch-well[data-well="rose"] {
+  --well: #f3a0ad;
+  --well-line: rgb(136 19 55 / 0.16);
+}
+
+.inotch-well[data-frost="on"] {
+  --card-fill: color-mix(in oklab, var(--color-surface) 68%, transparent);
+}
+
+.inotch-pair {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 860px) {
+  .inotch-pair {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+.inotch-pane {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background: color-mix(in oklab, var(--color-surface) 42%, transparent);
+}
+
+.inotch-pane[data-tone="wrong"] {
+  border-color: color-mix(in oklab, var(--color-wrong) 35%, var(--color-border));
+}
+
+.inotch-pane[data-tone="right"] {
+  border-color: color-mix(in oklab, var(--color-intent) 40%, var(--color-border));
+}
+
+.inotch-pane-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.inotch-pane-body {
+  display: grid;
+  min-height: 20rem;
+  place-items: center;
+  padding: 1.75rem 1rem 2rem;
+}
+
+.inotch-pane-foot {
+  padding: 0.5rem 0.75rem 0.7rem;
+  border-top: 1px solid var(--color-border);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--color-fg-muted);
 }
 
 .inotch-stage {
@@ -46,7 +133,7 @@
 .inotch-card-face {
   position: absolute;
   inset: 0;
-  background: var(--color-surface);
+  background: var(--card-fill);
   box-shadow: inset 0 0 0 1px var(--color-border-strong);
   clip-path: var(--card-clip);
   transition:
@@ -62,6 +149,59 @@
 
 .inotch-card-face.is-path {
   clip-path: var(--card-clip-path);
+}
+
+.inotch-card-copy {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
+}
+
+.inotch-card-kicker {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-fg-subtle);
+}
+
+.inotch-card-title {
+  margin: 6px 0 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--color-fg);
+}
+
+.inotch-card-meta {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--color-fg-muted);
+}
+
+.inotch-card-keys {
+  display: grid;
+  gap: 6px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inotch-card-keys li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--color-fg-muted);
+}
+
+.inotch-card-keys span:last-child {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-fg);
 }
 
 .inotch-hatch {
@@ -153,6 +293,42 @@
   transform: translateX(0);
 }
 
+.inotch-stitch {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+}
+
+.inotch-stitch-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--r);
+  background: var(--card-fill);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  transition: background-color 200ms ease;
+}
+
+.inotch-stitch-patch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: var(--patch-w);
+  height: var(--patch-h);
+  background: var(--stitch);
+  border-bottom-right-radius: var(--ir);
+  box-shadow: 8px 8px 0 0 var(--stitch);
+}
+
+.inotch-stitch .inotch-card-copy {
+  z-index: 0;
+}
+
+.inotch-stitch .inotch-chip {
+  z-index: 2;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .inotch-assembly,
   .inotch-plane,
@@ -160,7 +336,9 @@
   .inotch-chip,
   .inotch-chip-label,
   .inotch-hatch,
-  .inotch-ghost {
+  .inotch-ghost,
+  .inotch-well,
+  .inotch-stitch-face {
     transition: none;
   }
 }
