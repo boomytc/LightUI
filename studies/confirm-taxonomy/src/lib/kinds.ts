@@ -15,7 +15,38 @@ export type ConfirmPattern = {
   scenes: Localized;
   caption: Localized;
   rulePrompt: Localized;
+  frictionShort: Localized;
+  naive: Localized;
+  matched: Localized;
+  scale: number;
 };
+
+export const FORMULA = [
+  {
+    n: "1",
+    title: loc("后果", "Consequence"),
+    example: loc(
+      "可逆、局部，还是不可逆；一个人还是整库",
+      "Reversible, local, or irreversible — one person or the whole store",
+    ),
+  },
+  {
+    n: "2",
+    title: loc("打断", "Interrupt"),
+    example: loc(
+      "事后、两秒、两步、局部、全局、认知、全幅",
+      "After, two seconds, two steps, local, global, cognitive, full page",
+    ),
+  },
+  {
+    n: "3",
+    title: loc("机制", "Safeguard"),
+    example: loc(
+      "撤销窗、长按、滑动、气泡、对话框、打字、清单",
+      "Undo, hold, swipe, popconfirm, dialog, type-to-confirm, checklist",
+    ),
+  },
+];
 
 export const RISK_LADDER: {
   level: RiskLevel;
@@ -73,6 +104,10 @@ export const PATTERNS: ConfirmPattern[] = [
       "对可逆操作不要弹阻断框。点击立即执行并在顶部展示倒计时 Undo toast，写清对象，超时后真正提交。",
       "Do not use blocking dialogs for reversible actions. Execute instantly and show an undo toast with the object name.",
     ),
+    frictionShort: loc("无需事前确认", "No pre-confirm"),
+    naive: loc("发信前挡一层，心流断掉，确认后仍无法挽回", "A modal before send; flow breaks, and it is still final"),
+    matched: loc("直接发出，顶部留 5 秒撤回", "Send now; a 5s undo sits at the top"),
+    scale: 1,
   },
   {
     slug: "hold",
@@ -91,6 +126,10 @@ export const PATTERNS: ConfirmPattern[] = [
       "使用 pointer capture + rAF 实时填充进度，touch-action: none 阻止系统菜单打断，松手归零。",
       "Use pointer capture + rAF progress fill, set touch-action: none against context menus, cancel on release.",
     ),
+    frictionShort: loc("按住 2 秒", "Hold 2s"),
+    naive: loc("误触就弹窗，下一拍又习惯性点确定", "A slip opens a modal; the next tap confirms by habit"),
+    matched: loc("按满 2 秒才删，松手即取消", "Hold 2s to delete; release cancels"),
+    scale: 2,
   },
   {
     slug: "swipe",
@@ -109,6 +148,10 @@ export const PATTERNS: ConfirmPattern[] = [
       "指针追踪 dx，超过 56px 阈值吸附露出，未过阈值松手回弹，杜绝每一行常驻红色按钮。",
       "Track dx with pointer; snap open past 56px threshold, snap back otherwise; never leave red buttons permanently exposed.",
     ),
+    frictionShort: loc("先滑再点", "Swipe, then tap"),
+    naive: loc("每行常驻红按钮，手滑即弹窗", "A red button on every row; a slip opens a modal"),
+    matched: loc("危险钮藏在行下，滑过阈值才露出", "Hide the danger; reveal only past the threshold"),
+    scale: 3,
   },
   {
     slug: "pop",
@@ -127,6 +170,10 @@ export const PATTERNS: ConfirmPattern[] = [
       "相对触发器定位，不 portal 到全屏遮罩，文案写清具体对象与局部后果，点空白处关闭。",
       "Position relative to trigger without full backdrop; specify entity and consequence; close on outside click.",
     ),
+    frictionShort: loc("局部气泡", "Local pop"),
+    naive: loc("一条规则也蒙全屏，其余工作全停", "One rule still masks the whole page"),
+    matched: loc("贴着按钮提醒，页面其余仍可看", "Anchor to the button; the rest of the page stays"),
+    scale: 4,
   },
   {
     slug: "modal",
@@ -145,6 +192,10 @@ export const PATTERNS: ConfirmPattern[] = [
       "全屏蒙版阻断，焦点默认落在取消按钮上，Esc 或取消安全退出，危险按钮使用 danger 警示色。",
       "Full scrim blocks background; focus trap defaults to Cancel; Esc exits cleanly; danger accent for confirm.",
     ),
+    frictionShort: loc("全局对话框", "Global dialog"),
+    naive: loc("文案只写「确定吗」，焦点还落在删除上", "Copy says “Are you sure?”; focus lands on Delete"),
+    matched: loc("强遮罩、写清对象，焦点先落在取消", "Strong scrim, name the object, focus Cancel first"),
+    scale: 5,
   },
   {
     slug: "type",
@@ -163,6 +214,10 @@ export const PATTERNS: ConfirmPattern[] = [
       "先列出记录数与依赖服务，受控输入精准比对，未匹配前严格 disabled，防止肌肉记忆误触。",
       "List record counts and dependencies first; strict controlled match required to unlock danger button.",
     ),
+    frictionShort: loc("打字确认", "Type to confirm"),
+    naive: loc("销毁生产库也只是普通弹窗，回车即过", "Dropping prod is still a plain modal; Enter goes through"),
+    matched: loc("先陈列影响，键入 DELETE 才解锁", "List the blast radius; type DELETE to unlock"),
+    scale: 6,
   },
   {
     slug: "select",
@@ -181,5 +236,9 @@ export const PATTERNS: ConfirmPattern[] = [
       "独立确认页面，左侧陈列规模，右侧逐项陈列文档、成员、密钥等后果，全部勾选方可执行。",
       "Dedicated full panel; summary on the left, consequence checklist on the right; all must be checked before commit.",
     ),
+    frictionShort: loc("后果清单", "Checklist"),
+    naive: loc("弹窗塞不下组织后果，只能盲目确定", "A modal cannot hold the org loss; confirm is blind"),
+    matched: loc("全幅列清文档、成员与密钥，逐条勾选", "A full page lists docs, members, keys; check every line"),
+    scale: 7,
   },
 ];

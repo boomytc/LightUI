@@ -40,7 +40,7 @@ function SwipeInner({ onReset }: { onReset: () => void }) {
       <div className="px-5 pt-4 pb-2">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-semibold text-fg">今天的行程与待办</h3>
-          <p className="text-[11px] text-accent font-medium">← 向左拖拽行露出删除</p>
+          <p className="text-[11px] font-medium text-accent">向左滑过阈值再点删除</p>
         </div>
       </div>
 

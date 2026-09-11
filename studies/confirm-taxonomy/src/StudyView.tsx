@@ -1,207 +1,111 @@
-import { useState } from "react";
-import { HoldDemo } from "./components/demos/hold-demo";
-import { ModalDemo } from "./components/demos/modal-demo";
-import { PopconfirmDemo } from "./components/demos/popconfirm-demo";
-import { SelectDemo } from "./components/demos/select-demo";
-import { SwipeDemo } from "./components/demos/swipe-demo";
-import { TypeDemo } from "./components/demos/type-demo";
-import { UndoDemo } from "./components/demos/undo-demo";
-import { PATTERNS, RISK_LADDER, type ConfirmSlug } from "./lib/kinds";
+import { FORMULA } from "./lib/kinds";
 import { pick, useLocale } from "./lib/site-locale";
-import { cn } from "./lib/utils";
+import { Playground } from "./confirm/Playground";
 
 export function StudyView() {
   const locale = useLocale();
-  const [selected, setSelected] = useState<ConfirmSlug>("undo");
-  const [seed, setSeed] = useState(0);
-
-  const current = PATTERNS.find((p) => p.slug === selected) ?? PATTERNS[0];
-
-  function renderDemo() {
-    switch (selected) {
-      case "undo":
-        return <UndoDemo key={seed} />;
-      case "hold":
-        return <HoldDemo key={seed} />;
-      case "swipe":
-        return <SwipeDemo key={seed} />;
-      case "pop":
-        return <PopconfirmDemo key={seed} />;
-      case "modal":
-        return <ModalDemo key={seed} />;
-      case "type":
-        return <TypeDemo key={seed} />;
-      case "select":
-        return <SelectDemo key={seed} />;
-      default:
-        return null;
-    }
-  }
 
   return (
     <div className="page-width min-w-0 overflow-x-hidden pb-20">
-      {/* Header Introduction */}
       <section className="grid gap-8 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
         <div className="min-w-0">
-          <p className="text-xs font-mono font-semibold tracking-wider text-wrong uppercase">
-            {locale === "en" ? "Destructive Action Safeguards" : "危险操作拦截机制"}
-          </p>
-          <h1 className="mt-2 text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
+          <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
             {locale === "en"
-              ? "Not every danger needs a modal. Confirmations scale with risk."
-              : "不是所有危险都弹窗。确认阶梯匹配后果。"}
+              ? "They all confirm. They do not interrupt the same way."
+              : "看起来都要确认，打断的重量却完全不同。"}
           </h1>
           <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
             {locale === "en"
-              ? "“Confirm before danger” is a naive pattern. What breaks is friction mismatch: popups for benign undos create modal fatigue, while simple clicks destroy production databases."
-              : "「危险操作前弹个窗」是最粗糙的惯性。真正会坏掉的是摩擦力脱节：轻量操作被弹窗拖慢并导致习惯性跳过，高危毁灭却拦不住一次手滑。"}
+              ? "“Pop a modal before danger” describes a habit. What breaks is friction mismatch: a dialog for send trains muscle memory, while a click still drops production."
+              : "「危险操作前弹个窗」说的是惯性。真正会坏掉的是摩擦力脱节：发信也挡一层会养成闭眼确定，高危毁灭却拦不住一次手滑。"}
           </p>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Explore the 7 levels of the confirmation ladder below. Notice how cognitive friction and interruption scale with consequence."
-            : "体验下方 7 级二次确认阶梯。观察打断程度、操作摩擦与后果严重度如何严格匹配。"}
+            ? "Name the consequence, then the interrupt. The seven rungs below are live — no pre-confirm, hold, swipe, pop, dialog, type, checklist."
+            : "先说后果，再说打断。下面七档可以点：无需事前确认、长按、滑动、气泡、对话框、打字、清单。"}
         </p>
       </section>
 
-      {/* Main Interactive Stage */}
-      <section className="grid gap-6 lg:grid-cols-[300px_1fr]">
-        {/* Left Column: Risk Ladder & Selector */}
-        <div className="space-y-3.5">
-          {RISK_LADDER.map((ladder) => (
-            <div key={ladder.level} className="rounded-xl border border-border bg-surface p-3.5 shadow-sm">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-mono font-semibold tracking-wider text-fg-subtle uppercase">
-                  {pick(ladder.label, locale)}
-                </h2>
-              </div>
-              <p className="mt-0.5 text-[11px] text-fg-muted">{pick(ladder.advice, locale)}</p>
+      <Playground />
 
-              <div className="mt-2.5 space-y-1.5">
-                {ladder.slugs.map((slug) => {
-                  const pat = PATTERNS.find((p) => p.slug === slug);
-                  if (!pat) return null;
-                  const active = selected === slug;
-
-                  return (
-                    <button
-                      key={slug}
-                      type="button"
-                      onClick={() => {
-                        setSelected(slug);
-                        setSeed((n) => n + 1);
-                      }}
-                      className={cn(
-                        "flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs transition-all",
-                        active
-                          ? "bg-fg text-surface font-medium shadow-sm"
-                          : "bg-surface-2/60 text-fg-muted hover:bg-surface-2 hover:text-fg",
-                      )}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-[10px] opacity-70">{pat.id}</span>
-                        <span>{pick(pat.title, locale)}</span>
-                      </div>
-                      <span className="text-[10px] font-mono opacity-80">{pick(pat.interruptWeight, locale).split(" · ")[0]}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Right Column: Live Interactive Demo & Prompt Card */}
-        <div className="space-y-4">
-          <div className="min-h-[460px]">
-            {renderDemo()}
-          </div>
-
-          <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
-            <div className="flex items-start gap-3">
-              <span className="inline-flex size-6 shrink-0 items-center justify-center rounded-md bg-wrong text-xs font-semibold text-white">
-                {current.id}
-              </span>
-              <div className="min-w-0">
-                <h3 className="text-xs font-semibold text-fg">
-                  {pick(current.title, locale)} · {pick(current.scenes, locale)}
-                </h3>
-                <p className="mt-1 text-[11px] leading-relaxed text-fg-muted">
-                  💡 <strong className="text-fg">{locale === "en" ? "Prompt: " : "工程规则："}</strong>
-                  {pick(current.rulePrompt, locale)}
-                </p>
-                <p className="mt-0.5 text-[11px] text-accent">
-                  👉 <strong className="text-fg">{locale === "en" ? "Action: " : "交互重点："}</strong>
-                  {pick(current.caption, locale)}
-                </p>
-              </div>
+      <section className="mt-8 grid gap-3 sm:grid-cols-3">
+        {FORMULA.map((item) => (
+          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
+            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
+              {item.n}
+            </span>
+            <div className="min-w-0">
+              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
+              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
             </div>
           </div>
-        </div>
+        ))}
       </section>
 
-      {/* Distinction & Mental Model */}
-      <section className="mt-14 grid min-w-0 gap-8 lg:grid-cols-2">
+      <section className="mt-14 grid min-w-0 gap-10 lg:grid-cols-2">
         <article className="min-w-0">
           <h2 className="text-[1.35rem] font-semibold tracking-tight">
-            {locale === "en" ? "Why one-size-fits-all modals fail" : "为什么「一律弹窗」总是坏掉"}
+            {locale === "en" ? "How to tell them apart" : "怎么把它们分开"}
           </h2>
           <ol className="mt-5 space-y-4 text-[14px] leading-relaxed text-fg-muted">
             <li>
-              <strong className="text-fg">
-                {locale === "en" ? "1. Reversible actions need no blocking" : "1. 可逆操作不需要阻断式弹窗"}
-              </strong>
+              <span className="font-medium text-fg">
+                {locale === "en"
+                  ? "1. The confirmation ladder is not overlay geometry"
+                  : "1. 确认阶梯不是浮层贴附"}
+              </span>
               <br />
               {locale === "en"
-                ? "Archiving and sending are recoverable. Immediate optimistic updates with a 5s Undo toast preserve flow without risk."
-                : "邮件外发、归档与移入废纸篓都是完全可逆的操作。直接乐观执行并在顶部提供 5 秒撤销通道，既保持心流，又有安全兜底。"}
+                ? "Where a layer sits is another question. This study asks how heavy the friction is against irreversibility."
+                : "浮层贴在哪、挡不挡，是另一问。这一则问的是摩擦与不可逆性是否成正比。"}
             </li>
             <li>
-              <strong className="text-fg">
-                {locale === "en" ? "2. Modal fatigue invites muscle memory misclicks" : "2. 弹窗疲劳会诱发闭眼确认的肌肉记忆"}
-              </strong>
+              <span className="font-medium text-fg">
+                {locale === "en"
+                  ? "2. A safeguard is not button weight"
+                  : "2. 拦截机制不是按钮重量"}
+              </span>
               <br />
               {locale === "en"
-                ? "When users see 20 confirmation dialogs a day, they develop automatic click-through habits, rendering high-risk modals useless."
-                : "当用户每天遇到 20 个普通弹窗时，就会形成不看正文直接回车的条件反射，导致真正的高危弹窗彻底失去防御效果。"}
+                ? "Solid, outline, text name how loud a click looks. Confirm names whether a slip can finish the act."
+                : "面状、线状、文字说的是这一击有多响。确认说的是手滑能不能把事做完。"}
             </li>
             <li>
-              <strong className="text-fg">
-                {locale === "en" ? "3. Irreversible doom requires cognitive friction" : "3. 毁灭性不可逆操作必须引入认知摩擦"}
-              </strong>
+              <span className="font-medium text-fg">
+                {locale === "en"
+                  ? "3. An undo window is not network rollback"
+                  : "3. 事后撤销不是网络回滚"}
+              </span>
               <br />
               {locale === "en"
-                ? "Dropping a database or offboarding an organization must enforce typing exact tokens or checking exhaustive consequence lists."
-                : "清空生产数据库或注销组织空间必须陈列全部影响规模，并通过键入 DELETE 或逐条勾选清单制造认知摩擦，彻底隔绝误操作。"}
+                ? "Undo is a remorse period the user can take. Network rollback recovers a failed request. Hold-to-confirm is not long-press multi-select."
+                : "撤销窗是给用户的后悔期。网络回滚是请求失败后的被动恢复。长按确认也不是长按多选。"}
             </li>
           </ol>
         </article>
 
         <article className="min-w-0 overflow-hidden rounded-2xl border border-border bg-fg px-5 py-5 text-surface shadow-card sm:px-6">
-          <p className="text-[12px] font-mono font-medium uppercase tracking-[0.12em] text-surface/50">
-            safeguards_logic.ts
+          <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-surface/45">
+            matchFriction
           </p>
-          <pre className="mt-3 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/90">
-{`function calculateHoldProgress(elapsed, target = 2000) {
-  if (elapsed <= 0) return 0;
-  return Math.min(1, elapsed / target);
+          <pre className="mt-3 overflow-x-auto font-mono text-[12px] leading-relaxed text-surface/85">
+{`function matchFriction(risk) {
+  if (risk === "reversible") return "undo"
+  if (risk === "slip") return "hold | swipe"
+  if (risk === "local") return "popconfirm"
+  if (risk === "severe") return "modal"
+  return "type | checklist"
 }
 
-function resolveSwipeReveal(dx, threshold = 56) {
-  return {
-    revealedPx: Math.min(0, Math.max(-92, dx)),
-    shouldOpen: dx < -threshold,
-  };
-}
-
-function isTypeMatchValid(input, target = "DELETE") {
-  return input === target;
+function alwaysModal(risk) {
+  return risk !== "severe"
 }`}
           </pre>
-          <p className="mt-4 text-[12px] leading-relaxed text-surface/60">
+          <p className="mt-4 text-[13px] leading-relaxed text-surface/55">
             {locale === "en"
-              ? "Continuous durations, drag thresholds, and token verifications are fully verified with unit test suites."
-              : "长按进度、滑动阈值吸合与输入文本校验均已封装为纯算法模块并完成单元测试覆盖。"}
+              ? "A reversible send should not block. A production drop should not accept Enter. Friction scales with blast radius."
+              : "可逆的发送不该阻断。销毁生产库不该回车即过。摩擦跟着影响范围走。"}
           </p>
         </article>
       </section>

@@ -54,32 +54,47 @@ function UndoInner({ onReset }: { onReset: () => void }) {
       onReset={onReset}
     >
       <div className="relative px-5 pt-4 pb-6">
-        <h3 className="text-base font-semibold text-fg">发送合作方案</h3>
-
-        {/* Post-action Undo Toast */}
         {phase !== "idle" && (
           <div
-            className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-accent/30 bg-accent-soft px-3.5 py-2.5 shadow-sm"
+            className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-accent/25 bg-accent-soft px-3.5 py-2.5 shadow-sm"
             role="status"
           >
-            <p className="text-xs font-medium text-accent">
-              {phase === "undoable" ? "邮件已加入发送队列，正发往周予" : "邮件已正式投递完成"}
-            </p>
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium text-accent">
+                {phase === "undoable" ? "已加入发送队列 · 周予" : "已正式投递"}
+              </p>
+              <p className="mt-0.5 text-[10px] text-accent/70">
+                {phase === "undoable" ? "无需事前确认，事后 5 秒可撤回" : "撤销窗口已关闭"}
+              </p>
+            </div>
             {phase === "undoable" ? (
               <button
                 type="button"
-                className="shrink-0 rounded-md bg-accent px-2.5 py-1 text-xs font-semibold text-accent-fg hover:bg-accent/90 transition-colors"
+                className="inline-flex shrink-0 items-center gap-2 rounded-md bg-accent px-2.5 py-1 text-xs font-semibold text-accent-fg transition-colors hover:bg-accent/90"
                 onClick={() => setPhase("idle")}
               >
-                撤回发送 · {seconds}s
+                <span
+                  aria-hidden="true"
+                  className="relative size-4 overflow-hidden rounded-full bg-accent-fg/20"
+                >
+                  <span
+                    className="absolute inset-0 origin-center bg-accent-fg/55"
+                    style={{
+                      clipPath: `inset(0 ${100 - (left / UNDO_MS) * 100}% 0 0)`,
+                    }}
+                  />
+                </span>
+                撤回 · {seconds}s
               </button>
             ) : (
-              <span className="text-xs text-fg-subtle">撤销窗口已结束</span>
+              <span className="text-[11px] text-fg-subtle">已送达</span>
             )}
           </div>
         )}
 
-        <article className="mt-4 rounded-xl border border-border bg-surface p-4 shadow-sm">
+        <h3 className="text-base font-semibold text-fg">发送合作方案</h3>
+
+        <article className="mt-3 rounded-xl border border-border bg-surface-2/50 p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-2.5">
               <span className="flex size-8 items-center justify-center rounded-full bg-accent-soft font-mono text-xs font-semibold text-accent">
@@ -102,7 +117,7 @@ function UndoInner({ onReset }: { onReset: () => void }) {
         </article>
 
         <p className="mt-4 text-[11px] leading-relaxed text-fg-subtle">
-          💡 <strong className="text-fg">规则解析：</strong>发邮件、归档、移入回收站等后果完全可逆的操作，直接乐观执行，并在视线焦点处提供 5 秒 Undo Toast，零打断且安全兜底。
+          发信、归档、移入废纸篓：先执行，再给后悔期。倒计时结束才真正提交。
         </p>
       </div>
     </MacWindow>

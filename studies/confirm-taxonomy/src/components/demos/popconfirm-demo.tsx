@@ -54,7 +54,7 @@ function PopInner({ onReset }: { onReset: () => void }) {
       <div ref={rootRef} className="px-5 pt-4 pb-6">
         <h3 className="text-base font-semibold text-fg">自动化执行规则</h3>
         <p className="mt-0.5 text-xs text-fg-muted">
-          中等风险单项操作：贴着触发按钮弹出气泡，无需蒙盖全屏
+          贴着触发钮，不蒙全屏。点空白处关闭。
         </p>
 
         <ul className="mt-4 divide-y divide-border rounded-xl border border-border bg-surface shadow-sm">

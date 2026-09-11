@@ -42,7 +42,7 @@ function SelectInner({ onReset }: { onReset: () => void }) {
       <div className="px-5 pt-4 pb-6">
         <h3 className="text-base font-semibold text-fg">注销「Sue 的 AI 知识工坊」</h3>
         <p className="mt-0.5 text-xs text-fg-muted">
-          组织最高风险操作：全幅独立面板，逐项确认将被抹除的后果，禁止一键跳过
+          全幅确认页。文档、成员、密钥必须逐条勾选，不能一键跳过。
         </p>
 
         <div className="mt-4 grid overflow-hidden rounded-xl border border-border sm:grid-cols-[0.85fr_1.15fr] shadow-sm">

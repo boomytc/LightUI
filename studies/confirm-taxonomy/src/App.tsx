@@ -12,7 +12,7 @@ export function App() {
   return (
     <main className="min-h-screen bg-bg text-fg">
       <header className="border-b border-border bg-surface px-6 py-4">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
+        <div className="mx-auto flex max-w-6xl items-center justify-between">
           <a href="/" className="text-sm font-semibold tracking-tight text-fg">
             LightUI · Study
           </a>
@@ -21,7 +21,7 @@ export function App() {
           </span>
         </div>
       </header>
-      <div className="mx-auto max-w-5xl px-6 py-8">
+      <div className="mx-auto max-w-6xl px-6 py-8">
         <StudyView />
       </div>
     </main>

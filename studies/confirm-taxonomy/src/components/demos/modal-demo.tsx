@@ -51,7 +51,7 @@ function ModalInner({ onReset }: { onReset: () => void }) {
       <div className={cn("px-5 pt-4 pb-6", target && "pointer-events-none select-none")}>
         <h3 className="text-base font-semibold text-fg">核心知识资产列表</h3>
         <p className="mt-0.5 text-xs text-fg-muted">
-          严重后果决策：蒙版全阻断，焦点锁定取消，禁止随便点遮罩关
+          强遮罩阻断。焦点先落在取消，Esc 退出。
         </p>
 
         <ul className="mt-4 divide-y divide-border rounded-xl border border-border bg-surface shadow-sm">
@@ -77,7 +77,7 @@ function ModalInner({ onReset }: { onReset: () => void }) {
 
       {/* Global Blocking Modal Scrim */}
       {target && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs animate-in fade-in duration-150">
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-fg/45 p-4 backdrop-blur-[2px]">
           <div
             role="dialog"
             aria-modal="true"

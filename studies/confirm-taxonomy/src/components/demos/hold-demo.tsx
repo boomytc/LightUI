@@ -119,16 +119,22 @@ function HoldInner({ onReset }: { onReset: () => void }) {
               onPointerCancel={stop}
               onLostPointerCapture={stop}
               onContextMenu={(e) => e.preventDefault()}
-              className="relative mt-3.5 flex h-10 w-full select-none items-center justify-center overflow-hidden rounded-xl bg-wrong/90 text-xs font-semibold text-white shadow-sm transition-all hover:bg-wrong touch-none"
+              className="relative mt-3.5 flex h-11 w-full select-none items-center justify-center overflow-hidden rounded-xl bg-wrong/15 text-xs font-semibold text-wrong shadow-sm transition-colors hover:bg-wrong/20 touch-none"
               aria-label="按住两秒删除录音"
             >
-              {/* Animated Progress Fill */}
               <span
-                className="pointer-events-none absolute inset-y-0 left-0 bg-wrong-soft/30 transition-all"
+                className="pointer-events-none absolute inset-y-0 left-0 bg-wrong"
                 style={{ width: `${progress * 100}%` }}
               />
-              <span className="relative z-10 flex items-center gap-1.5">
-                {holding ? `按住确认删除... (${Math.round(progress * 100)}%)` : "长按 2 秒删除这 30 秒"}
+              <span
+                className={cn(
+                  "relative z-10 flex items-center gap-1.5 tabular-nums",
+                  progress > 0.42 ? "text-white" : "text-wrong",
+                )}
+              >
+                {holding
+                  ? `按住确认 · ${Math.round(progress * 100)}%`
+                  : "长按 2 秒删除这 30 秒"}
               </span>
             </button>
 

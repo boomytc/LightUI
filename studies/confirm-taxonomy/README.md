@@ -10,4 +10,4 @@ make dev-study STUDY=confirm-taxonomy
 npm run dev --workspace=@lightui/confirm-taxonomy
 ```
 
-Standalone playground runs at `http://127.0.0.1:5213/`.
+Standalone playground runs at `http://127.0.0.1:5191/`.

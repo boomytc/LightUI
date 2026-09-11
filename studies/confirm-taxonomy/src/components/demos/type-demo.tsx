@@ -29,7 +29,7 @@ function TypeInner({ onReset }: { onReset: () => void }) {
       <div className="px-5 pt-4 pb-6">
         <h3 className="text-base font-semibold text-fg">销毁生产主数据库</h3>
         <p className="mt-0.5 text-xs text-fg-muted">
-          不可逆灭顶高危操作：先陈列全部影响规模，强制精确键入指定字符才解锁
+          先看清 1200 万条记录与下游依赖，再精确键入 DELETE。
         </p>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1.1fr]">
@@ -58,7 +58,7 @@ function TypeInner({ onReset }: { onReset: () => void }) {
             </div>
 
             <div className="mt-3 rounded-lg border border-wrong/20 bg-wrong-soft/40 p-2.5 text-[11px] leading-relaxed text-wrong">
-              ⚠️ 销毁后数据不可逆删除，依赖的所有下游业务将立刻熔断服务。
+              销毁后不可恢复。五个下游服务会立刻熔断。
             </div>
           </div>
 
