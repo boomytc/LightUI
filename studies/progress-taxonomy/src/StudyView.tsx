@@ -7,16 +7,36 @@ export function StudyView() {
 
   return (
     <div className="page-width min-w-0 overflow-x-hidden pb-20">
-      <section className="pb-8 pt-4 lg:pb-10 lg:pt-8">
-        <h1 className="max-w-4xl text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
+      <section className="grid gap-8 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
+        <div className="min-w-0">
+          <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
+            {locale === "en"
+              ? "A spinner only says you are waiting. First ask whether progress can be measured."
+              : "转圈只说了在等。先问进度能不能算。"}
+          </h1>
+          <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
+            {locale === "en"
+              ? "If it can, walk to 100 and stop. If it cannot, loop — never a fake percent. The two families below are live."
+              : "能算就走到 100 停住；不能算就循环，不要假百分比。下面两族叶子可以点。"}
+          </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["Measurable · 0→100 then stop", "Unmeasurable · loop, no number"]
+              : ["能算 · 走到 100 停住", "不能算 · 循环，无数字"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "A spinner only says you are waiting. First ask whether progress can be measured."
-            : "转圈只说了在等。先问进度能不能算。"}
-        </h1>
-        <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-fg-muted">
-          {locale === "en"
-            ? "If it can, walk to 100 and stop. If it cannot, loop — never a fake percent. The eight leaves below are live."
-            : "能算就走到 100 停住；不能算就循环，不要假百分比。下面八片叶子可以点。"}
+            ? "Name measurable or not first. Determinate leaves start at 0 and stop at 100. Looping leaves never write a percent."
+            : "先说能不能算。能算的从 0 走到 100 就停。循环的从来不写百分比。"}
         </p>
       </section>
 
@@ -85,9 +105,8 @@ export function StudyView() {
     : "indeterminate"
 }
 
-function circularOffset(p, C) {
-  return C * (1 - clampProgress(p))
-}`}
+showPercent(kind) === category === "determinate"
+shouldLoop(kind) === category === "indeterminate"`}
           </pre>
           <p className="mt-4 text-[13px] leading-relaxed text-surface/55">
             {locale === "en"

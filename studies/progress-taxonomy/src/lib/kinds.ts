@@ -243,7 +243,7 @@ export const FORMULA = [
   {
     n: "3",
     title: loc("规则", "Rules"),
-    example: loc("scaleX、三态节点、dashoffset、液面、开口弧、雷达扇区", "scaleX, three-state nodes, dashoffset, liquid, open arc, radar"),
+    example: loc("能算用 scaleX / 三态 / dashoffset / 液面；不能算只循环，不写数字", "Measurable uses scaleX / steps / dashoffset / liquid; unmeasurable only loops, no number"),
   },
 ];
 

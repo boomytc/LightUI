@@ -35,7 +35,11 @@ export function FillBar({
       aria-valuemax={100}
       aria-valuenow={Math.round(p * 100)}
     >
-      <div className="h-full origin-left rounded-full bg-accent" style={{ transform: `scaleX(${p})` }} />
+      <div
+        className="meter-fill h-full origin-left rounded-full bg-accent"
+        data-full={p >= 1 ? "true" : undefined}
+        style={{ transform: `scaleX(${p})` }}
+      />
     </div>
   );
 }
@@ -126,10 +130,12 @@ export function CircularPercent({
   progress,
   scale = "compact",
   className,
+  showPercent = true,
 }: {
   progress: number;
   scale?: MeterScale;
   className?: string;
+  showPercent?: boolean;
 }) {
   const p = clampProgress(progress);
   const r = 40;
@@ -150,14 +156,16 @@ export function CircularPercent({
           strokeDashoffset={circularOffset(p, c)}
         />
       </svg>
-      <span
-        className={cn(
-          "absolute inset-0 grid place-items-center font-medium tabular-nums text-accent",
-          scale === "hero" ? "text-3xl lg:text-4xl" : "text-lg",
-        )}
-      >
-        {Math.round(p * 100)}%
-      </span>
+      {showPercent ? (
+        <span
+          className={cn(
+            "absolute inset-0 grid place-items-center font-medium tabular-nums text-accent",
+            scale === "hero" ? "text-3xl lg:text-4xl" : "text-lg",
+          )}
+        >
+          {Math.round(p * 100)}%
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -167,11 +175,13 @@ export function LiquidGauge({
   wave = false,
   scale = "compact",
   className,
+  showPercent = true,
 }: {
   progress: number;
   wave?: boolean;
   scale?: MeterScale;
   className?: string;
+  showPercent?: boolean;
 }) {
   const p = clampProgress(progress);
   const rawId = useId().replace(/:/g, "");
@@ -204,15 +214,17 @@ export function LiquidGauge({
           </g>
         </g>
       </svg>
-      <span
-        className={cn(
-          "absolute inset-0 grid place-items-center font-medium tabular-nums",
-          scale === "hero" ? "text-3xl lg:text-4xl" : "text-lg",
-          lightText ? "text-accent-fg" : "text-accent",
-        )}
-      >
-        {Math.round(p * 100)}%
-      </span>
+      {showPercent ? (
+        <span
+          className={cn(
+            "absolute inset-0 grid place-items-center font-medium tabular-nums",
+            scale === "hero" ? "text-3xl lg:text-4xl" : "text-lg",
+            lightText ? "text-accent-fg" : "text-accent",
+          )}
+        >
+          {Math.round(p * 100)}%
+        </span>
+      ) : null}
     </div>
   );
 }

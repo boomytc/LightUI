@@ -27,6 +27,7 @@ export function Scene({
   buttonPhase,
   onButtonClick,
   buttonDisabled,
+  showPercent = true,
 }: {
   id: KindId;
   progress: number;
@@ -38,6 +39,7 @@ export function Scene({
   buttonPhase?: "idle" | "loading" | "done";
   onButtonClick?: () => void;
   buttonDisabled?: boolean;
+  showPercent?: boolean;
 }) {
   const meta = KINDS.find((k) => k.id === id) ?? KINDS[0];
   const title = pick(meta.window, locale);
@@ -48,7 +50,7 @@ export function Scene({
     case "fill":
       return (
         <Shell scale={scale} title={title} action={action} demo={id}>
-          <UploadBody progress={progress} locale={locale} scale={scale} />
+          <UploadBody progress={progress} locale={locale} scale={scale} showPercent={showPercent} />
         </Shell>
       );
     case "steps":
@@ -62,7 +64,7 @@ export function Scene({
       return (
         <Shell scale={scale} title={title} action={action} demo={id}>
           <GaugeStack scale={scale} headline={headline} sub={sub}>
-            <CircularPercent progress={progress} scale={scale} />
+            <CircularPercent progress={progress} scale={scale} showPercent={showPercent} />
           </GaugeStack>
         </Shell>
       );
@@ -70,7 +72,7 @@ export function Scene({
       return (
         <Shell scale={scale} title={title} action={action} demo={id}>
           <GaugeStack scale={scale} headline={headline} sub={sub}>
-            <LiquidGauge progress={progress} wave={wave} scale={scale} />
+            <LiquidGauge progress={progress} wave={wave} scale={scale} showPercent={showPercent} />
           </GaugeStack>
         </Shell>
       );
@@ -195,10 +197,12 @@ function UploadBody({
   progress,
   locale,
   scale,
+  showPercent = true,
 }: {
   progress: number;
   locale: Locale;
   scale: MeterScale;
+  showPercent?: boolean;
 }) {
   const p = clampProgress(progress);
   const pct = Math.round(p * 100);
@@ -209,9 +213,11 @@ function UploadBody({
         <p className={hero ? "min-w-0 truncate text-[1.15rem] font-semibold" : "min-w-0 truncate text-[15px] font-semibold"}>
           {locale === "en" ? "Uploading" : "文件上传"}
         </p>
-        <p className={hero ? "shrink-0 text-3xl font-medium tabular-nums text-accent lg:text-4xl" : "shrink-0 font-medium tabular-nums text-accent"}>
-          {pct}%
-        </p>
+        {showPercent ? (
+          <p className={hero ? "shrink-0 text-3xl font-medium tabular-nums text-accent lg:text-4xl" : "shrink-0 font-medium tabular-nums text-accent"}>
+            {pct}%
+          </p>
+        ) : null}
       </div>
       <p className={hero ? "mt-1.5 text-[14px] text-fg-muted" : "mt-1 text-[13px] text-fg-muted"}>brief.pdf · 12.4 MB</p>
       <FillBar progress={progress} scale={scale} className={hero ? "mt-8" : "mt-4"} />

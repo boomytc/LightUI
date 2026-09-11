@@ -4,8 +4,8 @@ import { KINDS, type KindMeta } from "../lib/kinds";
 import {
   buttonPhase,
   category,
+  clampProgress,
   locksTrigger,
-  MID_PROGRESS,
   prefersStatic,
   resolveLock,
   type KindId,
@@ -21,8 +21,14 @@ const LOOP = KINDS.filter((k) => k.category === "indeterminate");
 
 export function Playground() {
   const locale = useLocale();
-  const [active, setActive] = useState<KindId>("liquid");
-  const meta = KINDS.find((k) => k.id === active) ?? KINDS[0];
+  const [active, setActive] = useState<KindId>("fill");
+  const meta = KINDS.find((k) => k.id === active) ?? KINDS[0]!;
+  const family = category(meta.id);
+
+  function pickFamily(next: "determinate" | "indeterminate") {
+    if (next === family) return;
+    setActive(next === "determinate" ? "fill" : "spin");
+  }
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -40,8 +46,29 @@ export function Playground() {
   }, []);
 
   return (
-    <div data-playground="progress" className="min-w-0">
-      <nav aria-label={locale === "en" ? "Progress kinds" : "进度种类"} className="flex flex-col gap-2">
+    <div data-playground="progress" data-lesson={meta.id} className="min-w-0">
+      <p className="mb-3 text-[12px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+        {locale === "en" ? "Can this progress be measured?" : "进度能不能算"}
+      </p>
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <FamilyCard
+          on={family === "determinate"}
+          title={locale === "en" ? "Measurable" : "能算"}
+          rule={locale === "en" ? "Walk to 100 and stop" : "走到 100 停住"}
+          hint={locale === "en" ? "A real percent. Never a loop." : "真实百分比。不要循环。"}
+          onClick={() => pickFamily("determinate")}
+        />
+        <FamilyCard
+          on={family === "indeterminate"}
+          title={locale === "en" ? "Unmeasurable" : "不能算"}
+          rule={locale === "en" ? "Loop. No percent." : "循环，不要数字"}
+          hint={locale === "en" ? "Still working — not how much is left." : "只保证还在干活，不保证还剩多少。"}
+          onClick={() => pickFamily("indeterminate")}
+        />
+      </div>
+
+      <nav aria-label={locale === "en" ? "Progress kinds" : "进度种类"} className="mt-4 flex flex-col gap-2">
         <Group
           label={locale === "en" ? "Determinate" : "能算"}
           kinds={DETERMINATE}
@@ -103,6 +130,39 @@ export function Playground() {
         </div>
       </section>
     </div>
+  );
+}
+
+function FamilyCard({
+  on,
+  title,
+  rule,
+  hint,
+  onClick,
+}: {
+  on: boolean;
+  title: string;
+  rule: string;
+  hint: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={on}
+      onClick={onClick}
+      className={cn(
+        "rounded-2xl border px-4 py-3.5 text-left transition-colors",
+        on ? "border-border-strong bg-play-glow shadow-card" : "border-border bg-surface hover:bg-surface-2",
+      )}
+    >
+      <span className={cn("font-mono text-[10px] tracking-[0.14em] uppercase", on ? "text-accent" : "text-fg-subtle")}>
+        {on ? "now" : "vs"}
+      </span>
+      <span className="mt-1 block text-[15px] font-semibold tracking-tight">{title}</span>
+      <span className="mt-1 block text-[13px] font-medium text-fg">{rule}</span>
+      <span className="mt-1 block text-[12px] leading-snug text-fg-muted">{hint}</span>
+    </button>
   );
 }
 
@@ -206,7 +266,7 @@ function LockedScene({ id, state }: { id: KindId; state: string }) {
       looping={looping}
       buttonPhase={bPhase}
       buttonDisabled={true}
-      wave={false}
+      wave={snap.progress < 1}
       locale={locale}
       scale="compact"
     />
@@ -218,10 +278,10 @@ function LiveScene({ id }: { id: KindId }) {
   const reduced = useReducedMotion();
   const cat = category(id);
   const isTriggerButton = locksTrigger(id);
-  const [phase, setPhase] = useState<"idle" | "run" | "done">("idle");
+  const [phase, setPhase] = useState<"idle" | "run" | "done">(cat === "determinate" ? "run" : "idle");
   const [btnPhase, setBtnPhase] = useState<"idle" | "loading" | "done">("idle");
   const [restartKey, setRestartKey] = useState(0);
-  const [looping, setLooping] = useState(true);
+  const [looping, setLooping] = useState(cat === "indeterminate");
   const { value, done } = useRunProgress({
     playing: cat === "determinate" && phase === "run",
     reduced,
@@ -240,10 +300,10 @@ function LiveScene({ id }: { id: KindId }) {
     return () => window.clearTimeout(t);
   }, [btnPhase, reduced]);
 
-  const progress =
-    cat === "determinate" ? (phase === "idle" ? MID_PROGRESS : phase === "done" ? 1 : value) : 0;
+  const progress = cat === "determinate" ? (phase === "done" ? 1 : value) : 0;
   const loop = cat === "indeterminate" && looping && !prefersStatic(reduced, id);
-  const wave = cat === "determinate" && !reduced;
+  const wave = cat === "determinate" && !reduced && progress < 1;
+  const pct = Math.round(clampProgress(progress) * 100);
 
   function startDeterminate() {
     setRestartKey((n) => n + 1);
@@ -278,18 +338,58 @@ function LiveScene({ id }: { id: KindId }) {
     </ActionButton>
   );
 
+  const verdict = isTriggerButton
+    ? locale === "en"
+      ? btnPhase === "loading"
+        ? "Unmeasurable · locked · no percent"
+        : btnPhase === "done"
+          ? "Unmeasurable · done · no percent"
+          : "Unmeasurable · idle · no percent"
+      : btnPhase === "loading"
+        ? "不能算 · 锁定 · 无数字"
+        : btnPhase === "done"
+          ? "不能算 · 已完成 · 无数字"
+          : "不能算 · 待点 · 无数字"
+    : cat === "determinate"
+      ? locale === "en"
+        ? phase === "done"
+          ? "Measurable · 100% · stopped"
+          : `Measurable · ${pct}%`
+        : phase === "done"
+          ? "能算 · 100% · 已停"
+          : `能算 · ${pct}%`
+      : locale === "en"
+        ? loop
+          ? "Unmeasurable · looping · no percent"
+          : "Unmeasurable · stopped · no percent"
+        : loop
+          ? "不能算 · 循环 · 无数字"
+          : "不能算 · 已停下 · 无数字";
+
   return (
-    <Scene
-      id={id}
-      progress={progress}
-      looping={loop}
-      wave={wave}
-      locale={locale}
-      scale="hero"
-      buttonPhase={btnPhase}
-      onButtonClick={handleButtonClick}
-      action={action}
-    />
+    <div className="min-w-0">
+      <p
+        className={cn(
+          "mb-3 font-mono text-[11px] tracking-[0.08em]",
+          cat === "determinate" ? "text-accent" : "text-fg-muted",
+        )}
+        data-verdict={cat}
+        aria-live="polite"
+      >
+        {verdict}
+      </p>
+      <Scene
+        id={id}
+        progress={progress}
+        looping={loop}
+        wave={wave}
+        locale={locale}
+        scale="hero"
+        buttonPhase={btnPhase}
+        onButtonClick={handleButtonClick}
+        action={action}
+      />
+    </div>
   );
 }
 
