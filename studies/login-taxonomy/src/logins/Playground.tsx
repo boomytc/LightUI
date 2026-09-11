@@ -4,6 +4,7 @@ import { KINDS, type KindId } from "../lib/kinds";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { KindDemo } from "./Scenes";
+import "./login.css";
 
 export { KindDemo };
 
@@ -29,47 +30,66 @@ export function Playground() {
 
   return (
     <div className="min-w-0">
-      <nav
-        aria-label={locale === "en" ? "Login kinds" : "登录种类"}
-        className="flex flex-wrap gap-1.5"
-      >
-        {KINDS.map((kind) => {
-          const on = kind.id === active;
-          return (
-            <button
-              key={kind.id}
-              type="button"
-              data-kind={kind.id}
-              onClick={() => setActive(kind.id)}
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] transition-colors",
-                on
-                  ? "border-fg bg-fg text-surface"
-                  : "border-border bg-surface text-fg-muted hover:border-border-strong hover:text-fg",
-              )}
-            >
-              <span className={cn("font-mono text-[10px] tabular-nums", on ? "text-surface/65" : "text-fg-subtle")}>
-                {kind.index}
-              </span>
-              <span className="font-medium">{kind.name}</span>
-            </button>
-          );
-        })}
-      </nav>
+      <p className="mb-3 text-[12px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+        {locale === "en" ? "How arrival sits" : "进门怎么站"}
+      </p>
 
-      <div className="mt-4 mb-3 flex min-w-0 flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <div className="min-w-0">
-          <p className="font-mono text-[11px] tabular-nums text-accent">{meta.index} / 05</p>
-          <h2 className="mt-0.5 text-[1.25rem] font-semibold tracking-tight">{meta.name}</h2>
+      <div className="login-scan">
+        <div className="login-scan-head" aria-hidden="true">
+          <span className="font-mono">#</span>
+          <span>{locale === "en" ? "Stage" : "舞台"}</span>
+          <span>{locale === "en" ? "How it sits" : "摆法"}</span>
+          <span>{locale === "en" ? "Machine" : "机器"}</span>
         </div>
-        <p className="max-w-xl text-[13px] leading-snug text-fg-muted">
+        <nav
+          aria-label={locale === "en" ? "Login kinds" : "登录种类"}
+          className="flex flex-col"
+        >
+          {KINDS.map((kind) => {
+            const on = kind.id === active;
+            return (
+              <button
+                key={kind.id}
+                type="button"
+                data-kind={kind.id}
+                aria-pressed={on}
+                onClick={() => setActive(kind.id)}
+                className={cn("login-scan-row", on && "is-on")}
+              >
+                <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
+                  {kind.index}
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-[13px] font-semibold tracking-tight">
+                    {pick(kind.zh, locale)}
+                  </span>
+                  <span className="mt-0.5 block truncate text-[11px] text-fg-muted md:hidden">
+                    {pick(kind.stage, locale)}
+                  </span>
+                </span>
+                <span className="hidden min-w-0 truncate text-[13px] font-medium text-fg md:block">
+                  {pick(kind.stage, locale)}
+                </span>
+                <span className="hidden font-mono text-[11px] text-fg-subtle md:block">
+                  {pick(kind.machine, locale)}
+                </span>
+              </button>
+            );
+          })}
+        </nav>
+      </div>
+
+      <div className="mt-6 mb-3 min-w-0">
+        <p className="font-mono text-[11px] tabular-nums text-accent">{meta.index} / 05</p>
+        <h2 className="mt-0.5 text-[1.35rem] font-semibold tracking-tight">{pick(meta.zh, locale)}</h2>
+        <p className="mt-1 text-[13px] leading-snug text-fg-muted">
           {pick(meta.oneLiner, locale)}
           <span className="text-fg-subtle"> · {pick(meta.tells, locale)}</span>
         </p>
       </div>
 
-      <div className="login-playground w-full min-w-0 overflow-x-hidden">
-        <KindDemo key={meta.id} id={meta.id} />
+      <div key={meta.id} className="login-enter login-playground w-full min-w-0 overflow-x-hidden">
+        <KindDemo id={meta.id} />
       </div>
 
       <SpecCard text={pick(meta.spec, locale)} locale={locale} />

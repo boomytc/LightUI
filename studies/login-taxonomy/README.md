@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-打开 `http://127.0.0.1:5192/`。
+打开 `http://127.0.0.1:5220/`。
 
 在 Lab 里打开：`make dev` → `http://127.0.0.1:5173/s/login-taxonomy`。
 

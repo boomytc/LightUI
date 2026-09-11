@@ -8,6 +8,8 @@ export type KindMeta = {
   index: string;
   name: string;
   zh: Localized;
+  stage: Localized;
+  machine: Localized;
   oneLiner: Localized;
   scenes: Localized[];
   rules: Localized[];
@@ -23,6 +25,8 @@ export const KINDS: KindMeta[] = [
     index: "01",
     name: "Centered card",
     zh: loc("居中卡片", "Centered card"),
+    stage: loc("一格悬浮", "One pane, floating"),
+    machine: loc("paneCount = 1", "paneCount = 1"),
     oneLiner: loc("稳妥 SaaS，卡悬浮，页面留白", "Quiet SaaS — a card floats in whitespace"),
     scenes: [
       loc("通用工具", "A generic tool"),
@@ -47,6 +51,8 @@ export const KINDS: KindMeta[] = [
     index: "02",
     name: "Split",
     zh: loc("左右分栏", "Split"),
+    stage: loc("两格 · 左品牌右表单", "Two panes · brand / form"),
+    machine: loc("paneCount = 2", "paneCount = 2"),
     oneLiner: loc("左品牌，右表单", "Brand on the left, form on the right"),
     scenes: [
       loc("创作工坊", "A studio"),
@@ -71,6 +77,8 @@ export const KINDS: KindMeta[] = [
     index: "03",
     name: "Immersive",
     zh: loc("沉浸背景", "Immersive"),
+    stage: loc("一格 · 表单叠在底上", "One pane · form on the wash"),
+    machine: loc("paneCount = 1", "paneCount = 1"),
     oneLiner: loc("全幅图或渐变上叠表单", "The form sits on a full-bleed wash"),
     scenes: [
       loc("旅行账户", "A travel account"),
@@ -95,6 +103,8 @@ export const KINDS: KindMeta[] = [
     index: "04",
     name: "Role gate",
     zh: loc("角色入口", "Role gate"),
+    stage: loc("先选身份", "Pick a role first"),
+    machine: loc("needsRole", "needsRole"),
     oneLiner: loc("先选身份，再进各自表单", "Pick an identity, then enter its form"),
     scenes: [
       loc("个人 / 企业", "Personal / enterprise"),
@@ -119,6 +129,8 @@ export const KINDS: KindMeta[] = [
     index: "05",
     name: "Steps",
     zh: loc("分步", "Steps"),
+    stage: loc("一屏一事", "One job per screen"),
+    machine: loc("isStepped", "isStepped"),
     oneLiner: loc("邮箱再密码，一屏一件事", "Email, then password — one job per screen"),
     scenes: [
       loc("验证步骤多", "Many verify steps"),
@@ -137,6 +149,34 @@ export const KINDS: KindMeta[] = [
     note: loc("分步是同一身份里拆开。角色入口才是先选身份。", "Steps split one identity. A role gate picks the identity first."),
     tells: loc("一屏一个问题，看得见走到哪", "One question per screen; you can see how far"),
     window: loc("North · 分步", "North · Steps"),
+  },
+];
+
+export const CONTRASTS = [
+  {
+    scene: loc("SaaS 工作台", "A SaaS desk"),
+    naive: loc("碰巧对了", "It happens to fit"),
+    matched: loc("卡悬浮，留白充足", "A card floats in air"),
+  },
+  {
+    scene: loc("创作工坊", "A studio"),
+    naive: loc("品牌没地方站", "The brand has nowhere to stand"),
+    matched: loc("左品牌，右表单", "Brand left, form right"),
+  },
+  {
+    scene: loc("旅行账户", "A travel account"),
+    naive: loc("海报被裁进卡片", "The poster is cropped into a card"),
+    matched: loc("全幅底上叠表单", "The form sits on the wash"),
+  },
+  {
+    scene: loc("个人 / 企业", "Personal / enterprise"),
+    naive: loc("两套字段挤一张表", "Two field sets on one form"),
+    matched: loc("先选身份，再进各自表单", "Pick a role, then its form"),
+  },
+  {
+    scene: loc("验证步骤多", "Many verify steps"),
+    naive: loc("一屏三个问题", "Three questions on one screen"),
+    matched: loc("邮箱再密码，一屏一件事", "Email, then password"),
   },
 ];
 

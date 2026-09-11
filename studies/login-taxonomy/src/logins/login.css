@@ -1,3 +1,90 @@
+.login-scan {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-surface);
+}
+
+.login-scan-head {
+  display: none;
+  gap: 0.75rem;
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-fg-subtle);
+}
+
+.login-scan-row {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  text-align: left;
+  border: 0;
+  border-top: 1px solid transparent;
+  background: transparent;
+  transition:
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.login-scan-row + .login-scan-row {
+  border-top-color: var(--color-border);
+}
+
+.login-scan-row:hover {
+  background: var(--color-surface-2);
+}
+
+.login-scan-row.is-on {
+  background: var(--color-play-glow);
+  box-shadow: inset 2px 0 0 var(--color-accent);
+}
+
+@media (min-width: 48rem) {
+  .login-scan-head,
+  .login-scan-row {
+    display: grid;
+    grid-template-columns: 2.25rem 7.5rem minmax(8rem, 1.2fr) 7.5rem;
+  }
+}
+
+.login-enter {
+  animation: login-rise 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.login-swap {
+  animation: login-swap 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes login-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes login-swap {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Playground: window is 100% of the work pane. Stage wraps at 390. */
 .login-window {
   box-sizing: border-box;
@@ -40,6 +127,7 @@
   background: var(--color-surface);
   padding: 1.15rem 1.1rem 1.2rem;
   box-shadow: var(--shadow-card);
+  transition: box-shadow 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Stacked on a 390 fixture / phone; two real columns once the pane is wide. */
@@ -130,9 +218,10 @@
   padding: 1.35rem 1.05rem 1.2rem;
   color: var(--color-accent-fg);
   background:
-    linear-gradient(180deg, rgb(23 24 28 / 0.22) 0%, rgb(23 24 28 / 0.52) 100%),
+    linear-gradient(180deg, rgb(23 24 28 / 0.18) 0%, rgb(23 24 28 / 0.58) 100%),
+    radial-gradient(70% 50% at 80% 18%, rgb(255 255 255 / 0.22), transparent 55%),
     radial-gradient(90% 70% at 18% 10%, color-mix(in oklab, var(--color-accent) 50%, white) 0%, transparent 58%),
-    linear-gradient(165deg, var(--color-accent) 0%, var(--color-fg) 100%);
+    linear-gradient(165deg, #3b6cff 0%, #17181c 100%);
 }
 
 .login-immersive-copy {
@@ -231,4 +320,23 @@
 
 .login-tick[data-on="true"] {
   background: var(--color-accent);
+}
+
+.login-field-outline:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-ring);
+}
+
+.login-field-underline:focus,
+.login-field-ghost:focus {
+  border-bottom-color: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-enter,
+  .login-swap,
+  .login-card {
+    animation: none;
+    transition: none;
+  }
 }

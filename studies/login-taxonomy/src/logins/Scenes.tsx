@@ -197,7 +197,7 @@ function RolesPage({
             );
           })}
         </div>
-        <div className="mt-5 grid gap-4">
+        <div key={role} className="login-swap mt-5 grid gap-4">
           <header className="grid gap-1">
             <h3 className="text-[1.15rem] font-semibold tracking-tight">
               {pick(personal ? COPY.personalTitle : COPY.enterpriseTitle, locale)}
@@ -245,7 +245,7 @@ function StepsPage({
           <span className="login-tick" data-on={step === 2 ? "true" : "false"} />
         </div>
         {step === 1 ? (
-          <div className="grid gap-4">
+          <div key="step-1" className="login-swap grid gap-4">
             <header className="grid gap-1">
               <h3 className="text-[1.15rem] font-semibold tracking-tight">
                 {pick(COPY.stepEmailTitle, locale)}
@@ -256,7 +256,7 @@ function StepsPage({
             <FakeButton onClick={() => onStep(2)}>{pick(COPY.continue, locale)}</FakeButton>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div key="step-2" className="login-swap grid gap-4">
             <header className="grid gap-1">
               <button
                 type="button"
