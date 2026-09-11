@@ -35,9 +35,19 @@ export function BottomNavDemo() {
         </section>
         <nav
           aria-label={locale === "en" ? "Primary" : "主导航"}
-          className="grid shrink-0 border-t border-border bg-surface"
+          className="relative grid shrink-0 border-t border-border bg-surface"
           style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}
         >
+          <span
+            aria-hidden="true"
+            className="nav-pill pointer-events-none absolute inset-y-1 left-0 px-1"
+            style={{
+              width: `${100 / items.length}%`,
+              transform: `translateX(${items.findIndex((item) => item.id === page) * 100}%)`,
+            }}
+          >
+            <span className="block h-full rounded-lg bg-accent-soft" />
+          </span>
           {items.map((item) => {
             const Icon = item.icon;
             const on = page === item.id;
@@ -48,12 +58,12 @@ export function BottomNavDemo() {
                 data-nav-item={item.id}
                 onClick={() => setPage(item.id)}
                 className={cn(
-                  "flex min-h-12 flex-col items-center justify-center gap-0.5 py-1.5 text-[10px]",
+                  "relative z-[1] flex min-h-12 flex-col items-center justify-center gap-0.5 py-1.5 text-[10px]",
                   on ? "text-fg" : "text-fg-subtle",
                 )}
               >
                 <Icon
-                  className={cn("size-4 transition-transform duration-200", on && "-translate-y-0.5")}
+                  className={cn("size-4 transition-transform duration-300", on && "-translate-y-0.5")}
                   strokeWidth={on ? 2.2 : 1.8}
                 />
                 <span className="font-medium">{pick(item.label, locale)}</span>

@@ -39,13 +39,15 @@ export function DropdownDemo({ defaultOpen = false }: { defaultOpen?: boolean } 
               className="flex items-center gap-0.5 font-medium text-accent"
             >
               {locale === "en" ? "Tools" : "工具"}
-              <ChevronDown className={cn("size-3.5 transition-transform", open && "rotate-180")} />
+              <ChevronDown className={cn("size-3.5 transition-transform duration-300", open && "rotate-180")} />
             </button>
             <div
               role="menu"
               className={cn(
-                "absolute top-full left-0 z-30 min-w-36 origin-top rounded-lg border border-border bg-surface py-1 shadow-card transition-[opacity,transform] duration-200",
-                open ? "pointer-events-auto scale-100 opacity-100" : "pointer-events-none scale-[0.97] opacity-0",
+                "nav-menu absolute top-full left-0 z-30 min-w-36 origin-top rounded-lg border border-border bg-surface py-1 shadow-menu",
+                open
+                  ? "pointer-events-auto translate-y-0 scale-100 opacity-100 blur-0"
+                  : "pointer-events-none -translate-y-1 scale-[0.98] opacity-0 blur-[2px]",
               )}
             >
               {ITEMS.map((item) => (

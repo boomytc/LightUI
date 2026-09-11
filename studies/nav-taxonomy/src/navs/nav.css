@@ -1,0 +1,107 @@
+.nav-in {
+  animation: nav-rise 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.nav-sheet {
+  will-change: transform;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-veil {
+  transition:
+    opacity 320ms ease,
+    backdrop-filter 320ms ease;
+}
+
+.nav-menu {
+  transition:
+    opacity 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-label {
+  transition:
+    opacity 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-overlay-link {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.nav-overlay[data-open="true"] .nav-overlay-link {
+  animation: nav-rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.nav-overlay[data-open="true"] .nav-overlay-link:nth-child(1) {
+  animation-delay: 40ms;
+}
+
+.nav-overlay[data-open="true"] .nav-overlay-link:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.nav-overlay[data-open="true"] .nav-overlay-link:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.nav-overlay[data-open="true"] .nav-overlay-link:nth-child(4) {
+  animation-delay: 160ms;
+}
+
+.nav-pill {
+  transition:
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 280ms ease,
+    color 280ms ease;
+}
+
+.nav-sketch-bit {
+  transition:
+    opacity 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 280ms ease;
+}
+
+.nav-axis-cell {
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+@keyframes nav-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-in,
+  .nav-overlay[data-open="true"] .nav-overlay-link,
+  .nav-overlay[data-open="true"] .nav-overlay-link:nth-child(n) {
+    animation: none;
+  }
+
+  .nav-sheet,
+  .nav-veil,
+  .nav-menu,
+  .nav-label,
+  .nav-pill,
+  .nav-sketch-bit,
+  .nav-axis-cell {
+    transition: none;
+  }
+
+  .nav-overlay-link {
+    opacity: 1;
+    transform: none;
+  }
+}

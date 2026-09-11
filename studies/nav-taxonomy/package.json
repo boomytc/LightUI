@@ -12,7 +12,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit --pretty false",
-    "test": "tsx --test src/lib/crumb.test.ts src/lib/spy.test.ts src/lib/shrink.test.ts src/lib/occupy.test.ts"
+    "test": "tsx --test src/lib/crumb.test.ts src/lib/spy.test.ts src/lib/shrink.test.ts src/lib/occupy.test.ts src/lib/axes.test.ts"
   },
   "dependencies": {
     "lucide-react": "^0.510.0",

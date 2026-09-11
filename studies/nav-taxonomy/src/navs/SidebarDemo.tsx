@@ -17,7 +17,7 @@ export function SidebarDemo() {
           className="flex min-w-0 shrink-0 flex-col border-r border-border bg-surface"
           style={{
             width: collapsed ? 56 : 160,
-            transition: "width 250ms cubic-bezier(0.22, 1, 0.36, 1)",
+            transition: "width 320ms cubic-bezier(0.22, 1, 0.36, 1)",
           }}
         >
           <div className="flex h-11 items-center gap-2 px-3">
@@ -63,7 +63,7 @@ export function SidebarDemo() {
                   )}
                 >
                   <Icon className="size-3.5 shrink-0" strokeWidth={1.8} />
-                  <span className={cn("truncate", collapsed ? "w-0 opacity-0" : "opacity-100")}>
+                  <span className={cn("nav-label truncate", collapsed ? "w-0 opacity-0" : "w-auto opacity-100")}>
                     {pick(item.label, locale)}
                   </span>
                 </button>

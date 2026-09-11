@@ -20,10 +20,10 @@ export function ShrinkDemo() {
       >
         <header
           className={cn(
-            "sticky top-0 z-20 flex min-w-0 items-center justify-between gap-3 px-3 transition-[height,background-color,color,box-shadow] duration-200 @min-[32rem]:px-4",
+            "sticky top-0 z-20 flex min-w-0 items-center justify-between gap-3 px-3 transition-[padding,background-color,color,box-shadow] duration-300 @min-[32rem]:px-4",
             shrunk
-              ? "h-11 bg-surface text-fg shadow-[0_1px_0_0_var(--color-border)]"
-              : "h-14 bg-transparent text-surface",
+              ? "py-2 bg-surface text-fg shadow-[0_1px_0_0_var(--color-border)]"
+              : "py-3.5 bg-transparent text-surface",
           )}
         >
           <span className="shrink-0 text-[13px] font-medium">{locale === "en" ? "Studio" : "工作室"}</span>

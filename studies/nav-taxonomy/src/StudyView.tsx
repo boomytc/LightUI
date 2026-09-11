@@ -22,8 +22,8 @@ export function StudyView() {
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Name the model, name the scene, then name placement, reveal, and scroll. The nine contrasts below are live."
-            : "先说模型，再说场景，再说放在哪、怎么开、滚的时候变什么。下面九个对照可以点。"}
+            ? "Name the model, name the scene, then name placement, reveal, and scroll. The ten contrasts below are grouped by those three questions."
+            : "先说模型，再说场景，再说放在哪、怎么开、滚的时候变什么。下面十个对照按这三问分组。"}
         </p>
       </section>
 

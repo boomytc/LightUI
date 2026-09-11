@@ -4,6 +4,7 @@ import { LINKS } from "../lib/fixtures";
 import { pick, useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { FakeCards, FakeLines, Frame, HeroWash } from "./Frame";
+import "./nav.css";
 
 export function DrawerDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
@@ -38,7 +39,20 @@ export function DrawerDemo({ defaultOpen = false }: { defaultOpen?: boolean } = 
             onClick={() => setOpen((v) => !v)}
             className="grid size-9 shrink-0 place-items-center rounded-md hover:bg-surface-2"
           >
-            <Menu className="size-4" />
+            <span className="relative size-4">
+              <Menu
+                className={cn(
+                  "absolute inset-0 size-4 transition-[opacity,transform] duration-300",
+                  open ? "scale-75 opacity-0" : "scale-100 opacity-100",
+                )}
+              />
+              <X
+                className={cn(
+                  "absolute inset-0 size-4 transition-[opacity,transform] duration-300",
+                  open ? "scale-100 opacity-100" : "scale-75 opacity-0",
+                )}
+              />
+            </span>
           </button>
         </div>
         <HeroWash compact />
@@ -49,7 +63,7 @@ export function DrawerDemo({ defaultOpen = false }: { defaultOpen?: boolean } = 
 
         <div
           className={cn(
-            "absolute inset-0 z-30 bg-fg/30 transition-opacity duration-200",
+            "nav-veil absolute inset-0 z-30 bg-fg/35 backdrop-blur-[2px]",
             open ? "opacity-100" : "pointer-events-none opacity-0",
           )}
           onClick={close}
@@ -57,7 +71,7 @@ export function DrawerDemo({ defaultOpen = false }: { defaultOpen?: boolean } = 
         <aside
           id="nav-drawer"
           className={cn(
-            "absolute inset-y-0 right-0 z-40 flex w-[min(18rem,80%)] max-w-[80%] flex-col bg-surface shadow-card transition-transform duration-200",
+            "nav-sheet absolute inset-y-0 right-0 z-40 flex w-[min(18rem,80%)] max-w-[80%] flex-col bg-surface shadow-menu",
             open ? "translate-x-0" : "translate-x-full",
           )}
           aria-hidden={!open}

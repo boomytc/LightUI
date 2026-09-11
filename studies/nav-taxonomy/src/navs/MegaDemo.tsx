@@ -51,16 +51,16 @@ export function MegaDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}
               className="flex shrink-0 items-center gap-0.5 font-medium text-accent"
             >
               {locale === "en" ? "Catalog" : "分类"}
-              <ChevronDown className={cn("size-3.5 transition-transform", open && "rotate-180")} />
+              <ChevronDown className={cn("size-3.5 transition-transform duration-300", open && "rotate-180")} />
             </button>
             <span className="shrink-0 text-fg-muted">{locale === "en" ? "About" : "关于"}</span>
           </div>
           <div
             className={cn(
-              "absolute top-full right-3 left-3 z-20 origin-top rounded-xl border border-border bg-surface p-4 shadow-card transition-[opacity,transform] duration-200",
+              "nav-menu absolute top-full right-3 left-3 z-20 origin-top rounded-xl border border-border bg-surface p-4 shadow-menu",
               open
-                ? "pointer-events-auto translate-y-0 opacity-100"
-                : "pointer-events-none invisible -translate-y-1 opacity-0",
+                ? "pointer-events-auto translate-y-0 opacity-100 blur-0"
+                : "pointer-events-none -translate-y-1.5 opacity-0 blur-[3px]",
             )}
             onMouseEnter={arm}
             onMouseLeave={disarm}

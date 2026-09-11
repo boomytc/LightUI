@@ -26,7 +26,8 @@ The lab mounts `StudyView` at `/s/nav-taxonomy`.
 - `src/lib/crumb.ts` — trail / current / shorten (no DOM)
 - `src/lib/spy.ts` — pick the intersecting section (no DOM)
 - `src/lib/shrink.ts` — enter 40 / leave 16 (no DOM)
-- `src/navs/` — the nine fixtures
+- `src/lib/axes.ts` — place / reveal / scroll teaching map (no DOM)
+- `src/navs/` — the ten fixtures + AxisBoard
 - `src/StageView.tsx` — one kind, one locked state, no chrome
 - `references/` — optional local stills from `make stills` (not committed)
 

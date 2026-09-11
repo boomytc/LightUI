@@ -66,7 +66,7 @@ export function ScrollspyDemo() {
               type="button"
               onClick={() => jump(item.id)}
               className={cn(
-                "rounded-md px-2 py-1.5 text-left text-[12px]",
+                "rounded-md px-2 py-1.5 text-left text-[12px] transition-colors duration-300",
                 active === item.id ? "bg-surface font-medium text-accent" : "text-fg-muted hover:bg-surface",
               )}
             >

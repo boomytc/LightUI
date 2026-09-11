@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
+import {
+  AXES,
+  axisKinds,
+  axisOf,
+  mixedPair,
+  placeLine,
+  type AxisId,
+} from "../lib/axes";
 import { KINDS, type KindId } from "../lib/kinds";
-import { pick, useLocale } from "../lib/site-locale";
+import { pick, useLocale, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
+import { AxisBoard } from "./AxisBoard";
 import { BreadcrumbDemo } from "./BreadcrumbDemo";
+import { BottomNavDemo } from "./BottomNavDemo";
 import { DrawerDemo } from "./DrawerDemo";
 import { DropdownDemo } from "./DropdownDemo";
 import { FloatingDemo } from "./FloatingDemo";
@@ -11,13 +21,26 @@ import { MegaDemo } from "./MegaDemo";
 import { OverlayDemo } from "./OverlayDemo";
 import { ScrollspyDemo } from "./ScrollspyDemo";
 import { ShrinkDemo } from "./ShrinkDemo";
-import { BottomNavDemo } from "./BottomNavDemo";
 import { SidebarDemo } from "./SidebarDemo";
+import "./nav.css";
 
 export function Playground() {
   const locale = useLocale();
   const [active, setActive] = useState<KindId>("floating");
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0];
+  const axis = axisOf(active);
+  const pair = mixedPair(active);
+  const pairMeta = pair ? KINDS.find((k) => k.id === pair) : undefined;
+
+  function select(id: KindId) {
+    setActive(id);
+  }
+
+  function selectAxis(next: AxisId) {
+    if (axisKinds(next).includes(active)) return;
+    const first = axisKinds(next)[0];
+    if (first) setActive(first);
+  }
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -35,34 +58,94 @@ export function Playground() {
   }, []);
 
   return (
-    <div className="min-w-0 overflow-x-hidden">
-      <nav
-        aria-label={locale === "en" ? "Nav kinds" : "导航种类"}
-        className="flex flex-wrap gap-1.5"
-      >
-        {KINDS.map((kind) => {
-          const on = kind.id === active;
+    <div data-playground="nav" data-kind={active} data-axis={axis} className="min-w-0 overflow-x-hidden">
+      <p className="mb-3 text-[12px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
+        {locale === "en" ? "First name the question" : "先定这一问"}
+      </p>
+
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        {AXES.map((item) => {
+          const on = item.id === axis;
           return (
             <button
-              key={kind.id}
+              key={item.id}
               type="button"
-              data-kind={kind.id}
-              aria-pressed={on}
-              onClick={() => setActive(kind.id)}
+              data-axis={item.id}
+              onClick={() => selectAxis(item.id)}
               className={cn(
-                "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] leading-none transition-colors",
+                "nav-axis-cell min-h-[4.75rem] rounded-2xl border px-3.5 py-3 text-left",
                 on
-                  ? "border-border-strong bg-surface shadow-card"
-                  : "border-transparent bg-surface-2 hover:bg-surface",
+                  ? "border-border-strong bg-play-glow shadow-card"
+                  : "border-border bg-surface hover:bg-surface-2",
               )}
             >
-              <span className={cn("font-mono text-[10px] tabular-nums", on ? "text-accent" : "text-fg-subtle")}>
-                {kind.index}
+              <span
+                className={cn(
+                  "font-mono text-[10px] tracking-[0.14em]",
+                  on ? "text-accent" : "text-fg-subtle",
+                )}
+              >
+                {item.index}
               </span>
-              <span className="font-medium">{pick(kind.zh, locale)}</span>
+              <span className="mt-1 block text-[14px] font-semibold tracking-tight text-fg">
+                {pick(item.label, locale)}
+              </span>
+              <span className="mt-1 block text-[11px] leading-snug text-fg-muted">
+                {pick(item.ask, locale)}
+              </span>
             </button>
           );
         })}
+      </div>
+
+      <nav
+        aria-label={locale === "en" ? "Nav kinds" : "导航种类"}
+        className="mt-4 flex flex-col gap-3"
+      >
+        {AXES.map((item) => (
+          <div key={item.id} className="min-w-0">
+            <p
+              className={cn(
+                "mb-1.5 text-[10px] font-medium tracking-[0.12em] uppercase",
+                item.id === axis ? "text-accent" : "text-fg-subtle",
+              )}
+            >
+              {pick(item.label, locale)}
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {item.kinds.map((id) => {
+                const kind = KINDS.find((k) => k.id === id);
+                if (!kind) return null;
+                const on = kind.id === active;
+                return (
+                  <button
+                    key={kind.id}
+                    type="button"
+                    data-kind={kind.id}
+                    aria-pressed={on}
+                    onClick={() => select(kind.id)}
+                    className={cn(
+                      "inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border px-2.5 text-[12px] leading-none",
+                      on
+                        ? "border-fg bg-fg text-surface shadow-card"
+                        : "border-transparent bg-surface-2 text-fg-muted hover:bg-surface hover:text-fg",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "font-mono text-[10px] tabular-nums",
+                        on ? "text-surface/55" : "text-fg-subtle",
+                      )}
+                    >
+                      {kind.index}
+                    </span>
+                    <span className="font-medium">{pick(kind.zh, locale)}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       <section className="mt-6 min-w-0">
@@ -72,9 +155,21 @@ export function Playground() {
             <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{meta.name}</h2>
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           </div>
-          <p className="max-w-xs text-right text-[12px] leading-relaxed text-fg-subtle">
-            {pick(meta.lives, locale)}
-          </p>
+          <div className="flex max-w-xs flex-col items-start gap-1.5 sm:items-end">
+            <p className="text-[12px] leading-relaxed text-fg-subtle sm:text-right">
+              {pick(placeLine(active), locale)}
+            </p>
+            {pairMeta ? (
+              <button
+                type="button"
+                onClick={() => select(pairMeta.id)}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted transition-colors hover:border-border-strong hover:text-fg"
+              >
+                {locale === "en" ? "Easy mix-up · " : "容易混 · "}
+                {pick(pairMeta.zh, locale)}
+              </button>
+            ) : null}
+          </div>
         </div>
 
         <div className="mb-4 flex flex-wrap gap-1.5">
@@ -90,10 +185,12 @@ export function Playground() {
 
         {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
 
+        <AxisBoard kind={active} />
+
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
 
-        <div className="min-w-0">
-          <KindDemo key={meta.id} id={meta.id} />
+        <div key={meta.id} className="nav-in min-w-0">
+          <KindDemo id={meta.id} />
         </div>
 
         <ul className="mt-4 flex flex-wrap gap-2">
@@ -111,7 +208,7 @@ export function Playground() {
   );
 }
 
-function SpecCard({ text, locale }: { text: string; locale: "zh" | "en" }) {
+function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {

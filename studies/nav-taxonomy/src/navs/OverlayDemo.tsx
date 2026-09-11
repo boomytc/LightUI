@@ -4,6 +4,7 @@ import { LINKS } from "../lib/fixtures";
 import { pick, useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { FakeCards, FakeLines, Frame, HeroWash } from "./Frame";
+import "./nav.css";
 
 export function OverlayDemo({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
   const locale = useLocale();
@@ -50,8 +51,9 @@ export function OverlayDemo({ defaultOpen = false }: { defaultOpen?: boolean } =
           role="dialog"
           aria-modal="true"
           aria-label={locale === "en" ? "Menu" : "全屏菜单"}
+          data-open={open ? "true" : "false"}
           className={cn(
-            "absolute inset-0 z-40 flex flex-col bg-surface/95 backdrop-blur-sm transition-opacity duration-300",
+            "nav-overlay nav-veil absolute inset-0 z-40 flex flex-col bg-surface/96 backdrop-blur-md",
             open ? "opacity-100" : "pointer-events-none opacity-0",
           )}
         >
@@ -72,7 +74,7 @@ export function OverlayDemo({ defaultOpen = false }: { defaultOpen?: boolean } =
                 type="button"
                 onClick={close}
                 className={cn(
-                  "min-h-11 px-4 text-[clamp(1.35rem,4vw,1.85rem)] leading-snug tracking-tight",
+                  "nav-overlay-link min-h-11 px-4 text-[clamp(1.35rem,4vw,1.85rem)] leading-snug tracking-tight",
                   index === 0 ? "font-semibold text-accent" : "text-fg-muted hover:text-fg",
                 )}
               >
