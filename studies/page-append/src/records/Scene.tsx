@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { pick, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
@@ -16,14 +16,40 @@ export function ResourceList({
   replace: boolean;
   pageKey: number;
 }) {
+  const seen = useRef<Set<string>>(new Set());
+  const primed = useRef(false);
+  const [fresh, setFresh] = useState<Set<string>>(() => new Set());
+  const idKey = resources.map((item) => item.id).join(",");
+
+  useLayoutEffect(() => {
+    const ids = idKey === "" ? [] : idKey.split(",");
+    if (replace || !primed.current) {
+      primed.current = true;
+      seen.current = new Set(ids);
+      setFresh(new Set());
+      return;
+    }
+    const next = new Set<string>();
+    for (const id of ids) {
+      if (!seen.current.has(id)) next.add(id);
+    }
+    seen.current = new Set(ids);
+    setFresh(next);
+  }, [idKey, replace, pageKey]);
+
   return (
     <ul
       key={replace ? pageKey : "append"}
       className={cn("grid min-w-0 gap-2 px-3 py-3 sm:px-4", replace ? "records-replace" : undefined)}
       data-region={replace ? "page" : "append"}
     >
-      {resources.map((item) => (
-        <li key={item.id} data-resource={item.id}>
+      {resources.map((item, index) => (
+        <li
+          key={item.id}
+          data-resource={item.id}
+          className={fresh.has(item.id) ? "records-enter" : undefined}
+          style={{ ["--i" as string]: String(index) }}
+        >
           <article className="flex min-h-[4.75rem] min-w-0 items-start gap-3 rounded-xl border border-border bg-surface px-3 py-3">
             <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-accent-soft text-[11px] font-semibold text-accent">
               {item.mark}
@@ -35,6 +61,7 @@ export function ResourceList({
                 {pick(item.tag, locale)}
               </span>
             </div>
+            <span className="font-mono text-[10px] tabular-nums text-fg-subtle">{item.id}</span>
           </article>
         </li>
       ))}
@@ -59,34 +86,47 @@ export function ShowingLine({
 }) {
   const range =
     kind === "page"
-      ? locale === "en"
-        ? `showing ${from}–${to} of ${total}`
-        : `showing ${from}–${to} of ${total}`
-      : locale === "en"
-        ? `showing 1–${to} of ${total}`
-        : `showing 1–${to} of ${total}`;
+      ? `showing ${from}–${to} of ${total}`
+      : `showing 1–${to} of ${total}`;
+  const start = total <= 0 ? 0 : Math.max(0, from - 1);
+  const count = total <= 0 ? 0 : Math.max(0, to - from + 1);
 
   return (
-    <div className="flex shrink-0 items-end justify-between gap-3 border-b border-border px-3 py-2.5 sm:px-4">
-      <div className="min-w-0">
-        <p className="font-mono text-[12px] tabular-nums text-accent">{range}</p>
-        <p className="mt-0.5 text-[11px] text-fg-subtle">
-          {kind === "page"
-            ? locale === "en"
-              ? exhausted
-                ? "Last page — previous cards dropped"
-                : "This slice only — previous cards dropped"
-              : exhausted
-                ? "最后一页 — 上一页已卸掉"
-                : "只留这一页 — 上一页已卸掉"
-            : locale === "en"
-              ? exhausted
-                ? "Prefix kept — all loaded"
-                : "Prefix kept — old nodes stay"
-              : exhausted
-                ? "前缀留下 — 已加载全部"
-                : "前缀留下 — 旧节点不卸"}
-        </p>
+    <div className="flex shrink-0 flex-col gap-2 border-b border-border px-3 py-2.5 sm:px-4">
+      <div className="flex items-end justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-mono text-[12px] tabular-nums text-accent">{range}</p>
+          <p className="mt-0.5 text-[11px] text-fg-subtle">
+            {kind === "page"
+              ? locale === "en"
+                ? exhausted
+                  ? "Last page — previous cards dropped"
+                  : "This slice only — previous cards dropped"
+                : exhausted
+                  ? "最后一页 — 上一页已卸掉"
+                  : "只留这一页 — 上一页已卸掉"
+              : locale === "en"
+                ? exhausted
+                  ? "Prefix kept — all loaded"
+                  : "Prefix kept — old nodes stay"
+                : exhausted
+                  ? "前缀留下 — 已加载全部"
+                  : "前缀留下 — 旧节点不卸"}
+          </p>
+        </div>
+      </div>
+      <div
+        className="records-track"
+        data-mode={kind === "page" ? "replace" : "append"}
+        aria-hidden="true"
+      >
+        <span
+          className="records-track-fill"
+          style={{
+            left: `${total === 0 ? 0 : (start / total) * 100}%`,
+            width: `${total === 0 ? 0 : (count / total) * 100}%`,
+          }}
+        />
       </div>
     </div>
   );
@@ -122,10 +162,7 @@ export function PageControl({
         <ChevronLeft className="size-4" />
       </IconBtn>
 
-      <div
-        className="relative min-w-0 flex-1 rounded-full bg-surface-2 p-1"
-        data-page-chips=""
-      >
+      <div className="relative min-w-0 flex-1 rounded-full bg-surface-2 p-1" data-page-chips="">
         <div
           className="relative grid"
           style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}
@@ -191,7 +228,7 @@ export function AppendControl({
         disabled={locked || exhausted}
         onClick={onMore}
         className={cn(
-          "min-h-9 rounded-full px-4 text-[13px] font-medium",
+          "min-h-9 rounded-full px-4 text-[13px] font-medium transition-colors",
           exhausted
             ? "bg-surface-2 text-fg-subtle"
             : "bg-fg text-surface hover:opacity-90 disabled:opacity-50",

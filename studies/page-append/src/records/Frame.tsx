@@ -9,6 +9,7 @@ export function Window({
   toolbar,
   footer,
   scrollerRef,
+  resetting = false,
   children,
 }: {
   compact?: boolean;
@@ -18,6 +19,7 @@ export function Window({
   toolbar?: ReactNode;
   footer?: ReactNode;
   scrollerRef?: RefObject<HTMLDivElement | null>;
+  resetting?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -54,7 +56,12 @@ export function Window({
         </div>
       )}
       {toolbar}
-      <div ref={scrollerRef} className="records-scroller" data-region="list">
+      <div
+        ref={scrollerRef}
+        className="records-scroller"
+        data-region="list"
+        data-reset={resetting ? "" : undefined}
+      >
         {children}
       </div>
       {footer}

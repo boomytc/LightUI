@@ -19,6 +19,19 @@ export function StudyView() {
               ? "“Make pagination” describes the skin. The thing that breaks is what happens to the old nodes: drop the previous page and return to the top, or grow visibleCount and keep what is already mounted."
               : "「做个分页」说的是外观。真正会坏掉的是旧节点怎么处置：丢掉上一页并回到顶部，还是增加 visibleCount、已经挂上的留下。"}
           </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {(locale === "en"
+              ? ["Replace · drop the last page", "Append · keep old nodes", "Scroll resets or stays"]
+              : ["整页替换 · 丢掉上一页", "末尾追加 · 旧节点不卸", "滚动回不回顶"]
+            ).map((item) => (
+              <li
+                key={item}
+                className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-fg-muted"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
@@ -31,14 +44,12 @@ export function StudyView() {
 
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {FORMULA.map((item) => (
-          <div key={item.n} className="flex gap-3 rounded-xl border border-border bg-surface px-3 py-3">
-            <span className="inline-grid size-5 shrink-0 place-items-center rounded-md bg-fg text-[10px] font-semibold text-surface">
+          <div key={item.n} className="rounded-2xl border border-border bg-surface px-4 py-4 shadow-card">
+            <span className="inline-grid size-6 place-items-center rounded-md bg-fg text-[11px] font-semibold text-surface">
               {item.n}
             </span>
-            <div className="min-w-0">
-              <h2 className="text-[13px] font-semibold">{pick(item.title, locale)}</h2>
-              <p className="mt-0.5 text-[12px] text-fg-muted">{pick(item.example, locale)}</p>
-            </div>
+            <h2 className="mt-3 text-[15px] font-semibold">{pick(item.title, locale)}</h2>
+            <p className="mt-1 text-[13px] text-fg-muted">{pick(item.example, locale)}</p>
           </div>
         ))}
       </section>

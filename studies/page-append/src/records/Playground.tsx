@@ -4,8 +4,11 @@ import { BATCH, INITIAL_VISIBLE, PAGE_SIZE, RESOURCES } from "../lib/fixtures";
 import { KINDS, type KindId } from "../lib/kinds";
 import {
   appendCount,
+  collectionMode,
   collectionView,
+  dropsOldItems,
   pageCount,
+  resetsScroll,
   stageLock,
   type StageState,
 } from "../lib/machines";
@@ -36,32 +39,78 @@ export function Playground() {
   }, []);
 
   return (
-    <div className="min-w-0 overflow-x-hidden">
+    <div data-playground="records" className="min-w-0 overflow-x-hidden">
       <nav
         aria-label={locale === "en" ? "Collection kinds" : "集合种类"}
-        className="flex flex-wrap gap-2"
+        className="grid gap-2 sm:grid-cols-2"
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
+          const replace = collectionMode(kind.id) === "replace";
           return (
             <button
               key={kind.id}
               type="button"
               data-kind={kind.id}
+              aria-pressed={on}
               onClick={() => setActive(kind.id)}
               className={cn(
-                "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-left transition-colors",
+                "rounded-2xl border px-4 py-3.5 text-left transition-colors",
                 on
-                  ? "border-fg bg-fg text-surface"
+                  ? "border-fg bg-fg text-surface shadow-card"
                   : "border-border bg-surface text-fg-muted hover:bg-surface-2 hover:text-fg",
               )}
             >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-surface/70" : "text-fg-subtle")}>
-                {kind.index}
+              <span className="flex items-baseline justify-between gap-3">
+                <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-surface/55" : "text-fg-subtle")}>
+                  {kind.index}
+                </span>
+                <span className={cn("text-[11px]", on ? "text-surface/55" : "text-fg-subtle")}>
+                  {replace ? "replace" : "append"}
+                </span>
               </span>
-              <span className="text-[13px] font-medium">{kind.name}</span>
-              <span className={cn("text-[11px]", on ? "text-surface/70" : "text-fg-subtle")}>
+              <span className="mt-1 block text-[1.05rem] font-semibold tracking-tight">{kind.name}</span>
+              <span className={cn("mt-0.5 block text-[13px]", on ? "text-surface/80" : "text-fg")}>
                 {pick(kind.zh, locale)}
+              </span>
+              <span className={cn("mt-2 block text-[12px] leading-relaxed", on ? "text-surface/60" : "text-fg-subtle")}>
+                {pick(kind.oneLiner, locale)}
+              </span>
+              <span className="mt-3 grid grid-cols-3 gap-2 text-[11px]">
+                <span>
+                  <span className={cn("block", on ? "text-surface/45" : "text-fg-subtle")}>
+                    {locale === "en" ? "Old nodes" : "旧节点"}
+                  </span>
+                  <span className="font-medium">
+                    {dropsOldItems(kind.id)
+                      ? locale === "en"
+                        ? "Drop"
+                        : "丢掉"
+                      : locale === "en"
+                        ? "Keep"
+                        : "留下"}
+                  </span>
+                </span>
+                <span>
+                  <span className={cn("block", on ? "text-surface/45" : "text-fg-subtle")}>
+                    {locale === "en" ? "Scroll" : "滚动"}
+                  </span>
+                  <span className="font-medium">
+                    {resetsScroll(kind.id)
+                      ? locale === "en"
+                        ? "Top"
+                        : "回顶"
+                      : locale === "en"
+                        ? "Stay"
+                        : "保持"}
+                  </span>
+                </span>
+                <span>
+                  <span className={cn("block", on ? "text-surface/45" : "text-fg-subtle")}>
+                    {locale === "en" ? "Range" : "范围"}
+                  </span>
+                  <span className="font-medium">{replace ? "a–b of n" : "1–k of n"}</span>
+                </span>
               </span>
             </button>
           );
@@ -163,6 +212,8 @@ export function KindDemo({
   const [page, setPage] = useState(seed.page);
   const [visible, setVisible] = useState(seed.visible);
   const scroller = useRef<HTMLDivElement>(null);
+  const firstReset = useRef(true);
+  const [resetFlash, setResetFlash] = useState(false);
   const pageNow = locked ? seed.page : page;
   const visibleNow = locked ? seed.visible : visible;
   const view = collectionView(id, RESOURCES, {
@@ -182,54 +233,123 @@ export function KindDemo({
         ? 0
         : 1;
   const to = id === "page" ? (view.shown.length === 0 ? 0 : from + view.shown.length - 1) : view.visible;
+  const mode = collectionMode(id);
 
   useLayoutEffect(() => {
     if (!view.scrollReset) return;
     const el = scroller.current;
     if (el) el.scrollTop = 0;
-  }, [id, pageNow, view.scrollReset]);
+    if (firstReset.current) {
+      firstReset.current = false;
+      return;
+    }
+    if (locked) return;
+    setResetFlash(true);
+    const timer = window.setTimeout(() => setResetFlash(false), 640);
+    return () => window.clearTimeout(timer);
+  }, [id, pageNow, view.scrollReset, locked]);
 
   return (
-    <Window
-      compact={compact}
-      title={pick(meta.window, locale)}
-      brand={locale === "en" ? "Library" : "资料"}
-      scrollerRef={scroller}
-      toolbar={
-        <ShowingLine
+    <div>
+      {compact ? null : (
+        <CollectionRule
           locale={locale}
-          kind={id}
-          from={from}
-          to={to}
-          total={total}
-          exhausted={view.exhausted}
+          id={id}
+          ids={view.shown.map((item) => item.id)}
         />
-      }
-      footer={
-        id === "page" ? (
-          <PageControl
+      )}
+      <Window
+        compact={compact}
+        title={pick(meta.window, locale)}
+        brand={locale === "en" ? "Library" : "资料"}
+        scrollerRef={scroller}
+        resetting={resetFlash}
+        toolbar={
+          <ShowingLine
             locale={locale}
-            page={pageNow}
-            pages={pages}
-            locked={locked}
-            onPage={setPage}
-          />
-        ) : (
-          <AppendControl
-            locale={locale}
+            kind={id}
+            from={from}
+            to={to}
+            total={total}
             exhausted={view.exhausted}
-            locked={locked}
-            onMore={() => setVisible((n) => appendCount(n, BATCH, total))}
           />
-        )
-      }
-    >
-      <ResourceList
-        resources={view.shown}
-        locale={locale}
-        replace={id === "page"}
-        pageKey={pageNow}
-      />
-    </Window>
+        }
+        footer={
+          id === "page" ? (
+            <PageControl
+              locale={locale}
+              page={pageNow}
+              pages={pages}
+              locked={locked}
+              onPage={setPage}
+            />
+          ) : (
+            <AppendControl
+              locale={locale}
+              exhausted={view.exhausted}
+              locked={locked}
+              onMore={() => setVisible((n) => appendCount(n, BATCH, total))}
+            />
+          )
+        }
+      >
+        {resetFlash ? (
+          <span className="records-reset-cue">
+            {locale === "en" ? "scrollTop = 0" : "回到顶部 · scrollTop = 0"}
+          </span>
+        ) : null}
+        <ResourceList
+          resources={view.shown}
+          locale={locale}
+          replace={mode === "replace"}
+          pageKey={pageNow}
+        />
+      </Window>
+    </div>
+  );
+}
+
+function CollectionRule({
+  locale,
+  id,
+  ids,
+}: {
+  locale: Locale;
+  id: KindId;
+  ids: readonly string[];
+}) {
+  const replace = collectionMode(id) === "replace";
+  return (
+    <dl className="mb-4 grid grid-cols-2 gap-2 rounded-2xl border border-border bg-surface px-3 py-2.5 sm:grid-cols-4 sm:px-4">
+      <div>
+        <dt className="font-mono text-[10px] tracking-wide text-fg-subtle uppercase">mode</dt>
+        <dd className="mt-0.5 text-[13px] font-medium">{replace ? "replace" : "append"}</dd>
+      </div>
+      <div>
+        <dt className="font-mono text-[10px] tracking-wide text-fg-subtle uppercase">old nodes</dt>
+        <dd className={cn("mt-0.5 text-[13px] font-medium", replace ? "text-wrong" : "text-intent")}>
+          {dropsOldItems(id) ? "drop" : "keep"}
+        </dd>
+      </div>
+      <div>
+        <dt className="font-mono text-[10px] tracking-wide text-fg-subtle uppercase">scroll</dt>
+        <dd className="mt-0.5 text-[13px] font-medium">{resetsScroll(id) ? "reset" : "stay"}</dd>
+      </div>
+      <div className="min-w-0">
+        <dt className="font-mono text-[10px] tracking-wide text-fg-subtle uppercase">mounted</dt>
+        <dd className="mt-0.5 truncate font-mono text-[12px] tabular-nums text-fg-muted">
+          {ids.length === 0 ? "—" : ids.join(" ")}
+        </dd>
+      </div>
+      <p className="col-span-2 text-[11px] leading-relaxed text-fg-subtle sm:col-span-4">
+        {locale === "en"
+          ? replace
+            ? "Changing page unmounts the last slice and returns the list to the top."
+            : "A click grows visibleCount. Already mounted ids stay; new cards arrive at the end."
+          : replace
+            ? "换页卸掉上一页切片，列表滚回顶部。"
+            : "点一下才增加 visibleCount。已挂上的 id 留下，新卡出现在末尾。"}
+      </p>
+    </dl>
   );
 }

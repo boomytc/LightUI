@@ -11,7 +11,7 @@ Vite 8 + React 19 + TypeScript + Tailwind v4. No router, auth, or backend.
 From this directory, or `make dev-study STUDY=page-append` at repo root:
 
 ```bash
-npm run dev          # http://127.0.0.1:5207/
+npm run dev          # http://127.0.0.1:5199/
 npm test             # collectionMode / pageSlice / appendCount / collectionView
 npm run typecheck
 npm run build
@@ -37,6 +37,6 @@ The lab mounts `StudyView` at `/s/page-append`.
 - Two leaves only: page (replace, drop old, scroll to top) and append
   (grow visibleCount, keep old nodes, do not scroll to top).
 - Append is a button. Do not auto-request on scroll. Paging is not a carousel.
-- Bind the standalone server to `127.0.0.1:5207`.
+- Bind the standalone server to `127.0.0.1:5199`.
 - Work page: the library fills the pane. Do not stamp a 390 phone in empty gray.
 - Stage stays a compact window. Locked fixture, no teaching chrome.

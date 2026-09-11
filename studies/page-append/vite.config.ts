@@ -17,13 +17,13 @@ export default defineConfig({
   },
   server: {
     host: "127.0.0.1",
-    port: 5207,
+    port: 5199,
     strictPort: true,
     fs: { allow: [root, path.resolve(root, "../..")] },
   },
   preview: {
     host: "127.0.0.1",
-    port: 4207,
+    port: 4199,
     strictPort: true,
   },
   build: {
