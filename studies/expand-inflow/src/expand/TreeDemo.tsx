@@ -175,7 +175,7 @@ export function TreeDemo({
     >
       <div className="border-b border-border px-4 py-3 sm:px-5">
         <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-fg-subtle">
-          {locale === "en" ? "Selected path" : "选中路径"}
+          {locale === "en" ? "Selected path · expand ≠ select" : "选中路径 · 展开不是选中"}
         </p>
         <p className="mt-1 truncate text-[13px] font-medium">
           {crumb

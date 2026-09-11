@@ -61,7 +61,11 @@ export function AccordionDemo({
         {items.map((item) => {
           const open = current === item.id;
           return (
-            <div key={item.id} className="border-b border-border last:border-b-0">
+            <div
+              key={item.id}
+              className="expand-panel border-b border-border last:border-b-0"
+              data-open={open ? "" : undefined}
+            >
               <button
                 type="button"
                 aria-expanded={open}

@@ -36,7 +36,7 @@ export function DemoShell({
       data-expand-page
       data-expand-compact={compact ? "" : undefined}
       className={cn(
-        "relative isolate flex min-w-0 flex-col overflow-x-hidden border border-border bg-surface shadow-card",
+        "expand-shell relative isolate flex min-w-0 flex-col overflow-x-hidden border border-border bg-surface shadow-card",
         compact ? "rounded-2xl" : "w-full rounded-2xl",
       )}
     >
@@ -64,14 +64,21 @@ export function DemoShell({
           {action}
         </div>
       )}
-      <div className="min-w-0">{children}</div>
+      <div className="expand-body">
+        <div className="expand-flow-rail" aria-hidden="true">
+          <span className="expand-flow-cap" />
+          <span className="expand-flow-spine" />
+          <span className="expand-flow-cap expand-flow-cap-end" />
+        </div>
+        <div className="min-w-0">{children}</div>
+      </div>
     </div>
   );
 }
 
 export function RestOfPage({ locale }: { locale: Locale }) {
   return (
-    <div className="border-t border-border bg-surface-2 px-4 py-3 sm:px-5">
+    <div className="expand-rest px-4 py-3 sm:px-5">
       <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-fg-subtle">
         {locale === "en" ? "Rest of the page" : "文档流后面"}
       </p>

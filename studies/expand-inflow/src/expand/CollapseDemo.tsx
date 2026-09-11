@@ -71,7 +71,11 @@ export function CollapseDemo({
         {BLOCKS.map((block) => {
           const on = current.has(block.id);
           return (
-            <div key={block.id} className="overflow-hidden rounded-xl border border-border bg-surface-2">
+            <div
+              key={block.id}
+              className="expand-panel overflow-hidden rounded-xl border border-border bg-surface-2"
+              data-open={on ? "" : undefined}
+            >
               <button
                 type="button"
                 aria-expanded={on}

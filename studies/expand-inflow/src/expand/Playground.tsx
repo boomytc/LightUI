@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { KINDS, type KindId } from "../lib/kinds";
+import { coversPage, exclusiveOpen } from "../lib/machines";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { AccordionDemo } from "./AccordionDemo";
@@ -10,6 +11,9 @@ import { ReadMoreDemo } from "./ReadMoreDemo";
 import { RowDemo } from "./RowDemo";
 import { TreeDemo } from "./TreeDemo";
 import "./expand.css";
+
+const EXCLUSIVE = KINDS.filter((kind) => exclusiveOpen(kind.id));
+const INDEPENDENT = KINDS.filter((kind) => !exclusiveOpen(kind.id));
 
 export function Playground() {
   const locale = useLocale();
@@ -32,37 +36,27 @@ export function Playground() {
   }, []);
 
   return (
-    <div className="min-w-0 overflow-x-hidden">
-      <nav
-        aria-label={locale === "en" ? "Expand kinds" : "展开种类"}
-        className="flex flex-wrap gap-2"
-      >
-        {KINDS.map((kind) => {
-          const on = kind.id === active;
-          return (
-            <button
-              key={kind.id}
-              type="button"
-              data-kind={kind.id}
-              onClick={() => setActive(kind.id)}
-              className={cn(
-                "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-left transition-colors",
-                on
-                  ? "border-fg bg-fg text-surface"
-                  : "border-border bg-surface text-fg-muted hover:bg-surface-2 hover:text-fg",
-              )}
-            >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-surface/70" : "text-fg-subtle")}>
-                {kind.index}
-              </span>
-              <span className="text-[13px] font-medium">{pick(kind.zh, locale)}</span>
-              <span className={cn("text-[11px]", on ? "text-surface/70" : "text-fg-subtle")}>
-                {pick(kind.chip, locale)}
-              </span>
-            </button>
-          );
-        })}
-      </nav>
+    <div data-playground="expand" className="min-w-0 overflow-x-hidden">
+      <FlowAsk locale={locale} />
+
+      <div className="mt-5 grid gap-4 lg:grid-cols-[auto_minmax(0,1fr)] lg:items-start">
+        <KindGroup
+          locale={locale}
+          label={locale === "en" ? "Exclusive" : "互斥"}
+          hint={locale === "en" ? "Open B closes A" : "开 B 必须关 A"}
+          kinds={EXCLUSIVE}
+          active={active}
+          onPick={setActive}
+        />
+        <KindGroup
+          locale={locale}
+          label={locale === "en" ? "Independent" : "独立"}
+          hint={locale === "en" ? "Several can stay open" : "几块可以同时开着"}
+          kinds={INDEPENDENT}
+          active={active}
+          onPick={setActive}
+        />
+      </div>
 
       <section className="mt-6 min-w-0">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
@@ -89,6 +83,8 @@ export function Playground() {
 
         {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
 
+        <FlowRule locale={locale} id={meta.id} />
+
         <KindDemo key={meta.id} id={meta.id} />
 
         <SpecCard text={pick(meta.spec, locale)} locale={locale} />
@@ -105,6 +101,134 @@ export function Playground() {
         </ul>
       </section>
     </div>
+  );
+}
+
+function FlowAsk({ locale }: { locale: Locale }) {
+  return (
+    <div className="grid gap-2 sm:grid-cols-2">
+      <aside className="rounded-2xl border border-border bg-surface px-3.5 py-3">
+        <p className="text-[10px] font-medium tracking-[0.12em] text-wrong uppercase">
+          {locale === "en" ? "Cover · not this study" : "盖一层 · 不做"}
+        </p>
+        <div className="expand-ask-stack mt-2.5" aria-hidden="true">
+          <span className="expand-ask-sheet is-back">
+            {locale === "en" ? "Later copy" : "后文"}
+          </span>
+          <span className="expand-ask-sheet is-overlay">
+            {locale === "en" ? "Extra block" : "多出来的块"}
+          </span>
+        </div>
+        <p className="mt-2.5 text-[12px] leading-relaxed text-fg-muted">
+          {locale === "en"
+            ? "The later block stays put and is hidden. That is a layer, not flow."
+            : "后文原地不动、被挡住。那是盖一层，不是撑开。"}
+        </p>
+      </aside>
+      <aside className="rounded-2xl border border-intent/25 bg-intent-soft/50 px-3.5 py-3">
+        <p className="text-[10px] font-medium tracking-[0.12em] text-intent uppercase">
+          {locale === "en" ? "In flow · these six" : "撑开流 · 本则六片"}
+        </p>
+        <div className="expand-ask-stack is-flow mt-2.5" aria-hidden="true">
+          <span className="expand-ask-sheet">
+            {locale === "en" ? "Extra block takes space" : "多出来的块占位子"}
+          </span>
+          <span className="expand-ask-sheet is-after">
+            {locale === "en" ? "Later copy moves down" : "后文往下让"}
+          </span>
+        </div>
+        <p className="mt-2.5 text-[12px] leading-relaxed text-fg-muted">
+          {locale === "en"
+            ? "coversPage is false. Height moves on 0fr → 1fr. No drawer."
+            : "coversPage 一律 false。高度走 0fr → 1fr。没有抽屉。"}
+        </p>
+      </aside>
+    </div>
+  );
+}
+
+function KindGroup({
+  locale,
+  label,
+  hint,
+  kinds,
+  active,
+  onPick,
+}: {
+  locale: Locale;
+  label: string;
+  hint: string;
+  kinds: typeof KINDS;
+  active: KindId;
+  onPick: (id: KindId) => void;
+}) {
+  return (
+    <div className="min-w-0">
+      <p className="text-[11px] font-medium tracking-[0.12em] text-fg-subtle uppercase">{label}</p>
+      <p className="mt-0.5 text-[11px] text-fg-muted">{hint}</p>
+      <nav
+        aria-label={label}
+        className="mt-2 flex flex-wrap gap-2"
+      >
+        {kinds.map((kind) => {
+          const on = kind.id === active;
+          return (
+            <button
+              key={kind.id}
+              type="button"
+              data-kind={kind.id}
+              aria-pressed={on}
+              onClick={() => onPick(kind.id)}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-left transition-colors",
+                on
+                  ? "border-fg bg-fg text-surface"
+                  : "border-border bg-surface text-fg-muted hover:bg-surface-2 hover:text-fg",
+              )}
+            >
+              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-surface/70" : "text-fg-subtle")}>
+                {kind.index}
+              </span>
+              <span className="text-[13px] font-medium">{pick(kind.zh, locale)}</span>
+              <span className={cn("text-[11px]", on ? "text-surface/70" : "text-fg-subtle")}>
+                {pick(kind.chip, locale)}
+              </span>
+            </button>
+          );
+        })}
+      </nav>
+    </div>
+  );
+}
+
+function FlowRule({ locale, id }: { locale: Locale; id: KindId }) {
+  const exclusive = exclusiveOpen(id);
+  return (
+    <dl className="expand-rule mb-4 grid grid-cols-3 gap-2 rounded-2xl border border-border bg-surface px-3 py-2.5 sm:px-4">
+      <div>
+        <dt className="font-mono text-[10px] tracking-wide text-fg-subtle uppercase">coversPage</dt>
+        <dd className="mt-0.5 text-[13px] font-medium text-intent">{String(coversPage(id))}</dd>
+      </div>
+      <div>
+        <dt className="font-mono text-[10px] tracking-wide text-fg-subtle uppercase">exclusive</dt>
+        <dd className={cn("mt-0.5 text-[13px] font-medium", exclusive ? "text-accent" : "text-fg")}>
+          {String(exclusive)}
+        </dd>
+      </div>
+      <div>
+        <dt className="font-mono text-[10px] tracking-wide text-fg-subtle uppercase">height</dt>
+        <dd className="mt-0.5 text-[13px] font-medium text-fg">0fr → 1fr</dd>
+      </div>
+      <p className="col-span-3 text-[11px] leading-relaxed text-fg-subtle">
+        {locale === "en"
+          ? exclusive
+            ? "Opening B must close A. Both heights move together, and the rest of the page is pushed down."
+            : "Panels do not evict each other. Extra content still sits in flow — never as a cover."
+          : exclusive
+            ? "开 B 必须关 A。两块高度一起走，后面的段被撑下去。"
+            : "开一块不必关另一块。多出来的内容仍在流里，不会盖一层。"}
+      </p>
+    </dl>
   );
 }
 
