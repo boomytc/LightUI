@@ -57,8 +57,8 @@ export function StudyView() {
         </div>
         <p className="text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Inspect the side-by-side live comparison below. Toggle scrubber, spring physics, and geometry anchors."
-            : "拖动下方时间轴对比左右两幅中间帧差异，切换弹簧物理与几何探针观察数学解算。"}
+            ? "Left keeps size and rides the arc. Right caves in along the chord. Freeze t=½ — that is the collapse peak."
+            : "左边绕弧、尺寸不掉；右边沿弦往里瘪。停在 t=½，塌陷最明显。"}
         </p>
       </section>
 

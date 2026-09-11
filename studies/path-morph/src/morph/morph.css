@@ -1,0 +1,75 @@
+.pm-stage {
+  position: relative;
+  isolation: isolate;
+}
+
+.pm-stage[data-tone="right"] {
+  background:
+    radial-gradient(ellipse 70% 70% at 50% 48%, var(--color-intent-soft), transparent 68%),
+    var(--color-surface);
+}
+
+.pm-stage[data-tone="wrong"] {
+  background:
+    radial-gradient(ellipse 70% 70% at 50% 48%, var(--color-wrong-soft), transparent 68%),
+    var(--color-surface);
+}
+
+.pm-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  flex: 1;
+  cursor: pointer;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--color-fg) 12%, transparent);
+}
+
+.pm-range:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.pm-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--color-fg);
+  box-shadow: 0 0 0 4px var(--color-surface);
+}
+
+.pm-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-fg);
+}
+
+.pm-collapse {
+  position: relative;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--color-fg) 8%, transparent);
+}
+
+.pm-collapse > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  transform-origin: left center;
+}
+
+.pm-mid-tick {
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 14px;
+  background: var(--color-fg-subtle);
+  transform: translate(-50%, -50%);
+}
