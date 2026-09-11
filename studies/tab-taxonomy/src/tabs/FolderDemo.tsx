@@ -47,10 +47,10 @@ export function FolderDemo({
                   onClick={() => setTab(item.id)}
                   style={{ zIndex: layer.z }}
                   className={cn(
-                    "tab-folder-item min-w-24 px-4 py-2 text-[13px]",
+                    "tab-folder-item min-w-24 px-4 py-2 text-[13px] transition-[transform,color,background-color] duration-300",
                     fill && "flex-1",
                     layer.raised
-                      ? "-mb-px bg-surface font-medium text-fg"
+                      ? "-mb-px bg-surface font-medium text-fg shadow-[0_-6px_16px_rgb(23_24_28/0.06)]"
                       : "translate-y-px bg-surface-2 text-fg-muted hover:text-fg",
                   )}
                 >

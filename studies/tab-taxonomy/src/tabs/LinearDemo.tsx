@@ -67,7 +67,7 @@ export function LinearDemo({
               left: box.left,
               width: box.width,
               transition,
-              transitionDuration: transition === "none" ? "0ms" : "200ms",
+              transitionDuration: transition === "none" ? "0ms" : "320ms",
               transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
             }}
           />

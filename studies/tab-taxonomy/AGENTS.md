@@ -28,7 +28,10 @@ The lab mounts `StudyView` at `/s/tab-taxonomy`.
 - `src/StageView.tsx` — one kind, one locked tab, compact stamp (no 390 wrap)
 - `src/lib/stage-query.ts` — `kind=linear|card|chevron|segmented|folder|image`, `state=<tab id>`
 
-The playground is a full-width panel in the content column: kinds as top chips, the tab model spanning the panel, the body using leftover height. Do not wrap the teaching demo in a 390 stamp.
+The playground is a full-width panel in the content column: kinds as a
+selection map (glyph tiles) plus a naive-vs-this-model strip, the tab
+model spanning the panel, the body using leftover height. Do not wrap
+the teaching demo in a 390 stamp.
 
 ## Rules
 

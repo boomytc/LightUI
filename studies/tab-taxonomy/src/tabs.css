@@ -41,3 +41,391 @@
 .tab-page-panel {
   min-width: 0;
 }
+
+.tab-kind-in {
+  animation: tab-kind-in 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes tab-kind-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.select-map {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .select-map {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .select-map {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.select-tile {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  padding: 0.65rem 0.7rem 0.7rem;
+  text-align: left;
+  transition:
+    border-color 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.select-tile:hover {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-2);
+}
+
+.select-tile.is-on {
+  border-color: var(--color-border-strong);
+  background: var(--color-play-glow);
+  box-shadow: var(--shadow-card);
+}
+
+.select-glyph {
+  position: relative;
+  display: block;
+  height: 2.75rem;
+  margin-top: 0.45rem;
+  overflow: hidden;
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--color-surface-2) 80%, var(--color-fg) 4%);
+}
+
+.select-glyph i,
+.select-glyph b,
+.select-glyph em {
+  display: block;
+  pointer-events: none;
+}
+
+.select-glyph-linear {
+  padding: 0.85rem 0.55rem 0.55rem;
+}
+
+.select-glyph-linear b {
+  position: absolute;
+  top: 0.7rem;
+  width: 16%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-fg);
+  opacity: 0.22;
+}
+
+.select-glyph-linear b:nth-child(1) {
+  left: 10%;
+}
+
+.select-glyph-linear b:nth-child(2) {
+  left: 32%;
+  opacity: 0.95;
+}
+
+.select-glyph-linear b:nth-child(3) {
+  left: 54%;
+}
+
+.select-glyph-linear b:nth-child(4) {
+  left: 76%;
+}
+
+.select-glyph-linear i {
+  position: absolute;
+  bottom: 0.55rem;
+  left: 32%;
+  width: 16%;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-accent);
+}
+
+.select-glyph-linear.is-on i {
+  animation: select-bar 1.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.select-glyph-card b {
+  position: absolute;
+  top: 0.4rem;
+  height: 0.7rem;
+  border-radius: 4px 4px 0 0;
+  background: var(--color-fg);
+  opacity: 0.18;
+}
+
+.select-glyph-card b:nth-child(1) {
+  left: 0.4rem;
+  width: 28%;
+  background: var(--color-accent);
+  opacity: 1;
+}
+
+.select-glyph-card b:nth-child(2) {
+  left: 36%;
+  width: 26%;
+}
+
+.select-glyph-card b:nth-child(3) {
+  left: 66%;
+  width: 26%;
+}
+
+.select-glyph-card em {
+  position: absolute;
+  top: 1.05rem;
+  right: 0.4rem;
+  bottom: 0.35rem;
+  left: 0.4rem;
+  border-radius: 0 5px 5px 5px;
+  background: var(--color-accent);
+  opacity: 0.85;
+}
+
+.select-glyph-card.is-on em {
+  animation: select-join 1.4s ease-in-out infinite;
+}
+
+.select-glyph-chevron {
+  display: flex;
+  align-items: stretch;
+  padding: 0.7rem 0.35rem;
+}
+
+.select-glyph-chevron i {
+  flex: 1;
+  margin-left: -6px;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%, 8px 50%);
+  background: var(--color-fg);
+  opacity: 0.18;
+}
+
+.select-glyph-chevron i:first-child {
+  margin-left: 0;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
+  opacity: 0.45;
+}
+
+.select-glyph-chevron i:nth-child(2) {
+  background: var(--color-accent);
+  opacity: 1;
+}
+
+.select-glyph-chevron.is-on i:nth-child(2) {
+  animation: select-step 1.5s ease-in-out infinite;
+}
+
+.select-glyph-segmented {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0.7rem 0.45rem;
+}
+
+.select-glyph-segmented em {
+  position: absolute;
+  top: 0.7rem;
+  bottom: 0.7rem;
+  left: 0.45rem;
+  width: calc(33.33% - 0.3rem);
+  border-radius: 999px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.select-glyph-segmented {
+  background: color-mix(in oklab, var(--color-fg) 8%, var(--color-surface-2));
+}
+
+.select-glyph-segmented b {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  height: 4px;
+  margin: 0 6px;
+  border-radius: 2px;
+  background: var(--color-fg);
+  opacity: 0.2;
+}
+
+.select-glyph-segmented.is-on em {
+  animation: select-pill 1.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.select-glyph-folder i {
+  position: absolute;
+  bottom: 0.7rem;
+  top: 0.7rem;
+  width: 28%;
+  clip-path: polygon(0 0, 78% 0, 100% 100%, 0 100%);
+  background: var(--color-fg);
+  opacity: 0.2;
+}
+
+.select-glyph-folder i:nth-child(1) {
+  left: 8%;
+}
+
+.select-glyph-folder i:nth-child(2) {
+  left: 34%;
+  background: var(--color-accent);
+  opacity: 1;
+  z-index: 2;
+}
+
+.select-glyph-folder i:nth-child(3) {
+  left: 60%;
+}
+
+.select-glyph-folder em {
+  position: absolute;
+  right: 0.4rem;
+  bottom: 0.3rem;
+  left: 0.4rem;
+  height: 0.7rem;
+  border-radius: 0 0 5px 5px;
+  background: var(--color-accent);
+  opacity: 0.85;
+}
+
+.select-glyph-folder.is-on i:nth-child(2) {
+  animation: select-raise 1.4s ease-in-out infinite;
+}
+
+.select-glyph-image em {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.35rem;
+  left: 0.35rem;
+  height: 1.15rem;
+  border-radius: 3px;
+  background: var(--color-accent);
+}
+
+.select-glyph-image i {
+  position: absolute;
+  bottom: 0.3rem;
+  width: 16%;
+  height: 0.7rem;
+  border-radius: 2px;
+  background: var(--color-fg);
+  opacity: 0.22;
+}
+
+.select-glyph-image i:nth-child(2) {
+  left: 8%;
+  background: var(--color-accent);
+  opacity: 1;
+  box-shadow: 0 0 0 1px var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.select-glyph-image i:nth-child(3) {
+  left: 30%;
+}
+
+.select-glyph-image i:nth-child(4) {
+  left: 52%;
+}
+
+.select-glyph-image i:nth-child(5) {
+  left: 74%;
+}
+
+.select-glyph-image.is-on i:nth-child(2) {
+  animation: select-thumb 1.4s ease-in-out infinite;
+}
+
+@keyframes select-bar {
+  0%,
+  100% {
+    left: 32%;
+  }
+  50% {
+    left: 54%;
+  }
+}
+
+@keyframes select-join {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes select-step {
+  0%,
+  100% {
+    filter: none;
+  }
+  50% {
+    filter: brightness(1.15);
+  }
+}
+
+@keyframes select-pill {
+  0%,
+  100% {
+    left: 0.45rem;
+  }
+  50% {
+    left: calc(33.33% + 0.15rem);
+  }
+}
+
+@keyframes select-raise {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes select-thumb {
+  0%,
+  100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-swap,
+  .tab-kind-in {
+    animation: none;
+  }
+
+  .select-glyph-linear.is-on i,
+  .select-glyph-card.is-on em,
+  .select-glyph-chevron.is-on i:nth-child(2),
+  .select-glyph-segmented.is-on em,
+  .select-glyph-folder.is-on i:nth-child(2),
+  .select-glyph-image.is-on i:nth-child(2) {
+    animation: none;
+  }
+}

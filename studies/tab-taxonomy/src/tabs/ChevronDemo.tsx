@@ -47,7 +47,7 @@ export function ChevronDemo({
                 onClick={() => setTab(item.id)}
                 style={{ zIndex: index + 1 }}
                 className={cn(
-                  "tab-chevron-item min-h-10 flex-1 px-2 text-[11px] font-medium tracking-tight whitespace-nowrap sm:px-4 sm:text-[12px]",
+                  "tab-chevron-item min-h-10 flex-1 px-2 text-[11px] font-medium tracking-tight whitespace-nowrap transition-colors duration-300 sm:px-4 sm:text-[12px]",
                   kind === "current" && "bg-fg text-surface",
                   kind === "done" && "bg-fg/70 text-surface",
                   kind === "todo" && "bg-surface-2 text-fg-muted",
@@ -58,6 +58,23 @@ export function ChevronDemo({
             );
           })}
         </div>
+
+        {fill ? (
+          <p className="mt-2 flex shrink-0 flex-wrap gap-3 px-5 text-[11px] text-fg-subtle">
+            <span>
+              <i className="mr-1.5 inline-block size-2 rounded-sm bg-fg/70 align-middle" />
+              {locale === "en" ? "Done" : "完成"}
+            </span>
+            <span>
+              <i className="mr-1.5 inline-block size-2 rounded-sm bg-fg align-middle" />
+              {locale === "en" ? "Current" : "当前"}
+            </span>
+            <span>
+              <i className="mr-1.5 inline-block size-2 rounded-sm bg-surface-2 align-middle ring-1 ring-border" />
+              {locale === "en" ? "Todo" : "未开始"}
+            </span>
+          </p>
+        ) : null}
 
         <div
           className={cn(

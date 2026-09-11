@@ -15,13 +15,13 @@ export function StudyView() {
           <p className="mt-3 max-w-xl text-[14px] leading-relaxed text-fg-muted">
             {locale === "en"
               ? "A tab row lives on a panel, not in a phone stamp. Name the selection model — bar, joined card, three-state steps, pill, stacked paper, or the thumbnail — then let the body take the leftover height."
-              : "页签长在一块面板上，不是 390 的图章。先定选中态：短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。面板身子吃掉剩下的高度。"}
+              : "页签长在一块面板上，不是 390 的图章。上面六格是选中态对照：短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。面板身子吃掉剩下的高度。"}
           </p>
         </div>
         <p className="max-w-xs text-[13px] leading-relaxed text-fg-subtle">
           {locale === "en"
-            ? "Kinds as chips. The model spans the panel. Six contrasts below are live."
-            : "种类是顶上的芯片。模型横跨整块面板。下面六个对照可以点。"}
+            ? "Kinds as a selection map. The model spans the panel. Six contrasts below are live."
+            : "种类是上面的选中态地图。模型横跨整块面板。六个对照可以点。"}
         </p>
       </section>
 

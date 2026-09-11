@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { KINDS, type KindId } from "../lib/kinds";
 import { pick, useLocale, type Locale } from "../lib/site-locale";
-import { cn } from "../lib/utils";
 import { CardDemo } from "./CardDemo";
 import { ChevronDemo } from "./ChevronDemo";
 import { FolderDemo } from "./FolderDemo";
 import { ImageDemo } from "./ImageDemo";
 import { LinearDemo } from "./LinearDemo";
+import { Contrast, SelectMap } from "./SelectMap";
 import { SegmentedDemo } from "./SegmentedDemo";
 
 export function Playground() {
@@ -19,7 +19,7 @@ export function Playground() {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const target = e.target as HTMLElement | null;
-      if (target && ["INPUT", "TEXTAREA"].includes(target.tagName)) return;
+      if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
       const n = Number(e.key);
       if (n >= 1 && n <= KINDS.length) {
         e.preventDefault();
@@ -31,34 +31,8 @@ export function Playground() {
   }, []);
 
   return (
-    <div className="min-w-0">
-      <nav
-        aria-label={locale === "en" ? "Tab kinds" : "页签种类"}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1"
-      >
-        {KINDS.map((kind) => {
-          const on = kind.id === active;
-          return (
-            <button
-              key={kind.id}
-              type="button"
-              data-kind={kind.id}
-              onClick={() => setActive(kind.id)}
-              className={cn(
-                "inline-flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-left transition-colors",
-                on
-                  ? "border-fg bg-fg text-surface shadow-card"
-                  : "border-border bg-surface text-fg-muted hover:border-border-strong hover:text-fg",
-              )}
-            >
-              <span className={cn("font-mono text-[11px] tabular-nums", on ? "text-surface/55" : "text-fg-subtle")}>
-                {kind.index}
-              </span>
-              <span className="text-[13px] font-medium whitespace-nowrap">{pick(kind.zh, locale)}</span>
-            </button>
-          );
-        })}
-      </nav>
+    <div data-playground="tab" data-kind={active} className="min-w-0">
+      <SelectMap active={active} locale={locale} onPick={setActive} />
 
       <div className="mt-5 mb-3 flex flex-wrap items-end justify-between gap-3">
         <div className="min-w-0">
@@ -71,14 +45,23 @@ export function Playground() {
         </p>
       </div>
 
-      {meta.note ? <p className="mb-3 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
+      <Contrast
+        locale={locale}
+        naive={pick(meta.naive, locale)}
+        matched={pick(meta.matched, locale)}
+        model={pick(meta.model, locale)}
+      />
+
+      {meta.note ? <p className="mt-3 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
 
       <div
         data-tab-panel=""
         data-tab-model={meta.id}
-        className="tab-page-panel flex min-h-[28rem] w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-card lg:h-[min(40rem,calc(100dvh-12rem))] lg:min-h-[32rem]"
+        className="tab-page-panel mt-4 flex min-h-[28rem] w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-card lg:h-[min(40rem,calc(100dvh-12rem))] lg:min-h-[32rem]"
       >
-        <KindDemo key={meta.id} id={meta.id} fill />
+        <div key={meta.id} className="tab-kind-in flex min-h-0 flex-1 flex-col">
+          <KindDemo id={meta.id} fill />
+        </div>
       </div>
 
       <div className="mt-4 flex flex-wrap gap-1.5">

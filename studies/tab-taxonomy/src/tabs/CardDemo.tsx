@@ -40,7 +40,7 @@ export function CardDemo({
                 aria-selected={on}
                 onClick={() => setTab(item.id)}
                 className={cn(
-                  "relative z-[1] px-3.5 py-2 text-[13px] transition-colors",
+                  "relative z-[1] px-3.5 py-2 text-[13px] transition-[color,background-color,border-radius,margin] duration-300",
                   on ? "-mb-px rounded-t-xl" : "rounded-xl",
                   on
                     ? "border border-b-transparent border-border bg-surface font-medium text-fg"
@@ -54,7 +54,7 @@ export function CardDemo({
         </div>
 
         <div
-          className={cn("relative border border-border bg-surface px-4 py-4", fill && "min-h-0 flex-1 overflow-auto")}
+          className={cn("relative border border-border bg-surface px-4 py-4 transition-[border-radius] duration-300", fill && "min-h-0 flex-1 overflow-auto")}
           style={{
             borderTopLeftRadius: radius.topLeft,
             borderTopRightRadius: radius.topRight,

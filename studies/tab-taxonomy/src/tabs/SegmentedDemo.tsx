@@ -54,7 +54,7 @@ export function SegmentedDemo({
           left: box.left,
           width: box.width,
           transition,
-          transitionDuration: transition === "none" ? "0ms" : "200ms",
+          transitionDuration: transition === "none" ? "0ms" : "320ms",
           transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
         }}
       />
@@ -108,12 +108,14 @@ export function SegmentedDemo({
           </div>
         )}
 
-        <div className={cn("tab-swap", fill ? "min-h-0 flex-1 overflow-auto px-5 py-4" : "mt-4")} key={tab}>
+        <div className={cn(fill ? "min-h-0 flex-1 overflow-auto px-5 py-4" : "mt-4")}>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {stats.map((s) => (
               <div key={s.l} className="rounded-xl border border-border bg-surface-2 px-3 py-3">
                 <p className="text-[11px] text-fg-subtle">{s.l}</p>
-                <p className="mt-1 text-[1.2rem] font-semibold tabular-nums">{s.n}</p>
+                <p className="tab-swap mt-1 text-[1.2rem] font-semibold tabular-nums" key={`${tab}-${s.n}`}>
+                  {s.n}
+                </p>
                 <p className="text-[11px] text-fg-muted">
                   {s.d} {locale === "en" ? "vs last" : "较上期"}
                 </p>
@@ -130,7 +132,10 @@ export function SegmentedDemo({
                   <span
                     key={i}
                     className={cn("flex-1 rounded-sm", i === 6 ? "bg-fg" : "bg-border-strong")}
-                    style={{ height: `${h}%` }}
+                    style={{
+                      height: `${h}%`,
+                      transition: "height 400ms cubic-bezier(0.22, 1, 0.36, 1)",
+                    }}
                   />
                 ))}
               </div>

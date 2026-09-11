@@ -21,7 +21,7 @@ export function ImageDemo({
           return (
             <div
               key={item.id}
-              className="absolute inset-0 transition-opacity duration-300"
+              className="absolute inset-0 transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
               style={{ opacity: on ? 1 : 0, pointerEvents: on ? "auto" : "none" }}
               aria-hidden={!on}
             >
@@ -61,7 +61,7 @@ export function ImageDemo({
                 aria-selected={on}
                 onClick={() => setTab(item.id)}
                 className={cn(
-                  "relative overflow-hidden rounded-lg text-left transition-transform duration-200",
+                  "relative overflow-hidden rounded-lg text-left transition-[transform,opacity,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
                   on ? "-translate-y-1 ring-2 ring-white" : "opacity-80 hover:opacity-100",
                 )}
               >

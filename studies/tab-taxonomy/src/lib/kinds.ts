@@ -13,6 +13,9 @@ export type KindMeta = {
   spec: Localized;
   note?: Localized;
   tells: Localized;
+  model: Localized;
+  naive: Localized;
+  matched: Localized;
   defaultTab: string;
 };
 
@@ -38,6 +41,9 @@ export const KINDS: KindMeta[] = [
       "Linear slider tabs: equal-width labels, current text darker. A short bar stays centered on the words and slides to the next label; the panel fades with it.",
     ),
     tells: loc("短线跟着文字，不是整格按钮", "The bar follows the words, not the cell"),
+    model: loc("短线", "Short bar"),
+    naive: loc("短线拉满整格，手感在扫按钮", "The bar fills the cell; it feels like sweeping buttons"),
+    matched: loc("短线对着文字滑过去", "The bar slides under the words"),
     defaultTab: "overview",
   },
   {
@@ -62,6 +68,9 @@ export const KINDS: KindMeta[] = [
     ),
     note: loc("卡片去底边连面板。文件夹才是斜切叠纸。", "Card joins the panel. Folder is stacked, beveled paper."),
     tells: loc("选中项和面板同一块底，未选中仍是独立卡片", "Current tab shares the panel fill; idle tabs stay independent cards"),
+    model: loc("连上面板", "Joined panel"),
+    naive: loc("页签浮在面板上，中间一条缝", "Tabs float above the panel with a seam"),
+    matched: loc("选中项与面板同色、去底边，连成一块", "Current tab matches the panel, drops its edge, and joins it"),
     defaultTab: "members",
   },
   {
@@ -86,6 +95,9 @@ export const KINDS: KindMeta[] = [
     ),
     note: loc("鱼骨的完成态是「在当前之前」，不是四个互斥视图。", "Done means before the current step, not four exclusive views."),
     tells: loc("看得见做完了哪一步", "You can see which step is done"),
+    model: loc("步骤三态", "Three-state"),
+    naive: loc("有先后的流程被做成互斥平级页签", "A sequence is treated as exclusive sibling views"),
+    matched: loc("箭头咬合，完成 / 当前 / 未开始", "Arrows bite; done / current / todo"),
     defaultTab: "cart",
   },
   {
@@ -110,6 +122,9 @@ export const KINDS: KindMeta[] = [
     ),
     note: loc("分段是同一份数据的切片。线性才是同级栏目。", "Segmented slices one dataset. Linear is sibling sections."),
     tells: loc("滑块量的是整项，布局不跟着跳", "The pill measures the item; the layout stays put"),
+    model: loc("轨道滑块", "Track pill"),
+    naive: loc("同一份数据的切片被做成整页切换", "A slice of one dataset swaps the whole page"),
+    matched: loc("同一轨道里滑块，数字切片更新", "A pill slides in one track; the numbers update in place"),
     defaultTab: "today",
   },
   {
@@ -134,6 +149,9 @@ export const KINDS: KindMeta[] = [
     ),
     note: loc("文件夹是叠纸。卡片才是去底边连面板。", "Folder is stacked paper. Card is the one that drops a bottom edge."),
     tells: loc("选中页签压住下层的纸", "The current tab covers the paper below"),
+    model: loc("叠纸", "Stacked paper"),
+    naive: loc("斜切只是 CSS 装饰，压不住下层", "The bevel is decoration; it does not cover the paper below"),
+    matched: loc("选中页签压住下层，和列表同一块底", "The current tab sits on top and shares the list fill"),
     defaultTab: "req",
   },
   {
@@ -157,6 +175,9 @@ export const KINDS: KindMeta[] = [
       "Image preview tabs: each thumb is the picture plus a caption. A click lifts that thumb and the banner becomes the same image.",
     ),
     tells: loc("缩略图就是标签，不是另一套图", "The thumbnail is the tab, not a second set of pictures"),
+    model: loc("缩略图本身", "The thumb"),
+    naive: loc("预览缩略图和高清主图不是同一张", "The thumb and the hero are different pictures"),
+    matched: loc("点哪张，Banner 就是哪张", "The banner is the thumb you clicked"),
     defaultTab: "living",
   },
 ];
