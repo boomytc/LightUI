@@ -10,18 +10,16 @@ export function App() {
   }
 
   return (
-    <main className="min-h-screen bg-bg text-fg">
-      <header className="border-b border-border bg-surface px-6 py-4">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <a href="/" className="text-sm font-semibold tracking-tight text-fg">
-            LightUI · Study
+    <main className="min-h-dvh bg-bg text-fg">
+      <header className="border-b border-border/80 bg-bg/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+          <a href="/" className="text-[13px] font-semibold tracking-tight text-fg">
+            LightUI
           </a>
-          <span className="rounded-full bg-surface-2 px-2.5 py-0.5 text-xs text-fg-muted font-mono">
-            /s/wheel-picker
-          </span>
+          <span className="font-mono text-[11px] text-fg-subtle">/s/wheel-picker</span>
         </div>
       </header>
-      <div className="mx-auto max-w-5xl px-6 py-8">
+      <div className="mx-auto max-w-6xl px-6 py-10">
         <StudyView />
       </div>
     </main>

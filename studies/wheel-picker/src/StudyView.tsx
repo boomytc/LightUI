@@ -1,61 +1,83 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  Bell,
-  Check,
-  Copy,
-  Layers,
-  Repeat,
-  RotateCcw,
-  Sparkles,
-} from "lucide-react";
+import { useRef, useState } from "react";
+import { Check, Copy, RotateCcw } from "lucide-react";
 import { useLocale } from "./lib/site-locale";
 import {
   calcCylinderVisual,
-  calcItemOffset,
   DEFAULT_ITEM_HEIGHT,
   formatTimeString,
   pad2,
-  resolveScrollIndex,
   WHEEL_COMPARISONS,
 } from "./lib/machines";
 import { FORMULA } from "./lib/kinds";
 import { cn } from "./lib/utils";
+import { type WheelVisualFrame } from "./wheel/appearance";
+import { WheelColumn } from "./wheel/WheelColumn";
+import { WheelDrum } from "./wheel/WheelDrum";
+import "./wheel/wheel.css";
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 const MINUTES = Array.from({ length: 60 }, (_, i) => i);
+const PRESETS = [
+  { h: 7, m: 0, zh: "07:00 晨间", en: "07:00 morning" },
+  { h: 8, m: 30, zh: "08:30 晨会", en: "08:30 standup" },
+  { h: 12, m: 45, zh: "12:45 午休", en: "12:45 lunch" },
+  { h: 18, m: 30, zh: "18:30 下班", en: "18:30 wrap" },
+  { h: 23, m: 15, zh: "23:15 阅读", en: "23:15 reading" },
+] as const;
 
 export function StudyView() {
   const locale = useLocale();
+  const zh = locale !== "en";
   const [hour, setHour] = useState(8);
   const [minute, setMinute] = useState(30);
   const [enableCylinderDepth, setEnableCylinderDepth] = useState(true);
   const [comparisonMode, setComparisonMode] = useState<"wheel" | "input" | "dropdown">("wheel");
   const [copied, setCopied] = useState(false);
-
-  // Manual input state for naive comparison
   const [inputText, setInputText] = useState("08:30");
   const [inputError, setInputError] = useState<string | null>(null);
+  const [hourFrame, setHourFrame] = useState<WheelVisualFrame>({
+    fraction: 8,
+    index: 8,
+    scrollTop: 8 * DEFAULT_ITEM_HEIGHT,
+  });
+  const [minuteFrame, setMinuteFrame] = useState<WheelVisualFrame>({
+    fraction: 30,
+    index: 30,
+    scrollTop: 30 * DEFAULT_ITEM_HEIGHT,
+  });
+  const [tracking, setTracking] = useState(false);
+  const trackingTimer = useRef<ReturnType<typeof setTimeout> | 0>(0);
+
+  function markTracking() {
+    setTracking(true);
+    if (trackingTimer.current) clearTimeout(trackingTimer.current);
+    trackingTimer.current = setTimeout(() => setTracking(false), 140);
+  }
 
   function copyPrompt() {
-    const text = locale === "en" ? FORMULA.prompt.en : FORMULA.prompt.zh;
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(zh ? FORMULA.prompt.zh : FORMULA.prompt.en);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  }
+
+  function applyTime(h: number, m: number) {
+    setHour(h);
+    setMinute(m);
+    setInputText(formatTimeString(h, m));
+    setInputError(null);
   }
 
   function handleInputChange(val: string) {
     setInputText(val);
     const parts = val.split(":");
     if (parts.length !== 2) {
-      setInputError(locale === "en" ? "Format error: use HH:MM" : "格式错误：请使用 HH:MM");
+      setInputError(zh ? "格式错误：请使用 HH:MM" : "Format error: use HH:MM");
       return;
     }
     const h = Number(parts[0]);
     const m = Number(parts[1]);
     if (Number.isNaN(h) || h < 0 || h > 23 || Number.isNaN(m) || m < 0 || m > 59) {
-      setInputError(
-        locale === "en" ? "Value out of range (00-23 : 00-59)" : "数值超限（小时00-23，分钟00-59）",
-      );
+      setInputError(zh ? "数值超限（小时 00–23，分钟 00–59）" : "Out of range (00–23 : 00–59)");
       return;
     }
     setInputError(null);
@@ -63,188 +85,174 @@ export function StudyView() {
     setMinute(m);
   }
 
-  return (
-    <div className="space-y-12">
-      {/* Educational Header Banner */}
-      <section className="rounded-3xl border border-border bg-surface p-6 sm:p-8 shadow-xs">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-semibold text-accent">
-                Study 5217
-              </span>
-              <span className="text-xs font-mono text-fg-subtle">Continuous · Discrete</span>
-            </div>
-            <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-fg">
-              {locale === "en" ? "Wheel Picker · Baseline Snap & Depth" : "滚轮选择器 · 基准吸附与圆柱景深"}
-            </h1>
-            <p className="mt-1 text-sm text-fg-muted max-w-2xl leading-relaxed">
-              {locale === "en"
-                ? "Selecting ordered discrete values or time steps should never pop an obstructive soft keyboard or span an unscrollable 60-row flat list. A wheel picker binds continuous flick gestures to a central baseline snap track while optical cylinder transforms establish hierarchy."
-                : "有序离散数据或时间刻度，不要弹虚拟键盘也不要展开60项长列表。上下拨动连续滑动，松手依据滚动吸附中央基准线，离基准线越远透明度与尺寸沿圆柱面几何递减。"}
-            </p>
-          </div>
+  const hourOffset = hourFrame.fraction - hourFrame.index;
+  const neighbor = calcCylinderVisual(1);
 
+  return (
+    <div className="space-y-14">
+      <section className="grid min-w-0 gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-14">
+        <div className="min-w-0">
+          <p className="text-[12px] font-medium uppercase tracking-[0.16em] text-fg-subtle">
+            {zh ? "连续拨动 · 离散吸附" : "Continuous flick · Discrete snap"}
+          </p>
+          <h1 className="mt-3 text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.45rem]">
+            {zh
+              ? "有序刻度，这一格是敲键盘、铺长列表，还是滚轮对齐基准线？"
+              : "For ordered scales, type, flatten a list, or snap a wheel to a baseline?"}
+          </h1>
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-fg-muted">
+            {zh
+              ? "上下拨动是连续的；松手按 40px 一格取整，停在中央基准线。离线越远，透明度、倾角与尺寸沿圆柱面递减——中央实，边缘虚。"
+              : "The flick is continuous; release rounds to a 40px row on the center baseline. Farther from that line, opacity, tilt and scale fall off along the cylinder."}
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-surface p-4 shadow-card">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+            {zh ? "交互公式" : "Formula"}
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px] font-semibold">
+            <span className="rounded-lg border border-border bg-accent-soft px-2.5 py-1 text-accent">
+              {zh ? "滚轮选择器" : "Wheel picker"}
+            </span>
+            <span className="text-fg-subtle">+</span>
+            <span className="rounded-lg border border-border bg-surface-2 px-2.5 py-1">
+              {zh ? "上下拨动" : "Vertical flick"}
+            </span>
+            <span className="text-fg-subtle">+</span>
+            <span className="rounded-lg border border-border bg-surface-2 px-2.5 py-1">
+              {zh ? "基准线对齐" : "Baseline snap"}
+            </span>
+          </div>
           <button
             type="button"
             onClick={copyPrompt}
-            className="inline-flex items-center gap-2 self-start rounded-xl border border-border bg-surface-2 px-4 py-2.5 text-xs font-medium text-fg shadow-xs hover:bg-surface active:scale-95 transition-all"
+            className="mt-3 inline-flex items-center gap-1.5 text-[12px] text-fg-muted hover:text-fg"
           >
             {copied ? <Check className="size-3.5 text-accent" /> : <Copy className="size-3.5" />}
-            <span>{copied ? (locale === "en" ? "Copied Prompt" : "已复制提示词") : (locale === "en" ? "Copy AI Prompt" : "复制 AI 提示词")}</span>
+            {copied ? (zh ? "已复制" : "Copied") : zh ? "复制提示词" : "Copy prompt"}
           </button>
-        </div>
-
-        {/* The Core Formula Bar */}
-        <div className="mt-6 rounded-2xl border border-border/80 bg-surface-2/60 p-4">
-          <p className="text-[11px] font-semibold text-fg-subtle uppercase tracking-wider">
-            {locale === "en" ? "Interaction Formula: Name + Gesture + Result" : "交互公式：控件名称 + 触发手势 + 展开结果"}
-          </p>
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-semibold text-fg">
-            <span className="rounded-lg bg-surface px-2.5 py-1 border border-border shadow-xs text-accent">
-              {locale === "en" ? FORMULA.name.en : FORMULA.name.zh}
-            </span>
-            <span className="text-fg-subtle">+</span>
-            <span className="rounded-lg bg-surface px-2.5 py-1 border border-border shadow-xs">
-              {locale === "en" ? FORMULA.gesture.en : FORMULA.gesture.zh}
-            </span>
-            <span className="text-fg-subtle">+</span>
-            <span className="rounded-lg bg-surface px-2.5 py-1 border border-border shadow-xs">
-              {locale === "en" ? FORMULA.result.en : FORMULA.result.zh}
-            </span>
-          </div>
         </div>
       </section>
 
-      {/* Main Interactive Playground */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left / Phone Stage Area */}
-        <div className="lg:col-span-5 flex flex-col items-center">
-          <div className="w-full max-w-[340px] rounded-[38px] border border-border bg-surface p-4 shadow-2xl relative">
-            {/* Phone Speaker Notch */}
-            <div className="absolute top-2 left-1/2 z-30 h-4 w-28 -translate-x-1/2 rounded-full bg-border/40" />
-
-            <div className="relative rounded-[28px] bg-surface-2 border border-border/50 overflow-hidden flex flex-col h-[520px]">
-              {/* Phone Status bar */}
-              <div className="flex items-center justify-between px-6 pt-3 pb-1 text-xs font-medium text-fg-muted">
+      <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12">
+        <div className="flex flex-col items-center lg:col-span-5">
+          <div className="wheel-phone">
+            <div className="wheel-phone-notch" />
+            <div className="wheel-phone-screen">
+              <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[11px] font-medium text-fg-muted">
                 <span className="tabular-nums">9:41</span>
-                <div className="flex items-center gap-1.5 text-[10px]">
-                  <span>5G</span>
-                  <span>100%</span>
-                </div>
+                <span>5G · 100%</span>
               </div>
 
-              {/* Title / Action bar */}
-              <div className="px-5 pt-3 pb-2 flex items-center justify-between border-b border-border/40">
-                <span className="text-xs text-fg-muted">取消</span>
-                <h3 className="text-sm font-semibold text-fg">编辑闹钟</h3>
-                <span className="text-xs text-accent font-semibold">保存</span>
+              <div className="flex items-center justify-between px-5 pt-3 pb-2">
+                <span className="text-xs text-fg-muted">{zh ? "取消" : "Cancel"}</span>
+                <h2 className="text-sm font-semibold">{zh ? "编辑闹钟" : "Edit alarm"}</h2>
+                <span className="text-xs font-semibold text-accent">{zh ? "保存" : "Save"}</span>
               </div>
 
-              {/* Time display */}
-              <div className="py-4 text-center">
-                <p className="font-mono text-4xl font-extrabold tracking-tight text-fg tabular-nums">
+              <div className="px-5 pb-3 pt-1 text-center">
+                <p className="font-mono text-[2.75rem] font-semibold leading-none tracking-tight tabular-nums text-fg">
                   {formatTimeString(hour, minute)}
                 </p>
-                <p className="mt-0.5 text-xs text-fg-muted">
-                  {hour < 12 ? (locale === "en" ? "Morning Alarm" : "上午响铃") : (locale === "en" ? "Afternoon / Evening Alarm" : "下午/晚间响铃")}
+                <p className="mt-1.5 text-[11px] text-fg-muted">
+                  {hour < 12
+                    ? zh
+                      ? "上午响铃 · 一次"
+                      : "Morning · once"
+                    : zh
+                      ? "下午 / 晚间响铃 · 一次"
+                      : "Afternoon · once"}
                 </p>
               </div>
 
-              {/* Playground Switcher: Wheel vs Naive Input vs Naive Flat Dropdown */}
               {comparisonMode === "wheel" && (
-                <div className="mx-4 mb-2 rounded-2xl border border-border/80 bg-surface p-2 shadow-xs">
-                  <div className="mb-1 flex px-3 text-center text-[10px] font-semibold text-fg-subtle uppercase tracking-wider">
-                    <span className="flex-1">小时</span>
-                    <span className="flex-1">分钟</span>
-                  </div>
-
-                  <div className="relative h-[200px] overflow-hidden rounded-xl bg-surface-2/70">
-                    {/* Baseline Highlight Line */}
-                    <div
-                      className="pointer-events-none absolute inset-x-2 z-20 rounded-lg border-y border-accent/50 bg-accent-soft/40 shadow-xs"
-                      style={{
-                        top: `calc(50% - ${DEFAULT_ITEM_HEIGHT / 2}px)`,
-                        height: DEFAULT_ITEM_HEIGHT,
+                <div className="mx-3 rounded-2xl border border-border/80 bg-surface p-3 shadow-card">
+                  <WheelDrum
+                    hourLabel={zh ? "小时" : "Hour"}
+                    minuteLabel={zh ? "分钟" : "Minute"}
+                    tracking={tracking}
+                  >
+                    <WheelColumn
+                      items={HOURS}
+                      value={hour}
+                      onChange={(next) => {
+                        setHour(next);
+                        markTracking();
+                      }}
+                      itemHeight={DEFAULT_ITEM_HEIGHT}
+                      enableDepth={enableCylinderDepth}
+                      label={zh ? "小时选择" : "Hour"}
+                      onVisualFrame={(frame) => {
+                        setHourFrame(frame);
+                        if (Math.abs(frame.fraction - frame.index) > 0.05) markTracking();
                       }}
                     />
-
-                    {/* Gradient Shadows */}
-                    <div className="pointer-events-none absolute inset-x-0 top-0 z-20 h-14 bg-linear-to-b from-surface-2 to-transparent" />
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-14 bg-linear-to-t from-surface-2 to-transparent" />
-
-                    <div className="flex h-full">
-                      {/* Hour Wheel Column */}
-                      <WheelColumn
-                        items={HOURS}
-                        value={hour}
-                        onChange={setHour}
-                        itemHeight={DEFAULT_ITEM_HEIGHT}
-                        enableDepth={enableCylinderDepth}
-                        label="小时选择"
-                      />
-
-                      {/* Minute Wheel Column */}
-                      <WheelColumn
-                        items={MINUTES}
-                        value={minute}
-                        onChange={setMinute}
-                        itemHeight={DEFAULT_ITEM_HEIGHT}
-                        enableDepth={enableCylinderDepth}
-                        label="分钟选择"
-                      />
-                    </div>
-                  </div>
+                    <WheelColumn
+                      items={MINUTES}
+                      value={minute}
+                      onChange={(next) => {
+                        setMinute(next);
+                        markTracking();
+                      }}
+                      itemHeight={DEFAULT_ITEM_HEIGHT}
+                      enableDepth={enableCylinderDepth}
+                      label={zh ? "分钟选择" : "Minute"}
+                      onVisualFrame={(frame) => {
+                        setMinuteFrame(frame);
+                        if (Math.abs(frame.fraction - frame.index) > 0.05) markTracking();
+                      }}
+                    />
+                  </WheelDrum>
                 </div>
               )}
 
               {comparisonMode === "input" && (
-                <div className="mx-4 mb-2 rounded-2xl border border-wrong/40 bg-surface p-4 shadow-xs flex flex-col justify-center flex-1">
-                  <span className="text-xs font-semibold text-wrong flex items-center gap-1.5">
-                    ⚠️ 错误替代：全屏软键盘敲入
-                  </span>
-                  <p className="mt-1 text-xs text-fg-muted">
-                    弹起键盘后会遮挡页面下半部，且用户可能输入任意非法时间字符。
+                <div className="mx-3 flex flex-1 flex-col rounded-2xl border border-wrong/35 bg-surface p-4">
+                  <p className="text-xs font-semibold text-wrong">
+                    {zh ? "代偿：弹出软键盘" : "Compromise: soft keyboard"}
                   </p>
-                  <div className="mt-4">
-                    <label className="block text-[11px] font-medium text-fg-subtle">输入时间 (HH:MM)</label>
-                    <input
-                      type="text"
-                      value={inputText}
-                      onChange={(e) => handleInputChange(e.target.value)}
-                      placeholder="08:30"
-                      className="mt-1 w-full rounded-xl border border-border bg-surface-2 px-3 py-2 font-mono text-lg font-bold text-fg focus:outline-none focus:ring-2 focus:ring-accent"
-                    />
-                    {inputError && (
-                      <p className="mt-1 text-xs text-wrong font-medium">{inputError}</p>
-                    )}
-                  </div>
-                  <div className="mt-4 rounded-xl bg-wrong/10 p-2.5 text-[11px] text-wrong">
-                    需要正则拦截、键盘弹出布局重排、格式校验与失焦提示，认知摩擦倍增。
-                  </div>
+                  <p className="mt-1 text-[11px] leading-relaxed text-fg-muted">
+                    {zh
+                      ? "下半屏被挡住，还可能敲出 25:80。非法值要靠校验兜底。"
+                      : "The keyboard covers the sheet and invites 25:80. Validity becomes a cleanup job."}
+                  </p>
+                  <label className="mt-4 block text-[11px] text-fg-subtle">HH:MM</label>
+                  <input
+                    type="text"
+                    value={inputText}
+                    onChange={(e) => handleInputChange(e.target.value)}
+                    placeholder="08:30"
+                    className="mt-1 w-full rounded-xl border border-border bg-surface-2 px-3 py-2 font-mono text-lg font-bold tabular-nums focus:outline-none focus:ring-2 focus:ring-accent"
+                  />
+                  {inputError && <p className="mt-1 text-xs font-medium text-wrong">{inputError}</p>}
                 </div>
               )}
 
               {comparisonMode === "dropdown" && (
-                <div className="mx-4 mb-2 rounded-2xl border border-amber-500/40 bg-surface p-4 shadow-xs flex flex-col flex-1 overflow-hidden">
-                  <span className="text-xs font-semibold text-amber-600 flex items-center gap-1.5">
-                    ⚠️ 笨拙替代：60 项平铺长列表
-                  </span>
-                  <p className="mt-1 text-xs text-fg-muted">
-                    平铺展开 60 个数字塞满视口，没有曲面景深提示，手指需反复快速滑拉。
+                <div className="mx-3 flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border bg-surface p-4">
+                  <p className="text-xs font-semibold text-fg">
+                    {zh ? "代偿：60 项平铺" : "Compromise: 60-row list"}
                   </p>
-                  <div className="mt-3 flex-1 overflow-y-auto rounded-xl border border-border bg-surface-2 divide-y divide-border/60">
+                  <p className="mt-1 text-[11px] leading-relaxed text-fg-muted">
+                    {zh
+                      ? "没有基准线，也没有圆柱衰减。快滑极易越过目标。"
+                      : "No baseline, no cylindrical falloff. Fast flicks overshoot."}
+                  </p>
+                  <div className="mt-3 flex-1 overflow-y-auto rounded-xl border border-border bg-surface-2">
                     {MINUTES.map((m) => (
                       <button
                         key={m}
                         type="button"
                         onClick={() => setMinute(m)}
                         className={cn(
-                          "flex w-full items-center justify-between px-3 py-2 text-xs font-mono",
-                          minute === m ? "bg-accent-soft text-accent font-bold" : "text-fg hover:bg-surface",
+                          "flex w-full items-center justify-between border-b border-border/50 px-3 py-2 font-mono text-xs",
+                          minute === m ? "bg-accent-soft font-bold text-accent" : "text-fg",
                         )}
                       >
-                        <span>{pad2(hour)}:{pad2(m)}</span>
+                        <span>
+                          {pad2(hour)}:{pad2(m)}
+                        </span>
                         {minute === m && <Check className="size-3.5" />}
                       </button>
                     ))}
@@ -252,220 +260,228 @@ export function StudyView() {
                 </div>
               )}
 
-              {/* Bottom Settings List */}
-              <div className="mt-auto border-t border-border bg-surface px-5 py-2.5 text-xs text-fg divide-y divide-border/60">
+              <div className="mt-auto divide-y divide-border/70 border-t border-border bg-surface px-5 py-2 text-xs">
                 <div className="flex items-center justify-between py-2">
-                  <span className="text-fg-muted flex items-center gap-1.5">
-                    <Repeat className="size-3.5" /> 重复
-                  </span>
-                  <span className="text-fg font-medium">工作日</span>
+                  <span className="text-fg-muted">{zh ? "重复" : "Repeat"}</span>
+                  <span className="font-medium">{zh ? "工作日" : "Weekdays"}</span>
                 </div>
                 <div className="flex items-center justify-between py-2">
-                  <span className="text-fg-muted flex items-center gap-1.5">
-                    <Bell className="size-3.5" /> 标签
-                  </span>
-                  <span className="text-fg font-medium">早晨例会</span>
+                  <span className="text-fg-muted">{zh ? "标签" : "Label"}</span>
+                  <span className="font-medium">{zh ? "早晨例会" : "Standup"}</span>
                 </div>
               </div>
             </div>
           </div>
-          <p className="mt-3 text-xs text-fg-subtle text-center max-w-xs">
-            {locale === "en"
-              ? "Drag or scroll each column. On release, inertia and snap resolve to the nearest discrete baseline line."
-              : "上下拖动或滚动小时/分钟列。松手后惯性与 scroll-snap 自动吸附至中央基准线。"}
+          <p className="mt-3 max-w-xs text-center text-[12px] leading-relaxed text-fg-subtle">
+            {zh
+              ? "拨动或点选一列。松手后仍按原来的 round(scrollTop / 40) 吸附，基准线会在跟手时略微变淡。"
+              : "Flick or tap a column. Release still snaps with round(scrollTop / 40); the reticle eases while tracking."}
           </p>
         </div>
 
-        {/* Right / Controls & Deep Explanation */}
-        <div className="lg:col-span-7 space-y-6">
-          {/* Preset Chips */}
-          <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
-            <h3 className="text-xs font-semibold text-fg-subtle uppercase tracking-wider">
-              {locale === "en" ? "Time Presets & Fast Jumps" : "快速预设与时间跳转"}
-            </h3>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {[
-                { h: 7, m: 0, label: "07:00 晨间闹钟" },
-                { h: 8, m: 30, label: "08:30 晨会" },
-                { h: 12, m: 45, label: "12:45 午餐休息" },
-                { h: 18, m: 30, label: "18:30 下班同步" },
-                { h: 23, m: 15, label: "23:15 睡前阅读" },
-              ].map((preset) => (
-                <button
-                  key={preset.label}
-                  type="button"
-                  onClick={() => {
-                    setHour(preset.h);
-                    setMinute(preset.m);
-                    setInputText(formatTimeString(preset.h, preset.m));
-                  }}
-                  className={cn(
-                    "rounded-xl border px-3 py-1.5 text-xs font-medium transition-all active:scale-95",
-                    hour === preset.h && minute === preset.m
-                      ? "border-accent bg-accent-soft text-accent"
-                      : "border-border bg-surface-2 text-fg hover:bg-surface",
-                  )}
-                >
-                  {preset.label}
-                </button>
-              ))}
+        <div className="space-y-5 lg:col-span-7">
+          <div className="wheel-readout">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+                  {zh ? "中央基准 · 此刻" : "Baseline now"}
+                </p>
+                <p className="mt-1 font-mono text-3xl font-semibold tabular-nums tracking-tight">
+                  {formatTimeString(hour, minute)}
+                </p>
+              </div>
+              <p className="text-right text-[11px] leading-relaxed text-fg-muted">
+                {tracking ? (zh ? "跟手中" : "Tracking") : zh ? "已对齐" : "Settled"}
+              </p>
             </div>
-
-            {/* Quick Micro Adjusters */}
-            <div className="mt-4 pt-4 border-t border-border flex flex-wrap gap-2 text-xs">
-              <span className="text-fg-subtle self-center text-[11px] mr-2">微调步长:</span>
-              <button
-                type="button"
-                onClick={() => setMinute((m) => (m + 5) % 60)}
-                className="rounded-lg border border-border bg-surface-2 px-2.5 py-1 text-fg hover:bg-surface"
-              >
-                +5 分钟
-              </button>
-              <button
-                type="button"
-                onClick={() => setMinute((m) => (m + 15) % 60)}
-                className="rounded-lg border border-border bg-surface-2 px-2.5 py-1 text-fg hover:bg-surface"
-              >
-                +15 分钟
-              </button>
-              <button
-                type="button"
-                onClick={() => setHour((h) => (h + 1) % 24)}
-                className="rounded-lg border border-border bg-surface-2 px-2.5 py-1 text-fg hover:bg-surface"
-              >
-                +1 小时
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setHour(8);
-                  setMinute(30);
-                  setInputText("08:30");
-                }}
-                className="inline-flex items-center gap-1 rounded-lg border border-border bg-surface-2 px-2.5 py-1 text-fg-muted hover:bg-surface ml-auto"
-              >
-                <RotateCcw className="size-3" /> 重置 08:30
-              </button>
-            </div>
+            <p className="wheel-readout-eq">
+              round(<strong>{hourFrame.scrollTop.toFixed(0)}</strong> / {DEFAULT_ITEM_HEIGHT}) ={" "}
+              <strong>{hourFrame.index}</strong>
+              <span className="text-fg-subtle"> → {pad2(hour)}</span>
+              <span className="mx-2 text-fg-subtle">·</span>
+              round(<strong>{minuteFrame.scrollTop.toFixed(0)}</strong> / {DEFAULT_ITEM_HEIGHT}) ={" "}
+              <strong>{minuteFrame.index}</strong>
+              <span className="text-fg-subtle"> → {pad2(minute)}</span>
+            </p>
+            <p className="text-[11px] text-fg-muted">
+              {zh ? "小时偏离" : "Hour drift"} {hourOffset.toFixed(2)} · {zh ? "邻项" : "neighbor"}{" "}
+              opacity {neighbor.opacity.toFixed(2)} · rotateX {neighbor.rotateXDeg}° · scale{" "}
+              {neighbor.scale.toFixed(2)}
+            </p>
+            <DepthStrip />
           </div>
 
-          {/* Perspective & Comparison Switchers */}
-          <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs space-y-4">
-            <h3 className="text-xs font-semibold text-fg-subtle uppercase tracking-wider">
-              {locale === "en" ? "Optical Depth & Comparison Toggles" : "视错觉景深与对比实验"}
-            </h3>
-
-            <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-surface-2 border border-border/80">
+          <div className="rounded-2xl border border-border bg-surface p-5 shadow-card">
+            <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-xs font-semibold text-fg flex items-center gap-1.5">
-                  <Sparkles className="size-3.5 text-accent" />
-                  <span>圆柱景深模拟 (Cylinder 3D Perspective)</span>
-                </p>
-                <p className="text-[11px] text-fg-muted mt-0.5">
-                  沿 Y 轴距离计算 rotateX 倾角与透明度衰减，模拟实体转轮凸面感
+                <p className="text-sm font-semibold">{zh ? "圆柱景深" : "Cylinder depth"}</p>
+                <p className="mt-0.5 text-[12px] text-fg-muted">
+                  {zh
+                    ? "关掉后只剩平面对比，基准线还在，曲面没有了。"
+                    : "Off: flat contrast only. The baseline stays; the drum does not."}
                 </p>
               </div>
               <button
                 type="button"
+                role="switch"
+                aria-checked={enableCylinderDepth}
                 onClick={() => setEnableCylinderDepth((v) => !v)}
                 className={cn(
-                  "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none",
-                  enableCylinderDepth ? "bg-accent" : "bg-border",
+                  "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors",
+                  enableCylinderDepth ? "bg-accent" : "bg-border-strong",
                 )}
               >
                 <span
                   className={cn(
-                    "pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out",
+                    "inline-block size-5 rounded-full bg-white shadow transition",
                     enableCylinderDepth ? "translate-x-5" : "translate-x-0",
                   )}
                 />
               </button>
             </div>
 
-            {/* Model Comparison switcher */}
-            <div>
-              <p className="text-xs font-medium text-fg mb-2">对比不同输入控件在触控移动端的代偿：</p>
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { id: "wheel" as const, label: "滚轮选择器 (推荐)" },
-                  { id: "input" as const, label: "文本输入框" },
-                  { id: "dropdown" as const, label: "60项平铺列表" },
-                ].map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setComparisonMode(item.id)}
-                    className={cn(
-                      "rounded-xl border p-2.5 text-left text-xs font-medium transition-all",
-                      comparisonMode === item.id
-                        ? "border-accent bg-accent-soft text-accent shadow-xs"
-                        : "border-border bg-surface-2 text-fg-muted hover:bg-surface",
-                    )}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
+            <p className="mt-4 text-[12px] font-medium text-fg">
+              {zh ? "对照另一种输入" : "Compare another control"}
+            </p>
+            <div className="mt-2 grid grid-cols-3 gap-2">
+              {(
+                [
+                  { id: "wheel" as const, zh: "滚轮", en: "Wheel" },
+                  { id: "input" as const, zh: "文本框", en: "Text field" },
+                  { id: "dropdown" as const, zh: "平铺列表", en: "Flat list" },
+                ] as const
+              ).map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setComparisonMode(item.id)}
+                  className={cn(
+                    "rounded-xl border px-2.5 py-2 text-left text-xs font-medium transition-colors",
+                    comparisonMode === item.id
+                      ? "border-accent bg-accent-soft text-accent"
+                      : "border-border bg-surface-2 text-fg-muted hover:bg-surface",
+                  )}
+                >
+                  {zh ? item.zh : item.en}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Mathematical & Visual Breakdown */}
-          <div className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
-            <h3 className="text-xs font-semibold text-fg-subtle uppercase tracking-wider flex items-center gap-1.5">
-              <Layers className="size-3.5" />
-              <span>{locale === "en" ? "The Core Mechanics Behind Wheel Picker" : "滚轮选择器的三大核心机制"}</span>
-            </h3>
-
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-              <div className="rounded-xl border border-border/60 bg-surface-2 p-3">
-                <p className="font-semibold text-fg">1. 纵向滚动 + Scroll Snap</p>
-                <p className="mt-1 text-fg-muted leading-relaxed">
-                  每项固定 40px 高度。浏览器原生 `scroll-snap-type: y mandatory` 或松手后通过 Math.round(scrollTop / 40) 进行离散取整吸附。
-                </p>
-              </div>
-              <div className="rounded-xl border border-border/60 bg-surface-2 p-3">
-                <p className="font-semibold text-fg">2. 圆柱曲面透视渐变</p>
-                <p className="mt-1 text-fg-muted leading-relaxed">
-                  离中央基准线越远，透明度衰减至 18%，文字绕 X 轴旋转 -18° × offset 并缩放，营造物理滚筒的立体边缘景深。
-                </p>
-              </div>
-              <div className="rounded-xl border border-border/60 bg-surface-2 p-3">
-                <p className="font-semibold text-fg">3. 双列独立与点选居中</p>
-                <p className="mt-1 text-fg-muted leading-relaxed">
-                  时与分独立滚动互不干扰；用户直接点击任意偏离基准线的选项时，平滑自动滚动居中，兼顾拨动与点选。
-                </p>
-              </div>
+          <div className="rounded-2xl border border-border bg-surface p-5 shadow-card">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-fg-subtle">
+              {zh ? "跳到一格" : "Jump a tick"}
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {PRESETS.map((preset) => (
+                <button
+                  key={preset.zh}
+                  type="button"
+                  onClick={() => applyTime(preset.h, preset.m)}
+                  className={cn(
+                    "rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors",
+                    hour === preset.h && minute === preset.m
+                      ? "border-accent bg-accent-soft text-accent"
+                      : "border-border bg-surface-2 text-fg hover:bg-surface",
+                  )}
+                >
+                  {zh ? preset.zh : preset.en}
+                </button>
+              ))}
             </div>
+            <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-4 text-xs">
+              <button
+                type="button"
+                onClick={() => applyTime(hour, (minute + 5) % 60)}
+                className="rounded-lg border border-border bg-surface-2 px-2.5 py-1 hover:bg-surface"
+              >
+                +5
+              </button>
+              <button
+                type="button"
+                onClick={() => applyTime(hour, (minute + 15) % 60)}
+                className="rounded-lg border border-border bg-surface-2 px-2.5 py-1 hover:bg-surface"
+              >
+                +15
+              </button>
+              <button
+                type="button"
+                onClick={() => applyTime((hour + 1) % 24, minute)}
+                className="rounded-lg border border-border bg-surface-2 px-2.5 py-1 hover:bg-surface"
+              >
+                +1h
+              </button>
+              <button
+                type="button"
+                onClick={() => applyTime(8, 30)}
+                className="ml-auto inline-flex items-center gap-1 rounded-lg border border-border bg-surface-2 px-2.5 py-1 text-fg-muted hover:bg-surface"
+              >
+                <RotateCcw className="size-3" />
+                08:30
+              </button>
+            </div>
+          </div>
 
-            {/* Structured Comparison Table */}
-            <div className="mt-5 overflow-x-auto border-t border-border pt-4">
-              <table className="w-full text-left text-xs">
-                <thead>
-                  <tr className="border-b border-border text-fg-subtle">
-                    <th className="pb-2 font-medium">控件形态</th>
-                    <th className="pb-2 font-medium">软键盘干扰</th>
-                    <th className="pb-2 font-medium">非法值风险</th>
-                    <th className="pb-2 font-medium">触控阻尼与操作手感</th>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            {(
+              [
+                {
+                  t: zh ? "滚动量化" : "Quantize",
+                  d: zh
+                    ? "每项 40px。松手 round(scrollTop / 40)，不停在两行缝上。"
+                    : "40px rows. Release rounds scrollTop / 40 — never a seam.",
+                },
+                {
+                  t: zh ? "圆柱衰减" : "Cylinder",
+                  d: zh
+                    ? "离基准越远越淡、越斜、越小；边缘略虚。中央是唯一实的一行。"
+                    : "Farther rows fade, tilt and shrink. Only the baseline stays solid.",
+                },
+                {
+                  t: zh ? "双列独立" : "Two drums",
+                  d: zh
+                    ? "时、分各滚各的。远距拨动，近距点选居中。"
+                    : "Hours and minutes do not share a gesture. Flick far, tap near.",
+                },
+              ] as const
+            ).map((card) => (
+              <article
+                key={card.t}
+                className="rounded-2xl border border-border bg-surface p-4 shadow-card"
+              >
+                <h3 className="text-sm font-semibold">{card.t}</h3>
+                <p className="mt-1.5 text-[12px] leading-relaxed text-fg-muted">{card.d}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="overflow-x-auto rounded-2xl border border-border bg-surface p-5 shadow-card">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="border-b border-border text-fg-subtle">
+                  <th className="pb-2 font-medium">{zh ? "形态" : "Control"}</th>
+                  <th className="pb-2 font-medium">{zh ? "键盘" : "Keyboard"}</th>
+                  <th className="pb-2 font-medium">{zh ? "非法值" : "Invalid"}</th>
+                  <th className="pb-2 font-medium">{zh ? "触控" : "Touch"}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/50">
+                {WHEEL_COMPARISONS.map((comp) => (
+                  <tr key={comp.name}>
+                    <td className="py-2.5 font-semibold">{zh ? comp.name : comp.nameEn}</td>
+                    <td className="py-2.5">
+                      {comp.keyboardSpam ? (
+                        <span className="font-medium text-wrong">{zh ? "弹起遮挡" : "Blocks"}</span>
+                      ) : (
+                        <span className="font-medium text-accent">{zh ? "无干扰" : "None"}</span>
+                      )}
+                    </td>
+                    <td className="py-2.5 text-fg-muted">{comp.validationRisk}</td>
+                    <td className="py-2.5 text-fg-muted">{comp.touchFriction}</td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-border/50 text-fg">
-                  {WHEEL_COMPARISONS.map((comp) => (
-                    <tr key={comp.name} className="py-2.5">
-                      <td className="py-2.5 font-semibold">{comp.name}</td>
-                      <td className="py-2.5">
-                        {comp.keyboardSpam ? (
-                          <span className="text-wrong font-medium">弹起遮挡</span>
-                        ) : (
-                          <span className="text-accent font-medium">无键盘干扰</span>
-                        )}
-                      </td>
-                      <td className="py-2.5 text-fg-muted">{comp.validationRisk}</td>
-                      <td className="py-2.5 text-fg-muted">{comp.touchFriction}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -473,103 +489,39 @@ export function StudyView() {
   );
 }
 
-function WheelColumn({
-  items,
-  value,
-  onChange,
-  itemHeight,
-  enableDepth,
-  label,
-}: {
-  items: number[];
-  value: number;
-  onChange: (next: number) => void;
-  itemHeight: number;
-  enableDepth: boolean;
-  label: string;
-}) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollTop, setScrollTop] = useState(0);
-  const isInternalScroll = useRef(false);
-
-  // Sync scroll on external value change
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el || isInternalScroll.current) {
-      isInternalScroll.current = false;
-      return;
-    }
-    const idx = items.indexOf(value);
-    if (idx !== -1) {
-      el.scrollTop = idx * itemHeight;
-      setScrollTop(idx * itemHeight);
-    }
-  }, [value, items, itemHeight]);
-
-  function handleClickItem(val: number) {
-    const idx = items.indexOf(val);
-    if (idx === -1) return;
-    isInternalScroll.current = false;
-    onChange(val);
-    containerRef.current?.scrollTo({
-      top: idx * itemHeight,
-      behavior: "smooth",
-    });
-  }
-
-  const stageHeight = 200;
-  const paddingY = Math.max(0, (stageHeight - itemHeight) / 2);
+function DepthStrip() {
+  const locale = useLocale();
+  const zh = locale !== "en";
+  const samples = [-2, -1, 0, 1, 2];
 
   return (
-    <div
-      ref={containerRef}
-      role="listbox"
-      aria-label={label}
-      onScroll={(e) => {
-        const top = e.currentTarget.scrollTop;
-        setScrollTop(top);
-        const { index } = resolveScrollIndex(top, itemHeight, items.length);
-        const nextVal = items[index];
-        if (nextVal !== undefined && nextVal !== value) {
-          isInternalScroll.current = true;
-          onChange(nextVal);
-        }
-      }}
-      className="flex-1 overflow-y-auto overscroll-contain select-none focus:outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      style={{
-        paddingTop: `${paddingY}px`,
-        paddingBottom: `${paddingY}px`,
-        scrollSnapType: "y mandatory",
-      }}
-    >
-      {items.map((n, idx) => {
-        const offset = calcItemOffset(idx, Math.round(scrollTop / itemHeight));
-        const visual = calcCylinderVisual(offset);
-        const isSelected = n === value;
-
-        return (
-          <button
-            key={n}
-            type="button"
-            role="option"
-            aria-selected={isSelected}
-            onClick={() => handleClickItem(n)}
-            className="flex w-full items-center justify-center font-mono text-xl tabular-nums transition-transform"
-            style={{
-              height: itemHeight,
-              scrollSnapAlign: "center",
-              opacity: enableDepth ? visual.opacity : isSelected ? 1 : 0.45,
-              transform: enableDepth
-                ? `perspective(240px) rotateX(${visual.rotateXDeg}deg) scale(${visual.scale})`
-                : undefined,
-              color: isSelected ? "var(--color-accent)" : "var(--color-fg)",
-              fontWeight: isSelected ? "700" : "500",
-            }}
-          >
-            {pad2(n)}
-          </button>
-        );
-      })}
+    <div>
+      <p className="mb-2 text-[11px] text-fg-subtle">
+        {zh ? "离基准线的圆柱量（固定几何，不是另一套吸附）" : "Cylinder amounts by offset — same geometry, not a second snap"}
+      </p>
+      <div className="wheel-depth-row">
+        {samples.map((offset) => {
+          const visual = calcCylinderVisual(offset);
+          return (
+            <div
+              key={offset}
+              className={cn("wheel-depth-cell", visual.isBaseline && "is-base")}
+              style={{ opacity: Math.max(0.45, visual.opacity) }}
+            >
+              <span className="text-[10px] text-fg-subtle">{offset > 0 ? `+${offset}` : offset}</span>
+              <span
+                className="text-sm font-semibold"
+                style={{
+                  transform: `scale(${visual.scale})`,
+                  color: visual.isBaseline ? "var(--color-accent)" : "var(--color-fg)",
+                }}
+              >
+                {visual.opacity.toFixed(2)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
