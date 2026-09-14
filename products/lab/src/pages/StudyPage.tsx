@@ -243,9 +243,11 @@ export function StudyPage({ slug }: { slug: string }) {
             </div>
           </div>
         ) : (
-          <Page as="article" measure="prose" className="note-prose py-12">
-            <Markdown source={studyIdea(study, locale)} />
-          </Page>
+          <div className="page-width py-12">
+            <article className="note-prose mx-auto max-w-4xl">
+              <Markdown source={studyIdea(study, locale)} />
+            </article>
+          </div>
         )}
       </div>
 
