@@ -19,6 +19,9 @@ const GESTURE_STUDIES = new Set([
   "touch-context",
   "press-select",
   "slide-confirm",
+  "sheet-snap",
+  "wheel-picker",
+  "swipe-action",
 ]);
 
 export function StudyPage({ slug }: { slug: string }) {
@@ -109,7 +112,7 @@ export function StudyPage({ slug }: { slug: string }) {
             <p className="truncate text-[13px] font-medium text-fg-muted">{title}</p>
           </div>
           <div className="flex items-center gap-2">
-            {isGestureStudy && (tab === "play" || tab === "stage") ? (
+            {isGestureStudy && tab === "stage" ? (
               <button
                 type="button"
                 onClick={() => setUseDeviceFrame(!useDeviceFrame)}
@@ -159,15 +162,7 @@ export function StudyPage({ slug }: { slug: string }) {
       >
         {tab === "play" ? (
           StudyView ? (
-            useDeviceFrame && isGestureStudy ? (
-              <div className="page-width py-8">
-                <DeviceFrame>
-                  <StudyView />
-                </DeviceFrame>
-              </div>
-            ) : (
-              <div className="study-play">{<StudyView />}</div>
-            )
+            <div className="study-play">{<StudyView />}</div>
           ) : (
             <p className="page-width py-12 text-[14px] text-fg-muted">{copy.noStudyView}</p>
           )

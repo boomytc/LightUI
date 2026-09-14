@@ -265,6 +265,9 @@ html {
 /* 设备外壳视口适配 */
 .device-frame-viewport [data-stage="root"] {
   min-height: 100% !important;
+  padding-inline: 1rem !important;
+  padding-block: 2.5rem 1.5rem !important;
+  box-sizing: border-box;
 }
 
 
