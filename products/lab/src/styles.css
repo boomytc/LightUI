@@ -270,4 +270,39 @@ html {
   box-sizing: border-box;
 }
 
+/* 消除外壳内的多层嵌套边框与阴影，使夹具自然贴合真机视口 */
+.device-frame-viewport [data-stage="fixture"],
+.device-frame-viewport .wheel-phone,
+.device-frame-viewport .wheel-phone-screen,
+.device-frame-viewport .pull-phone,
+.device-frame-viewport .ps-phone {
+  box-shadow: none !important;
+  border-width: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+.device-frame-viewport .ps-stage {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.device-frame-viewport .ps-stage > div,
+.device-frame-viewport .ps-phone > div {
+  box-shadow: none !important;
+  border-width: 0 !important;
+  margin: 0 !important;
+}
+
+/* 隐藏在 DeviceFrame 内部重复渲染的独立打孔、听筒或微胶囊（外层已有灵动岛） */
+.device-frame-viewport .wheel-phone-notch,
+.device-frame-viewport .pull-phone > .mx-auto.rounded-full,
+.device-frame-viewport [data-stage="fixture"] .rounded-full.bg-fg\/10,
+.device-frame-viewport [data-stage="fixture"] .rounded-full.bg-fg\/12,
+.device-frame-viewport [data-stage="fixture"] .rounded-full.bg-fg\/15,
+.device-frame-viewport [data-stage="fixture"] .rounded-full.bg-fg\/80,
+.device-frame-viewport [data-stage="fixture"] .rounded-full.bg-fg\/90 {
+  display: none !important;
+}
+
 

@@ -116,12 +116,12 @@ export function StudyPage({ slug }: { slug: string }) {
               <button
                 type="button"
                 onClick={() => setUseDeviceFrame(!useDeviceFrame)}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1 text-[12px] font-medium text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg shadow-xs"
+                className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1 text-[12px] font-medium text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg shadow-xs"
                 title={useDeviceFrame ? copy.viewportFull : copy.viewportDevice}
                 aria-label={useDeviceFrame ? copy.viewportFull : copy.viewportDevice}
               >
                 {useDeviceFrame ? <Monitor className="size-3.5" /> : <Smartphone className="size-3.5" />}
-                <span className="hidden sm:inline">
+                <span>
                   {useDeviceFrame ? copy.viewportFull : copy.viewportDevice}
                 </span>
               </button>
