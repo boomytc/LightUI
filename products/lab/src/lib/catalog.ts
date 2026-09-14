@@ -8,6 +8,8 @@ export type LoadedStudy = {
   ideas: { zh: string; en: string };
   StudyView?: ComponentType;
   StageView?: ComponentType;
+  stageCode?: string;
+  machinesCode?: string;
 };
 
 const metaModules = import.meta.glob("../../../../studies/*/study.json", {
@@ -35,6 +37,18 @@ const stageModules = import.meta.glob("../../../../studies/*/src/StageView.tsx",
   eager: true,
 }) as Record<string, { StageView?: ComponentType }>;
 
+const stageRawModules = import.meta.glob("../../../../studies/*/src/StageView.tsx", {
+  eager: true,
+  query: "?raw",
+  import: "default",
+}) as Record<string, string>;
+
+const machinesRawModules = import.meta.glob("../../../../studies/*/src/lib/machines.ts", {
+  eager: true,
+  query: "?raw",
+  import: "default",
+}) as Record<string, string>;
+
 function dirOf(jsonPath: string): string {
   return jsonPath.replace(/\/study\.json$/, "");
 }
@@ -51,6 +65,8 @@ export function loadStudies(): LoadedStudy[] {
       },
       StudyView: viewModules[`${dir}/src/StudyView.tsx`]?.StudyView,
       StageView: stageModules[`${dir}/src/StageView.tsx`]?.StageView,
+      stageCode: stageRawModules[`${dir}/src/StageView.tsx`],
+      machinesCode: machinesRawModules[`${dir}/src/lib/machines.ts`],
     };
   });
 

@@ -148,7 +148,17 @@ function highlightCode(code: string): ReactNode[] {
   return nodes;
 }
 
-function CodeBlock({ code }: { code: string }) {
+export function CodeBlock({
+  code,
+  filename = "code",
+  copyLabel = "Copy",
+  copiedLabel = "Copied",
+}: {
+  code: string;
+  filename?: string;
+  copyLabel?: string;
+  copiedLabel?: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
@@ -164,8 +174,8 @@ function CodeBlock({ code }: { code: string }) {
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-border/80 bg-[#12141a] p-4 text-[#e2e4ea] shadow-card sm:p-5">
       <div className="mb-3 flex items-center justify-between border-b border-white/10 pb-2">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-white/45">
-          code
+        <span className="font-mono text-[11px] tracking-wider text-white/50">
+          {filename}
         </span>
         <button
           type="button"
@@ -173,7 +183,7 @@ function CodeBlock({ code }: { code: string }) {
           className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
         >
           {copied ? <Check className="size-3 text-emerald-400" /> : <Copy className="size-3" />}
-          <span>{copied ? "Copied" : "Copy"}</span>
+          <span>{copied ? copiedLabel : copyLabel}</span>
         </button>
       </div>
       <pre className="overflow-x-auto font-mono text-[12px] leading-relaxed text-[#dcdfe6]">

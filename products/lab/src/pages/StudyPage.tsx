@@ -4,13 +4,13 @@ import { BackLink } from "../components/BackLink";
 import { Page } from "../components/Page";
 import { RelatedDecisions } from "../components/RelatedDecisions";
 import { StudyPagination } from "../components/StudyPagination";
-import { Markdown } from "../lib/Markdown";
+import { CodeBlock, Markdown } from "../lib/Markdown";
 import { loadStudy, studyIdea } from "../lib/catalog";
 import { messages } from "../lib/i18n";
 import { studyTitle } from "../lib/localize";
 import { usePrefs } from "../lib/prefs";
 
-const TABS = ["play", "stage", "idea"] as const;
+const TABS = ["play", "stage", "code", "idea"] as const;
 type StudyTab = (typeof TABS)[number];
 
 export function StudyPage({ slug }: { slug: string }) {
@@ -18,12 +18,14 @@ export function StudyPage({ slug }: { slug: string }) {
   const copy = messages(locale);
   const study = loadStudy(slug);
   const [tab, setTab] = useState<StudyTab>("play");
+  const [activeCodeFile, setActiveCodeFile] = useState<"stage" | "machines">("stage");
   const panelRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Partial<Record<StudyTab, HTMLButtonElement | null>>>({});
   const skipFocus = useRef(true);
 
   useEffect(() => {
     setTab("play");
+    setActiveCodeFile("stage");
     skipFocus.current = true;
   }, [slug]);
 
@@ -51,8 +53,10 @@ export function StudyPage({ slug }: { slug: string }) {
     );
   }
 
-  const { meta, StudyView, StageView } = study;
+  const { meta, StudyView, StageView, stageCode = "", machinesCode } = study;
   const title = studyTitle(meta, locale);
+  const currentCode = activeCodeFile === "machines" && machinesCode ? machinesCode : stageCode;
+  const currentFilename = activeCodeFile === "machines" ? "machines.ts" : "StageView.tsx";
 
   function activate(next: StudyTab, via: "pointer" | "keyboard") {
     if (via === "keyboard") {
@@ -110,7 +114,7 @@ export function StudyPage({ slug }: { slug: string }) {
                 }}
                 onClick={() => activate(id, "pointer")}
               >
-                {id === "play" ? copy.tabPlay : id === "stage" ? copy.tabStage : copy.tabIdea}
+                {id === "play" ? copy.tabPlay : id === "stage" ? copy.tabStage : id === "code" ? copy.tabCode : copy.tabIdea}
               </TabButton>
             ))}
           </div>
@@ -158,6 +162,49 @@ export function StudyPage({ slug }: { slug: string }) {
           ) : (
             <p className="page-width py-12 text-[14px] text-fg-muted">{copy.noStageView}</p>
           )
+        ) : tab === "code" ? (
+          <div className="page-width py-10">
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-[15px] font-semibold text-fg">{copy.codeHeading}</h2>
+                  <p className="mt-0.5 text-[13px] text-fg-muted">{copy.codeDesc}</p>
+                </div>
+                {machinesCode ? (
+                  <div className="flex rounded-lg border border-border bg-surface-2 p-0.5 text-[12px]">
+                    <button
+                      type="button"
+                      onClick={() => setActiveCodeFile("stage")}
+                      className={
+                        activeCodeFile === "stage"
+                          ? "rounded-md bg-surface px-2.5 py-1 font-medium text-fg shadow-xs"
+                          : "rounded-md px-2.5 py-1 font-medium text-fg-muted hover:text-fg"
+                      }
+                    >
+                      {copy.codeFileStage}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveCodeFile("machines")}
+                      className={
+                        activeCodeFile === "machines"
+                          ? "rounded-md bg-surface px-2.5 py-1 font-medium text-fg shadow-xs"
+                          : "rounded-md px-2.5 py-1 font-medium text-fg-muted hover:text-fg"
+                      }
+                    >
+                      {copy.codeFileMachines}
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+              <CodeBlock
+                code={currentCode}
+                filename={currentFilename}
+                copyLabel={copy.copyCode}
+                copiedLabel={copy.copiedCode}
+              />
+            </div>
+          </div>
         ) : (
           <Page as="article" measure="prose" className="note-prose py-12">
             <Markdown source={studyIdea(study, locale)} />
