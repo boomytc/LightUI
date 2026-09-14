@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Monitor, Smartphone } from "lucide-react";
 import { BackLink } from "../components/BackLink";
+import { DeviceFrame } from "../components/DeviceFrame";
 import { Page } from "../components/Page";
 import { RelatedDecisions } from "../components/RelatedDecisions";
 import { StudyPagination } from "../components/StudyPagination";
@@ -13,12 +14,21 @@ import { usePrefs } from "../lib/prefs";
 const TABS = ["play", "stage", "code", "idea"] as const;
 type StudyTab = (typeof TABS)[number];
 
+const GESTURE_STUDIES = new Set([
+  "pull-refresh",
+  "touch-context",
+  "press-select",
+  "slide-confirm",
+]);
+
 export function StudyPage({ slug }: { slug: string }) {
   const { locale } = usePrefs();
   const copy = messages(locale);
   const study = loadStudy(slug);
   const [tab, setTab] = useState<StudyTab>("play");
   const [activeCodeFile, setActiveCodeFile] = useState<"stage" | "machines">("stage");
+  const isGestureStudy = GESTURE_STUDIES.has(slug);
+  const [useDeviceFrame, setUseDeviceFrame] = useState(isGestureStudy);
   const panelRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Partial<Record<StudyTab, HTMLButtonElement | null>>>({});
   const skipFocus = useRef(true);
@@ -26,6 +36,7 @@ export function StudyPage({ slug }: { slug: string }) {
   useEffect(() => {
     setTab("play");
     setActiveCodeFile("stage");
+    setUseDeviceFrame(GESTURE_STUDIES.has(slug));
     skipFocus.current = true;
   }, [slug]);
 
@@ -97,26 +108,43 @@ export function StudyPage({ slug }: { slug: string }) {
             <span className="hidden h-4 w-px shrink-0 bg-border sm:block" aria-hidden="true" />
             <p className="truncate text-[13px] font-medium text-fg-muted">{title}</p>
           </div>
-          <div
-            className="flex shrink-0 rounded-lg border border-border bg-surface-2/70 p-0.5"
-            role="tablist"
-            aria-label={copy.studyViewTabs}
-            onKeyDown={onTabListKeyDown}
-          >
-            {TABS.map((id) => (
-              <TabButton
-                key={id}
-                id={`study-tab-${id}`}
-                controls={`study-panel-${id}`}
-                active={tab === id}
-                ref={(el) => {
-                  tabRefs.current[id] = el;
-                }}
-                onClick={() => activate(id, "pointer")}
+          <div className="flex items-center gap-2">
+            {isGestureStudy && (tab === "play" || tab === "stage") ? (
+              <button
+                type="button"
+                onClick={() => setUseDeviceFrame(!useDeviceFrame)}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1 text-[12px] font-medium text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg shadow-xs"
+                title={useDeviceFrame ? copy.viewportFull : copy.viewportDevice}
+                aria-label={useDeviceFrame ? copy.viewportFull : copy.viewportDevice}
               >
-                {id === "play" ? copy.tabPlay : id === "stage" ? copy.tabStage : id === "code" ? copy.tabCode : copy.tabIdea}
-              </TabButton>
-            ))}
+                {useDeviceFrame ? <Monitor className="size-3.5" /> : <Smartphone className="size-3.5" />}
+                <span className="hidden sm:inline">
+                  {useDeviceFrame ? copy.viewportFull : copy.viewportDevice}
+                </span>
+              </button>
+            ) : null}
+
+            <div
+              className="flex shrink-0 rounded-lg border border-border bg-surface-2/70 p-0.5"
+              role="tablist"
+              aria-label={copy.studyViewTabs}
+              onKeyDown={onTabListKeyDown}
+            >
+              {TABS.map((id) => (
+                <TabButton
+                  key={id}
+                  id={`study-tab-${id}`}
+                  controls={`study-panel-${id}`}
+                  active={tab === id}
+                  ref={(el) => {
+                    tabRefs.current[id] = el;
+                  }}
+                  onClick={() => activate(id, "pointer")}
+                >
+                  {id === "play" ? copy.tabPlay : id === "stage" ? copy.tabStage : id === "code" ? copy.tabCode : copy.tabIdea}
+                </TabButton>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -131,7 +159,15 @@ export function StudyPage({ slug }: { slug: string }) {
       >
         {tab === "play" ? (
           StudyView ? (
-            <div className="study-play">{<StudyView />}</div>
+            useDeviceFrame && isGestureStudy ? (
+              <div className="page-width py-8">
+                <DeviceFrame>
+                  <StudyView />
+                </DeviceFrame>
+              </div>
+            ) : (
+              <div className="study-play">{<StudyView />}</div>
+            )
           ) : (
             <p className="page-width py-12 text-[14px] text-fg-muted">{copy.noStudyView}</p>
           )
@@ -154,9 +190,15 @@ export function StudyPage({ slug }: { slug: string }) {
                     <ArrowUpRight className="size-3.5" />
                   </a>
                 </div>
-                <div className="w-full min-w-0 overflow-x-auto rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-10">
-                  <StageView />
-                </div>
+                {useDeviceFrame && isGestureStudy ? (
+                  <DeviceFrame>
+                    <StageView />
+                  </DeviceFrame>
+                ) : (
+                  <div className="w-full min-w-0 overflow-x-auto rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-10">
+                    <StageView />
+                  </div>
+                )}
               </div>
             </div>
           ) : (

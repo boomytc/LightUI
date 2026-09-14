@@ -262,3 +262,9 @@ html {
   box-shadow: none !important;
 }
 
+/* 设备外壳视口适配 */
+.device-frame-viewport [data-stage="root"] {
+  min-height: 100% !important;
+}
+
+
