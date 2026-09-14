@@ -14,6 +14,7 @@ const TARGETS: { id: AlignTarget; zh: string; en: string }[] = [
   { id: "box", zh: "盒子", en: "Box" },
   { id: "gap", zh: "缝", en: "Gap" },
   { id: "edge", zh: "边", en: "Edge" },
+  { id: "digit", zh: "数位", en: "Digit" },
 ];
 
 export function Playground() {
@@ -31,15 +32,42 @@ export function Playground() {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const el = e.target as HTMLElement | null;
       if (el && ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName)) return;
-      const n = Number(e.key);
-      if (n >= 1 && n <= KINDS.length) {
+      if (e.key >= "1" && e.key <= "9") {
+        const n = Number(e.key);
+        if (n <= KINDS.length) {
+          e.preventDefault();
+          select(KINDS[n - 1]!.id);
+        }
+      } else if (e.key === "0" && KINDS.length >= 10) {
         e.preventDefault();
-        select(KINDS[n - 1]!.id);
+        select(KINDS[9]!.id);
+      } else if (
+        (e.key === "-" || e.key === "=" || e.key === "+" || e.key === "e" || e.key === "E") &&
+        KINDS.length >= 11
+      ) {
+        e.preventDefault();
+        select(KINDS[10]!.id);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        const cur = KINDS.findIndex((k) => k.id === active);
+        const next = (cur + 1) % KINDS.length;
+        select(KINDS[next]!.id);
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        const cur = KINDS.findIndex((k) => k.id === active);
+        const prev = (cur - 1 + KINDS.length) % KINDS.length;
+        select(KINDS[prev]!.id);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        select(KINDS[0]!.id);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        select(KINDS[KINDS.length - 1]!.id);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [active]);
 
   return (
     <div className="grid min-w-0 gap-5">
@@ -67,14 +95,19 @@ export function Playground() {
         aria-label={locale === "en" ? "Alignment spells" : "对齐咒语"}
         className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
       >
-        {KINDS.map((kind) => {
+        {KINDS.map((kind, idx) => {
           const on = kind.id === active;
+          const shortcutKey = idx < 9 ? String(idx + 1) : idx === 9 ? "0" : "-";
+          const shortcutHint =
+            locale === "en" ? `Shortcut: ${shortcutKey}` : `快捷键: ${shortcutKey}`;
           return (
             <button
               key={kind.id}
               type="button"
               data-kind={kind.id}
               aria-pressed={on}
+              title={shortcutHint}
+              aria-keyshortcuts={shortcutKey}
               onClick={() => select(kind.id)}
               className={cn(
                 "inline-flex min-w-40 shrink-0 items-center gap-2.5 rounded-xl border px-2.5 py-2 text-left transition-colors sm:min-w-0 sm:px-3",
@@ -100,10 +133,18 @@ export function Playground() {
         })}
       </nav>
 
+      <p className="hidden text-[11px] text-fg-subtle sm:block">
+        {locale === "en"
+          ? "Switch spells with 1–9, 0, - or ← → arrow keys"
+          : "支持快捷键 1–9、0、- 切换，或使用 ← → 箭头键"}
+      </p>
+
       <section className="min-w-0">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
-            <p className="font-mono text-[12px] tabular-nums text-accent">{meta.index} / 07</p>
+            <p className="font-mono text-[12px] tabular-nums text-accent">
+              {meta.index} / {String(KINDS.length).padStart(2, "0")}
+            </p>
             <h2 className="mt-1 text-[1.6rem] font-semibold tracking-tight">{pick(meta.zh, locale)}</h2>
             <p className="mt-1 text-[14px] text-fg-muted">{pick(meta.oneLiner, locale)}</p>
           </div>

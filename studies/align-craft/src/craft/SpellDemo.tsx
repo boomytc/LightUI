@@ -1,4 +1,4 @@
-import { LayoutGrid, Play } from "lucide-react";
+import { Check, LayoutGrid, Play } from "lucide-react";
 import {
   GEOMETRIC_POSITION,
   SUBJECT_POSITION,
@@ -52,6 +52,14 @@ export function SpellFigure({ id, state }: { id: KindId; state: StageState }) {
       return <OpticalFigure state={state} />;
     case "inset":
       return <InsetFigure state={state} />;
+    case "numeric":
+      return <NumericFigure state={state} />;
+    case "between":
+      return <BetweenFigure state={state} />;
+    case "reading":
+      return <ReadingFigure state={state} />;
+    case "center":
+      return <CenterFigure state={state} />;
   }
 }
 
@@ -262,6 +270,214 @@ function InsetFigure({ state }: { state: StageState }) {
         <span className="h-2 w-20 rounded-full bg-surface/85 sm:w-24" />
         <span className="h-2 w-[min(9rem,70%)] rounded-full bg-surface/50" />
         <span className="font-mono text-[10px] text-surface/55">{right ? "inset: 10px" : "translate(6px, −4px)"}</span>
+      </div>
+    </div>
+  );
+}
+
+const NUMERIC_ROWS = [
+  { zh: "课程材料", en: "Materials", right: "29.00", wrong: "29" },
+  { zh: "单次辅导", en: "Coaching", right: "199.00", wrong: "199" },
+  { zh: "进阶工作坊", en: "Workshop", right: "1,299.00", wrong: "1299" },
+];
+
+function NumericFigure({ state }: { state: StageState }) {
+  const locale = useLocale();
+  const right = state === "right";
+  return (
+    <div className="relative w-full min-w-0">
+      <div className="mb-2 grid grid-cols-[1fr_7.5rem] items-end text-[10px] font-medium tracking-[0.1em] text-fg-subtle uppercase">
+        <span>{pick({ zh: "费用明细", en: "Item" }, locale)}</span>
+        <span className={right ? "text-right" : "text-left"}>
+          {pick({ zh: "金额 / 元", en: "Amount / ¥" }, locale)}
+        </span>
+      </div>
+      <div className="relative divide-y divide-border border-y border-border">
+        {NUMERIC_ROWS.map((row, idx) => (
+          <div key={row.zh} className="grid grid-cols-[1fr_7.5rem] items-baseline gap-3 py-2.5">
+            <span className="truncate text-[13px] font-medium text-fg">
+              {pick(row, locale)}
+            </span>
+            {right ? (
+              <span className="text-right font-mono text-[15px] font-semibold tracking-tight text-fg tabular-nums sm:text-[1.05rem]">
+                {row.right.slice(0, -3)}
+                <span className="relative inline-block">
+                  .
+                  {idx === 0 ? <span aria-hidden className="align-decimal-guide" /> : null}
+                </span>
+                {row.right.slice(-2)}
+              </span>
+            ) : (
+              <span className="text-left font-sans text-[15px] font-normal tracking-tight text-fg sm:text-[1.05rem]">
+                {idx === 0 ? (
+                  <span className="relative inline-block">
+                    {row.wrong}
+                    <span aria-hidden className="align-wrong-digit-guide" />
+                  </span>
+                ) : (
+                  row.wrong
+                )}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const BETWEEN_ROWS = [
+  { zh: "AI 产品实践入门", en: "AI Product Practice", status: { zh: "待确认", en: "Pending" }, tone: "accent" as const },
+  { zh: "需求梳理工作坊", en: "Requirement Scope", status: { zh: "已确认", en: "Confirmed" }, tone: "intent" as const },
+  { zh: "个人项目复盘", en: "Project Review", status: { zh: "已完成", en: "Done" }, tone: "done" as const },
+];
+
+function BetweenFigure({ state }: { state: StageState }) {
+  const locale = useLocale();
+  const right = state === "right";
+  return (
+    <div className="relative w-full min-w-0">
+      {right ? (
+        <span aria-hidden className="align-scan-guide" />
+      ) : (
+        <span aria-hidden className="align-scan-guide-wrong" />
+      )}
+      <div className="mb-2 text-[10px] font-medium tracking-[0.1em] text-fg-subtle uppercase">
+        {pick({ zh: "我的预约记录", en: "Booking records" }, locale)}
+      </div>
+      <ul className="divide-y divide-border border-y border-border">
+        {BETWEEN_ROWS.map((row) => (
+          <li
+            key={row.zh}
+            className={cn(
+              "flex items-center py-2.5",
+              right ? "justify-between gap-4" : "justify-start gap-3",
+            )}
+          >
+            <span className="min-w-0 truncate text-[13px] font-medium text-fg">
+              {pick(row, locale)}
+            </span>
+            <span
+              className={cn(
+                "shrink-0 rounded-full px-2 py-0.5 font-mono text-[10px] font-medium",
+                row.tone === "accent" && "bg-accent-soft text-accent",
+                row.tone === "intent" && "bg-intent-soft text-intent",
+                row.tone === "done" && "bg-surface-2 text-fg-muted",
+              )}
+            >
+              {pick(row.status, locale)}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ReadingFigure({ state }: { state: StageState }) {
+  const locale = useLocale();
+  const right = state === "right";
+  return (
+    <div className="relative mx-auto flex w-full max-w-sm flex-col justify-center">
+      {right ? (
+        <span aria-hidden className="align-reading-guide" />
+      ) : (
+        <span aria-hidden className="align-reading-guide-wrong" />
+      )}
+      <p
+        className={cn(
+          "font-mono text-[10px] font-medium tracking-wide uppercase text-accent",
+          right ? "text-left" : "text-center",
+        )}
+      >
+        {pick({ zh: "小班课程 / 实践入门", en: "Workshop / Hands-on" }, locale)}
+      </p>
+      <h3
+        className={cn(
+          "mt-1.5 text-[15px] font-semibold leading-snug tracking-tight text-fg sm:text-[1.05rem]",
+          right ? "text-left" : "text-center",
+        )}
+      >
+        {pick(
+          { zh: "把专业经验，变成你的第一个产品", en: "Turn your expertise into a real product" },
+          locale,
+        )}
+      </h3>
+      <p
+        className={cn(
+          "mt-2 text-[12px] leading-relaxed text-fg-muted",
+          right ? "text-left" : "text-center",
+        )}
+      >
+        {pick(
+          {
+            zh: "从真实工作场景出发，用 AI 搭建可用页面并完成首轮验证。",
+            en: "Start with a real need from your work. Build testable UI with AI.",
+          },
+          locale,
+        )}
+      </p>
+      <div
+        className={cn(
+          "mt-3 flex flex-wrap gap-1.5 font-mono text-[10px] text-fg-subtle",
+          right ? "justify-start" : "justify-center",
+        )}
+      >
+        <span className="rounded bg-surface-2 px-1.5 py-0.5">
+          {pick({ zh: "90分钟", en: "90 min" }, locale)}
+        </span>
+        <span className="rounded bg-surface-2 px-1.5 py-0.5">
+          {pick({ zh: "线上实操", en: "Live lab" }, locale)}
+        </span>
+        <span className="rounded bg-surface-2 px-1.5 py-0.5">
+          {pick({ zh: "课后答疑", en: "Q&A" }, locale)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function CenterFigure({ state }: { state: StageState }) {
+  const locale = useLocale();
+  const right = state === "right";
+  return (
+    <div className="relative mx-auto flex w-full max-w-xs flex-col justify-center">
+      {!right ? <span aria-hidden className="align-center-axis-wrong" /> : null}
+      <div className="relative flex w-full flex-col items-center text-center">
+        {right ? <span aria-hidden className="align-center-axis" /> : null}
+        <span
+          className="grid size-9 place-items-center rounded-full bg-intent-soft text-intent"
+          aria-hidden
+        >
+          <Check className="size-4" strokeWidth={2.6} />
+        </span>
+        <h3 className="mt-2 text-[16px] font-semibold tracking-tight text-fg">
+          {pick({ zh: "预约成功", en: "Booking Confirmed" }, locale)}
+        </h3>
+        <button
+          type="button"
+          tabIndex={-1}
+          className="mt-2.5 rounded-lg bg-fg px-3.5 py-1.5 text-[12px] font-medium text-surface shadow-sm"
+        >
+          {pick({ zh: "查看我的预约", en: "View Booking" }, locale)}
+        </button>
+      </div>
+      <div className="mt-3.5 border-t border-border pt-2.5">
+        <dl
+          className={cn(
+            "space-y-1 text-[11px] text-fg-muted",
+            right ? "text-left" : "text-center",
+          )}
+        >
+          <div className={cn("flex gap-2", right ? "justify-start" : "justify-center")}>
+            <dt className="w-8 shrink-0 text-fg-subtle">{pick({ zh: "课程", en: "Course" }, locale)}</dt>
+            <dd className="font-medium text-fg">{pick({ zh: "AI 产品实践入门", en: "AI Product Practice" }, locale)}</dd>
+          </div>
+          <div className={cn("flex gap-2", right ? "justify-start" : "justify-center")}>
+            <dt className="w-8 shrink-0 text-fg-subtle">{pick({ zh: "时间", en: "Time" }, locale)}</dt>
+            <dd>{pick({ zh: "周六 14:00—15:30", en: "Sat 14:00–15:30" }, locale)}</dd>
+          </div>
+        </dl>
       </div>
     </div>
   );

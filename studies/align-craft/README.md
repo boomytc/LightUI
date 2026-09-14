@@ -23,7 +23,7 @@ npm run dev
 http://127.0.0.1:5193/?stage=1&kind=baseline&state=right
 ```
 
-建议按这个顺序把七句对错对照看一遍：
+建议按这个顺序把十一句对错对照看一遍：
 
 1. 基线：大小字按文字基线，不是 items-center 外框
 2. 封面：cover 填满，object-position 跟着主体，不要 contain 留空
@@ -32,3 +32,7 @@ http://127.0.0.1:5193/?stage=1&kind=baseline&state=right
 5. 贴边：padding-top 对行高 / 帽高
 6. 光学：视觉居中不是几何中心
 7. 嵌入：inset 对齐，不要 translate 猜
+8. 数位：金额等宽右对齐，统一保留小数，对齐小数点
+9. 两端：列表两端贴边，右侧状态垂直成列
+10. 读线：容器居中不居中文本，保持左侧起跑线
+11. 中轴：结果沿中轴放大，辅助明细回归左对齐

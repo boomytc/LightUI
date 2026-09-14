@@ -150,6 +150,10 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("baseline", "right", "baseline-right.png"),
         ("cover", "right", "cover-right.png"),
         ("optical", "right", "optical-right.png"),
+        ("numeric", "right", "numeric-right.png"),
+        ("between", "right", "between-right.png"),
+        ("reading", "right", "reading-right.png"),
+        ("center", "right", "center-right.png"),
     ],
     "dashboard-layers": [
         ("layered", "kpi", "layered-kpi.png"),

@@ -21,12 +21,12 @@ The lab mounts `StudyView` at `/s/align-craft`.
 
 ## Layout
 
-- `idea.md` / `study.json` — baseline vs focus vs box
+- `idea.md` / `study.json` — baseline vs focus vs box vs digit
 - `src/StudyView.tsx` — teaching surface the lab imports
 - `src/lib/machines.ts` — `aligns`, `objectFitFor`, `needsObjectPosition` (no DOM)
-- `src/craft/` — seven WRONG / RIGHT constructions; rose vs green panes name the seam
+- `src/craft/` — eleven WRONG / RIGHT constructions; rose vs green panes name the seam
 - `src/StageView.tsx` — one kind, one locked wrong|right, compact, no chrome
-- `src/lib/stage-query.ts` — `kind=baseline|cover|axis|margin|padding|optical|inset`, `state=wrong|right` (default baseline/right)
+- `src/lib/stage-query.ts` — `kind=baseline|cover|axis|margin|padding|optical|inset|numeric|between|reading|center`, `state=wrong|right` (default baseline/right)
 - `src/align.css` — imported from TSX so the lab picks it up
 
 ## Rules

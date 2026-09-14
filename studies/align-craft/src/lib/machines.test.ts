@@ -24,6 +24,10 @@ const ALIGN: Record<KindId, AlignTarget> = {
   padding: "edge",
   optical: "focus",
   inset: "edge",
+  numeric: "digit",
+  between: "edge",
+  reading: "edge",
+  center: "focus",
 };
 
 describe("aligns", () => {
@@ -39,15 +43,22 @@ describe("aligns", () => {
     assert.equal(aligns("axis"), "box");
   });
 
-  it("treats optical mass as focus, not the geometric box", () => {
+  it("treats optical mass and hero results as focus", () => {
     assert.equal(aligns("optical"), "focus");
+    assert.equal(aligns("center"), "focus");
     assert.notEqual(aligns("optical"), "box");
   });
 
-  it("treats leftover spacing as gap and flush type as edge", () => {
+  it("treats numeric digits as digit target", () => {
+    assert.equal(aligns("numeric"), "digit");
+  });
+
+  it("treats leftover spacing as gap, flush type and boundaries as edge", () => {
     assert.equal(aligns("margin"), "gap");
     assert.equal(aligns("padding"), "edge");
     assert.equal(aligns("inset"), "edge");
+    assert.equal(aligns("between"), "edge");
+    assert.equal(aligns("reading"), "edge");
   });
 });
 
@@ -115,12 +126,27 @@ describe("paddingTopForCap", () => {
 });
 
 describe("guards", () => {
-  it("accepts the seven kinds and wrong|right", () => {
-    assert.equal(isKindId("baseline"), true);
-    assert.equal(isKindId("cover"), true);
+  it("accepts the eleven kinds and wrong|right", () => {
+    assert.equal(KIND_IDS.length, 11);
+    for (const kind of KIND_IDS) {
+      assert.equal(isKindId(kind), true, `isKindId(${kind}) should be true`);
+      assert.ok(["baseline", "focus", "box", "gap", "edge", "digit"].includes(aligns(kind)));
+    }
     assert.equal(isKindId("tabs"), false);
+    assert.equal(isKindId(""), false);
+    assert.equal(isKindId("numeric2"), false);
     assert.equal(isStageState("right"), true);
     assert.equal(isStageState("wrong"), true);
     assert.equal(isStageState("ok"), false);
+    assert.equal(isStageState(""), false);
+  });
+
+  it("ensures newly added kinds do not trigger object-position", () => {
+    for (const kind of ["numeric", "between", "reading", "center"] as const) {
+      assert.equal(needsObjectPosition(kind), false);
+      assert.equal(objectFitFor(kind), "contain");
+      assert.equal(objectPositionFor(kind, "right"), GEOMETRIC_POSITION);
+      assert.equal(objectPositionFor(kind, "wrong"), GEOMETRIC_POSITION);
+    }
   });
 });

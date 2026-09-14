@@ -5,12 +5,16 @@ export type KindId =
   | "margin"
   | "padding"
   | "optical"
-  | "inset";
+  | "inset"
+  | "numeric"
+  | "between"
+  | "reading"
+  | "center";
 
 export type StageState = "wrong" | "right";
 
 /** What the right construction lines up. */
-export type AlignTarget = "baseline" | "focus" | "box" | "gap" | "edge";
+export type AlignTarget = "baseline" | "focus" | "box" | "gap" | "edge" | "digit";
 
 export type ObjectFit = "cover" | "contain";
 
@@ -22,6 +26,10 @@ export const KIND_IDS: readonly KindId[] = [
   "padding",
   "optical",
   "inset",
+  "numeric",
+  "between",
+  "reading",
+  "center",
 ];
 
 /** Subject sits low in the frame (walker under the colonnade). */
@@ -42,8 +50,8 @@ export function isStageState(value: string): value is StageState {
 
 /**
  * What this spell aligns.
- * Cover and optical both answer “focus”: the photograph’s subject, or the
- * visual mass of a glyph/shape — not the geometric center of the box.
+ * Cover, optical, and center all answer “focus”: the photograph’s subject, the
+ * visual mass of a glyph/shape, or the hero result axis — not an arbitrary box.
  */
 export function aligns(kind: KindId): AlignTarget {
   switch (kind) {
@@ -61,6 +69,14 @@ export function aligns(kind: KindId): AlignTarget {
       return "focus";
     case "inset":
       return "edge";
+    case "numeric":
+      return "digit";
+    case "between":
+      return "edge";
+    case "reading":
+      return "edge";
+    case "center":
+      return "focus";
   }
 }
 

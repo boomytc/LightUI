@@ -7,7 +7,7 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
-| [align-craft](../studies/align-craft/) | 对齐不是看起来正。先问对齐的是文字基线、画面焦点，还是盒子。间距用 gap，贴边用帽高，定位用 inset。 | active | 2026-08-23 | 2026-09-11 |
+| [align-craft](../studies/align-craft/) | 对齐不是看起来正。先问对齐的是文字基线、画面焦点、数位还是盒子。间距用 gap，贴边用帽高，定位用 inset，金额用等宽，列表用两端扫读。 | active | 2026-08-23 | 2026-09-14 |
 | [assistant-chrome](../studies/assistant-chrome/) | 助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。 | active | 2026-08-23 | 2026-09-11 |
 | [bm25-explain](../studies/bm25-explain/) | 检索排序不是黑盒总分。先定稀疏与向量的分数不可直接相加，再把得分拆解为词频饱和与篇幅惩罚。 | active | 2026-08-25 | 2026-09-11 |
 | [border-beam](../studies/border-beam/) | 高光沿圆角边框绕行，不要铺满卡片。内层实心底，外层透明边框叠光束。品牌强调色，不要彩虹。 | active | 2026-08-23 | 2026-09-11 |
@@ -58,7 +58,7 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
-- **对齐** (`align-craft`) — 对齐的是基线、焦点，还是盒子？
+- **对齐** (`align-craft`) — 对齐的是基线、焦点、数位，还是盒子？
 - **助手** (`assistant-chrome`) — 助手住在对话、侧栏、插件、浮层、画布，还是看不见？
 - **检索可解释性** (`bm25-explain`) — 检索排序怎么让人看明白？
 - **边光** (`border-beam`) — 高光该走边框还是铺满卡片？

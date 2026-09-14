@@ -4,8 +4,10 @@ import { pick, useLocale } from "./lib/site-locale";
 
 const TARGETS = [
   { zh: "基线 · 大小字", en: "Baseline · mixed type" },
-  { zh: "焦点 · 封面 / 光学", en: "Focus · cover / optical" },
+  { zh: "焦点 · 封面 / 结果 / 光学", en: "Focus · cover / hero / optical" },
   { zh: "盒子 · 图标行", en: "Box · icon row" },
+  { zh: "边 · 贴边 / 两端 / 读线", en: "Edge · padding / between / reading" },
+  { zh: "数位 · 等宽 / 小数点", en: "Digit · tabular / decimals" },
 ];
 
 export function StudyView() {
@@ -23,8 +25,8 @@ export function StudyView() {
           </h1>
           <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
             {locale === "en"
-              ? "“Nudge it so it lines up” describes a feeling. The thing that breaks is lining up the wrong thing: the baseline, the focal point, or the box — then gap, edge, and optical mass."
-              : "「帮我对齐一下」说的是观感。真正会坏掉的是对错了东西：基线、焦点，还是盒子；再往下是缝、边，和视觉质量。"}
+              ? "“Nudge it so it lines up” describes a feeling. The thing that breaks is lining up the wrong thing: the baseline, the focal point, the digits, or the box — then gap, edge, and optical mass."
+              : "「帮我对齐一下」说的是观感。真正会坏掉的是对错了东西：基线、焦点、数位，还是盒子；再往下是缝、边，和视觉质量。"}
           </p>
           <ul className="mt-5 flex flex-wrap gap-2">
             {TARGETS.map((item) => (
@@ -90,6 +92,42 @@ export function StudyView() {
               {locale === "en"
                 ? "A circle reads small next to a square of the same box. A play triangle’s mass sits left of geometric center. Swapping the page skeleton is a different question."
                 : "圆看起来比同包围盒的方小。播放三角的视觉质量偏左。换骨架是另一件事。"}
+            </li>
+            <li>
+              <span className="font-medium text-fg">
+                {locale === "en" ? "4. Numbers compare by digits, not left margins" : "4. 金额比的是数位，不是左边距"}
+              </span>
+              <br />
+              {locale === "en"
+                ? "Left alignment and proportional fonts stagger decimal points. Tabular-nums and fixed precision lock decimals into one vertical axis."
+                : "左对齐与比例字体会让个位、十位与小数点参差错开。等宽数字与统一小数位让数位垂直成线，大小一目了然。"}
+            </li>
+            <li>
+              <span className="font-medium text-fg">
+                {locale === "en" ? "5. Centering a card does not center the copy" : "5. 容器居中不代表文字居中"}
+              </span>
+              <br />
+              {locale === "en"
+                ? "Continuous reading needs a steady left starting line. Centering copy forces the eye to hunt for every line break."
+                : "连续阅读需要固定的左侧起跑线。长段正文居中会让每行起点随行宽跳动，造成显著的阅读疲劳。"}
+            </li>
+            <li>
+              <span className="font-medium text-fg">
+                {locale === "en" ? "6. List statuses need a shared scan line" : "6. 列表扫读靠两端边线"}
+              </span>
+              <br />
+              {locale === "en"
+                ? "Letting badges cling to titles of varying length creates ragged right edges. Space-between pins statuses into one straight scanning column."
+                : "状态紧随标题漂移逼人逐行搜寻。两端对齐把状态贴在右边线，形成一条笔直的纵向扫读边缘。"}
+            </li>
+            <li>
+              <span className="font-medium text-fg">
+                {locale === "en" ? "7. Strike the hero on center; drop details back left" : "7. 结果中轴聚焦，明细左齐分层"}
+              </span>
+              <br />
+              {locale === "en"
+                ? "A single primary result callout is strongest centered. Centering structured metadata scatters keys and values; keep details left-aligned."
+                : "单一强行动沿中轴放大最有力。结构化明细一旦无差别居中，键与值就飘散了，辅助明细必须回归靠左结构。"}
             </li>
           </ol>
         </article>

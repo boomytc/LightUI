@@ -2,12 +2,12 @@
   "slug": "align-craft",
   "title": "对齐",
   "titleEn": "Align",
-  "eyebrow": "Baseline · Focus · Box",
-  "eyebrowEn": "Baseline · Focus · Box",
-  "summary": "对齐不是看起来正。先问对齐的是文字基线、画面焦点，还是盒子。间距用 gap，贴边用帽高，定位用 inset。",
-  "summaryEn": "Alignment is not “looks straight.” First ask whether you are lining up the baseline, the focal point, or the box. Space with gap, pad to the cap, position with inset.",
-  "asks": "对齐的是基线、焦点，还是盒子？",
-  "asksEn": "Are you aligning the baseline, the focal point, or the box?",
+  "eyebrow": "Baseline · Focus · Digits · Box",
+  "eyebrowEn": "Baseline · Focus · Digits · Box",
+  "summary": "对齐不是看起来正。先问对齐的是文字基线、画面焦点、数位还是盒子。间距用 gap，贴边用帽高，定位用 inset，金额用等宽，列表用两端扫读。",
+  "summaryEn": "Alignment is not “looks straight.” First ask whether you are lining up the baseline, the focal point, the digits, or the box. Space with gap, pad to the cap, position with inset, lock decimals in tabular-nums, and scan list rows with space-between.",
+  "asks": "对齐的是基线、焦点、数位，还是盒子？",
+  "asksEn": "Are you aligning the baseline, the focal point, the digits, or the box?",
   "links": [
     {
       "slug": "layout-taxonomy",
@@ -18,6 +18,6 @@
   ],
   "status": "active",
   "created": "2026-08-23",
-  "updated": "2026-09-11",
+  "updated": "2026-09-14",
   "tags": ["alignment", "construction", "type"]
 }

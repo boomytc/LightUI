@@ -254,23 +254,170 @@ transform: translate(6px, -4px);`,
     wrongCaption: loc("四边缝不等，换尺寸就歪", "Uneven seams; it slips when size changes"),
     rightCaption: loc("inset: 10px，四边同一条缝", "inset: 10px — four matching seams"),
   },
+  {
+    id: "numeric",
+    index: "08",
+    name: "Numeric",
+    zh: loc("数位", "Numeric"),
+    oneLiner: loc("金额等宽右对齐，小数点垂直成线", "Right-align numbers in tabular-nums; line up the decimal point"),
+    scenes: [
+      loc("费用明细", "Fee breakdowns"),
+      loc("报价与账单", "Quotes and invoices"),
+      loc("财务报表与多行统计", "Statements and multi-line metrics"),
+    ],
+    rules: [
+      loc("text-align: right 金额列右对齐", "text-align: right for numeric columns"),
+      loc("font-variant-numeric: tabular-nums 使用等宽数字", "font-variant-numeric: tabular-nums for equal width digits"),
+      loc("统一保留两位小数，补齐零位", "Pad decimals to fixed precision (e.g. .00)"),
+    ],
+    spec: loc(
+      "金额列右对齐，统一保留小数位，并开启等宽数字（tabular-nums）。让个位、十位和小数点上下对齐，方便比对大小。",
+      "Right-align numeric columns, pad decimal places uniformly, and use tabular-nums so units, tens, and decimal points line up vertically.",
+    ),
+    note: loc("比较大小靠数位对齐。比例字体 1 比 9 窄，会把小数点扯歪。", "Magnitude comparison relies on digit columns. Proportional 1 is narrower than 9 and drags the decimal line."),
+    tells: loc("小数点垂直成线，大小一眼看清", "Decimals form a vertical line; values compare at a glance"),
+    css: `text-align: right;
+font-variant-numeric: tabular-nums;
+font-feature-settings: "tnum";`,
+    wrongCss: `text-align: left;
+/* 比例数字，未补齐小数位 */
+font-variant-numeric: normal;`,
+    wrongHint: loc("左对齐 · 比例数字", "Left align · proportional"),
+    rightHint: loc("右对齐 · 等宽数位", "Right align · tabular digits"),
+    wrongCaption: loc("左对齐与变宽数字让个位十位错位，无法纵向比大小", "Left-aligned proportional numbers stagger digit columns"),
+    rightCaption: loc("右对齐 + 等宽数字，小数点对齐成一条坚挺的轴", "Right-aligned tabular-nums locks decimals into one vertical axis"),
+  },
+  {
+    id: "between",
+    index: "09",
+    name: "Between",
+    zh: loc("两端", "Between"),
+    oneLiner: loc("列表两端贴边，右侧状态垂直成线", "Pin both ends in a row; status forms a vertical scanning line"),
+    scenes: [
+      loc("预约记录与订单列表", "Booking and order records"),
+      loc("设置项与菜单行", "Settings items and menu rows"),
+      loc("键值列表与任务清单", "Key-value lists and task rows"),
+    ],
+    rules: [
+      loc("justify-content: space-between", "justify-content: space-between"),
+      loc("名称贴左边线，状态贴右边线", "Name hugs left edge, status hugs right edge"),
+      loc("多行共用左右边线，便于纵向扫读", "All rows share left and right edges for effortless vertical scanning"),
+    ],
+    spec: loc(
+      "列表每一行用两端对齐（justify-content: space-between）：名称贴左边线，状态贴右边线。状态在垂直方向对齐成列，方便快速扫读。",
+      "Use justify-content: space-between on list rows: name hugs left, status hugs right. Status badges form a clean vertical column for fast scanning.",
+    ),
+    note: loc("状态紧跟名称会随字数左右漂移，右侧参差不齐逼人逐行找。", "Badges clinging to titles drift horizontally with title length, forcing ragged eye movement."),
+    tells: loc("名称靠左、状态靠右，右边缘整齐成列", "Title on left, status on right; right edge scans straight down"),
+    css: `display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 1rem;`,
+    wrongCss: `display: flex;
+align-items: center;
+justify-content: flex-start;
+gap: 0.75rem;`,
+    wrongHint: loc("紧跟标题 · 状态漂移", "Follows title · status drifts"),
+    rightHint: loc("两端贴边 · 扫读成列", "Space-between · scan column"),
+    wrongCaption: loc("状态跟随标题字数左右漂移，右侧参差不齐", "Status position fluctuates with title length, jagged on the right"),
+    rightCaption: loc("名称贴左、状态贴右，纵向形成一条笔直的扫读边缘", "Name hugs left, status hugs right; creates a straight scanning edge"),
+  },
+  {
+    id: "reading",
+    index: "10",
+    name: "Reading",
+    zh: loc("读线", "Reading"),
+    oneLiner: loc("容器居中不代表文字居中，保持左侧起跑线", "Centering the box does not mean centering copy; keep the left start line"),
+    scenes: [
+      loc("居中卡片正文", "Centered card body copy"),
+      loc("课程介绍与产品说明", "Course introductions and product descriptions"),
+      loc("多行说明文与文章段落", "Multi-line paragraphs and articles"),
+    ],
+    rules: [
+      loc("容器水平居中 margin-inline: auto", "Center container with margin-inline: auto"),
+      loc("多行文本保持 text-align: left", "Keep multi-line copy at text-align: left"),
+      loc("共用左侧起跑线，视线换行不费劲", "Share one left origin line so eyes return effortlessly"),
+    ],
+    spec: loc(
+      "内容区在页面中水平居中（margin-inline: auto），但标题与正文必须保持左对齐（text-align: left），共用左侧起跑线。不要整块文字居中让行首跳动。",
+      "Center the content container horizontally (margin-inline: auto), but keep headlines and body copy left-aligned (text-align: left) sharing a common left starting line.",
+    ),
+    note: loc("连续阅读时眼睛换行需要锚点。起点跳动会产生显著阅读疲劳。", "Eyes need a consistent left anchor when wrapping lines. A moving start line causes fatigue."),
+    tells: loc("容器在正中，文字从同一个起点出发", "Container in the center; lines start from the exact same mark"),
+    css: `.card {
+  margin-inline: auto;
+  max-width: 28rem;
+  text-align: left;
+}`,
+    wrongCss: `.card {
+  margin-inline: auto;
+  max-width: 28rem;
+  text-align: center; /* 容器居中顺手居中文本 */
+}`,
+    wrongHint: loc("文本居中 · 起点跳动", "Centered copy · jumping starts"),
+    rightHint: loc("容器居中 · 文本左齐", "Centered box · left start line"),
+    wrongCaption: loc("每行起点随行宽忽左忽右，换行视线需要重新搜寻", "Line starts bounce with line length, forcing eyes to hunt each return"),
+    rightCaption: loc("容器居中保持版面均衡，正文共用左边线保证阅读流畅", "Balanced container position with a shared left origin for smooth reading"),
+  },
+  {
+    id: "center",
+    index: "11",
+    name: "Center",
+    zh: loc("中轴", "Center"),
+    oneLiner: loc("结果区沿中轴聚焦，详细信息回归左对齐", "Hero result lines up on the center axis; details drop back to left alignment"),
+    scenes: [
+      loc("预约成功与支付完成", "Success and confirmation dialogs"),
+      loc("空状态与短引导", "Empty states and quick onboarding"),
+      loc("操作反馈卡片", "Action feedback cards"),
+    ],
+    rules: [
+      loc("图标、短标题、主按钮沿垂直中轴居中", "Center icon, short headline, and primary CTA on the vertical midline"),
+      loc("下方键值对详细信息保持左对齐", "Keep key-value details below left-aligned"),
+      loc("不让详细信息跟结果区抢中轴", "Do not let secondary details fight the hero axis"),
+    ],
+    spec: loc(
+      "反馈卡片的图标、短标题与主按钮沿中轴居中排列突出结果。下方的明细信息使用左对齐键值对，不要无差别全部居中抢夺焦点。",
+      "Center the feedback icon, short title, and primary CTA along the vertical axis to highlight the result. Keep detailed rows below left-aligned so they don't compete.",
+    ),
+    note: loc("单一强行动沿中轴最有力。结构化明细一旦居中，键与值就飘散了。", "A single primary callout is strongest centered. Centering structured metadata scatters keys and values."),
+    tells: loc("结果一锤定音，明细整齐清楚", "The result strikes the center; details read orderly below"),
+    css: `.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.details {
+  text-align: left;
+}`,
+    wrongCss: `.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center; /* 连同详细信息全部居中 */
+}`,
+    wrongHint: loc("全卡居中 · 争抢中轴", "All centered · competing axis"),
+    rightHint: loc("结果中轴 · 明细左齐", "Hero center · details left"),
+    wrongCaption: loc("明细键值对居中后四散飘动，与核心结果区争夺视线", "Centered details scatter key-value alignment and dilute the hero result"),
+    rightCaption: loc("核心结果沿中轴放大聚焦，辅助明细靠左结构清晰", "Core result focused on center axis; secondary details structured cleanly"),
+  },
 ];
 
 export const FORMULA = [
   {
     n: "1",
     title: loc("对齐什么", "What it aligns"),
-    example: loc("基线、焦点、盒子，还是缝 / 边", "Baseline, focus, box — or a gap / an edge"),
+    example: loc("基线、焦点、盒子、数位，还是缝 / 边", "Baseline, focus, box, digit — or a gap / an edge"),
   },
   {
     n: "2",
     title: loc("场景", "Scene"),
-    example: loc("价格单位、封面裁切、图标行", "A price, a cover crop, an icon row"),
+    example: loc("价格单位、封面裁切、账单数字、列表状态", "Price units, cover crops, fee digits, list statuses"),
   },
   {
     n: "3",
     title: loc("规则", "Rule"),
-    example: loc("baseline、cover + 焦点、交叉轴 center", "baseline, cover + focus, cross-axis center"),
+    example: loc("baseline、cover + 焦点、tabular-nums、space-between", "baseline, cover + focus, tabular-nums, space-between"),
   },
 ];
 
