@@ -49,16 +49,23 @@ export function GraphClusterView({
             className="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-card transition-all duration-200 hover:border-border-strong"
           >
             {/* Domain Island Header */}
-            <div className="flex items-center justify-between border-b border-border bg-surface-2/60 px-5 py-4">
-              <div className="flex items-center gap-2.5">
-                <span className="grid size-7 place-items-center rounded-lg bg-fg text-surface shadow-xs">
-                  <Icon className="size-4" />
-                </span>
-                <div>
-                  <h3 className="text-[15px] font-semibold text-fg">{group.title}</h3>
-                  <span className="text-[11px] font-mono text-fg-subtle">{copy.domainStudiesCount(group.items.length)}</span>
+            <div className="border-b border-border bg-surface-2/60 px-5 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="grid size-7 place-items-center rounded-lg bg-fg text-surface shadow-xs">
+                    <Icon className="size-4" />
+                  </span>
+                  <div>
+                    <h3 className="text-[15px] font-semibold text-fg">{group.title}</h3>
+                    <span className="text-[11px] font-mono text-fg-subtle">{copy.domainStudiesCount(group.items.length)}</span>
+                  </div>
                 </div>
               </div>
+              {group.desc ? (
+                <p className="mt-2.5 text-[12px] leading-relaxed text-fg-muted">
+                  {group.desc}
+                </p>
+              ) : null}
             </div>
 
             {/* Studies in this Domain */}

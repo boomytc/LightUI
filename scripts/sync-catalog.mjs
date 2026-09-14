@@ -47,6 +47,42 @@ for (const m of rows) {
   }
 }
 
+const categoriesFile = path.join(root, "products/lab/src/lib/categories.ts");
+const categoriesRaw = await readFile(categoriesFile, "utf8").catch(() => null);
+if (!categoriesRaw) {
+  console.error("missing products/lab/src/lib/categories.ts");
+  process.exitCode = 1;
+} else {
+  const mapBlockMatch = categoriesRaw.match(/export const SLUG_CATEGORY_MAP[^{]*\{([\s\S]*?)\};/);
+  if (!mapBlockMatch) {
+    console.error("missing SLUG_CATEGORY_MAP in products/lab/src/lib/categories.ts");
+    process.exitCode = 1;
+  } else {
+    const VALID_CATEGORIES = new Set(["pointer", "layout", "controls", "feedback", "craft"]);
+    const mapEntries = [...mapBlockMatch[1].matchAll(/"([^"]+)"\s*:\s*"([^"]+)"/g)];
+    const mappedKeys = new Set(mapEntries.map((m) => m[1]));
+    const slugSet = new Set(slugs);
+
+    for (const slug of slugs) {
+      if (!mappedKeys.has(slug)) {
+        console.error(`missing category mapping in products/lab/src/lib/categories.ts: ${slug}`);
+        process.exitCode = 1;
+      }
+    }
+
+    for (const [, key, cat] of mapEntries) {
+      if (!slugSet.has(key)) {
+        console.error(`orphan category mapping in products/lab/src/lib/categories.ts: ${key}`);
+        process.exitCode = 1;
+      }
+      if (!VALID_CATEGORIES.has(cat)) {
+        console.error(`invalid category id in products/lab/src/lib/categories.ts: ${key} -> ${cat}`);
+        process.exitCode = 1;
+      }
+    }
+  }
+}
+
 rows.sort((a, b) => {
   const rank = { active: 0, draft: 1, retired: 2 };
   const byStatus = (rank[a.status] ?? 9) - (rank[b.status] ?? 9);

@@ -23,53 +23,54 @@ export const CATEGORIES: CategoryMeta[] = [
     id: "pointer",
     nameZh: "指针与手势",
     nameEn: "Pointer & Gesture",
-    descZh: "安全三角、长按选择、下拉刷新、拖放与视线量化",
-    descEn: "Safe triangle, long-press selection, pull-to-refresh, drag commit, and gaze grid",
+    descZh: "连续输入离散化、触控意图消歧、阻尼与基准吸附",
+    descEn: "Continuous-to-discrete quantization, touch disambiguation, damping, and snap",
   },
   {
     id: "layout",
-    nameZh: "结构与布局",
-    nameEn: "Layout & Structure",
-    descZh: "页面骨架、分栏、助手与看板层递",
-    descEn: "Page skeleton, sidebar, assistant chrome, and layers",
+    nameZh: "结构与导览",
+    nameEn: "Layout & Navigation",
+    descZh: "页面空间骨架、分栏拓扑、流内撑开、长文大纲与空间定位",
+    descEn: "Page skeleton, split panes, inflow expansion, and spatial outline navigation",
   },
   {
     id: "controls",
     nameZh: "表单与控件",
     nameEn: "Controls & Forms",
-    descZh: "按钮重量、输入选择、填写职责、下拉与页签",
-    descEn: "Button weights, input choices, filling duties, dropdowns, and tabs",
+    descZh: "动作操作重量、选与填的输入负荷、分阶段信息披露与提交模型",
+    descEn: "Action weights, input load, progressive disclosure, and submit models",
   },
   {
     id: "feedback",
-    nameZh: "反馈与动效",
-    nameEn: "Feedback & Motion",
-    descZh: "进度、计时、提示打断、骨架等待与乐观回滚",
-    descEn: "Progress, timers, notification levels, pending states, and optimistic rollback",
+    nameZh: "反馈与打断",
+    nameEn: "Feedback & Interruption",
+    descZh: "状态占位、进度真伪、计时专注、破坏性确认防线、新手引导",
+    descEn: "Pending placeholders, true progress, focus timers, confirmation guardrails, and guided tours",
   },
   {
     id: "craft",
-    nameZh: "视觉与对齐",
+    nameZh: "工程与几何",
     nameEn: "Craft & Geometry",
-    descZh: "基线对齐、边框光束、扫光、内凹角与可解释性",
-    descEn: "Baseline alignment, border beam, glyph sweep, inverted notch, and explainability",
+    descZh: "像素级数位基线、边框光束动效、圆角真实剪裁、矢量插值与算法可视呈现",
+    descEn: "Pixel baselines, border beams, true notch masks, vector interpolation, and explainability",
   },
 ];
 
-const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
+export const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
+  // 指针与手势 (Pointer & Gesture - 11)
   "intent-cascade": "pointer",
   "look-quantize": "pointer",
   "scroll-chrome": "pointer",
   "drag-commit": "pointer",
-  "guide-interrupt": "pointer",
   "chart-read": "pointer",
   "press-select": "pointer",
   "pull-refresh": "pointer",
   "sheet-snap": "pointer",
   "swipe-action": "pointer",
   "touch-context": "pointer",
-  "container-morph": "craft",
+  "wheel-picker": "pointer",
 
+  // 结构与导览 (Layout & Navigation - 11)
   "layout-taxonomy": "layout",
   "sidebar-taxonomy": "layout",
   "assistant-chrome": "layout",
@@ -80,33 +81,37 @@ const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "expand-inflow": "layout",
   "page-append": "layout",
   "group-taxonomy": "layout",
+  "locator-taxonomy": "layout",
 
+  // 表单与控件 (Controls & Forms - 6)
   "button-taxonomy": "controls",
   "control-taxonomy": "controls",
   "dropdown-taxonomy": "controls",
-  "validation-taxonomy": "controls",
-  "fill-taxonomy": "controls",
   "tab-taxonomy": "controls",
-  "locator-taxonomy": "controls",
-  "wheel-picker": "controls",
+  "fill-taxonomy": "controls",
+  "validation-taxonomy": "controls",
 
+  // 反馈与打断 (Feedback & Interruption - 10)
   "progress-taxonomy": "feedback",
   "timer-taxonomy": "feedback",
-  "notify-taxonomy": "feedback",
   "pending-taxonomy": "feedback",
+  "optimistic-rollback": "feedback",
+  "notify-taxonomy": "feedback",
   "overlay-taxonomy": "feedback",
+  "confirm-taxonomy": "feedback",
+  "guide-interrupt": "feedback",
   "carousel-taxonomy": "feedback",
   "recall-grade": "feedback",
-  "optimistic-rollback": "feedback",
-  "confirm-taxonomy": "feedback",
 
+  // 工程与几何 (Craft & Geometry - 8)
   "align-craft": "craft",
   "border-beam": "craft",
   "glyph-sweep": "craft",
   "inverted-notch": "craft",
+  "container-morph": "craft",
+  "path-morph": "craft",
   "chart-taxonomy": "craft",
   "bm25-explain": "craft",
-  "path-morph": "craft",
 };
 
 export function getStudyCategory(slug: string): CategoryId {
@@ -115,7 +120,7 @@ export function getStudyCategory(slug: string): CategoryId {
 
 export function categoryLabel(id: string, locale: Locale): string {
   const cat = CATEGORIES.find((c) => c.id === id);
-  if (!cat || cat.id === "all") return id;
+  if (!cat) return id;
   return locale === "en" ? cat.nameEn : cat.nameZh;
 }
 
@@ -139,21 +144,33 @@ export function filterStudies(
     if (!q) return true;
 
     const title = (meta.title ?? "").toLowerCase();
+    const titleEn = (meta.titleEn ?? "").toLowerCase();
     const summary = (meta.summary ?? "").toLowerCase();
+    const summaryEn = (meta.summaryEn ?? "").toLowerCase();
     const asks = (meta.asks ?? "").toLowerCase();
     const asksEn = (meta.asksEn ?? "").toLowerCase();
     const slug = meta.slug.toLowerCase();
     const eyebrow = (meta.eyebrow ?? "").toLowerCase();
+    const eyebrowEn = (meta.eyebrowEn ?? "").toLowerCase();
     const tags = (meta.tags ?? []).join(" ").toLowerCase();
+
+    const cat = CATEGORIES.find((c) => c.id === getStudyCategory(meta.slug));
+    const catZh = cat?.nameZh.toLowerCase() ?? "";
+    const catEn = cat?.nameEn.toLowerCase() ?? "";
 
     return (
       title.includes(q) ||
+      titleEn.includes(q) ||
       summary.includes(q) ||
+      summaryEn.includes(q) ||
       asks.includes(q) ||
       asksEn.includes(q) ||
       slug.includes(q) ||
       eyebrow.includes(q) ||
-      tags.includes(q)
+      eyebrowEn.includes(q) ||
+      tags.includes(q) ||
+      catZh.includes(q) ||
+      catEn.includes(q)
     );
   });
 }

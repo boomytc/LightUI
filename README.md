@@ -10,7 +10,7 @@
   <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&style=flat-square" alt="TypeScript" /></a>
   <a href="https://vitejs.dev"><img src="https://img.shields.io/badge/Vite-8.1-646CFF?logo=vite&logoColor=white&style=flat-square" alt="Vite" /></a>
   <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?logo=tailwindcss&logoColor=white&style=flat-square" alt="Tailwind CSS" /></a>
-  <a href="docs/catalog.md"><img src="https://img.shields.io/badge/Studies-41_Active-10B981?style=flat-square" alt="Studies" /></a>
+  <a href="docs/catalog.md"><img src="https://img.shields.io/badge/Studies-46_Active-10B981?style=flat-square" alt="Studies" /></a>
   <a href="Makefile"><img src="https://img.shields.io/badge/Tests-Passing-success?style=flat-square" alt="Tests" /></a>
   <a href="package.json"><img src="https://img.shields.io/badge/Node-%3E%3D20-339933?logo=node.js&logoColor=white&style=flat-square" alt="Node" /></a>
 </p>
@@ -46,7 +46,7 @@ LightUI 是一个专注于 **「先回答问题，再决定交互机器与外观
 <a id="featured-studies"></a>
 ## 🧩 精选专题与分类学 (Featured Studies)
 
-LightUI 目前收录了 **41 个经过深思与实战检验的交互课题**（完整列表见 [docs/catalog.md](docs/catalog.md)）：
+LightUI 目前收录了 **46 个经过深思与实战检验的交互课题**（完整列表见 [docs/catalog.md](docs/catalog.md)）：
 
 ### 🎯 手势与连续交互 (Gestures & Micro-interactions)
 
@@ -56,11 +56,16 @@ LightUI 目前收录了 **41 个经过深思与实战检验的交互课题**（�
 | **[press-select](studies/press-select/)** | **长按激活多选与滑动防抖**：短按打开、长按超 480ms 激活批量选择；在容差位移内滑动则立即注销长按转为原生顺畅滚动。 |
 | **[pull-refresh](studies/pull-refresh/)** | **下拉刷新与滚动接管**：顶部向下时接管滚动，施加非线性阻尼与最大拉动阈值；松手超阈值提交刷新，未达阈值弹性复位。 |
 | **[drag-commit](studies/drag-commit/)** | **拖放意图识别**：同一拖拽手势精准区分新顺序重排、一次性接收区接收、跨分组转移与无效回弹。 |
+| **[wheel-picker](studies/wheel-picker/)** | **滚轮选择与圆柱透视**：上下拨动惯性滑动、中央基准线吸附（Scroll-snap），离基准线越远透明度与尺寸沿圆柱面几何衰减。 |
+| **[swipe-action](studies/swipe-action/)** | **列表侧滑手势消歧**：矢量消歧区分纵向滚动与横向侧滑；释放时依据位移与阻尼裁定回弹、吸附露出或全滑提交。 |
+| **[sheet-snap](studies/sheet-snap/)** | **多档抽屉动力学吸附**：拖拽全量跟手并带越界阻尼，松手依据位移与速度综合裁定落入离散档位。 |
+| **[touch-context](studies/touch-context/)** | **触控长按消歧与就近避让**：原地按住消歧让路给原生滚动；菜单紧贴触控点就近浮现并在视口边缘自动翻转避让。 |
 
 ### 📐 动效与几何工程 (Motion & Geometric Craft)
 
 | 课题 (Study) | 核心交互逻辑与决策要点 |
 | :--- | :--- |
+| **[align-craft](studies/align-craft/)** | **像素与字形基线对齐**：先问对齐的是基线、焦点、数位还是盒子；间距用 gap，金额用等宽，列表用两端扫读。 |
 | **[path-morph](studies/path-morph/)** | **矢量路径极坐标形变**：利用 2D Procrustes 相似分解求解旋转缩放，配合极坐标插值消除直线插值造成的几何塌陷与自相交。 |
 | **[container-morph](studies/container-morph/)** | **容器身份连续变形**：同一元素连续展开时遵循「内容先走、容器后收」的动效节奏，保持视觉连续性。 |
 | **[inverted-notch](studies/inverted-notch/)** | **内凹圆角挖孔方案**：父级使用真实几何裁切与 Mask 挖孔，彻底杜绝同色补丁在渐变背景或换肤时的接缝露馅问题。 |
@@ -123,7 +128,7 @@ LightUI/
 │   ├── study-contract.md     #   Study 契约接口定义
 │   └── writing.md            #   设计笔记写作约定
 ├── products/lab/             # 🔬 Lab 综合站点（首页 / 作品列表 / 知识图谱 / 思考笔记）
-├── studies/                  # 🧪 41 个独立的交互研究课题目录
+├── studies/                  # 🧪 46 个独立的交互研究课题目录
 │   ├── intent-cascade/
 │   ├── path-morph/
 │   ├── confirm-taxonomy/
