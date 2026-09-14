@@ -8,6 +8,7 @@ Do not keep a second registry.
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
 | [align-craft](../studies/align-craft/) | 对齐不是看起来正。先问对齐的是文字基线、画面焦点、数位还是盒子。间距用 gap，贴边用帽高，定位用 inset，金额用等宽，列表用两端扫读。 | active | 2026-08-23 | 2026-09-14 |
+| [slide-confirm](../studies/slide-confirm/) | 高危不可逆操作，如何用连续物理位移杜绝误触疲劳？滑动确认强制用户执行一段具有明确矢量方向的物理行程，未达阈值松手弹性回退，超过判定阈值才完成破坏性承诺。 | active | 2026-09-14 | 2026-09-14 |
 | [assistant-chrome](../studies/assistant-chrome/) | 助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。 | active | 2026-08-23 | 2026-09-11 |
 | [bm25-explain](../studies/bm25-explain/) | 检索排序不是黑盒总分。先定稀疏与向量的分数不可直接相加，再把得分拆解为词频饱和与篇幅惩罚。 | active | 2026-08-25 | 2026-09-11 |
 | [border-beam](../studies/border-beam/) | 高光沿圆角边框绕行，不要铺满卡片。内层实心底，外层透明边框叠光束。品牌强调色，不要彩虹。 | active | 2026-08-23 | 2026-09-11 |
@@ -59,6 +60,7 @@ Do not keep a second registry.
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
 - **对齐** (`align-craft`) — 对齐的是基线、焦点、数位，还是盒子？
+- **滑动确认** (`slide-confirm`) — 高危不可逆操作，如何用连续物理位移杜绝误触疲劳？
 - **助手** (`assistant-chrome`) — 助手住在对话、侧栏、插件、浮层、画布，还是看不见？
 - **检索可解释性** (`bm25-explain`) — 检索排序怎么让人看明白？
 - **边光** (`border-beam`) — 高光该走边框还是铺满卡片？
@@ -108,6 +110,9 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 ## Edges
 
 - `align-craft` contrast `layout-taxonomy` — 对齐不是换骨架
+- `slide-confirm` contrast `confirm-taxonomy` — 连续物理位移滑块是极限不可逆门禁，不同于模态弹窗与点击阶梯
+- `slide-confirm` contrast `swipe-action` — 滑动确认是单向单一阈值防误触门禁，列表侧滑是多动作就近露出与全滑触发
+- `slide-confirm` contrast `drag-commit` — 滑动确认是标量位移承诺，拖拽提交是空间落位与列表重排
 - `assistant-chrome` contrast `layout-taxonomy` — 助手住哪不是整页骨架
 - `assistant-chrome` contrast `overlay-taxonomy` — 选区工具条不是弹窗
 - `bm25-explain` contrast `dashboard-layers` — 检索分数拆解不是业务看板层递

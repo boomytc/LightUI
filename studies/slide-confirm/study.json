@@ -1,0 +1,35 @@
+{
+  "slug": "slide-confirm",
+  "title": "滑动确认",
+  "titleEn": "Slide to Confirm",
+  "eyebrow": "物理位移承诺 · 临界阈值与防误触门禁",
+  "eyebrowEn": "Displacement Commitment · Threshold Gate & Slip Prevention",
+  "summary": "高危不可逆操作，如何用连续物理位移杜绝误触疲劳？滑动确认强制用户执行一段具有明确矢量方向的物理行程，未达阈值松手弹性回退，超过判定阈值才完成破坏性承诺。",
+  "summaryEn": "High-stakes irreversible actions require continuous physical displacement. Sliding a thumb across a directional track with progressive damping and spring rollback prevents confirmation fatigue and accidental clicks.",
+  "asks": "高危不可逆操作，如何用连续物理位移杜绝误触疲劳？",
+  "asksEn": "How should critical irreversible actions use continuous physical displacement to prevent modal fatigue misclicks?",
+  "links": [
+    {
+      "slug": "confirm-taxonomy",
+      "rel": "contrast",
+      "when": "连续物理位移滑块是极限不可逆门禁，不同于模态弹窗与点击阶梯",
+      "whenEn": "continuous displacement slider is extreme irreversible gate, unlike modal or click steps"
+    },
+    {
+      "slug": "swipe-action",
+      "rel": "contrast",
+      "when": "滑动确认是单向单一阈值防误触门禁，列表侧滑是多动作就近露出与全滑触发",
+      "whenEn": "slide-confirm is a single threshold safeguard, while swipe-action exposes item actions"
+    },
+    {
+      "slug": "drag-commit",
+      "rel": "contrast",
+      "when": "滑动确认是标量位移承诺，拖拽提交是空间落位与列表重排",
+      "whenEn": "slide-confirm is scalar travel commitment, while drag-commit is spatial drop reordering"
+    }
+  ],
+  "status": "active",
+  "created": "2026-09-14",
+  "updated": "2026-09-14",
+  "tags": ["confirm", "gesture", "slider", "safety", "pointer", "mobile"]
+}

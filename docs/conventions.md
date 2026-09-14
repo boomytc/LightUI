@@ -123,8 +123,9 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5212` locator-taxonomy, `5213` confirm-taxonomy,
   `5214` path-morph, `5215` group-taxonomy,
   `5216` sheet-snap, `5217` wheel-picker,
-  `5218` swipe-action, `5219` touch-context.
-  Next free: `5220`.
+  `5218` swipe-action, `5219` touch-context,
+  `5220` slide-confirm.
+  Next free: `5221`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.
