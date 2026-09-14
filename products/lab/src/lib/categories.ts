@@ -124,12 +124,12 @@ export function categoryLabel(id: string, locale: Locale): string {
   return locale === "en" ? cat.nameEn : cat.nameZh;
 }
 
-export function filterStudies(
-  studies: { meta: StudyMeta }[],
+export function filterStudies<T extends { meta: StudyMeta }>(
+  studies: T[],
   query: string,
   categoryId: CategoryId,
   selectedTag?: string,
-): { meta: StudyMeta }[] {
+): T[] {
   const q = query.trim().toLowerCase();
 
   return studies.filter(({ meta }) => {

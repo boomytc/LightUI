@@ -167,6 +167,7 @@ export function Studies() {
             >
               <StudyCard
                 meta={s.meta}
+                StageView={s.StageView}
                 locale={locale}
                 selectedTag={selectedTag}
                 onSelectTag={(tag) => handleSelectTag(tag)}

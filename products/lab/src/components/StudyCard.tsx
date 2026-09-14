@@ -1,3 +1,4 @@
+import { Component, type ComponentType, type ReactNode, useEffect, useRef, useState } from "react";
 import { ArrowUpRight, HelpCircle } from "lucide-react";
 import { DateStamp } from "./DateStamp";
 import { categoryLabel, getStudyCategory } from "../lib/categories";
@@ -7,14 +8,37 @@ import { navigate } from "../lib/nav";
 import type { Locale } from "../lib/prefs";
 import type { StudyMeta } from "../lib/study";
 
+class PreviewErrorBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch() {
+    // 捕获个别 Study 运行时异常，防止整个列表白屏
+  }
+  render() {
+    return this.state.hasError ? this.props.fallback : this.props.children;
+  }
+}
+
+function StagePlaceholder() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-surface-2/30">
+      <div className="size-8 rounded-full border border-border/80 border-t-accent/60 animate-spin opacity-20" />
+    </div>
+  );
+}
+
 export function StudyCard({
   meta,
   locale,
+  StageView,
   onSelectTag,
   selectedTag,
 }: {
   meta: StudyMeta;
   locale: Locale;
+  StageView?: ComponentType;
   onSelectTag?: (tag: string) => void;
   selectedTag?: string;
 }) {
@@ -22,6 +46,29 @@ export function StudyCard({
   const copy = messages(locale);
   const asks = studyAsks(meta, locale);
   const categoryId = getStudyCategory(meta.slug);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    if (!("IntersectionObserver" in window)) {
+      setIsInView(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "160px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <a
@@ -34,6 +81,27 @@ export function StudyCard({
       className="lab-card group relative flex h-full flex-col justify-between rounded-2xl border border-border bg-surface p-5 shadow-card motion-safe:hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-2 hover:shadow-menu"
     >
       <div>
+        <div
+          ref={containerRef}
+          inert
+          aria-hidden="true"
+          className="relative mb-3.5 h-36 w-full overflow-hidden rounded-xl border border-border/60 bg-surface-2/40 pointer-events-none select-none transition-colors duration-150 group-hover:border-border-strong"
+        >
+          {StageView && isInView ? (
+            <PreviewErrorBoundary fallback={<StagePlaceholder />}>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-[560px] h-[300px] shrink-0 flex items-center justify-center origin-center scale-[0.52]">
+                  <div className="lab-stage-preview">
+                    <StageView />
+                  </div>
+                </div>
+              </div>
+            </PreviewErrorBoundary>
+          ) : (
+            <StagePlaceholder />
+          )}
+        </div>
+
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="text-[11px] font-medium tracking-wide text-accent">
