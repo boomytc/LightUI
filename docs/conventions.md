@@ -65,7 +65,7 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another row gesture | Disambiguation & commit in `swipe-action` | Safety confirm → `confirm-taxonomy`; batch select → `press-select` |
 | Another context menu | Touch disambiguation & flip in `touch-context` | Batch mode → `press-select`; click popover → `overlay-taxonomy` |
 | Another presence cursor | Sparse-sample spring in `cursor-spring` | Local hover with no sampling grain → leave it |
-| Another confirm slider | 1-D displacement gate in `slide-confirm` | Off-track ballistic throw → new study |
+| Another confirm slider | 1-D displacement gate in `slide-confirm` | Off-track ballistic throw → `sling-throw` |
 
 Do not merge these into one encyclopedia because the fixtures look alike.
 The graph keeps the questions apart. Isolated nodes are allowed; only add
@@ -129,8 +129,8 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5216` sheet-snap, `5217` wheel-picker,
   `5218` swipe-action, `5219` touch-context,
   `5220` slide-confirm, `5226` cursor-spring,
-  `5227` cone-reveal.
-  Next free: `5228`.
+  `5227` cone-reveal, `5228` sling-throw.
+  Next free: `5229`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

@@ -22,6 +22,7 @@ const GESTURE_STUDIES = new Set([
   "sheet-snap",
   "wheel-picker",
   "swipe-action",
+  "sling-throw",
 ]);
 
 export function StudyPage({ slug }: { slug: string }) {

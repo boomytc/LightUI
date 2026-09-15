@@ -1,0 +1,35 @@
+{
+  "slug": "sling-throw",
+  "title": "弹弓抛掷",
+  "titleEn": "Sling throw",
+  "eyebrow": "Off-track · Ballistic land",
+  "eyebrowEn": "Off-track · Ballistic land",
+  "summary": "沿轨道调值时，离轨不该被夹回一维。拉过离轨阈值，松手按抛体落点改值。",
+  "summaryEn": "When tuning a value on a track, leaving it should not clamp back to 1-D. Cross the off-track threshold, release, and commit the ballistic landing.",
+  "asks": "沿轨道调值时，离轨该夹回一维，还是变成弹弓按落点改值？",
+  "asksEn": "When tuning a value on a track, should leaving it clamp to 1-D, or become a slingshot that commits the landing?",
+  "links": [
+    {
+      "slug": "slide-confirm",
+      "rel": "contrast",
+      "when": "弹弓是离轨抛体改值，不是沿轨位移过门槛承诺",
+      "whenEn": "a sling throw changes a value by landing, it is not an on-track confirm gate"
+    },
+    {
+      "slug": "drag-commit",
+      "rel": "contrast",
+      "when": "落点是轨道上的量化值，不是列表重排或跨组接收",
+      "whenEn": "the landing is a quantized track value, not a list reorder or cross-group receive"
+    },
+    {
+      "slug": "wheel-picker",
+      "rel": "contrast",
+      "when": "抛体落地量化不是滚轮吸附基准线",
+      "whenEn": "ballistic landing is not a wheel snapping to a baseline"
+    }
+  ],
+  "status": "active",
+  "created": "2026-09-15",
+  "updated": "2026-09-15",
+  "tags": ["pointer", "slider", "physics", "throw"]
+}

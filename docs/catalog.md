@@ -9,6 +9,7 @@ Do not keep a second registry.
 | --- | --- | --- | --- | --- |
 | [cone-reveal](../studies/cone-reveal/) | 密文不该整段亮出来。指针从固定原点射出锥光，只有落在锥内的字形变成明文，锥外仍是圆点。 | active | 2026-09-15 | 2026-09-15 |
 | [cursor-spring](../studies/cursor-spring/) | 网络只能丢稀疏坐标，协作光标如何平滑跟手？解耦网络采样与屏幕刷新，用二阶弹簧半隐式欧拉积分重建自然惯性与微过冲。 | active | 2026-09-15 | 2026-09-15 |
+| [sling-throw](../studies/sling-throw/) | 沿轨道调值时，离轨不该被夹回一维。拉过离轨阈值，松手按抛体落点改值。 | active | 2026-09-15 | 2026-09-15 |
 | [align-craft](../studies/align-craft/) | 对齐不是看起来正。先问对齐的是文字基线、画面焦点、数位还是盒子。间距用 gap，贴边用帽高，定位用 inset，金额用等宽，列表用两端扫读。 | active | 2026-08-23 | 2026-09-14 |
 | [slide-confirm](../studies/slide-confirm/) | 高危不可逆操作，如何用连续物理位移杜绝误触疲劳？滑动确认强制用户执行一段具有明确矢量方向的物理行程，未达阈值松手弹性回退，超过判定阈值才完成破坏性承诺。 | active | 2026-09-14 | 2026-09-14 |
 | [assistant-chrome](../studies/assistant-chrome/) | 助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。 | active | 2026-08-23 | 2026-09-11 |
@@ -63,6 +64,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 - **锥光揭密** (`cone-reveal`) — 密文该整段揭开，还是只让锥光碰到的字形现身？
 - **协作光标** (`cursor-spring`) — 网络只能丢稀疏坐标，协作光标如何平滑跟手？
+- **弹弓抛掷** (`sling-throw`) — 沿轨道调值时，离轨该夹回一维，还是变成弹弓按落点改值？
 - **对齐** (`align-craft`) — 对齐的是基线、焦点、数位，还是盒子？
 - **滑动确认** (`slide-confirm`) — 高危不可逆操作，如何用连续物理位移杜绝误触疲劳？
 - **助手** (`assistant-chrome`) — 助手住在对话、侧栏、插件、浮层、画布，还是看不见？
@@ -119,6 +121,9 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `cursor-spring` contrast `intent-cascade` — 光标斜向穿越的安全三角不是网络丢包的惯性重建
 - `cursor-spring` contrast `look-quantize` — 离散格子量化不是物理阻尼连续平滑
 - `cursor-spring` contrast `optimistic-rollback` — 本地高频状态先行响应不是多人低频采样的物理插值
+- `sling-throw` contrast `slide-confirm` — 弹弓是离轨抛体改值，不是沿轨位移过门槛承诺
+- `sling-throw` contrast `drag-commit` — 落点是轨道上的量化值，不是列表重排或跨组接收
+- `sling-throw` contrast `wheel-picker` — 抛体落地量化不是滚轮吸附基准线
 - `align-craft` contrast `layout-taxonomy` — 对齐不是换骨架
 - `slide-confirm` contrast `confirm-taxonomy` — 连续物理位移滑块是极限不可逆门禁，不同于模态弹窗与点击阶梯
 - `slide-confirm` contrast `swipe-action` — 滑动确认是单向单一阈值防误触门禁，列表侧滑是多动作就近露出与全滑触发
