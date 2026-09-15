@@ -1,0 +1,35 @@
+{
+  "slug": "cone-reveal",
+  "title": "锥光揭密",
+  "titleEn": "Cone reveal",
+  "eyebrow": "Flashlight · Angular coverage",
+  "eyebrowEn": "Flashlight · Angular coverage",
+  "summary": "密文不该整段亮出来。指针从固定原点射出锥光，只有落在锥内的字形变成明文，锥外仍是圆点。",
+  "summaryEn": "A secret should not light up as a whole string. A cone from a fixed origin reveals only the glyphs it covers; the rest stay discs.",
+  "asks": "密文该整段揭开，还是只让锥光碰到的字形现身？",
+  "asksEn": "Should a secret flip as a whole string, or only the glyphs inside a cone?",
+  "links": [
+    {
+      "slug": "look-quantize",
+      "rel": "contrast",
+      "when": "锥光是连续角域覆盖，不是落到图集格子",
+      "whenEn": "a cone is continuous angular coverage, not an atlas cell"
+    },
+    {
+      "slug": "glyph-sweep",
+      "rel": "contrast",
+      "when": "锥光揭开碰到的字，不是沿字形扫一道高光",
+      "whenEn": "the cone reveals covered glyphs, it is not a traveling sheen"
+    },
+    {
+      "slug": "fill-taxonomy",
+      "rel": "contrast",
+      "when": "空间揭开密文字形不是填写三个时刻该交代什么",
+      "whenEn": "spatial glyph reveal is not what a field discloses across three moments"
+    }
+  ],
+  "status": "active",
+  "created": "2026-09-15",
+  "updated": "2026-09-15",
+  "tags": ["pointer", "reveal", "cone", "secret"]
+}

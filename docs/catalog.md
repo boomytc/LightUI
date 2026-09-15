@@ -7,6 +7,7 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [cone-reveal](../studies/cone-reveal/) | 密文不该整段亮出来。指针从固定原点射出锥光，只有落在锥内的字形变成明文，锥外仍是圆点。 | active | 2026-09-15 | 2026-09-15 |
 | [cursor-spring](../studies/cursor-spring/) | 网络只能丢稀疏坐标，协作光标如何平滑跟手？解耦网络采样与屏幕刷新，用二阶弹簧半隐式欧拉积分重建自然惯性与微过冲。 | active | 2026-09-15 | 2026-09-15 |
 | [align-craft](../studies/align-craft/) | 对齐不是看起来正。先问对齐的是文字基线、画面焦点、数位还是盒子。间距用 gap，贴边用帽高，定位用 inset，金额用等宽，列表用两端扫读。 | active | 2026-08-23 | 2026-09-14 |
 | [slide-confirm](../studies/slide-confirm/) | 高危不可逆操作，如何用连续物理位移杜绝误触疲劳？滑动确认强制用户执行一段具有明确矢量方向的物理行程，未达阈值松手弹性回退，超过判定阈值才完成破坏性承诺。 | active | 2026-09-14 | 2026-09-14 |
@@ -60,6 +61,7 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **锥光揭密** (`cone-reveal`) — 密文该整段揭开，还是只让锥光碰到的字形现身？
 - **协作光标** (`cursor-spring`) — 网络只能丢稀疏坐标，协作光标如何平滑跟手？
 - **对齐** (`align-craft`) — 对齐的是基线、焦点、数位，还是盒子？
 - **滑动确认** (`slide-confirm`) — 高危不可逆操作，如何用连续物理位移杜绝误触疲劳？
@@ -111,6 +113,9 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `cone-reveal` contrast `look-quantize` — 锥光是连续角域覆盖，不是落到图集格子
+- `cone-reveal` contrast `glyph-sweep` — 锥光揭开碰到的字，不是沿字形扫一道高光
+- `cone-reveal` contrast `fill-taxonomy` — 空间揭开密文字形不是填写三个时刻该交代什么
 - `cursor-spring` contrast `intent-cascade` — 光标斜向穿越的安全三角不是网络丢包的惯性重建
 - `cursor-spring` contrast `look-quantize` — 离散格子量化不是物理阻尼连续平滑
 - `cursor-spring` contrast `optimistic-rollback` — 本地高频状态先行响应不是多人低频采样的物理插值

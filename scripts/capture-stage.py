@@ -254,6 +254,11 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("jelly", "8", "jelly-8.png"),
         ("follow", "30", "follow-30.png"),
     ],
+    "cone-reveal": [
+        ("cone", "peek", "cone-peek.png"),
+        ("cone", "asleep", "cone-asleep.png"),
+        ("toggle", "peek", "toggle-peek.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:

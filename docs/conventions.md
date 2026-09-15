@@ -39,7 +39,7 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another slide-in | Off-canvas occupancy in `sidebar-taxonomy` | Small-screen hamburger from the edge → `nav-taxonomy` |
 | Another inverted corner | Cut vs stitch in `inverted-notch` | A different hole (not a card chip) → new study |
 | Another text shine | Glyph-follow in `glyph-sweep` | A box-level sheen → new study |
-| Another look-at-pointer face | Quantize in `look-quantize` | A mascot / game product → leave it; cone / flashlight revealing hidden glyphs → new study |
+| Another look-at-pointer face | Quantize in `look-quantize` | A mascot / game product → leave it; cone / flashlight revealing hidden glyphs → `cone-reveal` |
 | Another in-page tab row | Selection model in `tab-taxonomy` | Site nav placement → `nav-taxonomy` |
 | Another form field | Fill vs pick in `control-taxonomy` | What a downward panel **commits** → `dropdown-taxonomy` |
 | Another tidy form | What to disclose in `fill-taxonomy` | When to speak → `validation-taxonomy`; fill vs pick → `control-taxonomy` |
@@ -128,8 +128,9 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5214` path-morph, `5215` group-taxonomy,
   `5216` sheet-snap, `5217` wheel-picker,
   `5218` swipe-action, `5219` touch-context,
-  `5220` slide-confirm, `5226` cursor-spring.
-  Next free: `5227`.
+  `5220` slide-confirm, `5226` cursor-spring,
+  `5227` cone-reveal.
+  Next free: `5228`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

@@ -57,7 +57,7 @@ export const CATEGORIES: CategoryMeta[] = [
 ];
 
 export const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
-  // 指针与手势 (Pointer & Gesture - 13)
+  // 指针与手势 (Pointer & Gesture - 14)
   "intent-cascade": "pointer",
   "look-quantize": "pointer",
   "scroll-chrome": "pointer",
@@ -71,6 +71,7 @@ export const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "wheel-picker": "pointer",
   "slide-confirm": "pointer",
   "cursor-spring": "pointer",
+  "cone-reveal": "pointer",
 
   // 结构与导览 (Layout & Navigation - 11)
   "layout-taxonomy": "layout",
