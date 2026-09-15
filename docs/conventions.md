@@ -27,6 +27,7 @@ The first question is not only “which widget machine is this.” It may be:
 | Construction | Naive assembly shows a seam | 内凹角：挖孔还是缝回去 |
 | Motion-follow | The motion is tied to the wrong property or unit | 扫光跟字走还是跟块走 |
 | Continuous → discrete | Pointer / scroll maps onto the wrong grain | 视线落到格子；斜向穿越该不该换项 |
+| Physics reconstruction | Sparse samples or a throw rebuilt as continuous motion | 协作光标的弹簧积分 |
 
 A later idea is another `studies/<slug>/`. It does not need a new top-level
 lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
@@ -38,7 +39,7 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another slide-in | Off-canvas occupancy in `sidebar-taxonomy` | Small-screen hamburger from the edge → `nav-taxonomy` |
 | Another inverted corner | Cut vs stitch in `inverted-notch` | A different hole (not a card chip) → new study |
 | Another text shine | Glyph-follow in `glyph-sweep` | A box-level sheen → new study |
-| Another look-at-pointer face | Quantize in `look-quantize` | A mascot / game product → leave it out |
+| Another look-at-pointer face | Quantize in `look-quantize` | A mascot / game product → leave it; cone / flashlight revealing hidden glyphs → new study |
 | Another in-page tab row | Selection model in `tab-taxonomy` | Site nav placement → `nav-taxonomy` |
 | Another form field | Fill vs pick in `control-taxonomy` | What a downward panel **commits** → `dropdown-taxonomy` |
 | Another tidy form | What to disclose in `fill-taxonomy` | When to speak → `validation-taxonomy`; fill vs pick → `control-taxonomy` |
@@ -63,6 +64,8 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another time/number picker | Baseline snap & depth in `wheel-picker` | Form field choice → `control-taxonomy`; timer session → `timer-taxonomy` |
 | Another row gesture | Disambiguation & commit in `swipe-action` | Safety confirm → `confirm-taxonomy`; batch select → `press-select` |
 | Another context menu | Touch disambiguation & flip in `touch-context` | Batch mode → `press-select`; click popover → `overlay-taxonomy` |
+| Another presence cursor | Sparse-sample spring in `cursor-spring` | Local hover with no sampling grain → leave it |
+| Another confirm slider | 1-D displacement gate in `slide-confirm` | Off-track ballistic throw → new study |
 
 Do not merge these into one encyclopedia because the fixtures look alike.
 The graph keeps the questions apart. Isolated nodes are allowed; only add
@@ -80,6 +83,7 @@ studies/<slug>/
   AGENTS.md
   README.md
   idea.md
+  idea.en.md            optional; lab falls back to idea.md
   study.json
   src/StudyView.tsx     export function StudyView
   src/StageView.tsx     export function StageView (fixture, no chrome)
@@ -124,8 +128,8 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5214` path-morph, `5215` group-taxonomy,
   `5216` sheet-snap, `5217` wheel-picker,
   `5218` swipe-action, `5219` touch-context,
-  `5220` slide-confirm.
-  Next free: `5221`.
+  `5220` slide-confirm, `5226` cursor-spring.
+  Next free: `5227`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.
@@ -134,6 +138,19 @@ idea or playground changes. Set `asks` (the question) and `links`
 
 ## After adding
 
+Same change also updates:
+
+- This file’s port list (take **Next free**; do not skip)
+- `products/lab/src/lib/categories.ts` `SLUG_CATEGORY_MAP` (every slug;
+  pick `pointer` | `layout` | `controls` | `feedback` | `craft`) and the
+  count comments
+- `products/lab/src/lib/categories.test.ts` study count and per-domain counts
+- `scripts/capture-stage.py` `SHOTS` — tuples are `(kind, state, file)`;
+  the capture URL is always `?kind=&state=`, so the study’s
+  `src/lib/stage-query.ts` must alias those params
+
+Then:
+
 ```bash
 make catalog
 make test
@@ -141,7 +158,8 @@ make typecheck
 make dev
 ```
 
-Confirm the new card on `/studies` and the live view on `/s/<slug>`.
+Confirm the new card on `/studies` (correct category chip) and the live
+view on `/s/<slug>`.
 
 Public essays about a study belong in `writing/notes/`, not inside the
 study folder. See `docs/writing.md`.
