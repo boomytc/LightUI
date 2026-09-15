@@ -1,0 +1,35 @@
+{
+  "slug": "cursor-spring",
+  "title": "协作光标",
+  "titleEn": "Presence Cursor",
+  "eyebrow": "Presence cursor · Spring reconstruction",
+  "eyebrowEn": "Presence cursor · Spring reconstruction",
+  "summary": "网络只能丢稀疏坐标，协作光标如何平滑跟手？解耦网络采样与屏幕刷新，用二阶弹簧半隐式欧拉积分重建自然惯性与微过冲。",
+  "summaryEn": "Sparse network packets leave remote cursors stuttering. Decouple network sampling from screen refresh, using second-order semi-implicit Euler spring integration to reconstruct natural momentum and subtle overshoot.",
+  "asks": "网络只能丢稀疏坐标，协作光标如何平滑跟手？",
+  "asksEn": "How should a collaborative cursor track smoothly under sparse network sampling?",
+  "links": [
+    {
+      "slug": "intent-cascade",
+      "rel": "contrast",
+      "when": "光标斜向穿越的安全三角不是网络丢包的惯性重建",
+      "whenEn": "Cursor safe triangle is not network packet spring reconstruction"
+    },
+    {
+      "slug": "look-quantize",
+      "rel": "contrast",
+      "when": "离散格子量化不是物理阻尼连续平滑",
+      "whenEn": "Discrete grid quantization is not continuous spring smoothing"
+    },
+    {
+      "slug": "optimistic-rollback",
+      "rel": "contrast",
+      "when": "本地高频状态先行响应不是多人低频采样的物理插值",
+      "whenEn": "Local optimistic preview is not sparse presence physics interpolation"
+    }
+  ],
+  "status": "active",
+  "created": "2026-09-15",
+  "updated": "2026-09-15",
+  "tags": ["pointer", "physics", "spring", "collaboration"]
+}
