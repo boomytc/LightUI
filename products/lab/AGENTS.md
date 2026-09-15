@@ -17,7 +17,9 @@ From workspace root: `make dev`.
 ## Rules
 
 - Discover studies via `src/lib/catalog.ts`. Discover notes via
-  `src/lib/notes.ts` (`writing/notes/*.md`). No hand-written registries.
+  `src/lib/notes.ts` (`writing/notes/*.md`). No hand-written study
+  lists. Keep `src/lib/categories.ts` `SLUG_CATEGORY_MAP` complete
+  (every slug; update `categories.test.ts` counts in the same change).
 - The judgment graph is assembled from `study.json` `asks` + `links`
   (`src/lib/graph.ts`) and shown at `/graph`. Do not keep a second map.
 - Study playgrounds stay in `studies/<slug>/`. Writing stays in `writing/`.

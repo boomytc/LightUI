@@ -52,7 +52,9 @@ Every study must contain `idea.md`, `study.json`, `src/StudyView.tsx`,
 `docs/study-contract.md`.
 
 The lab discovers studies with `import.meta.glob`. Adding a study does not
-mean editing a registry. Run `make catalog` so `docs/catalog.md` matches.
+mean editing a catalog array. Run `make catalog` so `docs/catalog.md`
+matches. After-add files (category map, stage shots, port):
+`docs/conventions.md`.
 
 ## Skills
 

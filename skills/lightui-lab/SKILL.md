@@ -18,7 +18,10 @@ Do not link out to sibling private repositories.
 ## Rules
 
 - Discover studies in `src/lib/catalog.ts`. Discover notes in
-  `src/lib/notes.ts` from `writing/notes/*.md`. No hand-written lists.
+  `src/lib/notes.ts` from `writing/notes/*.md`. No hand-written study
+  lists. The exception: `src/lib/categories.ts` `SLUG_CATEGORY_MAP`
+  must include every slug (and the counts in `categories.test.ts`).
+  Adding a study updates that map; it does not add a catalog array.
 - Frame studies; do not move playground code into the site.
 - Public essays live in `writing/`. See `docs/writing.md`.
 - Tokens live in `design/tokens.css`. `@source` must include `studies/**`.

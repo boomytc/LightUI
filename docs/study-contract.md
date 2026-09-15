@@ -7,7 +7,9 @@ Stage: `studies/<slug>/src/StageView.tsx` exporting `StageView`.
 Generated stills are not part of the contract.
 
 The lab (`products/lab`) discovers studies with `import.meta.glob`.
-Adding a study does not require editing a registry.
+Adding a study does not require editing a catalog array. Lab category
+chips use `products/lab/src/lib/categories.ts` `SLUG_CATEGORY_MAP` —
+that map must include every slug. After-add files: `docs/conventions.md`.
 
 ## `study.json`
 
@@ -51,9 +53,10 @@ hero / login / align / dashboard-layers / assistant / pending / beam / timer /
 recall / scroll into one catalog because the fixtures look alike.
 
 A study’s first question may be a machine (taxonomy), a construction
-(cut vs stitch), a motion that follows type or scroll, or continuous
-input quantized to discrete state. `StudyView` follows that question;
-it is not required to be a kind switcher.
+(cut vs stitch), a motion that follows type or scroll, continuous
+input quantized to discrete state, or sparse samples rebuilt as
+continuous motion. `StudyView` follows that question; it is not
+required to be a kind switcher.
 
 The lab sorts `active` first, then `updated` descending, then `created`, then slug. Use the calendar day, not a clock time.
 
