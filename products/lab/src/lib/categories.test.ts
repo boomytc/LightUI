@@ -70,7 +70,7 @@ describe("SLUG_CATEGORY_MAP distribution and reassignments", () => {
     const actualSlugs = loadActualStudySlugs();
     const mappedSlugs = Object.keys(SLUG_CATEGORY_MAP).sort();
     assert.deepEqual(mappedSlugs, actualSlugs);
-    assert.equal(mappedSlugs.length, 50);
+    assert.equal(mappedSlugs.length, 51);
   });
 
   it("correctly maps the three reassigned studies and container-morph", () => {
@@ -80,7 +80,7 @@ describe("SLUG_CATEGORY_MAP distribution and reassignments", () => {
     assert.equal(getStudyCategory("container-morph"), "craft");
   });
 
-  it("has the exact expected count per domain (15 / 11 / 6 / 10 / 8)", () => {
+  it("has the exact expected count per domain (15 / 11 / 6 / 11 / 8)", () => {
     const counts = {
       pointer: 0,
       layout: 0,
@@ -99,7 +99,7 @@ describe("SLUG_CATEGORY_MAP distribution and reassignments", () => {
       pointer: 15,
       layout: 11,
       controls: 6,
-      feedback: 10,
+      feedback: 11,
       craft: 8,
     });
   });

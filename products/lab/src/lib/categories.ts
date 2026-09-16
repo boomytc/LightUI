@@ -95,10 +95,11 @@ export const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "fill-taxonomy": "controls",
   "validation-taxonomy": "controls",
 
-  // 反馈与打断 (Feedback & Interruption - 10)
+  // 反馈与打断 (Feedback & Interruption - 11)
   "progress-taxonomy": "feedback",
   "timer-taxonomy": "feedback",
   "pending-taxonomy": "feedback",
+  "empty-taxonomy": "feedback",
   "optimistic-rollback": "feedback",
   "notify-taxonomy": "feedback",
   "overlay-taxonomy": "feedback",

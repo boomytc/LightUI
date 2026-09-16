@@ -1,0 +1,35 @@
+{
+  "slug": "empty-taxonomy",
+  "title": "空白",
+  "titleEn": "Empty",
+  "eyebrow": "Cause · Next step",
+  "eyebrowEn": "Cause · Next step",
+  "summary": "空状态不要一律「暂无数据 + 一个按钮」。先判断为什么空：创建给入口，搜索改关键词，筛选改条件，失败可重试并保留原列表，完成给反馈不要再催。",
+  "summaryEn": "Do not make every blank “no data + a button”. Name the cause first: create gets an entry, search revises the query, filters loosen, failure retries and keeps the list, done only celebrates.",
+  "asks": "空白为什么空，该给入口、改关键词、改条件、重试，还是只给完成反馈？",
+  "asksEn": "Why is this blank — should it offer create, revise the query, loosen filters, retry, or only celebrate?",
+  "links": [
+    {
+      "slug": "pending-taxonomy",
+      "rel": "contrast",
+      "when": "为什么空不是屏幕上该留骨架还是空",
+      "whenEn": "why it is empty is not whether a skeleton or an empty state occupies the screen"
+    },
+    {
+      "slug": "notify-taxonomy",
+      "rel": "contrast",
+      "when": "空状态不是一条 toast",
+      "whenEn": "an empty state is not a toast"
+    },
+    {
+      "slug": "progress-taxonomy",
+      "rel": "contrast",
+      "when": "加载失败可重试不是进度条",
+      "whenEn": "a failed load with retry is not a progress bar"
+    }
+  ],
+  "status": "active",
+  "created": "2026-09-16",
+  "updated": "2026-09-16",
+  "tags": ["empty", "feedback", "taxonomy"]
+}

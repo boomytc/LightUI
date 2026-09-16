@@ -172,6 +172,13 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("empty", "empty", "empty.png"),
         ("page", "loading", "page-loading.png"),
     ],
+    "empty-taxonomy": [
+        ("first-use", "empty", "first-use-empty.png"),
+        ("search", "miss", "search-miss.png"),
+        ("filter", "miss", "filter-miss.png"),
+        ("error", "banner", "error-banner.png"),
+        ("done", "clear", "done-clear.png"),
+    ],
     "border-beam": [
         ("beam", "run", "beam-run.png"),
         ("beam", "park", "beam-park.png"),

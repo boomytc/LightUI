@@ -7,6 +7,8 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [empty-taxonomy](../studies/empty-taxonomy/) | 空状态不要一律「暂无数据 + 一个按钮」。先判断为什么空：创建给入口，搜索改关键词，筛选改条件，失败可重试并保留原列表，完成给反馈不要再催。 | active | 2026-09-16 | 2026-09-16 |
+| [pending-taxonomy](../studies/pending-taxonomy/) | 内容还没到，屏幕上该留什么？骨架占布局位子；空状态给人话和下一步；壳未知时整页遮罩。不要转圈，不要假进度条。 | active | 2026-08-23 | 2026-09-16 |
 | [cone-reveal](../studies/cone-reveal/) | 密文不该整段亮出来。指针从固定原点射出锥光，只有落在锥内的字形变成明文，锥外仍是圆点。 | active | 2026-09-15 | 2026-09-15 |
 | [cursor-spring](../studies/cursor-spring/) | 网络只能丢稀疏坐标，协作光标如何平滑跟手？解耦网络采样与屏幕刷新，用二阶弹簧半隐式欧拉积分重建自然惯性与微过冲。 | active | 2026-09-15 | 2026-09-15 |
 | [sling-throw](../studies/sling-throw/) | 沿轨道调值时，离轨不该被夹回一维。拉过离轨阈值，松手按抛体落点改值。 | active | 2026-09-15 | 2026-09-15 |
@@ -43,7 +45,6 @@ Do not keep a second registry.
 | [overlay-taxonomy](../studies/overlay-taxonomy/) | 浮在页面上只是外观。先定打不打断当前任务，以及是否贴着触发点。 | active | 2026-08-23 | 2026-09-11 |
 | [page-append](../studies/page-append/) | 一批记录先问整页替换还是末尾追加。翻页会丢掉上一页并回到顶部；追加只增加 visibleCount，旧节点不卸。 | active | 2026-08-25 | 2026-09-11 |
 | [path-morph](../studies/path-morph/) | 矢量路径变形。2D Procrustes 相似分解求解旋转与缩放，极坐标插值杜绝弦长塌陷，角点锚定保证静止态保真。 | active | 2026-08-31 | 2026-09-11 |
-| [pending-taxonomy](../studies/pending-taxonomy/) | 内容还没到，屏幕上该留什么？骨架占布局位子；空状态给人话和下一步；壳未知时整页遮罩。不要转圈，不要假进度条。 | active | 2026-08-23 | 2026-09-11 |
 | [press-select](../studies/press-select/) | 列表中这一按，是直接打开还是激活批量选择？单击默认打开；按住超 480ms 且位移在容差内激活选择模式；滑动则立即注销长按转为滚动。 | active | 2026-08-28 | 2026-09-11 |
 | [progress-taxonomy](../studies/progress-taxonomy/) | 转圈只说了在等。先定进度能不能算：能算就走到 100 停住；不能算就循环，不要假百分比。 | active | 2026-08-23 | 2026-09-11 |
 | [pull-refresh](../studies/pull-refresh/) | 下拉手势何时接管滚动、何时提交刷新？顶边且向下才接管；位移应用阻尼并设上限；松手超阈值才提交刷新，未达阈值弹性复位。 | active | 2026-08-28 | 2026-09-11 |
@@ -62,6 +63,8 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **空白** (`empty-taxonomy`) — 空白为什么空，该给入口、改关键词、改条件、重试，还是只给完成反馈？
+- **等待** (`pending-taxonomy`) — 内容还没到，屏幕上该留什么？
 - **锥光揭密** (`cone-reveal`) — 密文该整段揭开，还是只让锥光碰到的字形现身？
 - **协作光标** (`cursor-spring`) — 网络只能丢稀疏坐标，协作光标如何平滑跟手？
 - **弹弓抛掷** (`sling-throw`) — 沿轨道调值时，离轨该夹回一维，还是变成弹弓按落点改值？
@@ -98,7 +101,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **浮层** (`overlay-taxonomy`) — 这块浮层打不打断、贴不贴触发点？
 - **翻页** (`page-append`) — 这一批记录是整页替换，还是末尾追加？
 - **路径变形** (`path-morph`) — 矢量路径变形时，是走单纯的坐标线性插值，还是分解为相似变换（旋放）加极坐标残差形变？
-- **等待** (`pending-taxonomy`) — 内容还没到，屏幕上该留什么？
 - **长按选择** (`press-select`) — 列表中这一按，是直接打开还是激活批量选择？
 - **进度** (`progress-taxonomy`) — 进度能不能算？
 - **下拉刷新** (`pull-refresh`) — 下拉手势何时接管滚动、何时提交刷新？
@@ -115,6 +117,13 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `empty-taxonomy` contrast `pending-taxonomy` — 为什么空不是屏幕上该留骨架还是空
+- `empty-taxonomy` contrast `notify-taxonomy` — 空状态不是一条 toast
+- `empty-taxonomy` contrast `progress-taxonomy` — 加载失败可重试不是进度条
+- `pending-taxonomy` contrast `progress-taxonomy` — 骨架不是转圈进度
+- `pending-taxonomy` contrast `notify-taxonomy` — 空状态不是一条提示
+- `pending-taxonomy` contrast `page-append` — 骨架不是已经到了一截
+- `pending-taxonomy` after `empty-taxonomy` — 若已经确定占位是空状态，再问为什么空
 - `cone-reveal` contrast `look-quantize` — 锥光是连续角域覆盖，不是落到图集格子
 - `cone-reveal` contrast `glyph-sweep` — 锥光揭开碰到的字，不是沿字形扫一道高光
 - `cone-reveal` contrast `fill-taxonomy` — 空间揭开密文字形不是填写三个时刻该交代什么
@@ -226,9 +235,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `page-append` contrast `progress-taxonomy` — 不是工作进度
 - `path-morph` contrast `container-morph` — 矢量路径形变不是容器盒模型拉伸
 - `path-morph` contrast `glyph-sweep` — 路径连续形变不是文本高光扫光
-- `pending-taxonomy` contrast `progress-taxonomy` — 骨架不是转圈进度
-- `pending-taxonomy` contrast `notify-taxonomy` — 空状态不是一条提示
-- `pending-taxonomy` contrast `page-append` — 骨架不是已经到了一截
 - `press-select` contrast `control-taxonomy` — 长按进入模式不是常驻复选框
 - `press-select` contrast `drag-commit` — 长按进入选择不是拖动提交
 - `press-select` contrast `page-append` — 批量选择不是列表翻页

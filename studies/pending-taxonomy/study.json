@@ -26,10 +26,16 @@
       "rel": "contrast",
       "when": "骨架不是已经到了一截",
       "whenEn": "a skeleton is not a loaded prefix"
+    },
+    {
+      "slug": "empty-taxonomy",
+      "rel": "after",
+      "when": "若已经确定占位是空状态，再问为什么空",
+      "whenEn": "if occupancy is already empty, ask why it is empty"
     }
   ],
   "status": "active",
   "created": "2026-08-23",
-  "updated": "2026-09-11",
+  "updated": "2026-09-16",
   "tags": ["pending", "skeleton", "empty", "veil", "taxonomy"]
 }
