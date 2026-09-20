@@ -29,9 +29,12 @@ Do not invent a second copy of these rules. Follow the files:
 2. Write `idea.md` **before** scaffolding UI. Problem, rule, why not the
    naive alternative. Do not add lineage or a kept/dropped source diary.
 3. Add `study.json` matching the folder slug. Set `created` and
-   `updated` (`YYYY-MM-DD`). Set `asks` (the question this study
-   answers) and `links` to the next question (`after`) or a mix-up
-   (`contrast`). Do not list neighbor studies in `idea.md`.
+   `updated` to **today**: run `date +%Y-%m-%d` and use that day.
+   Do not copy the last extract's stamp. If this change also edits a
+   neighbor's `links`, bump that neighbor's `updated` to the same day.
+   Set `asks` (the question this study answers) and `links` to the
+   next question (`after`) or a mix-up (`contrast`). Do not list
+   neighbor studies in `idea.md`.
 4. Implement the playground in `studies/<slug>/`. Export
    `StudyView` from `src/StudyView.tsx` and `StageView` from
    `src/StageView.tsx` (one kind, one locked state, no chrome).

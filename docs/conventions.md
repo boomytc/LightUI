@@ -61,12 +61,13 @@ lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
 | Another study timer | Count-up vs count-down in `timer-taxonomy` | Measurable work → `progress-taxonomy` |
 | Another flashcard | Recall grade after flip in `recall-grade` | Advancing frames → `carousel-taxonomy` |
 | Another cooler scrollbar | Cue vs track in `scroll-chrome` | Work progress → `progress-taxonomy`; section spy → `nav-taxonomy` |
-| Another time/number picker | Baseline snap & depth in `wheel-picker` | Form field choice → `control-taxonomy`; timer session → `timer-taxonomy` |
+| Another time/number picker | Baseline snap & depth in `wheel-picker` | Form field choice → `control-taxonomy`; a horizontal ruler / dual-end / stepper → `picker-taxonomy`; timer session → `timer-taxonomy` |
 | Another row gesture | Disambiguation & commit in `swipe-action` | Safety confirm → `confirm-taxonomy`; batch select → `press-select` |
 | Another context menu | Touch disambiguation & flip in `touch-context` | Batch mode → `press-select`; click popover → `overlay-taxonomy` |
 | Another presence cursor | Sparse-sample spring in `cursor-spring` | Local hover with no sampling grain → leave it |
 | Another confirm slider | 1-D displacement gate in `slide-confirm` | Off-track ballistic throw → `sling-throw` |
 | Another empty state | Occupancy while waiting in `pending-taxonomy` | Why it is empty and what to ask → `empty-taxonomy` |
+| Another scale, range, stepper, or mobile path/dates | Fill vs pick in `control-taxonomy`; downward commit in `dropdown-taxonomy`; wheel snap in `wheel-picker` | Which picker: one tick, two ends, a stepped count, a sequential path, or a calendar span → `picker-taxonomy` |
 
 Do not merge these into one encyclopedia because the fixtures look alike.
 The graph keeps the questions apart. Isolated nodes are allowed; only add
@@ -103,8 +104,10 @@ stage.
 3. Why is a naive alternative worse?
 
 `study.json` is the machine catalog unit. The lab glob-loads it.
-Set `created` and `updated` (`YYYY-MM-DD`). Bump `updated` when the
-idea or playground changes. Set `asks` (the question) and `links`
+Set `created` and `updated` to the local calendar day of the change
+(`date +%Y-%m-%d`). Do not copy a previous extract's stamp. A new
+study gets both fields today; editing a neighbor's links only bumps
+that neighbor's `updated`. Set `asks` (the question) and `links`
 (next questions / mix-ups). Do not write “和另外 N 则” in `idea.md`.
 
 ## Runtime
@@ -130,8 +133,9 @@ idea or playground changes. Set `asks` (the question) and `links`
   `5216` sheet-snap, `5217` wheel-picker,
   `5218` swipe-action, `5219` touch-context,
   `5220` slide-confirm, `5226` cursor-spring,
-  `5227` cone-reveal, `5228` sling-throw, `5229` empty-taxonomy.
-  Next free: `5230`.
+  `5227` cone-reveal, `5228` sling-throw, `5229` empty-taxonomy,
+  `5230` picker-taxonomy.
+  Next free: `5231`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

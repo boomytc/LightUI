@@ -87,13 +87,14 @@ export const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "group-taxonomy": "layout",
   "locator-taxonomy": "layout",
 
-  // 表单与控件 (Controls & Forms - 6)
+  // 表单与控件 (Controls & Forms - 7)
   "button-taxonomy": "controls",
   "control-taxonomy": "controls",
   "dropdown-taxonomy": "controls",
   "tab-taxonomy": "controls",
   "fill-taxonomy": "controls",
   "validation-taxonomy": "controls",
+  "picker-taxonomy": "controls",
 
   // 反馈与打断 (Feedback & Interruption - 11)
   "progress-taxonomy": "feedback",

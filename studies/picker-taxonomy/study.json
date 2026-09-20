@@ -1,0 +1,35 @@
+{
+  "slug": "picker-taxonomy",
+  "title": "选控",
+  "titleEn": "Pickers",
+  "eyebrow": "Tick · Span · Step · Path · Dates",
+  "eyebrowEn": "Tick · Span · Step · Path · Dates",
+  "summary": "「做个选择器」只说了能点。先定选的是一个刻度、一段区间、按步加减、逐级路径，还是一段日期：尺子松手对齐，双端不交叉，下限禁用，换上级清空下级，止晚于起。",
+  "summaryEn": "“Make a picker” only says something can be tapped. First decide whether this pick is one tick, a two-end span, a stepped count, a path, or a date range: snap the ruler, keep the thumbs apart, disable at the floor, clear children when the parent changes, end after start.",
+  "asks": "这一次是选一个刻度、一段区间、按步加减、逐级路径，还是一段日期？",
+  "asksEn": "Is this pick one tick, a two-end span, a stepped count, a path, or a date range?",
+  "links": [
+    {
+      "slug": "control-taxonomy",
+      "rel": "contrast",
+      "when": "选哪种选择器不是填还是选",
+      "whenEn": "which picker is not fill versus pick"
+    },
+    {
+      "slug": "dropdown-taxonomy",
+      "rel": "contrast",
+      "when": "尺子、双端、步进或整页逐级选，不是往下展开的提交模型",
+      "whenEn": "a ruler, dual-end, stepper, or full-screen cascade is not a downward commit model"
+    },
+    {
+      "slug": "wheel-picker",
+      "rel": "contrast",
+      "when": "横向尺子不是滚轮圆柱吸附",
+      "whenEn": "a horizontal ruler is not drum-wheel snap"
+    }
+  ],
+  "status": "active",
+  "created": "2026-09-20",
+  "updated": "2026-09-20",
+  "tags": ["picker", "controls", "taxonomy"]
+}

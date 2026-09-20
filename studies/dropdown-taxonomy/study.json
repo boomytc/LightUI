@@ -26,10 +26,16 @@
       "rel": "contrast",
       "when": "往下提交一个值不是打断式浮层",
       "whenEn": "committing a downward value is not an interrupting overlay"
+    },
+    {
+      "slug": "picker-taxonomy",
+      "rel": "contrast",
+      "when": "往下展开提交路径或日期，不是尺子、双端、步进或整页逐级选",
+      "whenEn": "a downward panel committing a path or dates is not a ruler, dual-end, stepper, or full-screen cascade"
     }
   ],
   "status": "active",
   "created": "2026-08-15",
-  "updated": "2026-09-11",
+  "updated": "2026-09-20",
   "tags": ["overlay", "select", "taxonomy"]
 }

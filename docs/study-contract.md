@@ -58,7 +58,7 @@ input quantized to discrete state, or sparse samples rebuilt as
 continuous motion. `StudyView` follows that question; it is not
 required to be a kind switcher.
 
-The lab sorts `active` first, then `updated` descending, then `created`, then slug. Use the calendar day, not a clock time.
+The lab sorts `active` first, then `updated` descending, then `created`, then slug. Use the local calendar day of the extract or edit (`date +%Y-%m-%d`), not a clock time and not a previous study's stamp.
 
 ## `StudyView`
 

@@ -32,10 +32,16 @@
       "rel": "contrast",
       "when": "滚轮吸附是内容滚动量化到基准线，不是抽屉容器高度吸附",
       "whenEn": "wheel snap is content scroll quantized to baseline, not container height snapping"
+    },
+    {
+      "slug": "picker-taxonomy",
+      "rel": "contrast",
+      "when": "圆柱滚轮不是横向尺子，也不是按步加减",
+      "whenEn": "a drum wheel is not a horizontal ruler, and not a stepper"
     }
   ],
   "status": "active",
   "created": "2026-09-09",
-  "updated": "2026-09-11",
+  "updated": "2026-09-20",
   "tags": ["picker", "wheel", "gesture", "scroll-snap", "mobile", "continuous-discrete"]
 }

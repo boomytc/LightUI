@@ -7,6 +7,10 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [control-taxonomy](../studies/control-taxonomy/) | 「做个输入框」只说了能填。先定是自己填一行或一段，还是从答案里选：可见比较、短列表、边搜边选，或同时多个。 | active | 2026-08-23 | 2026-09-20 |
+| [dropdown-taxonomy](../studies/dropdown-taxonomy/) | 往下展开只是外观。先定提交的是一个值、一组、一条路径，还是一次动作。 | active | 2026-08-15 | 2026-09-20 |
+| [picker-taxonomy](../studies/picker-taxonomy/) | 「做个选择器」只说了能点。先定选的是一个刻度、一段区间、按步加减、逐级路径，还是一段日期：尺子松手对齐，双端不交叉，下限禁用，换上级清空下级，止晚于起。 | active | 2026-09-20 | 2026-09-20 |
+| [wheel-picker](../studies/wheel-picker/) | 有序离散数据或时间刻度，不要弹虚拟键盘也不要展开60项长列表。上下拨动连续滑动，松手依据滚动吸附中央基准线，离基准线越远透明度与尺寸沿圆柱面几何递减。 | active | 2026-09-09 | 2026-09-20 |
 | [empty-taxonomy](../studies/empty-taxonomy/) | 空状态不要一律「暂无数据 + 一个按钮」。先判断为什么空：创建给入口，搜索改关键词，筛选改条件，失败可重试并保留原列表，完成给反馈不要再催。 | active | 2026-09-16 | 2026-09-16 |
 | [pending-taxonomy](../studies/pending-taxonomy/) | 内容还没到，屏幕上该留什么？骨架占布局位子；空状态给人话和下一步；壳未知时整页遮罩。不要转圈，不要假进度条。 | active | 2026-08-23 | 2026-09-16 |
 | [cone-reveal](../studies/cone-reveal/) | 密文不该整段亮出来。指针从固定原点射出锥光，只有落在锥内的字形变成明文，锥外仍是圆点。 | active | 2026-09-15 | 2026-09-15 |
@@ -23,10 +27,8 @@ Do not keep a second registry.
 | [chart-taxonomy](../studies/chart-taxonomy/) | 「做个图表」只说了有数。先定要看变化、大小、占比、关系、流程还是能力，再选痕迹。 | active | 2026-08-23 | 2026-09-11 |
 | [confirm-taxonomy](../studies/confirm-taxonomy/) | 二次确认不是一律弹窗。打断程度与认知摩擦，必须与后果的不可逆性及影响范围严格成正比。 | active | 2026-08-30 | 2026-09-11 |
 | [container-morph](../studies/container-morph/) | 同一入口连续变形。先定改宽、高、圆角还是排版；停在展开态，或沿原路收回——内容先走，容器后收。 | active | 2026-08-25 | 2026-09-11 |
-| [control-taxonomy](../studies/control-taxonomy/) | 「做个输入框」只说了能填。先定是自己填一行或一段，还是从答案里选：可见比较、短列表、边搜边选，或同时多个。 | active | 2026-08-23 | 2026-09-11 |
 | [dashboard-layers](../studies/dashboard-layers/) | 看板该从结果往下钻。一盘端上 KPI、图、表，扫得到皮，钻不到因。 | active | 2026-08-23 | 2026-09-11 |
 | [drag-commit](../studies/drag-commit/) | 同一抓取手势，松手提交的不是同一种结果。先定是新顺序、一次接收、跨组转移，还是无效回弹。 | active | 2026-08-25 | 2026-09-11 |
-| [dropdown-taxonomy](../studies/dropdown-taxonomy/) | 往下展开只是外观。先定提交的是一个值、一组、一条路径，还是一次动作。 | active | 2026-08-15 | 2026-09-11 |
 | [expand-inflow](../studies/expand-inflow/) | 多出来的内容先问撑开文档流还是盖一层。互斥还是独立，是流里的第二问。不要把抽屉再做一遍。 | active | 2026-08-25 | 2026-09-11 |
 | [fill-taxonomy](../studies/fill-taxonomy/) | 「做个表单」只说了有格子。先定填写前、填写中、提交后这一栏该交代什么：标签常在、必填先标、错在栏下能改、成功带下一步。 | active | 2026-08-26 | 2026-09-11 |
 | [glyph-sweep](../studies/glyph-sweep/) | 扫光跟字形走。光带宽度用 ch，时长等于字数乘每字秒数，不要去扫整块盒子。 | active | 2026-08-21 | 2026-09-11 |
@@ -57,12 +59,15 @@ Do not keep a second registry.
 | [timer-taxonomy](../studies/timer-taxonomy/) | 这一段时间是正数累计，还是倒数专注？先定会话的方向。累计没有上限；专注到 0 自己停住，不要变成负数，也不要弹一条 toast。 | active | 2026-08-23 | 2026-09-11 |
 | [touch-context](../studies/touch-context/) | 触控长按不是简单弹窗。原地按住约 460ms 且位移在 10px 容差内触发；位移超标立即销毁定时器让路给滚动；菜单紧贴触控点就近浮现并在视口边界自动翻转避让。 | active | 2026-09-09 | 2026-09-11 |
 | [validation-taxonomy](../studies/validation-taxonomy/) | 「做个表单校验」只说了会报错。先定是失焦就说、这一栏立刻说，还是提交时一次说完。 | active | 2026-08-23 | 2026-09-11 |
-| [wheel-picker](../studies/wheel-picker/) | 有序离散数据或时间刻度，不要弹虚拟键盘也不要展开60项长列表。上下拨动连续滑动，松手依据滚动吸附中央基准线，离基准线越远透明度与尺寸沿圆柱面几何递减。 | active | 2026-09-09 | 2026-09-11 |
 
 ## Questions
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **控件** (`control-taxonomy`) — 这一格是自己填还是从答案里选？
+- **下拉框** (`dropdown-taxonomy`) — 往下展开的面板提交什么？
+- **选控** (`picker-taxonomy`) — 这一次是选一个刻度、一段区间、按步加减、逐级路径，还是一段日期？
+- **滚轮选择器** (`wheel-picker`) — 有序固定选项或时间刻度，这一格是用键盘输入、长列表展开，还是滚轮对齐基准线？
 - **空白** (`empty-taxonomy`) — 空白为什么空，该给入口、改关键词、改条件、重试，还是只给完成反馈？
 - **等待** (`pending-taxonomy`) — 内容还没到，屏幕上该留什么？
 - **锥光揭密** (`cone-reveal`) — 密文该整段揭开，还是只让锥光碰到的字形现身？
@@ -79,10 +84,8 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **图表** (`chart-taxonomy`) — 这组数据要看什么？
 - **二次确认** (`confirm-taxonomy`) — 执行破坏性操作时，该用多重的二次确认？
 - **变形** (`container-morph`) — 容器身份连续时，改的是宽、高、圆角，还是排版？停在展开态还是沿路收回？
-- **控件** (`control-taxonomy`) — 这一格是自己填还是从答案里选？
 - **层递** (`dashboard-layers`) — 看板从结果往下钻，还是一盘端上来？
 - **拖放** (`drag-commit`) — 这一拖提交的是新顺序、一次接收、跨组转移，还是无效回弹？
-- **下拉框** (`dropdown-taxonomy`) — 往下展开的面板提交什么？
 - **展开** (`expand-inflow`) — 这块多出来的内容，是撑开文档流，还是盖一层？
 - **填写** (`fill-taxonomy`) — 填写前、填写中、提交后，这一栏该交代什么？
 - **扫光** (`glyph-sweep`) — 扫光该跟字走还是跟块走？
@@ -113,10 +116,30 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **计时** (`timer-taxonomy`) — 这一段时间是正数累计，还是倒数专注？
 - **长按上下文** (`touch-context`) — 触控长按目标时，手势如何在误触位移与持续时间中消歧，并在目标就近定位上下文操作？
 - **校验** (`validation-taxonomy`) — 错误该在什么时候说？
-- **滚轮选择器** (`wheel-picker`) — 有序固定选项或时间刻度，这一格是用键盘输入、长列表展开，还是滚轮对齐基准线？
 
 ## Edges
 
+- `control-taxonomy` after `dropdown-taxonomy` — 若答案是往下展开的固定短列表
+- `control-taxonomy` contrast `dropdown-taxonomy` — 可见的单选和复选不是下拉面板
+- `control-taxonomy` after `validation-taxonomy` — 若问题是错误何时开口
+- `control-taxonomy` contrast `validation-taxonomy` — 填还是选不是何时报错
+- `control-taxonomy` contrast `button-taxonomy` — 填还是选不是按钮有多重
+- `control-taxonomy` after `fill-taxonomy` — 若问题是填写前中后该交代什么
+- `control-taxonomy` contrast `fill-taxonomy` — 填还是选不是三个时刻该交代什么
+- `control-taxonomy` after `picker-taxonomy` — 若已经确定是选，但选的是刻度、区间、数量、路径或日期
+- `control-taxonomy` contrast `picker-taxonomy` — 填还是选不是选哪种选择器
+- `dropdown-taxonomy` after `intent-cascade` — 若改成 hover 跟手
+- `dropdown-taxonomy` contrast `control-taxonomy` — 往下展开的提交模型，不是先问填还是选
+- `dropdown-taxonomy` contrast `overlay-taxonomy` — 往下提交一个值不是打断式浮层
+- `dropdown-taxonomy` contrast `picker-taxonomy` — 往下展开提交路径或日期，不是尺子、双端、步进或整页逐级选
+- `picker-taxonomy` contrast `control-taxonomy` — 选哪种选择器不是填还是选
+- `picker-taxonomy` contrast `dropdown-taxonomy` — 尺子、双端、步进或整页逐级选，不是往下展开的提交模型
+- `picker-taxonomy` contrast `wheel-picker` — 横向尺子不是滚轮圆柱吸附
+- `wheel-picker` contrast `control-taxonomy` — 滚轮选择器针对有序滚动吸附，不是下拉面板单选
+- `wheel-picker` contrast `sidebar-taxonomy` — 滚轮选择器是移动端触控输入控件，不是桌面鼠标滚轮侧栏
+- `wheel-picker` after `timer-taxonomy` — 滚轮选择器设定时长后，再由计时器管理正数倒数会话
+- `wheel-picker` contrast `sheet-snap` — 滚轮吸附是内容滚动量化到基准线，不是抽屉容器高度吸附
+- `wheel-picker` contrast `picker-taxonomy` — 圆柱滚轮不是横向尺子，也不是按步加减
 - `empty-taxonomy` contrast `pending-taxonomy` — 为什么空不是屏幕上该留骨架还是空
 - `empty-taxonomy` contrast `notify-taxonomy` — 空状态不是一条 toast
 - `empty-taxonomy` contrast `progress-taxonomy` — 加载失败可重试不是进度条
@@ -160,21 +183,11 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `container-morph` contrast `carousel-taxonomy` — 连续变形不是切画面
 - `container-morph` contrast `sidebar-taxonomy` — 不是侧栏变宽占位
 - `container-morph` contrast `path-morph` — 容器按轴连续变形不是矢量路径极坐标形变
-- `control-taxonomy` after `dropdown-taxonomy` — 若答案是往下展开的固定短列表
-- `control-taxonomy` contrast `dropdown-taxonomy` — 可见的单选和复选不是下拉面板
-- `control-taxonomy` after `validation-taxonomy` — 若问题是错误何时开口
-- `control-taxonomy` contrast `validation-taxonomy` — 填还是选不是何时报错
-- `control-taxonomy` contrast `button-taxonomy` — 填还是选不是按钮有多重
-- `control-taxonomy` after `fill-taxonomy` — 若问题是填写前中后该交代什么
-- `control-taxonomy` contrast `fill-taxonomy` — 填还是选不是三个时刻该交代什么
 - `dashboard-layers` contrast `chart-taxonomy` — 下钻不是换图种
 - `dashboard-layers` contrast `layout-taxonomy` — 层递不是仪表盘皮
 - `drag-commit` contrast `look-quantize` — 拖放提交不是视线落到格子
 - `drag-commit` contrast `carousel-taxonomy` — 不是转产品的角度
 - `drag-commit` contrast `layout-taxonomy` — 不是拖动分栏分隔条
-- `dropdown-taxonomy` after `intent-cascade` — 若改成 hover 跟手
-- `dropdown-taxonomy` contrast `control-taxonomy` — 往下展开的提交模型，不是先问填还是选
-- `dropdown-taxonomy` contrast `overlay-taxonomy` — 往下提交一个值不是打断式浮层
 - `expand-inflow` contrast `overlay-taxonomy` — 流内撑开不是侧滑抽屉
 - `expand-inflow` contrast `carousel-taxonomy` — FAQ 手风琴不是列宽画廊
 - `expand-inflow` contrast `sidebar-taxonomy` — 内容树不是主导航多级
@@ -272,10 +285,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `validation-taxonomy` contrast `notify-taxonomy` — 行内报错不是一条 toast
 - `validation-taxonomy` contrast `overlay-taxonomy` — 提交一次标出不是 modal 确认
 - `validation-taxonomy` contrast `fill-taxonomy` — 何时开口不是三个时刻该交代什么
-- `wheel-picker` contrast `control-taxonomy` — 滚轮选择器针对有序滚动吸附，不是下拉面板单选
-- `wheel-picker` contrast `sidebar-taxonomy` — 滚轮选择器是移动端触控输入控件，不是桌面鼠标滚轮侧栏
-- `wheel-picker` after `timer-taxonomy` — 滚轮选择器设定时长后，再由计时器管理正数倒数会话
-- `wheel-picker` contrast `sheet-snap` — 滚轮吸附是内容滚动量化到基准线，不是抽屉容器高度吸附
 
 ## How to read a row
 

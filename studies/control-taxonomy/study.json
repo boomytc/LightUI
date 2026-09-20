@@ -50,10 +50,22 @@
       "rel": "contrast",
       "when": "填还是选不是三个时刻该交代什么",
       "whenEn": "fill versus pick is not what the three moments disclose"
+    },
+    {
+      "slug": "picker-taxonomy",
+      "rel": "after",
+      "when": "若已经确定是选，但选的是刻度、区间、数量、路径或日期",
+      "whenEn": "if it is already a pick, but of a tick, a span, a count, a path, or dates"
+    },
+    {
+      "slug": "picker-taxonomy",
+      "rel": "contrast",
+      "when": "填还是选不是选哪种选择器",
+      "whenEn": "fill versus pick is not which picker"
     }
   ],
   "status": "active",
   "created": "2026-08-23",
-  "updated": "2026-09-11",
+  "updated": "2026-09-20",
   "tags": ["form", "input", "taxonomy"]
 }

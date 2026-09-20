@@ -179,6 +179,13 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("error", "banner", "error-banner.png"),
         ("done", "clear", "done-clear.png"),
     ],
+    "picker-taxonomy": [
+        ("ruler", "snap", "ruler-snap.png"),
+        ("range", "span", "range-span.png"),
+        ("stepper", "floor", "stepper-floor.png"),
+        ("cascader", "path", "cascader-path.png"),
+        ("dates", "span", "dates-span.png"),
+    ],
     "border-beam": [
         ("beam", "run", "beam-run.png"),
         ("beam", "park", "beam-park.png"),
