@@ -1,0 +1,47 @@
+{
+  "slug": "table-taxonomy",
+  "title": "记录表",
+  "titleEn": "Record table",
+  "eyebrow": "Find · See · Act",
+  "eyebrowEn": "Find · See · Act",
+  "summary": "记录表先问找、看、改落在哪一层。筛在这一列的表头，条件留在上方；表头钉在表自己的滚动区，名称列不能藏；一行只露出查看；有勾选，批量条才换掉搜索。",
+  "summaryEn": "A record table first asks where find, see, and act live. Filter from the column and keep the conditions above; the header sticks in the table’s own scrollport and the name cannot hide; the row shows View; the bulk bar replaces search only after a selection.",
+  "asks": "找、看、改，分别落在记录表的哪一层？",
+  "asksEn": "Where do find, see, and act live on a record table?",
+  "links": [
+    {
+      "slug": "page-append",
+      "rel": "contrast",
+      "when": "筛选留下的是当前视图，记录还在；翻页会丢掉上一页",
+      "whenEn": "a filter keeps the records and changes the view; paging drops the previous page"
+    },
+    {
+      "slug": "press-select",
+      "rel": "contrast",
+      "when": "勾选一直在，批量条等已选数量大于 0 才换掉搜索；不是长按才进入选择",
+      "whenEn": "checkboxes stay put and the bulk bar replaces search only after a selection; this is not long-press to enter select mode"
+    },
+    {
+      "slug": "empty-taxonomy",
+      "rel": "after",
+      "when": "筛到零条时，空白原因是条件，该改条件",
+      "whenEn": "when the filter matches nothing, the blank is the condition — loosen it"
+    },
+    {
+      "slug": "drag-commit",
+      "rel": "contrast",
+      "when": "点金额换的是排序方向，不是把行拖成新顺序",
+      "whenEn": "clicking the amount cycles sort direction; it does not drag the row into a new order"
+    },
+    {
+      "slug": "dashboard-layers",
+      "rel": "contrast",
+      "when": "一行是一条待跟进的记录，不是从指标往下钻",
+      "whenEn": "a row is one record to follow up, not a metric you drill into"
+    }
+  ],
+  "status": "active",
+  "created": "2026-09-22",
+  "updated": "2026-09-23",
+  "tags": ["table", "filter", "sort", "bulk"]
+}

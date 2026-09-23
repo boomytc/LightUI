@@ -7,6 +7,7 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [table-taxonomy](../studies/table-taxonomy/) | 记录表先问找、看、改落在哪一层。筛在这一列的表头，条件留在上方；表头钉在表自己的滚动区，名称列不能藏；一行只露出查看；有勾选，批量条才换掉搜索。 | active | 2026-09-22 | 2026-09-23 |
 | [control-taxonomy](../studies/control-taxonomy/) | 「做个输入框」只说了能填。先定是自己填一行或一段，还是从答案里选：可见比较、短列表、边搜边选，或同时多个。 | active | 2026-08-23 | 2026-09-20 |
 | [dropdown-taxonomy](../studies/dropdown-taxonomy/) | 往下展开只是外观。先定提交的是一个值、一组、一条路径，还是一次动作。 | active | 2026-08-15 | 2026-09-20 |
 | [picker-taxonomy](../studies/picker-taxonomy/) | 「做个选择器」只说了能点。先定选的是一个刻度、一段区间、按步加减、逐级路径，还是一段日期：尺子松手对齐，双端不交叉，下限禁用，换上级清空下级，止晚于起。 | active | 2026-09-20 | 2026-09-20 |
@@ -64,6 +65,7 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **记录表** (`table-taxonomy`) — 找、看、改，分别落在记录表的哪一层？
 - **控件** (`control-taxonomy`) — 这一格是自己填还是从答案里选？
 - **下拉框** (`dropdown-taxonomy`) — 往下展开的面板提交什么？
 - **选控** (`picker-taxonomy`) — 这一次是选一个刻度、一段区间、按步加减、逐级路径，还是一段日期？
@@ -119,6 +121,11 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `table-taxonomy` contrast `page-append` — 筛选留下的是当前视图，记录还在；翻页会丢掉上一页
+- `table-taxonomy` contrast `press-select` — 勾选一直在，批量条等已选数量大于 0 才换掉搜索；不是长按才进入选择
+- `table-taxonomy` after `empty-taxonomy` — 筛到零条时，空白原因是条件，该改条件
+- `table-taxonomy` contrast `drag-commit` — 点金额换的是排序方向，不是把行拖成新顺序
+- `table-taxonomy` contrast `dashboard-layers` — 一行是一条待跟进的记录，不是从指标往下钻
 - `control-taxonomy` after `dropdown-taxonomy` — 若答案是往下展开的固定短列表
 - `control-taxonomy` contrast `dropdown-taxonomy` — 可见的单选和复选不是下拉面板
 - `control-taxonomy` after `validation-taxonomy` — 若问题是错误何时开口

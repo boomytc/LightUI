@@ -186,6 +186,15 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("cascader", "path", "cascader-path.png"),
         ("dates", "span", "dates-span.png"),
     ],
+    "table-taxonomy": [
+        ("filter", "open", "filter-open.png"),
+        ("sort", "desc", "sort-desc.png"),
+        ("sticky", "scrolled", "sticky-scrolled.png"),
+        ("actions", "open", "actions-open.png"),
+        ("columns", "open", "columns-open.png"),
+        ("bulk", "selected", "bulk-selected.png"),
+        ("chips", "applied", "chips-applied.png"),
+    ],
     "border-beam": [
         ("beam", "run", "beam-run.png"),
         ("beam", "park", "beam-park.png"),
