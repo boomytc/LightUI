@@ -321,10 +321,10 @@ export function LiveStage({
       <div className="px-5 py-2.5 border-t border-border bg-surface text-[11px] text-fg-subtle flex items-center justify-between shrink-0">
         <span className="flex items-center gap-1.5 font-mono">
           <span className="w-2 h-2 rounded-full bg-intent inline-block" />
-          StreamingMeetingEvent (Sortformer 100M Diarization + Confucius4-R2T2 LSP)
+          StreamingMeetingEvent (多说话人时空事件流 · 端智能增量分块)
         </span>
         <span className="text-fg-muted">
-          单步特征耗时: ~1.6ms · 显存常驻: 3.1GB · 零全量重绘
+          单步分块耗时: ~1.6ms · 极低前端内存 · 零全量重绘
         </span>
       </div>
     </div>

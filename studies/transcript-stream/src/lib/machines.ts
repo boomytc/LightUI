@@ -125,13 +125,24 @@ export function processMeetingEvent(
   const resolvedSimilarity = event.similarity ?? event.metadata?.similarity;
 
   if (event.event_type === "new_turn") {
-    // Mark previous turns as inactive
+    // Mark previous turns as inactive unless currently involved in cross-talk overlap
     for (let i = 0; i < result.length; i++) {
-      result[i].is_active = false;
+      if (
+        !event.is_overlap ||
+        !(event.overlap_speakers || []).includes(result[i].speaker_id)
+      ) {
+        result[i].is_active = false;
+      }
       // If voiceprint just identified, retroactively update matching speaker turns
       if (isJustIdentified && result[i].speaker_id === event.speaker_id) {
         result[i].speaker_name = resolvedName;
         result[i].just_identified = true;
+      }
+      // If this turn's speaker is listed in overlap_speakers, mark turn as overlapping
+      if (event.is_overlap && (event.overlap_speakers || []).includes(result[i].speaker_id)) {
+        result[i].has_overlap = true;
+        const merged = new Set([...result[i].overlap_speakers, event.speaker_id]);
+        result[i].overlap_speakers = Array.from(merged);
       }
     }
 
@@ -153,10 +164,23 @@ export function processMeetingEvent(
   }
 
   if (event.event_type === "delta") {
-    if (result.length === 0) {
-      // First delta without new_turn
+    // Find target turn for this speaker: prefer the most recent turn matching event.speaker_id
+    let targetIdx = -1;
+    if (result.length > 0 && result[result.length - 1].speaker_id === event.speaker_id) {
+      targetIdx = result.length - 1;
+    } else {
+      for (let i = result.length - 1; i >= 0; i--) {
+        if (result[i].speaker_id === event.speaker_id) {
+          targetIdx = i;
+          break;
+        }
+      }
+    }
+
+    if (targetIdx === -1) {
+      // First delta for this speaker without prior new_turn
       result.push({
-        turn_id: `turn_1_${event.speaker_id}`,
+        turn_id: `turn_${result.length + 1}_${event.speaker_id}`,
         speaker_id: event.speaker_id,
         speaker_name: resolvedName,
         start_s: event.timestamp_s,
@@ -171,25 +195,25 @@ export function processMeetingEvent(
       return result;
     }
 
-    const lastIdx = result.length - 1;
-    const lastTurn = { ...result[lastIdx] };
+    const targetTurn = { ...result[targetIdx] };
 
-    lastTurn.text += event.delta_text;
-    lastTurn.end_s = Math.max(lastTurn.end_s, event.timestamp_s);
+    targetTurn.text += event.delta_text;
+    targetTurn.end_s = Math.max(targetTurn.end_s, event.timestamp_s);
+    targetTurn.is_active = true;
 
     if (event.is_overlap) {
-      lastTurn.has_overlap = true;
-      const merged = new Set([...lastTurn.overlap_speakers, ...(event.overlap_speakers || [])]);
-      lastTurn.overlap_speakers = Array.from(merged);
+      targetTurn.has_overlap = true;
+      const merged = new Set([...targetTurn.overlap_speakers, ...(event.overlap_speakers || [])]);
+      targetTurn.overlap_speakers = Array.from(merged);
     }
 
     if (isJustIdentified) {
-      lastTurn.speaker_name = resolvedName;
-      lastTurn.just_identified = true;
-      lastTurn.similarity = resolvedSimilarity;
+      targetTurn.speaker_name = resolvedName;
+      targetTurn.just_identified = true;
+      targetTurn.similarity = resolvedSimilarity;
 
       // Retroactively update all earlier turns for this speaker
-      for (let i = 0; i < lastIdx; i++) {
+      for (let i = 0; i < result.length; i++) {
         if (result[i].speaker_id === event.speaker_id) {
           result[i].speaker_name = resolvedName;
           result[i].just_identified = true;
@@ -197,12 +221,28 @@ export function processMeetingEvent(
       }
     }
 
-    result[lastIdx] = lastTurn;
+    result[targetIdx] = targetTurn;
     return result;
   }
 
   if (event.event_type === "tail_flush") {
-    if (result.length > 0) {
+    let targetIdx = -1;
+    if (result.length > 0 && result[result.length - 1].speaker_id === event.speaker_id) {
+      targetIdx = result.length - 1;
+    } else {
+      for (let i = result.length - 1; i >= 0; i--) {
+        if (result[i].speaker_id === event.speaker_id) {
+          targetIdx = i;
+          break;
+        }
+      }
+    }
+
+    if (targetIdx !== -1) {
+      result[targetIdx].text += event.delta_text;
+      result[targetIdx].end_s = Math.max(result[targetIdx].end_s, event.timestamp_s);
+      result[targetIdx].is_active = false;
+    } else if (result.length > 0) {
       const lastIdx = result.length - 1;
       result[lastIdx].text += event.delta_text;
       result[lastIdx].end_s = Math.max(result[lastIdx].end_s, event.timestamp_s);

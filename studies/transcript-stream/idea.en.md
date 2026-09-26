@@ -12,7 +12,7 @@ This study formalizes the **Three-Phase Meeting Lifecycle (Pre-meeting Roster â†
 1. **Jitter and Full Redraw Tearing**:
    Naive frontends replace whole strings in the DOM on every chunk update, causing the viewport to jump wildly, destroying text selection and causing eye fatigue.
 2. **Late-bound Speaker Resolution Split**:
-   Streaming ASR produces initial tokens in ~300ms, but reliable voiceprint verification (192-dim Campplus embeddings) requires 1.5s to 3s of continuous clean speech. Without late-bound resolution, initial text either remains stuck as "Unknown / Speaker 0" forever or triggers a jarring full-session rerender once identified.
+   Streaming ASR produces initial tokens in ~300ms, but reliable voiceprint verification (192-dim voiceprint embeddings) requires 1.5s to 3s of continuous clean speech. Without late-bound resolution, initial text either remains stuck as "Unknown / Speaker 0" forever or triggers a jarring full-session rerender once identified.
 3. **Cross-talk Context Loss**:
    When multiple participants talk simultaneously, naive single-stream chat interleaves tokens haphazardly. Readers lose track of who interrupted whom and lose emotional context.
 4. **Disconnection Between Live and Delivery Modes**:

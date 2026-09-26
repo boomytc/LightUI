@@ -4,18 +4,21 @@ import {
   Radio,
   FileCheck,
   Code2,
-  AlertTriangle,
   Sparkles,
   Info,
-  Wifi,
-  WifiOff,
+  Layers,
 } from "lucide-react";
 import type { PhaseId, SpeakerProfile, TurnRecord, StreamingMeetingEvent } from "./lib/types";
 import {
   calcSessionMetrics,
   processMeetingEvent,
 } from "./lib/machines";
-import { INITIAL_SPEAKERS, SIMULATED_EVENTS, FINAL_MINUTES } from "./lib/mock-data";
+import {
+  INITIAL_SPEAKERS,
+  STREAM_SCENARIOS,
+  FINAL_MINUTES,
+  type ScenarioId,
+} from "./lib/mock-data";
 import { VoiceprintDrawer } from "./components/VoiceprintDrawer";
 import { LiveStage } from "./components/LiveStage";
 import { MinutesBoard } from "./components/MinutesBoard";
@@ -32,37 +35,35 @@ export function StudyView() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [lastEvent, setLastEvent] = useState<StreamingMeetingEvent | null>(null);
 
-  // Live LightASR WebSocket Bridge Mode
-  const [streamSource, setStreamSource] = useState<"simulated" | "websocket">("simulated");
-  const [wsUrl, setWsUrl] = useState("ws://127.0.0.1:8765/ws");
-  const [wsStatus, setWsStatus] = useState<"disconnected" | "connecting" | "connected" | "error">(
-    "disconnected",
-  );
-  const wsRef = useRef<WebSocket | null>(null);
+  // Pure In-Browser Scenario Selection (Zero External Process / Server Couplings)
+  const [scenarioId, setScenarioId] = useState<ScenarioId>("full");
+  const currentScenario =
+    STREAM_SCENARIOS.find((s) => s.id === scenarioId) ?? STREAM_SCENARIOS[0];
+  const activeEvents = currentScenario.events;
 
   const timerRef = useRef<number | null>(null);
 
   // Advance single simulated event
   const stepEvent = useCallback(() => {
-    if (eventIndex >= SIMULATED_EVENTS.length) {
+    if (eventIndex >= activeEvents.length) {
       setIsPlaying(false);
       return;
     }
-    const currentEvent = SIMULATED_EVENTS[eventIndex];
+    const currentEvent = activeEvents[eventIndex];
     setLastEvent(currentEvent);
     setTurns((prevTurns) => processMeetingEvent(prevTurns, currentEvent));
     setEventsLog((prev) => [...prev, currentEvent]);
     setEventIndex((prev) => prev + 1);
 
     // If final event, pause
-    if (currentEvent.is_final || eventIndex + 1 >= SIMULATED_EVENTS.length) {
+    if (currentEvent.is_final || eventIndex + 1 >= activeEvents.length) {
       setIsPlaying(false);
     }
-  }, [eventIndex]);
+  }, [eventIndex, activeEvents]);
 
   // Playback timer for simulated stream
   useEffect(() => {
-    if (streamSource !== "simulated" || !isPlaying) {
+    if (!isPlaying) {
       if (timerRef.current) clearInterval(timerRef.current);
       return;
     }
@@ -75,69 +76,22 @@ export function StudyView() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isPlaying, speed, stepEvent, streamSource]);
+  }, [isPlaying, speed, stepEvent]);
 
-  // WebSocket Live Connection Handler
-  const connectWebSocket = useCallback(() => {
-    if (wsRef.current) {
-      wsRef.current.close();
-    }
-
-    setWsStatus("connecting");
-    try {
-      const socket = new WebSocket(wsUrl);
-      wsRef.current = socket;
-
-      socket.onopen = () => {
-        setWsStatus("connected");
-      };
-
-      socket.onmessage = (event) => {
-        try {
-          const payload = JSON.parse(event.data) as StreamingMeetingEvent;
-          setLastEvent(payload);
-          setTurns((prev) => processMeetingEvent(prev, payload));
-          setEventsLog((prev) => [...prev, payload]);
-        } catch {
-          // ignore non-json ping/pong frames
-        }
-      };
-
-      socket.onerror = () => {
-        setWsStatus("error");
-      };
-
-      socket.onclose = () => {
-        setWsStatus("disconnected");
-        wsRef.current = null;
-      };
-    } catch {
-      setWsStatus("error");
-    }
-  }, [wsUrl]);
-
-  const disconnectWebSocket = useCallback(() => {
-    if (wsRef.current) {
-      wsRef.current.close();
-      wsRef.current = null;
-    }
-    setWsStatus("disconnected");
-  }, []);
-
-  // Cleanup websocket on unmount
-  useEffect(() => {
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
-  }, []);
+  const handleSelectScenario = (id: ScenarioId) => {
+    setIsPlaying(false);
+    setScenarioId(id);
+    setTurns([]);
+    setEventsLog([]);
+    setEventIndex(0);
+    setLastEvent(null);
+  };
 
   // Compute telemetry live
   const telemetry = calcSessionMetrics(turns, eventsLog);
 
   const handleTogglePlay = () => {
-    if (eventIndex >= SIMULATED_EVENTS.length) {
+    if (eventIndex >= activeEvents.length) {
       // Reached the end, reset first
       setTurns([]);
       setEventsLog([]);
@@ -202,89 +156,48 @@ export function StudyView() {
     <div className="w-full max-w-6xl mx-auto space-y-6 pb-12">
       {/* 1. Top Mode & Phase Navigation */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-surface border border-border shadow-xs">
-        {/* Source Switcher: Simulated vs Live WebSocket */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-fg-subtle">数据源模式:</span>
-          <div className="p-1 rounded-xl bg-surface-2 flex items-center gap-1 border border-border/60">
-            <button
-              type="button"
-              onClick={() => {
-                disconnectWebSocket();
-                setStreamSource("simulated");
-              }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                streamSource === "simulated"
-                  ? "bg-surface text-accent shadow-xs border border-border"
-                  : "text-fg-muted hover:text-fg"
-              }`}
-            >
-              内置仿真流回放
-            </button>
-            <button
-              type="button"
-              onClick={() => setStreamSource("websocket")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                streamSource === "websocket"
-                  ? "bg-surface text-accent shadow-xs border border-border"
-                  : "text-fg-muted hover:text-fg"
-              }`}
-            >
-              <Wifi className="w-3.5 h-3.5" />
-              LightASR 真实 WebSocket 联调
-            </button>
+        {/* Scenario Switcher: Testing different interaction edge cases */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-fg-subtle">
+            <Layers className="w-3.5 h-3.5 text-accent" />
+            <span>时序测试场景:</span>
+          </div>
+          <div className="p-1 rounded-xl bg-surface-2 flex flex-wrap items-center gap-1 border border-border/60">
+            {STREAM_SCENARIOS.map((sc) => (
+              <button
+                key={sc.id}
+                type="button"
+                onClick={() => handleSelectScenario(sc.id)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  scenarioId === sc.id
+                    ? "bg-surface text-accent shadow-xs border border-border"
+                    : "text-fg-muted hover:text-fg"
+                }`}
+              >
+                <span>{sc.label}</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                    scenarioId === sc.id
+                      ? "bg-accent/10 text-accent"
+                      : "bg-surface text-fg-subtle"
+                  }`}
+                >
+                  {sc.badge}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* WebSocket Connection Toolbar if active */}
-        {streamSource === "websocket" && (
-          <div className="flex items-center gap-2 text-xs">
-            <input
-              type="text"
-              value={wsUrl}
-              onChange={(e) => setWsUrl(e.target.value)}
-              className="px-2.5 py-1.5 bg-surface border border-border rounded-lg text-xs font-mono w-52 focus:outline-none focus:ring-1 focus:ring-accent"
-              placeholder="ws://127.0.0.1:8765/ws"
-            />
-            {wsStatus === "connected" ? (
-              <button
-                type="button"
-                onClick={disconnectWebSocket}
-                className="px-3 py-1.5 bg-wrong/10 text-wrong border border-wrong/30 rounded-lg font-medium cursor-pointer flex items-center gap-1"
-              >
-                <WifiOff className="w-3.5 h-3.5" />
-                断开
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={connectWebSocket}
-                className="px-3 py-1.5 bg-accent text-white rounded-lg font-semibold cursor-pointer hover:bg-accent/90 flex items-center gap-1"
-              >
-                <Wifi className="w-3.5 h-3.5" />
-                {wsStatus === "connecting" ? "连接中..." : "连接服务"}
-              </button>
-            )}
-            <span
-              className={`px-2 py-1 rounded-md text-[11px] font-medium border ${
-                wsStatus === "connected"
-                  ? "bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300"
-                  : wsStatus === "connecting"
-                    ? "bg-amber-50 text-amber-700 border-amber-300"
-                    : wsStatus === "error"
-                      ? "bg-rose-50 text-rose-700 border-rose-300"
-                      : "bg-surface text-fg-subtle border-border"
-              }`}
-            >
-              {wsStatus === "connected"
-                ? "🟢 已连接"
-                : wsStatus === "connecting"
-                  ? "🟡 连接中"
-                  : wsStatus === "error"
-                    ? "🔴 连接失败"
-                    : "⚪ 未连接"}
-            </span>
-          </div>
-        )}
+        {/* Self-contained In-Browser Indicator */}
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <span className="hidden sm:inline-block px-2.5 py-1 rounded-lg text-[11px] text-fg-subtle bg-surface-2 border border-border">
+            {currentScenario.description}
+          </span>
+          <span className="px-2.5 py-1 rounded-md text-[11px] font-medium border bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300">
+            ✨ 纯前端独立沙盒
+          </span>
+        </div>
       </div>
 
       {/* 2. Three-Phase Pipeline Stepper */}
@@ -366,17 +279,7 @@ export function StudyView() {
 
         {activePhase === "summary" && (
           <MinutesBoard
-            turns={turns.length > 0 ? turns : SIMULATED_EVENTS.map((e, idx) => ({
-              turn_id: `turn_${idx}`,
-              speaker_id: e.speaker_id,
-              speaker_name: e.speaker_name,
-              start_s: e.timestamp_s,
-              end_s: e.timestamp_s + 2.0,
-              text: e.delta_text,
-              has_overlap: e.is_overlap,
-              overlap_speakers: e.overlap_speakers,
-              is_active: false,
-            }))}
+            turns={turns.length > 0 ? turns : activeEvents.reduce(processMeetingEvent, [])}
             minutes={FINAL_MINUTES}
             onReturnToLive={() => setActivePhase("live")}
             onResetToPrep={() => {
@@ -397,22 +300,20 @@ export function StudyView() {
               当前消费事件体 (StreamingMeetingEvent)
             </h3>
             <span className="text-[11px] font-mono text-fg-subtle">
-              {streamSource === "simulated"
-                ? `模拟进度: ${eventIndex} / ${SIMULATED_EVENTS.length}`
-                : `WS 消息: ${eventsLog.length} 条`}
+              事件进度: {eventIndex} / {activeEvents.length}
             </span>
           </div>
 
           <pre className="p-3.5 rounded-xl bg-surface-2 border border-border font-mono text-[11px] text-fg leading-relaxed overflow-x-auto max-h-56">
             {lastEvent
               ? JSON.stringify(lastEvent, null, 2)
-              : `// 尚未触发流式事件\n// 点击上方【播放流式事件】或连接 WebSocket 观察协议帧`}
+              : `// 尚未触发流式事件\n// 点击上方【播放流式事件】或【单步前进一步】观察协议帧`}
           </pre>
 
           <p className="text-[11px] text-fg-muted flex items-start gap-1.5">
             <Info className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
             <span>
-              前端挂载单向 WebSocket/SSE 管道消费 LightASR 输出的 <code>StreamingMeetingEvent</code>，根据 <code>event_type</code>、<code>is_overlap</code> 及 <code>just_identified</code> 局部推进状态机。
+              前端挂载单向流式事件管道消费标准 <code>StreamingMeetingEvent</code>，根据 <code>event_type</code>、<code>is_overlap</code> 及 <code>just_identified</code> 局部推进状态机。
             </span>
           </p>
         </div>
@@ -447,12 +348,12 @@ export function StudyView() {
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-wrong/5 border border-wrong/20 text-xs text-fg flex items-start gap-2.5">
-            <AlertTriangle className="w-4 h-4 text-wrong shrink-0 mt-0.5" />
+          <div className="p-3 rounded-xl bg-accent/5 border border-accent/20 text-xs text-fg flex items-start gap-2.5">
+            <Info className="w-4 h-4 text-accent shrink-0 mt-0.5" />
             <div>
-              <strong className="text-wrong block mb-0.5">反哺 LightASR 架构指引</strong>
+              <strong className="text-accent block mb-0.5">无框架依赖的状态归约器设计</strong>
               <p className="text-fg-muted text-[11px] leading-relaxed">
-                在 <code>LightASR/products/meeting_minutes/realtime_pipeline.py</code> 中由 <code>StreamingMeetingEvent</code> 提供标准数据流输出，前端只需复用 <code>machines.ts</code> 即可实现零重构移植。
+                状态处理逻辑完全收敛在纯函数 <code>machines.ts</code> 中，解耦了 React 与 DOM。不仅可在 Web 端渲染，亦可直接复用于 React Native、Electron 桌面客户端或跨端组件，实现设计理念与核心逻辑的高效参考与移植。
               </p>
             </div>
           </div>

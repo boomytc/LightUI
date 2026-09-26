@@ -86,7 +86,7 @@ export function VoiceprintDrawer({
             <h2 className="text-lg font-semibold text-fg">会前参会人声纹底库 (Voiceprint Drawer)</h2>
           </div>
           <p className="text-sm text-fg-muted mt-1">
-            注册参会人 192 维 Campplus 声纹特征向量，在会中为实时 ASR 提供准确无感的后验认人时空绑定。
+            注册参会人 192 维声纹特征向量，在会中为实时 ASR 提供准确无感的后验认人时空绑定。
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -241,7 +241,7 @@ export function VoiceprintDrawer({
                     <Volume2 className="w-8 h-8 text-accent mx-auto" />
                     <p className="text-sm font-medium text-fg">方式一：朗读 3 秒快速录音提取</p>
                     <p className="text-xs text-fg-muted">
-                      点击下方录制，系统将采集 16kHz PCM 单声道音频并由 Campplus 计算嵌入向量
+                      点击下方录制，系统将采集 16kHz PCM 单声道音频并计算声纹特征嵌入向量
                     </p>
                     <button
                       type="button"

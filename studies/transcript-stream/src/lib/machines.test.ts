@@ -12,6 +12,11 @@ import {
   stageSnapshot,
 } from "./machines";
 import type { StreamingMeetingEvent, TurnRecord } from "./types";
+import {
+  CROSSTALK_EVENTS,
+  LATE_RESOLVE_EVENTS,
+  STREAM_SCENARIOS,
+} from "./mock-data";
 
 describe("KIND_IDS & isKindId", () => {
   it("contains the three phases: live, prep, summary", () => {
@@ -395,5 +400,45 @@ describe("stageSnapshot", () => {
 
     const drawerSnap = stageSnapshot("prep", "drawer");
     assert.equal(drawerSnap.drawerOpen, true);
+  });
+});
+
+describe("STREAM_SCENARIOS event reduction", () => {
+  it("defines the 3 core interactive scenario suites", () => {
+    assert.equal(STREAM_SCENARIOS.length, 3);
+    const ids = STREAM_SCENARIOS.map((s) => s.id);
+    assert.deepEqual(ids, ["full", "crosstalk", "late_resolve"]);
+  });
+
+  it("reduces CROSSTALK_EVENTS preserving cross-talk overlap metadata", () => {
+    const reducedTurns = CROSSTALK_EVENTS.reduce(processMeetingEvent, [] as TurnRecord[]);
+    assert.equal(reducedTurns.length, 2);
+    // Speaker 0 (李四)
+    assert.equal(reducedTurns[0].speaker_id, 0);
+    assert.equal(reducedTurns[0].has_overlap, true);
+    assert.deepEqual(reducedTurns[0].overlap_speakers, [2]);
+    assert.ok(reducedTurns[0].text.includes("关于这个交互方案"));
+    assert.ok(reducedTurns[0].text.includes("李四补充：可以做行内胶囊标记"));
+
+    // Speaker 2 (王五)
+    assert.equal(reducedTurns[1].speaker_id, 2);
+    assert.equal(reducedTurns[1].has_overlap, true);
+    assert.ok(reducedTurns[1].text.includes("但是单流无法表达抢话！"));
+    assert.equal(reducedTurns[1].is_active, false); // ended by tail_flush
+  });
+
+  it("reduces LATE_RESOLVE_EVENTS retroactively renaming speaker from placeholder", () => {
+    const reducedTurns = LATE_RESOLVE_EVENTS.reduce(processMeetingEvent, [] as TurnRecord[]);
+    assert.equal(reducedTurns.length, 1);
+    const turn = reducedTurns[0];
+    assert.equal(turn.speaker_id, 1);
+    // Verified that name transitioned to identified name
+    assert.equal(turn.speaker_name, "张三 (Speaker 1)");
+    assert.equal(turn.just_identified, true);
+    assert.ok(turn.similarity !== undefined && turn.similarity > 0.85);
+    assert.ok(turn.text.includes("你好，我现在开始发言"));
+    assert.ok(turn.text.includes("余弦相似度 0.89 触发更名"));
+    assert.ok(turn.text.includes("整个过程气泡无需整体重绘"));
+    assert.equal(turn.is_active, false); // tail_flush completed turn
   });
 });

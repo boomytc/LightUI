@@ -40,7 +40,7 @@ interface StreamingMeetingEvent {
   similarity?: number;         // 声纹余弦相似度（如 0.82）
   identified_name?: string;    // 绑定的参会人真实姓名
   metadata?: {
-    just_identified?: boolean; // 嵌套字段兼容（LightASR 原生 dataclass 序列化）
+    just_identified?: boolean; // 嵌套字段兼容（服务端原生序列化结构）
     identified_name?: string;
     similarity?: number;
   };
@@ -79,14 +79,14 @@ interface StreamingMeetingEvent {
 
 ---
 
-## 4. 反哺 LightASR 的交互与工程参考机制 (Bridge to LightASR)
+## 4. 纯前端状态机与工程参考实现 (Pure Frontend Reference Architecture)
 
-本研究不仅是一个孤立的前端视觉 Demo，而且为 `LightASR/products/meeting_minutes` 提供了完备的客户端接入规范：
+本研究作为纯粹的 UI/UX 交互设计理念与工程参考实现，保持 100% 独立与沙盒化运行，不与任何外部服务进程强行联动：
 
-1. **零损耗数据管道 (Direct Protocol Interop)**：
-   - 后端 `realtime_pipeline.py` 输出的 `StreamingMeetingEvent.to_dict()` 既兼容 `metadata` 嵌套，亦兼容扁平根字段；前端状态机 `processMeetingEvent` 无需任何胶水层即可直接消费。
-2. **纯函数式归约器移植 (Zero-Framework Reducer)**：
-   - `src/lib/machines.ts` 完全解耦了 React 与 DOM，是一个纯 TypeScript 状态归约库。不仅可在 Web 端使用，亦可直接打包至 React Native、Electron 或小程序端运行。
-3. **真实 WebSocket 双工接口**：
-   - `StudyView.tsx` 内置真实 WebSocket 连接面板，默认连通 `ws://127.0.0.1:8765/ws`，支持现场麦克风与音频流的真实验证。
+1. **零损耗数据协议驱动 (Direct Event Protocol Consumption)**：
+   - 定义标准的单向 `StreamingMeetingEvent` 数据流契约，既支持兼容扁平字段，亦支持元数据字典嵌套；状态归约器 `processMeetingEvent` 无需任何胶水层即可平滑消费流式事件。
+2. **纯函数式归约器解耦 (Zero-Framework Reducer)**：
+   - `src/lib/machines.ts` 完全解耦了 React 与 DOM，是一个纯 TypeScript 状态归约库。不仅可在 Web 端使用，亦可直接复用于 React Native、Electron 桌面客户端或原生跨端工程，实现核心交互逻辑的零损耗复现。
+3. **内置多场景交互测试用例 (Interactive Scenario Suite)**：
+   - `StudyView.tsx` 内置「全流程标准研讨」、「密集抢话碰撞焦点」、「声纹后验平滑更名」等多种典型会话时序场景，支持单步调试、倍速调节与手动抢话注入，便于直观推演极端语音交互场景下的界面韧性与用户体验。
 
