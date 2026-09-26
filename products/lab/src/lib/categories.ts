@@ -74,7 +74,7 @@ export const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "cone-reveal": "pointer",
   "sling-throw": "pointer",
 
-  // 结构与导览 (Layout & Navigation - 11)
+  // 结构与导览 (Layout & Navigation - 12)
   "layout-taxonomy": "layout",
   "sidebar-taxonomy": "layout",
   "assistant-chrome": "layout",
@@ -86,6 +86,7 @@ export const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
   "page-append": "layout",
   "group-taxonomy": "layout",
   "locator-taxonomy": "layout",
+  "transcript-stream": "layout",
 
   // 表单与控件 (Controls & Forms - 8)
   "button-taxonomy": "controls",

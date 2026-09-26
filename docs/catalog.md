@@ -7,6 +7,7 @@ Do not keep a second registry.
 
 | Slug | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- |
+| [transcript-stream](../studies/transcript-stream/) | 实时多说话人转录流不应粗暴全量重绘；在会前声纹抽屉预先建档，在会中以打字机平滑追加字词、解决后验换名与重叠抢话碰撞，并在会后无缝跃迁至双栏时间轴与结构化纪要。 | active | 2026-09-26 | 2026-09-26 |
 | [table-taxonomy](../studies/table-taxonomy/) | 记录表先问找、看、改落在哪一层。筛在这一列的表头，条件留在上方；表头钉在表自己的滚动区，名称列不能藏；一行只露出查看；有勾选，批量条才换掉搜索。 | active | 2026-09-22 | 2026-09-23 |
 | [control-taxonomy](../studies/control-taxonomy/) | 「做个输入框」只说了能填。先定是自己填一行或一段，还是从答案里选：可见比较、短列表、边搜边选，或同时多个。 | active | 2026-08-23 | 2026-09-20 |
 | [dropdown-taxonomy](../studies/dropdown-taxonomy/) | 往下展开只是外观。先定提交的是一个值、一组、一条路径，还是一次动作。 | active | 2026-08-15 | 2026-09-20 |
@@ -65,6 +66,7 @@ Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **转录流** (`transcript-stream`) — 实时多说话人转录流如何平滑处理增量打字、声纹后验认人与重叠抢话？
 - **记录表** (`table-taxonomy`) — 找、看、改，分别落在记录表的哪一层？
 - **控件** (`control-taxonomy`) — 这一格是自己填还是从答案里选？
 - **下拉框** (`dropdown-taxonomy`) — 往下展开的面板提交什么？
@@ -121,6 +123,10 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `transcript-stream` contrast `assistant-chrome` — 转录流是真实人际多轮对话与声纹时空绑定，不是单体 AI 助手交互形态
+- `transcript-stream` contrast `page-append` — 流式语音是持续时间轴上的 token/turn 增量打字机，不是记录集翻页或末尾批量追加
+- `transcript-stream` contrast `notify-taxonomy` — 重叠抢话是就地气泡视觉呼吸与状态胶囊，不是模态或打断式通知
+- `transcript-stream` contrast `layout-taxonomy` — 会后双栏分屏是时间轴流水与纪要画布的语义联动，不是通用等宽栅格
 - `table-taxonomy` contrast `page-append` — 筛选留下的是当前视图，记录还在；翻页会丢掉上一页
 - `table-taxonomy` contrast `press-select` — 勾选一直在，批量条等已选数量大于 0 才换掉搜索；不是长按才进入选择
 - `table-taxonomy` after `empty-taxonomy` — 筛到零条时，空白原因是条件，该改条件

@@ -135,8 +135,9 @@ that neighbor's `updated`. Set `asks` (the question) and `links`
   `5218` swipe-action, `5219` touch-context,
   `5220` slide-confirm, `5226` cursor-spring,
   `5227` cone-reveal, `5228` sling-throw, `5229` empty-taxonomy,
-  `5230` picker-taxonomy, `5231` table-taxonomy.
-  Next free: `5232`.
+  `5230` picker-taxonomy, `5231` table-taxonomy,
+  `5232` transcript-stream.
+  Next free: `5233`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

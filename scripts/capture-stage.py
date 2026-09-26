@@ -287,6 +287,12 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("sling", "idle", "sling-idle.png"),
         ("clamp", "pull", "clamp-pull.png"),
     ],
+    "transcript-stream": [
+        ("live", "default", "live-default.png"),
+        ("live", "overlap", "live-overlap.png"),
+        ("prep", "default", "prep-default.png"),
+        ("summary", "default", "summary-default.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:
