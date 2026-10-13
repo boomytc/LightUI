@@ -293,6 +293,14 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("prep", "default", "prep-default.png"),
         ("summary", "default", "summary-default.png"),
     ],
+    "render-route": [
+        ("compare", "text", "compare-text.png"),
+        ("compare", "native", "compare-native.png"),
+        ("compare", "iframe", "compare-iframe.png"),
+        ("degrade", "unknown", "degrade-unknown.png"),
+        ("degrade", "props", "degrade-props.png"),
+        ("degrade", "partial", "degrade-partial.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:
