@@ -16,7 +16,7 @@ npm run dev          # http://127.0.0.1:5233/
 npm test             # routeTurn / routeBuffer / live v0 catalog
 npm run typecheck
 npm run build
-npm run accept       # optional; reads DEEPSEEK_API_KEY and rewrites the offline recording
+npm run accept       # optional; DEEPSEEK_API_KEY, then rewrites the offline recording
 ```
 
 The lab mounts `StudyView` at `/s/render-route`.
@@ -31,6 +31,7 @@ The lab mounts `StudyView` at `/s/render-route`.
 - `src/lib/recording-data.ts` — DeepSeek recording, or an explicit not-run marker
 - `src/StageView.tsx` — one locked fixture, no lab chrome
 - `src/lib/stage-query.ts` — `kind=compare|error`, `state=text|native|iframe|unknown|props|partial`
+- `src/lib/deepseek-completion.ts` — request name and response `model` from a completion body
 - `scripts/accept-deepseek.ts` — writes the recording; not part of `npm test`
 
 ## Rules
@@ -43,3 +44,4 @@ The lab mounts `StudyView` at `/s/render-route`.
 - Unclosed JSON stays pending. It is not an error.
 - An iframe document is `sandbox="allow-scripts"` without the host origin.
 - Bind the standalone server to `127.0.0.1:5233`.
+- `requestedModel` is the request name (`DEEPSEEK_MODEL`, default `deepseek-chat`). `model` is the name on the completion response. Accept does not write the recording when the response has no `model`.

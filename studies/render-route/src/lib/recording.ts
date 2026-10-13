@@ -2,6 +2,7 @@ export type DeepseekRecording =
   | { status: "not-run"; reason: string }
   | {
       status: "recorded";
+      requestedModel: string;
       model: string;
       recordedAt: string;
       request: string;
@@ -15,7 +16,8 @@ export function readRecording(value: unknown): DeepseekRecording {
   const record = value as Record<string, unknown>;
   if (
     record.status === "recorded" &&
-    typeof record.model === "string" &&
+    nonEmpty(record.requestedModel) &&
+    nonEmpty(record.model) &&
     typeof record.recordedAt === "string" &&
     typeof record.request === "string" &&
     typeof record.raw === "string" &&
@@ -23,6 +25,7 @@ export function readRecording(value: unknown): DeepseekRecording {
   ) {
     return {
       status: "recorded",
+      requestedModel: record.requestedModel,
       model: record.model,
       recordedAt: record.recordedAt,
       request: record.request,
@@ -33,4 +36,8 @@ export function readRecording(value: unknown): DeepseekRecording {
     return { status: "not-run", reason: record.reason };
   }
   return { status: "not-run", reason: "recording file is unreadable" };
+}
+
+function nonEmpty(value: unknown): value is string {
+  return typeof value === "string" && value.length > 0;
 }
