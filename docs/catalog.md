@@ -62,6 +62,7 @@ Category chips read `category` on each study. Do not keep a second registry.
 | [timer-taxonomy](../studies/timer-taxonomy/) | feedback | 这一段时间是正数累计，还是倒数专注？先定会话的方向。累计没有上限；专注到 0 自己停住，不要变成负数，也不要弹一条 toast。 | active | 2026-08-23 | 2026-09-11 |
 | [touch-context](../studies/touch-context/) | pointer | 触控长按不是简单弹窗。原地按住约 460ms 且位移在 10px 容差内触发；位移超标立即销毁定时器让路给滚动；菜单紧贴触控点就近浮现并在视口边界自动翻转避让。 | active | 2026-09-09 | 2026-09-11 |
 | [validation-taxonomy](../studies/validation-taxonomy/) | controls | 「做个表单校验」只说了会报错。先定是失焦就说、这一栏立刻说，还是提交时一次说完。 | active | 2026-08-23 | 2026-09-11 |
+| [render-route](../studies/render-route/) | feedback | 同一轮回答在纯文本、契约组件和 iframe 沙盒里各长什么样；名字或 props 不合法时宿主在原位报错，半截 JSON 先等闭合。 | draft | 2026-10-13 | 2026-10-13 |
 
 ## Questions
 
@@ -121,6 +122,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **计时** (`timer-taxonomy`) — 这一段时间是正数累计，还是倒数专注？
 - **长按上下文** (`touch-context`) — 触控长按目标时，手势如何在误触位移与持续时间中消歧，并在目标就近定位上下文操作？
 - **校验** (`validation-taxonomy`) — 错误该在什么时候说？
+- **呈现路由** (`render-route`) — 这一轮该用纯文本、契约组件，还是 iframe 沙盒？坏包怎么报错？
 
 ## Edges
 
@@ -299,6 +301,8 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `validation-taxonomy` contrast `notify-taxonomy` — 行内报错不是一条 toast
 - `validation-taxonomy` contrast `overlay-taxonomy` — 提交一次标出不是 modal 确认
 - `validation-taxonomy` contrast `fill-taxonomy` — 何时开口不是三个时刻该交代什么
+- `render-route` contrast `assistant-chrome` — 助手住在哪，不是这一轮用哪种表面来呈现
+- `render-route` contrast `transcript-stream` — 半截包是未闭合的路由 JSON，不是语音 token 的打字机
 
 ## How to read a row
 
