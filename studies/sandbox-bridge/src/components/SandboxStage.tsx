@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { sandboxEventTrusted } from "@lightui/genui";
 import { frameDocument } from "../lib/frame";
 import {
   FIELD_ORDER,
@@ -61,7 +62,7 @@ export function SandboxStage({
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       const iframe = iframeRef.current;
-      const sourceIsFrame = iframe !== null && event.source === iframe.contentWindow;
+      const sourceIsFrame = sandboxEventTrusted(event.source, iframe?.contentWindow ?? null);
       const decision = decideSandboxMessage({ sourceIsFrame, data: event.data });
       if (decision.type === "ignore") return;
       if (decision.type === "ready") return;

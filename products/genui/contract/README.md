@@ -10,7 +10,15 @@ registry, and the implementation must not generate these files at export time.
 
 ```
 contract/v0/components.json
+contract/v0/render-route.json
+contract/v0/sandbox.json
 ```
+
+`components.json` is the native-component catalog. `render-route.json` is the
+in-place route-error agreement. `sandbox.json` is the sandbox activity
+agreement. The human statement of the latter two is `docs/protocol-v0.md`.
+LightAgent reads this directory; it does not read that note instead of the
+JSON files.
 
 `components.json` fields:
 
@@ -24,10 +32,12 @@ contract/v0/components.json
 ## Version rules
 
 - The version is the directory name. Consumers pin `contract/<version>/`.
-- **v0** may grow in place only by adding a component or an optional property.
+- **v0** may grow in place by adding a component, an optional component
+  property, or a new document in this directory.
 - Removing or renaming a component, changing a property's type, or turning an
   optional property into a required one is a new directory (`contract/v1/`).
-  Leave the published version's files as they were.
+  The same applies to a route error code, the sandbox field order, a callback
+  name, or a numeric limit. Leave the published version's files as they were.
 - `src/registry.ts` is the implementation copy of the current version. `npm test`
   fails when that registry and `contract/<PROTOCOL_VERSION>/components.json`
   disagree. Do not satisfy the test by importing the JSON into the registry.

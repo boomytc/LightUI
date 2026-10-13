@@ -1,3 +1,8 @@
+import { classifyNativeRoute, readClosedJsonObject, validateComponentProps } from "@lightui/genui";
+import type { RouteErrorCode, RouteSchemaError } from "@lightui/genui";
+
+export type { RouteErrorCode };
+
 export const SURFACES = ["text", "native", "iframe"] as const;
 
 export type Surface = (typeof SURFACES)[number];
@@ -8,8 +13,6 @@ export type Degradation =
   | "invalid-props"
   | "invalid-document"
   | "invalid-surface";
-
-export type RouteErrorCode = "unknown_component" | "invalid_props";
 
 export type Paint = Surface | "none" | "error";
 
@@ -46,12 +49,7 @@ export type RouteDraft = {
   document?: unknown;
 };
 
-export type SchemaError = {
-  path: string;
-  code: "not-object" | "missing" | "unexpected" | "type";
-  expected?: string;
-  received?: string;
-};
+export type SchemaError = RouteSchemaError;
 
 export type RouteResult = {
   status: "pending" | "committed" | "degraded" | "error";
@@ -71,13 +69,6 @@ export type RouteResult = {
 
 export const MOUNTED_COMPONENTS = ["Text"] as const;
 
-const TYPE_CHECK: Record<string, (value: unknown) => boolean> = {
-  string: (value) => typeof value === "string",
-  number: (value) => typeof value === "number" && Number.isFinite(value),
-  integer: (value) => typeof value === "number" && Number.isInteger(value),
-  boolean: (value) => typeof value === "boolean",
-};
-
 export function isSurface(value: unknown): value is Surface {
   return value === "text" || value === "native" || value === "iframe";
 }
@@ -91,35 +82,7 @@ export function componentNames(catalog: Catalog): string[] {
 }
 
 export function validateProps(schema: PropsSchema, props: unknown): SchemaError[] {
-  if (!props || typeof props !== "object" || Array.isArray(props)) {
-    return [{ path: "", code: "not-object", received: Array.isArray(props) ? "array" : typeof props }];
-  }
-  const record = props as Record<string, unknown>;
-  const errors: SchemaError[] = [];
-  for (const key of schema.required) {
-    if (!(key in record) || record[key] === undefined) {
-      errors.push({ path: key, code: "missing" });
-    }
-  }
-  for (const [key, value] of Object.entries(record)) {
-    const field = schema.properties[key];
-    if (!field) {
-      if (schema.additionalProperties === false) {
-        errors.push({ path: key, code: "unexpected" });
-      }
-      continue;
-    }
-    const check = TYPE_CHECK[field.type];
-    if (!check || !check(value)) {
-      errors.push({
-        path: key,
-        code: "type",
-        expected: field.type,
-        received: value === null ? "null" : typeof value,
-      });
-    }
-  }
-  return errors;
+  return validateComponentProps(schema, props);
 }
 
 export function routeTurn(draft: RouteDraft, catalog: Catalog): RouteResult {
@@ -150,32 +113,27 @@ export function routeTurn(draft: RouteDraft, catalog: Catalog): RouteResult {
   }
 
   if (requested === "native") {
-    const known = catalog.components.find((component) => component.name === requestedComponent);
-    if (!requestedComponent || !known) {
-      return fail("unknown_component", "unknown-component", {
-        requested,
-        requestedComponent,
-        text,
-        reason,
-      });
-    }
-    const errors = validateProps(known.props, draft.props);
-    if (errors.length > 0) {
-      return fail("invalid_props", "invalid-props", {
-        requested,
-        requestedComponent,
-        text,
-        reason,
-        errors,
-      });
+    const decision = classifyNativeRoute(catalog.components, draft.component, draft.props);
+    if (decision.status === "error") {
+      return fail(
+        decision.errorCode,
+        decision.errorCode === "unknown_component" ? "unknown-component" : "invalid-props",
+        {
+          requested,
+          requestedComponent: decision.requestedComponent,
+          text,
+          reason,
+          errors: decision.errors,
+        },
+      );
     }
     return commit({
       surface: "native",
       requested,
       text,
       reason,
-      component: known.name,
-      props: { ...(draft.props as Record<string, unknown>) },
+      component: decision.name,
+      props: decision.props,
     });
   }
 
@@ -192,20 +150,9 @@ export function routeTurn(draft: RouteDraft, catalog: Catalog): RouteResult {
 }
 
 export function routeBuffer(buffer: string, catalog: Catalog): RouteResult {
-  const trimmed = buffer.trim();
-  if (!trimmed) {
-    return pending(buffer);
-  }
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(trimmed);
-  } catch {
-    return pending(buffer);
-  }
-  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-    return pending(buffer);
-  }
-  return routeTurn(parsed as RouteDraft, catalog);
+  const closed = readClosedJsonObject(buffer);
+  if (closed.status === "pending") return pending(buffer);
+  return routeTurn(closed.value, catalog);
 }
 
 export function paintSurface(result: RouteResult): Paint {

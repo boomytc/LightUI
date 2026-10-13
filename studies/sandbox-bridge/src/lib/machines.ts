@@ -1,27 +1,24 @@
-export const FIELD_ORDER = [
-  "initialHeight",
-  "placeholderMessages",
-  "css",
-  "html",
-  "jsFunctions",
-  "jsExpressions",
-] as const;
+import {
+  SANDBOX_COMPLETE_KEY,
+  SANDBOX_FIELD_ORDER,
+  SANDBOX_HEIGHT,
+  SANDBOX_PROMPT_MAX_LENGTH,
+  interpretSandboxHeight,
+  sandboxFieldOrderViolations,
+  validateSandboxCallback,
+} from "@lightui/genui";
+import type { SandboxCallDecision, SandboxFieldName } from "@lightui/genui";
 
-export type FieldName = (typeof FIELD_ORDER)[number];
-
-export const COMPLETE_KEY = {
-  initialHeight: "initialHeightComplete",
-  placeholderMessages: "placeholderMessagesComplete",
-  css: "cssComplete",
-  html: "htmlComplete",
-  jsFunctions: "jsFunctionsComplete",
-  jsExpressions: "jsExpressionsComplete",
-} as const;
-
+export const FIELD_ORDER = SANDBOX_FIELD_ORDER;
+export type FieldName = SandboxFieldName;
+export const COMPLETE_KEY = SANDBOX_COMPLETE_KEY;
 export const DEFAULT_INITIAL_HEIGHT = 200;
-export const MIN_HEIGHT = 50;
-export const MAX_HEIGHT = 4000;
-export const MAX_PROMPT = 4000;
+export const MIN_HEIGHT = SANDBOX_HEIGHT.min;
+export const MAX_HEIGHT = SANDBOX_HEIGHT.max;
+export const MAX_PROMPT = SANDBOX_PROMPT_MAX_LENGTH;
+export const interpretHeight = interpretSandboxHeight;
+export const validateCall = validateSandboxCallback;
+export type CallDecision = SandboxCallDecision;
 
 export const SANDBOX_CHANNEL = "lightui.sandbox";
 export const HOST_CHANNEL = "lightui.host";
@@ -69,11 +66,6 @@ export type Step = {
   at: number;
   state: StreamState;
 };
-
-export type CallDecision =
-  | { ok: true; name: "sendPrompt"; text: string }
-  | { ok: true; name: "openLink"; url: string }
-  | { ok: false; name: string; reason: string };
 
 export type Decision =
   | { type: "ignore" }
@@ -370,14 +362,7 @@ export function fieldPreview(state: StreamState, field: FieldName): string {
 }
 
 export function orderViolations(keyOrder: readonly FieldName[]): FieldName[] {
-  let last = -1;
-  const problems: FieldName[] = [];
-  for (const key of keyOrder) {
-    const index = FIELD_ORDER.indexOf(key);
-    if (index < last) problems.push(key);
-    last = Math.max(last, index);
-  }
-  return problems;
+  return sandboxFieldOrderViolations(keyOrder);
 }
 
 const stepCache = new Map<string, Step[]>();
@@ -425,51 +410,6 @@ export function lockedStep(source: string, kind: string, state: string): Step {
     return found[Math.min(found.length - 1, Math.max(0, Math.floor(found.length * 0.65)))] ?? last;
   }
   return last;
-}
-
-export function interpretHeight(
-  height: unknown,
-): { ok: true; height: number; raw: number; clamped: boolean } | { ok: false; reason: string } {
-  if (typeof height !== "number" || !Number.isFinite(height)) {
-    return { ok: false, reason: "高度不是有限数字" };
-  }
-  const next = Math.max(MIN_HEIGHT, Math.min(Math.ceil(height), MAX_HEIGHT));
-  return { ok: true, height: next, raw: height, clamped: next !== height };
-}
-
-export function validateCall(name: unknown, args: unknown): CallDecision {
-  const label = typeof name === "string" ? name : "";
-  if (name !== "sendPrompt" && name !== "openLink") {
-    return { ok: false, name: label || "（空）", reason: "未知函数" };
-  }
-  if (!isPlainObject(args)) {
-    return { ok: false, name, reason: "参数必须是对象" };
-  }
-  const keys = Object.keys(args);
-  if (name === "sendPrompt") {
-    if (keys.some((key) => key !== "text")) {
-      return { ok: false, name, reason: "出现了未声明的参数" };
-    }
-    const text = args.text;
-    if (typeof text !== "string") return { ok: false, name, reason: "text 必须是字符串" };
-    const trimmed = text.trim();
-    if (trimmed.length < 1) return { ok: false, name, reason: "text 不能为空" };
-    if (trimmed.length > MAX_PROMPT) return { ok: false, name, reason: "text 超过 4000 字" };
-    return { ok: true, name, text: trimmed };
-  }
-  if (keys.some((key) => key !== "url")) {
-    return { ok: false, name, reason: "出现了未声明的参数" };
-  }
-  const url = args.url;
-  if (typeof url !== "string") return { ok: false, name, reason: "url 必须是字符串" };
-  let parsed: URL;
-  try {
-    parsed = new URL(url.trim());
-  } catch {
-    return { ok: false, name, reason: "url 不是合法地址" };
-  }
-  if (parsed.protocol !== "https:") return { ok: false, name, reason: "url 必须是 https" };
-  return { ok: true, name, url: parsed.toString() };
 }
 
 export function decideSandboxMessage(input: { sourceIsFrame: boolean; data: unknown }): Decision {

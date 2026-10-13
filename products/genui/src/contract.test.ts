@@ -62,7 +62,7 @@ describe("contract v0", () => {
   });
 
   it("does not import the contract into the implementation", () => {
-    for (const name of ["index.ts", "registry.ts", "components/Text.tsx"]) {
+    for (const name of ["index.ts", "registry.ts", "components/Text.tsx", "render-route.ts", "sandbox.ts"]) {
       const source = fs.readFileSync(new URL(`./${name}`, import.meta.url), "utf8");
       const specs = extractSpecifiers(`products/genui/src/${name}`, source);
       assert.equal(

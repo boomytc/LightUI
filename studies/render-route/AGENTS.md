@@ -37,7 +37,7 @@ The lab mounts `StudyView` at `/s/render-route`.
 
 - Keep `routeTurn` and `routeBuffer` free of React.
 - Relative imports only inside this study, plus the public package `@lightui/genui`.
-- Do not import `products/genui/contract` or any deep path. Names and props come from the registry.
+- Do not import `products/genui/contract` or any deep path. Names and props come from the registry. Error codes, prop checks, and the closed-JSON wait come from `@lightui/genui`.
 - Do not mount a component until the JSON has closed and the name and props pass.
 - An unknown name (`unknown_component`) or props that fail the schema (`invalid_props`) stay an in-place error. Do not paint that turn as plain text.
 - Unclosed JSON stays pending. It is not an error.

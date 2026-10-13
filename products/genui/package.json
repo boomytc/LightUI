@@ -13,7 +13,7 @@
   "scripts": {
     "check:boundaries": "tsx src/check-workspace-boundaries.ts",
     "typecheck": "tsc --noEmit --pretty false && npm run check:boundaries",
-    "test": "tsx --test src/boundaries.test.ts src/contract.test.ts",
+    "test": "tsx --test src/boundaries.test.ts src/contract.test.ts src/protocol.test.ts",
     "build": "tsc --noEmit --pretty false"
   },
   "dependencies": {

@@ -1,0 +1,92 @@
+{
+  "protocol": "lightui.genui",
+  "version": "v0",
+  "fieldOrder": [
+    "initialHeight",
+    "placeholderMessages",
+    "css",
+    "html",
+    "jsFunctions",
+    "jsExpressions"
+  ],
+  "fields": {
+    "initialHeight": {
+      "type": "number",
+      "complete": "initialHeightComplete"
+    },
+    "placeholderMessages": {
+      "type": "array",
+      "items": { "type": "string" },
+      "complete": "placeholderMessagesComplete"
+    },
+    "css": {
+      "type": "string",
+      "complete": "cssComplete"
+    },
+    "html": {
+      "type": "array",
+      "items": { "type": "string" },
+      "complete": "htmlComplete"
+    },
+    "jsFunctions": {
+      "type": "string",
+      "complete": "jsFunctionsComplete"
+    },
+    "jsExpressions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "complete": "jsExpressionsComplete"
+    }
+  },
+  "generating": "generating",
+  "callbacks": [
+    {
+      "name": "sendPrompt",
+      "additionalProperties": false,
+      "unknownFields": "reject",
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Prompt text. Leading and trailing whitespace is removed; the remaining length must be 1–4000."
+          }
+        },
+        "required": ["text"]
+      },
+      "text": { "trim": true, "minLength": 1, "maxLength": 4000 }
+    },
+    {
+      "name": "openLink",
+      "additionalProperties": false,
+      "unknownFields": "reject",
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Absolute URL. Trimmed, then accepted only when the protocol is https."
+          }
+        },
+        "required": ["url"]
+      },
+      "url": { "trim": true, "protocol": "https:" }
+    }
+  ],
+  "height": {
+    "min": 50,
+    "max": 4000,
+    "nonFinite": "discard",
+    "finite": "clamp",
+    "ceil": true
+  },
+  "trust": {
+    "by": "event.source",
+    "equals": "iframe.contentWindow",
+    "nonce": "optional"
+  }
+}
