@@ -1,5 +1,6 @@
 {
   "slug": "look-quantize",
+  "category": "pointer",
   "title": "视线",
   "titleEn": "Gaze",
   "summary": "指针偏了，视线落到图集格子。半径里平滑，格子外夹紧，眨眼走另一行。",

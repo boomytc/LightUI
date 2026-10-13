@@ -106,6 +106,7 @@ stage.
 3. Why is a naive alternative worse?
 
 `study.json` is the machine catalog unit. The lab glob-loads it.
+Set `category` to `pointer` | `layout` | `controls` | `feedback` | `craft`.
 Set `created` and `updated` to the local calendar day of the change
 (`date +%Y-%m-%d`). Do not copy a previous extract's stamp. A new
 study gets both fields today; editing a neighbor's links only bumps
@@ -166,10 +167,7 @@ Agent-facing components, the registry, and the versioned contract live in
 Same change also updates:
 
 - This file’s port list (take **Next free**; do not skip)
-- `products/lab/src/lib/categories.ts` `SLUG_CATEGORY_MAP` (every slug;
-  pick `pointer` | `layout` | `controls` | `feedback` | `craft`) and the
-  count comments
-- `products/lab/src/lib/categories.test.ts` study count and per-domain counts
+- `category` on `study.json` (`pointer` | `layout` | `controls` | `feedback` | `craft`)
 - `scripts/capture-stage.py` `SHOTS` — tuples are `(kind, state, file)`;
   the capture URL is always `?kind=&state=`, so the study’s
   `src/lib/stage-query.ts` must alias those params
@@ -178,8 +176,8 @@ Then:
 
 ```bash
 make catalog
-make test
-make typecheck
+make test          # includes make catalog-check
+make typecheck     # includes catalog-check
 make dev
 ```
 

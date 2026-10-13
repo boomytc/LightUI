@@ -1,5 +1,6 @@
 {
   "slug": "dropdown-taxonomy",
+  "category": "controls",
   "title": "下拉框",
   "titleEn": "Dropdown",
   "eyebrow": "Commit model · Overlay taxonomy",

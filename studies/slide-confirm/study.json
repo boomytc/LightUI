@@ -1,5 +1,6 @@
 {
   "slug": "slide-confirm",
+  "category": "pointer",
   "title": "滑动确认",
   "titleEn": "Slide to Confirm",
   "eyebrow": "物理位移承诺 · 临界阈值与防误触门禁",

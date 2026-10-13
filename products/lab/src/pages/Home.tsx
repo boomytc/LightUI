@@ -121,7 +121,7 @@ export function Home() {
 
 function FeaturedLead({ study, locale }: { study: StudyMeta; locale: Locale }) {
   const asks = studyAsks(study, locale);
-  const category = getStudyCategory(study.slug);
+  const category = getStudyCategory(study);
 
   return (
     <Link
@@ -164,7 +164,7 @@ function FeaturedRow({
   index: number;
 }) {
   const asks = studyAsks(study, locale);
-  const category = getStudyCategory(study.slug);
+  const category = getStudyCategory(study);
 
   return (
     <li>

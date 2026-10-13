@@ -26,7 +26,7 @@ export function GraphInspector({
   const current = studies.find((s) => s.slug === slug);
   if (!current) return null;
 
-  const category = getStudyCategory(slug);
+  const category = getStudyCategory(current);
   const asks = studyAsks(current, locale);
   const lineage = lineageOf(slug, studies);
   const neighbors = neighborsOf(slug, studies);

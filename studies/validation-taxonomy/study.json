@@ -1,5 +1,6 @@
 {
   "slug": "validation-taxonomy",
+  "category": "controls",
   "title": "校验",
   "titleEn": "Validation",
   "eyebrow": "Timing · Error",

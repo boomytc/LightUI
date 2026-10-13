@@ -1,5 +1,6 @@
 {
   "slug": "bm25-explain",
+  "category": "craft",
   "title": "检索可解释性",
   "titleEn": "Explainable Search",
   "eyebrow": "Information Retrieval · Lucene BM25",

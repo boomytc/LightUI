@@ -45,7 +45,7 @@ export function StudyCard({
   const href = `/s/${meta.slug}`;
   const copy = messages(locale);
   const asks = studyAsks(meta, locale);
-  const categoryId = getStudyCategory(meta.slug);
+  const categoryId = getStudyCategory(meta);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);

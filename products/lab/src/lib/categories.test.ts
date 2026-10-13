@@ -1,11 +1,10 @@
 import assert from "node:assert/strict";
-import { existsSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
 import {
   CATEGORIES,
-  SLUG_CATEGORY_MAP,
   categoryLabel,
   filterStudies,
   getStudyCategory,
@@ -13,11 +12,19 @@ import {
 import type { StudyMeta } from "./study";
 
 function loadActualStudySlugs(): string[] {
-  const dir = join(fileURLToPath(new URL(".", import.meta.url)), "../../../../studies");
+  const dir = studiesDir();
   return readdirSync(dir, { withFileTypes: true })
     .filter((d) => d.isDirectory() && existsSync(join(dir, d.name, "study.json")))
     .map((d) => d.name)
     .sort();
+}
+
+function studiesDir(): string {
+  return join(fileURLToPath(new URL(".", import.meta.url)), "../../../../studies");
+}
+
+function loadStudy(slug: string): StudyMeta {
+  return JSON.parse(readFileSync(join(studiesDir(), slug, "study.json"), "utf8")) as StudyMeta;
 }
 
 function mockStudy(slug: string, partial: Partial<StudyMeta> = {}): { meta: StudyMeta } {
@@ -30,6 +37,7 @@ function mockStudy(slug: string, partial: Partial<StudyMeta> = {}): { meta: Stud
       asksEn: partial.asksEn ?? "",
       status: "active",
       tags: partial.tags ?? [],
+      category: "craft",
       ...partial,
     },
   };
@@ -65,47 +73,34 @@ describe("CATEGORIES metadata", () => {
   });
 });
 
-describe("SLUG_CATEGORY_MAP distribution and reassignments", () => {
-  it("strictly matches all active studies in the filesystem", () => {
-    const actualSlugs = loadActualStudySlugs();
-    const mappedSlugs = Object.keys(SLUG_CATEGORY_MAP).sort();
-    assert.deepEqual(mappedSlugs, actualSlugs);
-    assert.equal(mappedSlugs.length, 54);
-  });
+describe("study.json categories", () => {
+  const domainIds = ["pointer", "layout", "controls", "feedback", "craft"] as const;
 
-  it("correctly maps the three reassigned studies and container-morph", () => {
-    assert.equal(getStudyCategory("wheel-picker"), "pointer");
-    assert.equal(getStudyCategory("locator-taxonomy"), "layout");
-    assert.equal(getStudyCategory("guide-interrupt"), "feedback");
-    assert.equal(getStudyCategory("container-morph"), "craft");
-  });
-
-  it("has the exact expected count per domain (15 / 12 / 8 / 11 / 8)", () => {
-    const counts = {
-      pointer: 0,
-      layout: 0,
-      controls: 0,
-      feedback: 0,
-      craft: 0,
-    };
-
-    for (const slug of Object.keys(SLUG_CATEGORY_MAP)) {
-      const cat = getStudyCategory(slug);
-      assert.ok(cat in counts, `Unexpected category: ${cat}`);
-      counts[cat as keyof typeof counts]++;
+  it("gives every study a domain category the lab can read", () => {
+    const slugs = loadActualStudySlugs();
+    assert.ok(slugs.length > 0);
+    for (const slug of slugs) {
+      const meta = loadStudy(slug);
+      assert.equal(meta.slug, slug);
+      assert.ok(
+        (domainIds as readonly string[]).includes(meta.category),
+        `${slug} category ${meta.category} is not a lab domain`,
+      );
+      assert.equal(getStudyCategory(meta), meta.category);
     }
-
-    assert.deepEqual(counts, {
-      pointer: 15,
-      layout: 12,
-      controls: 8,
-      feedback: 11,
-      craft: 8,
-    });
   });
 
-  it("falls back to craft for unknown slug", () => {
-    assert.equal(getStudyCategory("non-existent-study"), "craft");
+  it("keeps the previously reassigned studies", () => {
+    assert.equal(loadStudy("wheel-picker").category, "pointer");
+    assert.equal(loadStudy("locator-taxonomy").category, "layout");
+    assert.equal(loadStudy("guide-interrupt").category, "feedback");
+    assert.equal(loadStudy("container-morph").category, "craft");
+  });
+
+  it("falls back to craft when category is missing or invalid", () => {
+    assert.equal(getStudyCategory(undefined), "craft");
+    assert.equal(getStudyCategory({ category: "" }), "craft");
+    assert.equal(getStudyCategory({ category: "nope" }), "craft");
   });
 });
 
@@ -135,6 +130,7 @@ describe("categoryLabel", () => {
 describe("filterStudies", () => {
   const studies = [
     mockStudy("wheel-picker", {
+      category: "pointer",
       title: "滚轮选择器",
       titleEn: "Wheel Picker",
       summary: "拨动连续滚动并吸附基线",
@@ -142,6 +138,7 @@ describe("filterStudies", () => {
       tags: ["picker", "gesture"],
     }),
     mockStudy("locator-taxonomy", {
+      category: "layout",
       title: "定位器",
       titleEn: "Locator",
       summary: "大纲目录与定位导览",
@@ -149,6 +146,7 @@ describe("filterStudies", () => {
       tags: ["toc", "navigation"],
     }),
     mockStudy("guide-interrupt", {
+      category: "feedback",
       title: "引导打断",
       titleEn: "Guide Interrupt",
       summary: "聚光挖孔教学",
@@ -156,6 +154,7 @@ describe("filterStudies", () => {
       tags: ["guide", "interrupt"],
     }),
     mockStudy("button-taxonomy", {
+      category: "controls",
       title: "按钮",
       titleEn: "Button",
       summary: "操作重量",
@@ -199,6 +198,12 @@ describe("filterStudies", () => {
     const tagged = filterStudies(studies, "", "all", "toc");
     assert.equal(tagged.length, 1);
     assert.equal(tagged[0].meta.slug, "locator-taxonomy");
+  });
+
+  it("filters by the category stored on the study, not by slug", () => {
+    const moved = mockStudy("wheel-picker", { category: "layout", title: "滚轮选择器" });
+    assert.equal(filterStudies([moved], "", "layout").length, 1);
+    assert.equal(filterStudies([moved], "", "pointer").length, 0);
   });
 
   it("filters by category name search term", () => {

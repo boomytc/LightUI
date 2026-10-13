@@ -10,15 +10,19 @@ Generative UI components are not part of this contract. They live in
 `products/genui/`.
 
 The lab (`products/lab`) discovers studies with `import.meta.glob`.
-Adding a study does not require editing a catalog array. Lab category
-chips use `products/lab/src/lib/categories.ts` `SLUG_CATEGORY_MAP` —
-that map must include every slug. After-add files: `docs/conventions.md`.
+Adding a study does not require editing a catalog array. The lab
+category chip reads `category` on `study.json`
+(`pointer` | `layout` | `controls` | `feedback` | `craft`).
+`make catalog` rewrites `docs/catalog.md` and the README catalog
+markers from those files. `make catalog-check` fails when they drift.
+After-add files: `docs/conventions.md`.
 
 ## `study.json`
 
 ```json
 {
   "slug": "intent-cascade",
+  "category": "pointer",
   "title": "多级菜单",
   "eyebrow": "Cursor intent · Safe triangle",
   "summary": "One or two sentences. The transferable rule, not the demo skin.",
@@ -37,6 +41,7 @@ that map must include every slug. After-add files: `docs/conventions.md`.
 | Field | Rule |
 | --- | --- |
 | `slug` | Matches the folder name. Kebab-case. Names the behavior. |
+| `category` | Lab domain: `pointer` \| `layout` \| `controls` \| `feedback` \| `craft`. Required. Not a behavior tag. |
 | `title` | Short Chinese or English title for the catalog card. |
 | `eyebrow` | Optional kicker above the title. |
 | `summary` | What the user should remember. |

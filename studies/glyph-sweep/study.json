@@ -1,5 +1,6 @@
 {
   "slug": "glyph-sweep",
+  "category": "craft",
   "title": "扫光",
   "titleEn": "Glyph sweep",
   "summary": "扫光跟字形走。光带宽度用 ch，时长等于字数乘每字秒数，不要去扫整块盒子。",

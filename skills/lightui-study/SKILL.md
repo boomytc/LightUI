@@ -47,9 +47,8 @@ Do not invent a second copy of these rules. Follow the files:
    `127.0.0.1`. Give the study its own port (lab is 5173; next free is
    in `docs/conventions.md`).
 6. Do not add the study to a catalog array. Discovery is `import.meta.glob`.
-   Do update the after-add files listed in `docs/conventions.md` (port,
-   lab `SLUG_CATEGORY_MAP` + its test counts, `scripts/capture-stage.py`
-   `SHOTS`).
+   Set `category` on `study.json`. Do update the after-add files listed in
+   `docs/conventions.md` (port, `scripts/capture-stage.py` `SHOTS`).
 7. Run `make catalog`, then `make test` and `make typecheck`.
 8. Open `/studies` and `/s/<slug>`. Exercise the interaction, not just a
    screenshot. Check the 理念 tab renders `idea.md`. Confirm the category

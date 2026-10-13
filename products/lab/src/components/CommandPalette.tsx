@@ -164,7 +164,7 @@ export function CommandPalette({
       );
     })
     .map(({ meta }) => {
-      const category = getStudyCategory(meta.slug);
+      const category = getStudyCategory(meta);
       return {
         id: `study-${meta.slug}`,
         group: "study" as const,
