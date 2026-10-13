@@ -3,6 +3,7 @@
   "private": true,
   "workspaces": [
     "products/lab",
+    "products/genui",
     "studies/*"
   ],
   "scripts": {

@@ -23,6 +23,8 @@ From workspace root: `make dev`.
 - The judgment graph is assembled from `study.json` `asks` + `links`
   (`src/lib/graph.ts`) and shown at `/graph`. Do not keep a second map.
 - Study playgrounds stay in `studies/<slug>/`. Writing stays in `writing/`.
+- Generative UI components stay in `products/genui/`. Import that package
+  only as `@lightui/genui`.
 - Tokens come from `design/tokens.css`.
 - Bind to `127.0.0.1`.
 - Keep routing in `src/lib/nav.ts`.

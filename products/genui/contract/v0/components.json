@@ -1,0 +1,22 @@
+{
+  "protocol": "lightui.genui",
+  "version": "v0",
+  "components": [
+    {
+      "name": "Text",
+      "description": "Plain text block. v0 stand-in so the registry and the contract file can be checked against each other.",
+      "props": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Visible text."
+          }
+        },
+        "required": ["content"]
+      }
+    }
+  ]
+}

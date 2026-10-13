@@ -10,6 +10,8 @@ aggregate commands, and project skills.
 
 - Treat each `studies/<slug>/` as a study root before editing that idea.
 - Treat `products/lab/` as the product root before editing the catalog UI.
+- Treat `products/genui/` as the product root before editing generative UI
+  components, the registry, or the agent contract.
 - Read this file first, then the local `AGENTS.md`.
 
 ## Layout
@@ -20,6 +22,7 @@ design/                  visual source (tokens, base, favicon)
 docs/                    catalog, conventions, study / writing contracts
 writing/                 public notes (the site blog)
 products/lab/            the site: home, studies, graph, notes
+products/genui/          generative UI: components, registry, contract v0
 studies/<slug>/          one idea + playground + stage
 scripts/sync-catalog.mjs regenerate docs/catalog.md
 scripts/capture-stage.py export stage stills (`make stills`)
@@ -35,6 +38,7 @@ at the repository root.
 | --- | --- |
 | New or extracted UI idea | `studies/<slug>/` |
 | Catalog browsing, study frame, site chrome | `products/lab/` |
+| Generative UI component, registry, or agent contract | `products/genui/` |
 | Public essay | `writing/notes/` |
 | Color, type, radius, shadow | `design/tokens.css` |
 | How to add a study | `docs/conventions.md` + `docs/study-contract.md` |
@@ -42,8 +46,20 @@ at the repository root.
 | Incoming Grok/vibe sandbox | `sandboxes/unintegrated/`; after extract, move to `sandboxes/integrated/` |
 | Fixture stills (generated) | `make stills` from `/s/<slug>/stage` — do not commit png |
 
-Do not create empty study folders. Do not start a workspace-level component
-library. If two studies later share a true primitive, extract it then.
+Do not create empty study folders. Deliverable generative-UI components live
+only in `products/genui/`. Do not start a component library anywhere else
+(studies, lab, or the repository root). If two studies later share a true
+primitive that is not a generative-UI component, extract it then.
+
+Dependency direction is checked, not only documented. `products/genui` must
+not import `studies/*` or `products/lab`. Studies and lab may import the
+public entry `@lightui/genui` (`products/genui/src/index.ts`) and nothing
+deeper. `npm test` and `npm run typecheck` fail on a violation.
+
+The contract external agents read is `products/genui/contract/` (current
+version `v0`). LightAgent uses that directory as the only source. Do not
+derive or export the contract from the TypeScript implementation. A test
+fails when the registry and `contract/v0/components.json` disagree.
 
 ## Study contract
 
@@ -67,9 +83,14 @@ Do not put them in `.grok/skills/`.
 
 ## Boundaries
 
-- The unit of work lives one level down: `studies/<slug>/` or `products/lab/`.
+- The unit of work lives one level down: `studies/<slug>/`, `products/lab/`,
+  or `products/genui/`.
 - `products/lab` is a standalone product root. Bind it and playgrounds to
   `127.0.0.1`.
+- `products/genui` does not import studies or lab. Studies and lab reach it
+  only through `@lightui/genui`. The agent contract is
+  `products/genui/contract/` (v0), not an export generated from the
+  implementation.
 - This is not a single-app repo. Studies stay independent and do not import
   each other.
 - When bringing a sandbox in, copy the idea and the teaching playground.
