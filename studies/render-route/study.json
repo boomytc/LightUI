@@ -1,0 +1,30 @@
+{
+  "slug": "render-route",
+  "category": "feedback",
+  "title": "呈现路由",
+  "titleEn": "Render route",
+  "eyebrow": "GenUI · Surface",
+  "eyebrowEn": "GenUI · Surface",
+  "summary": "同一轮回答在纯文本、契约组件和 iframe 沙盒里各长什么样；名字或 props 不合法时宿主在原位报错，半截 JSON 先等闭合。",
+  "summaryEn": "How one turn looks as plain text, a contract component, or an iframe sandbox. An illegal name or props stay an in-place error, and unclosed JSON waits.",
+  "asks": "这一轮该用纯文本、契约组件，还是 iframe 沙盒？坏包怎么报错？",
+  "asksEn": "Should this turn be plain text, a contract component, or an iframe sandbox — and how does a bad packet surface as an error?",
+  "links": [
+    {
+      "slug": "assistant-chrome",
+      "rel": "contrast",
+      "when": "助手住在哪，不是这一轮用哪种表面来呈现",
+      "whenEn": "where the assistant lives is not which surface this turn renders on"
+    },
+    {
+      "slug": "transcript-stream",
+      "rel": "contrast",
+      "when": "半截包是未闭合的路由 JSON，不是语音 token 的打字机",
+      "whenEn": "a partial packet is an unclosed route JSON object, not a speech-token typewriter"
+    }
+  ],
+  "status": "draft",
+  "created": "2026-10-13",
+  "updated": "2026-10-13",
+  "tags": ["route", "surface", "schema", "stream"]
+}

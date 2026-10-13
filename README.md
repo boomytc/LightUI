@@ -117,6 +117,7 @@ LightUI 目前收录了 **55 个经过深思与实战检验的交互课题**（�
 | **[pending-taxonomy](studies/pending-taxonomy/)** 等待 | 内容还没到，屏幕上该留什么？骨架占布局位子；空状态给人话和下一步；壳未知时整页遮罩。不要转圈，不要假进度条。 |
 | **[progress-taxonomy](studies/progress-taxonomy/)** 进度 | 转圈只说了在等。先定进度能不能算：能算就走到 100 停住；不能算就循环，不要假百分比。 |
 | **[recall-grade](studies/recall-grade/)** 复习 | 翻开之后提交的是记得程度，用来排下次间隔。不是滑走下一张，也不是确认弹窗。 |
+| **[render-route](studies/render-route/)** 呈现路由 | 同一轮回答在纯文本、契约组件和 iframe 沙盒里各长什么样；名字或 props 不合法时宿主在原位报错，半截 JSON 先等闭合。 |
 | **[timer-taxonomy](studies/timer-taxonomy/)** 计时 | 这一段时间是正数累计，还是倒数专注？先定会话的方向。累计没有上限；专注到 0 自己停住，不要变成负数，也不要弹一条 toast。 |
 
 ### 工程与几何 (Craft & Geometry)

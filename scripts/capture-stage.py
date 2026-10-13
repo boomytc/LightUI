@@ -293,6 +293,14 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("prep", "default", "prep-default.png"),
         ("summary", "default", "summary-default.png"),
     ],
+    "render-route": [
+        ("compare", "text", "compare-text.png"),
+        ("compare", "native", "compare-native.png"),
+        ("compare", "iframe", "compare-iframe.png"),
+        ("error", "unknown", "error-unknown.png"),
+        ("error", "props", "error-props.png"),
+        ("error", "partial", "error-partial.png"),
+    ],
     "sandbox-bridge": [
         ("stream", "placeholder", "stream-placeholder.png"),
         ("stream", "preview", "stream-preview.png"),
