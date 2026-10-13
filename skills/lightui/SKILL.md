@@ -42,4 +42,6 @@ make dev                 # lab at http://127.0.0.1:5173/
 make dev-study STUDY=<slug>
 ```
 
-After adding or renaming a study, run `make catalog` in the same change.
+After adding or renaming a study, set `category` on `study.json` and run
+`make catalog` in the same change. `make test` and `make typecheck` run
+`make catalog-check`.

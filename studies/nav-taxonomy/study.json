@@ -1,5 +1,6 @@
 {
   "slug": "nav-taxonomy",
+  "category": "layout",
   "title": "导航栏",
   "titleEn": "Navbar",
   "eyebrow": "Placement · Reveal · Scroll",

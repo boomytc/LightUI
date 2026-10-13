@@ -13,6 +13,16 @@ export type Note = {
   body: string;
 };
 
+const studyMetaModules = import.meta.glob("../../../../studies/*/study.json", {
+  eager: true,
+  import: "default",
+}) as Record<string, { slug?: string; category?: string }>;
+
+const categoryBySlug = new Map<string, string | undefined>();
+for (const meta of Object.values(studyMetaModules)) {
+  if (meta?.slug) categoryBySlug.set(meta.slug, meta.category);
+}
+
 const noteModules = import.meta.glob("../../../../writing/notes/*.md", {
   eager: true,
   query: "?raw",
@@ -64,10 +74,9 @@ export function loadNote(slug: string, locale: Locale): Note | undefined {
 }
 
 export function getNoteCategory(note: Note): CategoryId {
-  if (note.related.length > 0 && note.related[0]) {
-    return getStudyCategory(note.related[0]);
-  }
-  return "craft";
+  const related = note.related[0];
+  if (!related) return "craft";
+  return getStudyCategory({ category: categoryBySlug.get(related) });
 }
 
 export function filterNotes(

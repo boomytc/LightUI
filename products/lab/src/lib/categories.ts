@@ -1,7 +1,19 @@
 import type { Locale } from "./prefs";
-import type { StudyMeta } from "./study";
+import type { StudyCategory, StudyMeta } from "./study";
 
-export type CategoryId = "all" | "pointer" | "layout" | "controls" | "feedback" | "craft";
+export type CategoryId = "all" | StudyCategory;
+
+const STUDY_CATEGORIES = new Set<StudyCategory>(["pointer", "layout", "controls", "feedback", "craft"]);
+
+export function isStudyCategory(value: string | undefined): value is StudyCategory {
+  return STUDY_CATEGORIES.has(value as StudyCategory);
+}
+
+/** Category lives on study.json. Missing or unknown values fall back to craft. */
+export function getStudyCategory(meta: { category?: string } | undefined | null): StudyCategory {
+  const category = meta?.category;
+  return isStudyCategory(category) ? category : "craft";
+}
 
 export interface CategoryMeta {
   id: CategoryId;
@@ -11,6 +23,7 @@ export interface CategoryMeta {
   descEn: string;
 }
 
+// Headings are repeated in scripts/sync-catalog.mjs for the README tables.
 export const CATEGORIES: CategoryMeta[] = [
   {
     id: "all",
@@ -56,76 +69,6 @@ export const CATEGORIES: CategoryMeta[] = [
   },
 ];
 
-export const SLUG_CATEGORY_MAP: Record<string, CategoryId> = {
-  // 指针与手势 (Pointer & Gesture - 15)
-  "intent-cascade": "pointer",
-  "look-quantize": "pointer",
-  "scroll-chrome": "pointer",
-  "drag-commit": "pointer",
-  "chart-read": "pointer",
-  "press-select": "pointer",
-  "pull-refresh": "pointer",
-  "sheet-snap": "pointer",
-  "swipe-action": "pointer",
-  "touch-context": "pointer",
-  "wheel-picker": "pointer",
-  "slide-confirm": "pointer",
-  "cursor-spring": "pointer",
-  "cone-reveal": "pointer",
-  "sling-throw": "pointer",
-
-  // 结构与导览 (Layout & Navigation - 12)
-  "layout-taxonomy": "layout",
-  "sidebar-taxonomy": "layout",
-  "assistant-chrome": "layout",
-  "dashboard-layers": "layout",
-  "hero-taxonomy": "layout",
-  "login-taxonomy": "layout",
-  "nav-taxonomy": "layout",
-  "expand-inflow": "layout",
-  "page-append": "layout",
-  "group-taxonomy": "layout",
-  "locator-taxonomy": "layout",
-  "transcript-stream": "layout",
-
-  // 表单与控件 (Controls & Forms - 8)
-  "button-taxonomy": "controls",
-  "control-taxonomy": "controls",
-  "dropdown-taxonomy": "controls",
-  "tab-taxonomy": "controls",
-  "fill-taxonomy": "controls",
-  "validation-taxonomy": "controls",
-  "picker-taxonomy": "controls",
-  "table-taxonomy": "controls",
-
-  // 反馈与打断 (Feedback & Interruption - 11)
-  "progress-taxonomy": "feedback",
-  "timer-taxonomy": "feedback",
-  "pending-taxonomy": "feedback",
-  "empty-taxonomy": "feedback",
-  "optimistic-rollback": "feedback",
-  "notify-taxonomy": "feedback",
-  "overlay-taxonomy": "feedback",
-  "confirm-taxonomy": "feedback",
-  "guide-interrupt": "feedback",
-  "carousel-taxonomy": "feedback",
-  "recall-grade": "feedback",
-
-  // 工程与几何 (Craft & Geometry - 8)
-  "align-craft": "craft",
-  "border-beam": "craft",
-  "glyph-sweep": "craft",
-  "inverted-notch": "craft",
-  "container-morph": "craft",
-  "path-morph": "craft",
-  "chart-taxonomy": "craft",
-  "bm25-explain": "craft",
-};
-
-export function getStudyCategory(slug: string): CategoryId {
-  return SLUG_CATEGORY_MAP[slug] ?? "craft";
-}
-
 export function categoryLabel(id: string, locale: Locale): string {
   const cat = CATEGORIES.find((c) => c.id === id);
   if (!cat) return id;
@@ -141,7 +84,7 @@ export function filterStudies<T extends { meta: StudyMeta }>(
   const q = query.trim().toLowerCase();
 
   return studies.filter(({ meta }) => {
-    if (categoryId !== "all" && getStudyCategory(meta.slug) !== categoryId) {
+    if (categoryId !== "all" && getStudyCategory(meta) !== categoryId) {
       return false;
     }
 
@@ -162,7 +105,7 @@ export function filterStudies<T extends { meta: StudyMeta }>(
     const eyebrowEn = (meta.eyebrowEn ?? "").toLowerCase();
     const tags = (meta.tags ?? []).join(" ").toLowerCase();
 
-    const cat = CATEGORIES.find((c) => c.id === getStudyCategory(meta.slug));
+    const cat = CATEGORIES.find((c) => c.id === getStudyCategory(meta));
     const catZh = cat?.nameZh.toLowerCase() ?? "";
     const catEn = cat?.nameEn.toLowerCase() ?? "";
 

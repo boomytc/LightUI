@@ -115,7 +115,7 @@ function TryCard({
   locale: Locale;
   copy: ReturnType<typeof messages>;
 }) {
-  const category = getStudyCategory(meta.slug);
+  const category = getStudyCategory(meta);
   const asks = studyAsks(meta, locale);
 
   return (

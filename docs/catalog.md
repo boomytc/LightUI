@@ -1,66 +1,67 @@
 # Study Catalog
 
 Generated from `studies/*/study.json`. Edit the JSON, then run `make catalog`.
+`make catalog-check` fails when this file or the README catalog markers drift.
 
 The lab at `products/lab` discovers the same files with `import.meta.glob`.
-Do not keep a second registry.
+Category chips read `category` on each study. Do not keep a second registry.
 
-| Slug | Idea | Status | Created | Updated |
-| --- | --- | --- | --- | --- |
-| [transcript-stream](../studies/transcript-stream/) | 实时多说话人转录流不应粗暴全量重绘；在会前声纹抽屉预先建档，在会中以打字机平滑追加字词、解决后验换名与重叠抢话碰撞，并在会后无缝跃迁至双栏时间轴与结构化纪要。 | active | 2026-09-26 | 2026-09-26 |
-| [table-taxonomy](../studies/table-taxonomy/) | 记录表先问找、看、改落在哪一层。筛在这一列的表头，条件留在上方；表头钉在表自己的滚动区，名称列不能藏；一行只露出查看；有勾选，批量条才换掉搜索。 | active | 2026-09-22 | 2026-09-23 |
-| [control-taxonomy](../studies/control-taxonomy/) | 「做个输入框」只说了能填。先定是自己填一行或一段，还是从答案里选：可见比较、短列表、边搜边选，或同时多个。 | active | 2026-08-23 | 2026-09-20 |
-| [dropdown-taxonomy](../studies/dropdown-taxonomy/) | 往下展开只是外观。先定提交的是一个值、一组、一条路径，还是一次动作。 | active | 2026-08-15 | 2026-09-20 |
-| [picker-taxonomy](../studies/picker-taxonomy/) | 「做个选择器」只说了能点。先定选的是一个刻度、一段区间、按步加减、逐级路径，还是一段日期：尺子松手对齐，双端不交叉，下限禁用，换上级清空下级，止晚于起。 | active | 2026-09-20 | 2026-09-20 |
-| [wheel-picker](../studies/wheel-picker/) | 有序离散数据或时间刻度，不要弹虚拟键盘也不要展开60项长列表。上下拨动连续滑动，松手依据滚动吸附中央基准线，离基准线越远透明度与尺寸沿圆柱面几何递减。 | active | 2026-09-09 | 2026-09-20 |
-| [empty-taxonomy](../studies/empty-taxonomy/) | 空状态不要一律「暂无数据 + 一个按钮」。先判断为什么空：创建给入口，搜索改关键词，筛选改条件，失败可重试并保留原列表，完成给反馈不要再催。 | active | 2026-09-16 | 2026-09-16 |
-| [pending-taxonomy](../studies/pending-taxonomy/) | 内容还没到，屏幕上该留什么？骨架占布局位子；空状态给人话和下一步；壳未知时整页遮罩。不要转圈，不要假进度条。 | active | 2026-08-23 | 2026-09-16 |
-| [cone-reveal](../studies/cone-reveal/) | 密文不该整段亮出来。指针从固定原点射出锥光，只有落在锥内的字形变成明文，锥外仍是圆点。 | active | 2026-09-15 | 2026-09-15 |
-| [cursor-spring](../studies/cursor-spring/) | 网络只能丢稀疏坐标，协作光标如何平滑跟手？解耦网络采样与屏幕刷新，用二阶弹簧半隐式欧拉积分重建自然惯性与微过冲。 | active | 2026-09-15 | 2026-09-15 |
-| [sling-throw](../studies/sling-throw/) | 沿轨道调值时，离轨不该被夹回一维。拉过离轨阈值，松手按抛体落点改值。 | active | 2026-09-15 | 2026-09-15 |
-| [align-craft](../studies/align-craft/) | 对齐不是看起来正。先问对齐的是文字基线、画面焦点、数位还是盒子。间距用 gap，贴边用帽高，定位用 inset，金额用等宽，列表用两端扫读。 | active | 2026-08-23 | 2026-09-14 |
-| [slide-confirm](../studies/slide-confirm/) | 高危不可逆操作，如何用连续物理位移杜绝误触疲劳？滑动确认强制用户执行一段具有明确矢量方向的物理行程，未达阈值松手弹性回退，超过判定阈值才完成破坏性承诺。 | active | 2026-09-14 | 2026-09-14 |
-| [assistant-chrome](../studies/assistant-chrome/) | 助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。 | active | 2026-08-23 | 2026-09-11 |
-| [bm25-explain](../studies/bm25-explain/) | 检索排序不是黑盒总分。先定稀疏与向量的分数不可直接相加，再把得分拆解为词频饱和与篇幅惩罚。 | active | 2026-08-25 | 2026-09-11 |
-| [border-beam](../studies/border-beam/) | 高光沿圆角边框绕行，不要铺满卡片。内层实心底，外层透明边框叠光束。品牌强调色，不要彩虹。 | active | 2026-08-23 | 2026-09-11 |
-| [button-taxonomy](../studies/button-taxonomy/) | 「做个按钮」只说了能点。先定这一区的主操作、次操作还是弱操作，一区只能有一个面状。 | active | 2026-08-23 | 2026-09-11 |
-| [carousel-taxonomy](../studies/carousel-taxonomy/) | 一组画面只说了会换。先定是平移、淡入、木马、叠卡、翻页、手风琴、360 还是视差。 | active | 2026-08-23 | 2026-09-11 |
-| [chart-read](../studies/chart-read/) | 图画好之后，这一手是读数、过滤还是改窗口。选图种是另一问；看板层递也是另一问。 | active | 2026-08-25 | 2026-09-11 |
-| [chart-taxonomy](../studies/chart-taxonomy/) | 「做个图表」只说了有数。先定要看变化、大小、占比、关系、流程还是能力，再选痕迹。 | active | 2026-08-23 | 2026-09-11 |
-| [confirm-taxonomy](../studies/confirm-taxonomy/) | 二次确认不是一律弹窗。打断程度与认知摩擦，必须与后果的不可逆性及影响范围严格成正比。 | active | 2026-08-30 | 2026-09-11 |
-| [container-morph](../studies/container-morph/) | 同一入口连续变形。先定改宽、高、圆角还是排版；停在展开态，或沿原路收回——内容先走，容器后收。 | active | 2026-08-25 | 2026-09-11 |
-| [dashboard-layers](../studies/dashboard-layers/) | 看板该从结果往下钻。一盘端上 KPI、图、表，扫得到皮，钻不到因。 | active | 2026-08-23 | 2026-09-11 |
-| [drag-commit](../studies/drag-commit/) | 同一抓取手势，松手提交的不是同一种结果。先定是新顺序、一次接收、跨组转移，还是无效回弹。 | active | 2026-08-25 | 2026-09-11 |
-| [expand-inflow](../studies/expand-inflow/) | 多出来的内容先问撑开文档流还是盖一层。互斥还是独立，是流里的第二问。不要把抽屉再做一遍。 | active | 2026-08-25 | 2026-09-11 |
-| [fill-taxonomy](../studies/fill-taxonomy/) | 「做个表单」只说了有格子。先定填写前、填写中、提交后这一栏该交代什么：标签常在、必填先标、错在栏下能改、成功带下一步。 | active | 2026-08-26 | 2026-09-11 |
-| [glyph-sweep](../studies/glyph-sweep/) | 扫光跟字形走。光带宽度用 ch，时长等于字数乘每字秒数，不要去扫整块盒子。 | active | 2026-08-21 | 2026-09-11 |
-| [group-taxonomy](../studies/group-taxonomy/) | 信息块分组不是默认套卡片。卡片只装真正独立的对象，关系才是分组的答案。 | active | 2026-09-02 | 2026-09-11 |
-| [guide-interrupt](../studies/guide-interrupt/) | 教学不是弹窗，也不是一条提示。先定何时出现、钉在谁身上、靠什么推进、结束后还挡不挡。 | active | 2026-08-25 | 2026-09-11 |
-| [hero-taxonomy](../studies/hero-taxonomy/) | 「做个高级首屏」只说了要花哨。先定第一眼回答什么：能解决什么、你是谁、为什么现在、卖什么、发生了什么、能学到什么、能帮我做什么，还是谁在这里。 | active | 2026-08-23 | 2026-09-11 |
-| [intent-cascade](../studies/intent-cascade/) | 斜着滑进子菜单时，途经的项不该抢走展开。 | active | 2026-08-15 | 2026-09-11 |
-| [inverted-notch](../studies/inverted-notch/) | 内凹角该在父级挖孔。同色补丁缝回去，背景一变缝就露馅。 | active | 2026-08-21 | 2026-09-11 |
-| [layout-taxonomy](../studies/layout-taxonomy/) | 「做个页面」只说了有块。先定是单栏、落地、瀑布、全屏、分栏、仪表盘还是模块拼贴。 | active | 2026-08-23 | 2026-09-11 |
-| [locator-taxonomy](../studies/locator-taxonomy/) | 页面变长时只是滚动更多。真正要先定的是意图：是连续阅读、结构跳转、折叠展开，还是行内检索与筛选。 | active | 2026-08-30 | 2026-09-11 |
-| [login-taxonomy](../studies/login-taxonomy/) | 「做个登录页」只说了有表单。先定是居中卡片、左右分栏、沉浸背景、角色入口，还是分步。 | active | 2026-08-23 | 2026-09-11 |
-| [look-quantize](../studies/look-quantize/) | 指针偏了，视线落到图集格子。半径里平滑，格子外夹紧，眨眼走另一行。 | active | 2026-08-21 | 2026-09-11 |
-| [nav-taxonomy](../studies/nav-taxonomy/) | 一排链接只说了有入口。先定住在哪、怎么开、滚的时候干什么。 | active | 2026-08-15 | 2026-09-11 |
-| [notify-taxonomy](../studies/notify-taxonomy/) | 报一条消息只说了要出声。先定打断到哪一档：瞄一眼、自动消失、还能撤销、留档、还是必须处理。 | active | 2026-08-23 | 2026-09-11 |
-| [optimistic-rollback](../studies/optimistic-rollback/) | 点完这一击，界面是等网络回执还是立即改？成功是默认路径，UI 先行响应；若网络失败，根据快照原位回滚并说明原因；不可逆高风险操作禁止乐观更新。 | active | 2026-08-28 | 2026-09-11 |
-| [overlay-taxonomy](../studies/overlay-taxonomy/) | 浮在页面上只是外观。先定打不打断当前任务，以及是否贴着触发点。 | active | 2026-08-23 | 2026-09-11 |
-| [page-append](../studies/page-append/) | 一批记录先问整页替换还是末尾追加。翻页会丢掉上一页并回到顶部；追加只增加 visibleCount，旧节点不卸。 | active | 2026-08-25 | 2026-09-11 |
-| [path-morph](../studies/path-morph/) | 矢量路径变形。2D Procrustes 相似分解求解旋转与缩放，极坐标插值杜绝弦长塌陷，角点锚定保证静止态保真。 | active | 2026-08-31 | 2026-09-11 |
-| [press-select](../studies/press-select/) | 列表中这一按，是直接打开还是激活批量选择？单击默认打开；按住超 480ms 且位移在容差内激活选择模式；滑动则立即注销长按转为滚动。 | active | 2026-08-28 | 2026-09-11 |
-| [progress-taxonomy](../studies/progress-taxonomy/) | 转圈只说了在等。先定进度能不能算：能算就走到 100 停住；不能算就循环，不要假百分比。 | active | 2026-08-23 | 2026-09-11 |
-| [pull-refresh](../studies/pull-refresh/) | 下拉手势何时接管滚动、何时提交刷新？顶边且向下才接管；位移应用阻尼并设上限；松手超阈值才提交刷新，未达阈值弹性复位。 | active | 2026-08-28 | 2026-09-11 |
-| [recall-grade](../studies/recall-grade/) | 翻开之后提交的是记得程度，用来排下次间隔。不是滑走下一张，也不是确认弹窗。 | active | 2026-08-23 | 2026-09-11 |
-| [scroll-chrome](../studies/scroll-chrome/) | 滚动提示是开场邀请，还是位置轨道？先定报什么。邀请只在顶上；轨道点的是比例，不是章节。 | active | 2026-08-24 | 2026-09-11 |
-| [sheet-snap](../studies/sheet-snap/) | 多档抽屉不是简单的二元开合。拖动时全量跟手并带越界阻尼，松手依据位移与速度综合裁定落入哪个离散档位。 | active | 2026-09-09 | 2026-09-11 |
-| [sidebar-taxonomy](../studies/sidebar-taxonomy/) | 靠左只是外观。先定占不占位，展开改的是宽度还是图层。 | active | 2026-08-15 | 2026-09-11 |
-| [swipe-action](../studies/swipe-action/) | 列表行向左侧滑时，8px 矢量消歧区分纵向滚动与横向侧滑；释放时依据位移与阻尼裁定回弹、吸附露出快捷操作，或超过深滑阈值直接全滑提交删除。 | active | 2026-09-09 | 2026-09-11 |
-| [tab-taxonomy](../studies/tab-taxonomy/) | 一排标签只说了能切。先定选中态是短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。 | active | 2026-08-23 | 2026-09-11 |
-| [timer-taxonomy](../studies/timer-taxonomy/) | 这一段时间是正数累计，还是倒数专注？先定会话的方向。累计没有上限；专注到 0 自己停住，不要变成负数，也不要弹一条 toast。 | active | 2026-08-23 | 2026-09-11 |
-| [touch-context](../studies/touch-context/) | 触控长按不是简单弹窗。原地按住约 460ms 且位移在 10px 容差内触发；位移超标立即销毁定时器让路给滚动；菜单紧贴触控点就近浮现并在视口边界自动翻转避让。 | active | 2026-09-09 | 2026-09-11 |
-| [validation-taxonomy](../studies/validation-taxonomy/) | 「做个表单校验」只说了会报错。先定是失焦就说、这一栏立刻说，还是提交时一次说完。 | active | 2026-08-23 | 2026-09-11 |
+| Slug | Category | Idea | Status | Created | Updated |
+| --- | --- | --- | --- | --- | --- |
+| [transcript-stream](../studies/transcript-stream/) | layout | 实时多说话人转录流不应粗暴全量重绘；在会前声纹抽屉预先建档，在会中以打字机平滑追加字词、解决后验换名与重叠抢话碰撞，并在会后无缝跃迁至双栏时间轴与结构化纪要。 | active | 2026-09-26 | 2026-09-26 |
+| [table-taxonomy](../studies/table-taxonomy/) | controls | 记录表先问找、看、改落在哪一层。筛在这一列的表头，条件留在上方；表头钉在表自己的滚动区，名称列不能藏；一行只露出查看；有勾选，批量条才换掉搜索。 | active | 2026-09-22 | 2026-09-23 |
+| [control-taxonomy](../studies/control-taxonomy/) | controls | 「做个输入框」只说了能填。先定是自己填一行或一段，还是从答案里选：可见比较、短列表、边搜边选，或同时多个。 | active | 2026-08-23 | 2026-09-20 |
+| [dropdown-taxonomy](../studies/dropdown-taxonomy/) | controls | 往下展开只是外观。先定提交的是一个值、一组、一条路径，还是一次动作。 | active | 2026-08-15 | 2026-09-20 |
+| [picker-taxonomy](../studies/picker-taxonomy/) | controls | 「做个选择器」只说了能点。先定选的是一个刻度、一段区间、按步加减、逐级路径，还是一段日期：尺子松手对齐，双端不交叉，下限禁用，换上级清空下级，止晚于起。 | active | 2026-09-20 | 2026-09-20 |
+| [wheel-picker](../studies/wheel-picker/) | pointer | 有序离散数据或时间刻度，不要弹虚拟键盘也不要展开60项长列表。上下拨动连续滑动，松手依据滚动吸附中央基准线，离基准线越远透明度与尺寸沿圆柱面几何递减。 | active | 2026-09-09 | 2026-09-20 |
+| [empty-taxonomy](../studies/empty-taxonomy/) | feedback | 空状态不要一律「暂无数据 + 一个按钮」。先判断为什么空：创建给入口，搜索改关键词，筛选改条件，失败可重试并保留原列表，完成给反馈不要再催。 | active | 2026-09-16 | 2026-09-16 |
+| [pending-taxonomy](../studies/pending-taxonomy/) | feedback | 内容还没到，屏幕上该留什么？骨架占布局位子；空状态给人话和下一步；壳未知时整页遮罩。不要转圈，不要假进度条。 | active | 2026-08-23 | 2026-09-16 |
+| [cone-reveal](../studies/cone-reveal/) | pointer | 密文不该整段亮出来。指针从固定原点射出锥光，只有落在锥内的字形变成明文，锥外仍是圆点。 | active | 2026-09-15 | 2026-09-15 |
+| [cursor-spring](../studies/cursor-spring/) | pointer | 网络只能丢稀疏坐标，协作光标如何平滑跟手？解耦网络采样与屏幕刷新，用二阶弹簧半隐式欧拉积分重建自然惯性与微过冲。 | active | 2026-09-15 | 2026-09-15 |
+| [sling-throw](../studies/sling-throw/) | pointer | 沿轨道调值时，离轨不该被夹回一维。拉过离轨阈值，松手按抛体落点改值。 | active | 2026-09-15 | 2026-09-15 |
+| [align-craft](../studies/align-craft/) | craft | 对齐不是看起来正。先问对齐的是文字基线、画面焦点、数位还是盒子。间距用 gap，贴边用帽高，定位用 inset，金额用等宽，列表用两端扫读。 | active | 2026-08-23 | 2026-09-14 |
+| [slide-confirm](../studies/slide-confirm/) | pointer | 高危不可逆操作，如何用连续物理位移杜绝误触疲劳？滑动确认强制用户执行一段具有明确矢量方向的物理行程，未达阈值松手弹性回退，超过判定阈值才完成破坏性承诺。 | active | 2026-09-14 | 2026-09-14 |
+| [assistant-chrome](../studies/assistant-chrome/) | layout | 助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。 | active | 2026-08-23 | 2026-09-11 |
+| [bm25-explain](../studies/bm25-explain/) | craft | 检索排序不是黑盒总分。先定稀疏与向量的分数不可直接相加，再把得分拆解为词频饱和与篇幅惩罚。 | active | 2026-08-25 | 2026-09-11 |
+| [border-beam](../studies/border-beam/) | craft | 高光沿圆角边框绕行，不要铺满卡片。内层实心底，外层透明边框叠光束。品牌强调色，不要彩虹。 | active | 2026-08-23 | 2026-09-11 |
+| [button-taxonomy](../studies/button-taxonomy/) | controls | 「做个按钮」只说了能点。先定这一区的主操作、次操作还是弱操作，一区只能有一个面状。 | active | 2026-08-23 | 2026-09-11 |
+| [carousel-taxonomy](../studies/carousel-taxonomy/) | feedback | 一组画面只说了会换。先定是平移、淡入、木马、叠卡、翻页、手风琴、360 还是视差。 | active | 2026-08-23 | 2026-09-11 |
+| [chart-read](../studies/chart-read/) | pointer | 图画好之后，这一手是读数、过滤还是改窗口。选图种是另一问；看板层递也是另一问。 | active | 2026-08-25 | 2026-09-11 |
+| [chart-taxonomy](../studies/chart-taxonomy/) | craft | 「做个图表」只说了有数。先定要看变化、大小、占比、关系、流程还是能力，再选痕迹。 | active | 2026-08-23 | 2026-09-11 |
+| [confirm-taxonomy](../studies/confirm-taxonomy/) | feedback | 二次确认不是一律弹窗。打断程度与认知摩擦，必须与后果的不可逆性及影响范围严格成正比。 | active | 2026-08-30 | 2026-09-11 |
+| [container-morph](../studies/container-morph/) | craft | 同一入口连续变形。先定改宽、高、圆角还是排版；停在展开态，或沿原路收回——内容先走，容器后收。 | active | 2026-08-25 | 2026-09-11 |
+| [dashboard-layers](../studies/dashboard-layers/) | layout | 看板该从结果往下钻。一盘端上 KPI、图、表，扫得到皮，钻不到因。 | active | 2026-08-23 | 2026-09-11 |
+| [drag-commit](../studies/drag-commit/) | pointer | 同一抓取手势，松手提交的不是同一种结果。先定是新顺序、一次接收、跨组转移，还是无效回弹。 | active | 2026-08-25 | 2026-09-11 |
+| [expand-inflow](../studies/expand-inflow/) | layout | 多出来的内容先问撑开文档流还是盖一层。互斥还是独立，是流里的第二问。不要把抽屉再做一遍。 | active | 2026-08-25 | 2026-09-11 |
+| [fill-taxonomy](../studies/fill-taxonomy/) | controls | 「做个表单」只说了有格子。先定填写前、填写中、提交后这一栏该交代什么：标签常在、必填先标、错在栏下能改、成功带下一步。 | active | 2026-08-26 | 2026-09-11 |
+| [glyph-sweep](../studies/glyph-sweep/) | craft | 扫光跟字形走。光带宽度用 ch，时长等于字数乘每字秒数，不要去扫整块盒子。 | active | 2026-08-21 | 2026-09-11 |
+| [group-taxonomy](../studies/group-taxonomy/) | layout | 信息块分组不是默认套卡片。卡片只装真正独立的对象，关系才是分组的答案。 | active | 2026-09-02 | 2026-09-11 |
+| [guide-interrupt](../studies/guide-interrupt/) | feedback | 教学不是弹窗，也不是一条提示。先定何时出现、钉在谁身上、靠什么推进、结束后还挡不挡。 | active | 2026-08-25 | 2026-09-11 |
+| [hero-taxonomy](../studies/hero-taxonomy/) | layout | 「做个高级首屏」只说了要花哨。先定第一眼回答什么：能解决什么、你是谁、为什么现在、卖什么、发生了什么、能学到什么、能帮我做什么，还是谁在这里。 | active | 2026-08-23 | 2026-09-11 |
+| [intent-cascade](../studies/intent-cascade/) | pointer | 斜着滑进子菜单时，途经的项不该抢走展开。 | active | 2026-08-15 | 2026-09-11 |
+| [inverted-notch](../studies/inverted-notch/) | craft | 内凹角该在父级挖孔。同色补丁缝回去，背景一变缝就露馅。 | active | 2026-08-21 | 2026-09-11 |
+| [layout-taxonomy](../studies/layout-taxonomy/) | layout | 「做个页面」只说了有块。先定是单栏、落地、瀑布、全屏、分栏、仪表盘还是模块拼贴。 | active | 2026-08-23 | 2026-09-11 |
+| [locator-taxonomy](../studies/locator-taxonomy/) | layout | 页面变长时只是滚动更多。真正要先定的是意图：是连续阅读、结构跳转、折叠展开，还是行内检索与筛选。 | active | 2026-08-30 | 2026-09-11 |
+| [login-taxonomy](../studies/login-taxonomy/) | layout | 「做个登录页」只说了有表单。先定是居中卡片、左右分栏、沉浸背景、角色入口，还是分步。 | active | 2026-08-23 | 2026-09-11 |
+| [look-quantize](../studies/look-quantize/) | pointer | 指针偏了，视线落到图集格子。半径里平滑，格子外夹紧，眨眼走另一行。 | active | 2026-08-21 | 2026-09-11 |
+| [nav-taxonomy](../studies/nav-taxonomy/) | layout | 一排链接只说了有入口。先定住在哪、怎么开、滚的时候干什么。 | active | 2026-08-15 | 2026-09-11 |
+| [notify-taxonomy](../studies/notify-taxonomy/) | feedback | 报一条消息只说了要出声。先定打断到哪一档：瞄一眼、自动消失、还能撤销、留档、还是必须处理。 | active | 2026-08-23 | 2026-09-11 |
+| [optimistic-rollback](../studies/optimistic-rollback/) | feedback | 点完这一击，界面是等网络回执还是立即改？成功是默认路径，UI 先行响应；若网络失败，根据快照原位回滚并说明原因；不可逆高风险操作禁止乐观更新。 | active | 2026-08-28 | 2026-09-11 |
+| [overlay-taxonomy](../studies/overlay-taxonomy/) | feedback | 浮在页面上只是外观。先定打不打断当前任务，以及是否贴着触发点。 | active | 2026-08-23 | 2026-09-11 |
+| [page-append](../studies/page-append/) | layout | 一批记录先问整页替换还是末尾追加。翻页会丢掉上一页并回到顶部；追加只增加 visibleCount，旧节点不卸。 | active | 2026-08-25 | 2026-09-11 |
+| [path-morph](../studies/path-morph/) | craft | 矢量路径变形。2D Procrustes 相似分解求解旋转与缩放，极坐标插值杜绝弦长塌陷，角点锚定保证静止态保真。 | active | 2026-08-31 | 2026-09-11 |
+| [press-select](../studies/press-select/) | pointer | 列表中这一按，是直接打开还是激活批量选择？单击默认打开；按住超 480ms 且位移在容差内激活选择模式；滑动则立即注销长按转为滚动。 | active | 2026-08-28 | 2026-09-11 |
+| [progress-taxonomy](../studies/progress-taxonomy/) | feedback | 转圈只说了在等。先定进度能不能算：能算就走到 100 停住；不能算就循环，不要假百分比。 | active | 2026-08-23 | 2026-09-11 |
+| [pull-refresh](../studies/pull-refresh/) | pointer | 下拉手势何时接管滚动、何时提交刷新？顶边且向下才接管；位移应用阻尼并设上限；松手超阈值才提交刷新，未达阈值弹性复位。 | active | 2026-08-28 | 2026-09-11 |
+| [recall-grade](../studies/recall-grade/) | feedback | 翻开之后提交的是记得程度，用来排下次间隔。不是滑走下一张，也不是确认弹窗。 | active | 2026-08-23 | 2026-09-11 |
+| [scroll-chrome](../studies/scroll-chrome/) | pointer | 滚动提示是开场邀请，还是位置轨道？先定报什么。邀请只在顶上；轨道点的是比例，不是章节。 | active | 2026-08-24 | 2026-09-11 |
+| [sheet-snap](../studies/sheet-snap/) | pointer | 多档抽屉不是简单的二元开合。拖动时全量跟手并带越界阻尼，松手依据位移与速度综合裁定落入哪个离散档位。 | active | 2026-09-09 | 2026-09-11 |
+| [sidebar-taxonomy](../studies/sidebar-taxonomy/) | layout | 靠左只是外观。先定占不占位，展开改的是宽度还是图层。 | active | 2026-08-15 | 2026-09-11 |
+| [swipe-action](../studies/swipe-action/) | pointer | 列表行向左侧滑时，8px 矢量消歧区分纵向滚动与横向侧滑；释放时依据位移与阻尼裁定回弹、吸附露出快捷操作，或超过深滑阈值直接全滑提交删除。 | active | 2026-09-09 | 2026-09-11 |
+| [tab-taxonomy](../studies/tab-taxonomy/) | controls | 一排标签只说了能切。先定选中态是短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。 | active | 2026-08-23 | 2026-09-11 |
+| [timer-taxonomy](../studies/timer-taxonomy/) | feedback | 这一段时间是正数累计，还是倒数专注？先定会话的方向。累计没有上限；专注到 0 自己停住，不要变成负数，也不要弹一条 toast。 | active | 2026-08-23 | 2026-09-11 |
+| [touch-context](../studies/touch-context/) | pointer | 触控长按不是简单弹窗。原地按住约 460ms 且位移在 10px 容差内触发；位移超标立即销毁定时器让路给滚动；菜单紧贴触控点就近浮现并在视口边界自动翻转避让。 | active | 2026-09-09 | 2026-09-11 |
+| [validation-taxonomy](../studies/validation-taxonomy/) | controls | 「做个表单校验」只说了会报错。先定是失焦就说、这一栏立刻说，还是提交时一次说完。 | active | 2026-08-23 | 2026-09-11 |
 
 ## Questions
 
@@ -301,6 +302,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## How to read a row
 
+- **Category** is `pointer` | `layout` | `controls` | `feedback` | `craft`.
 - **Idea** is the transferable rule, not the demo skin.
 - **Updated** is the day to bump when the study changes. The lab sorts by it.
 - Do not keep a neighbor census in `idea.md`. The graph is `asks` + `links`.

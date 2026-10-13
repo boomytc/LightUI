@@ -1,5 +1,6 @@
 {
   "slug": "intent-cascade",
+  "category": "pointer",
   "title": "多级菜单",
   "titleEn": "Cascade menu",
   "eyebrow": "Cursor intent · Safe triangle",

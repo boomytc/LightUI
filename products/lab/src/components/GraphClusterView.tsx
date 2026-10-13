@@ -29,7 +29,7 @@ export function GraphClusterView({
 
   // Group studies by category id
   const domainGroups = CATEGORIES.filter((c) => c.id !== "all").map((cat) => {
-    const items = studies.filter((s) => getStudyCategory(s.slug) === cat.id);
+    const items = studies.filter((s) => getStudyCategory(s) === cat.id);
     return {
       id: cat.id,
       title: locale === "en" ? cat.nameEn : cat.nameZh,

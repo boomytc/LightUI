@@ -1,5 +1,6 @@
 {
   "slug": "touch-context",
+  "category": "pointer",
   "title": "长按上下文",
   "titleEn": "Touch Context",
   "eyebrow": "触控长按消歧 · 就近定位与边界避让",

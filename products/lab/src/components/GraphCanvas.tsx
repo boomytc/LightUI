@@ -313,7 +313,7 @@ export function GraphCanvas({
                       : "opacity-40"
                     : "opacity-100";
 
-                  const category = getStudyCategory(meta.slug);
+                  const category = getStudyCategory(meta);
                   const asks = studyAsks(meta, locale);
 
                   return (

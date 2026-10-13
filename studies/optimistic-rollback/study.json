@@ -1,5 +1,6 @@
 {
   "slug": "optimistic-rollback",
+  "category": "feedback",
   "title": "乐观更新",
   "titleEn": "Optimistic Update",
   "eyebrow": "Snapshot · Rollback",

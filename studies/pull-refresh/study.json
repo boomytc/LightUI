@@ -1,5 +1,6 @@
 {
   "slug": "pull-refresh",
+  "category": "pointer",
   "title": "下拉刷新",
   "titleEn": "Pull to Refresh",
   "eyebrow": "Damping · Threshold",

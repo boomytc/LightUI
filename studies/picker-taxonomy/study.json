@@ -1,5 +1,6 @@
 {
   "slug": "picker-taxonomy",
+  "category": "controls",
   "title": "选控",
   "titleEn": "Pickers",
   "eyebrow": "Tick · Span · Step · Path · Dates",

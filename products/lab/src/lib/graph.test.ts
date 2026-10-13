@@ -12,6 +12,7 @@ function study(partial: Partial<StudyMeta> & Pick<StudyMeta, "slug">): StudyMeta
     summary: "",
     status: "active",
     tags: [],
+    category: "craft",
     ...partial,
   };
 }

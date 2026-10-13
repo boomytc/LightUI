@@ -1,5 +1,8 @@
 export type StudyStatus = "active" | "draft" | "retired";
 
+/** Lab catalog domain. Required on study.json. Not a behavior tag. */
+export type StudyCategory = "pointer" | "layout" | "controls" | "feedback" | "craft";
+
 export type StudyRel = "after" | "contrast";
 
 export type StudyLink = {
@@ -11,6 +14,7 @@ export type StudyLink = {
 
 export type StudyMeta = {
   slug: string;
+  category: StudyCategory;
   title: string;
   titleEn?: string;
   eyebrow?: string;

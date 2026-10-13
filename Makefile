@@ -1,5 +1,5 @@
 # Makefile
-.PHONY: help catalog install dev dev-study build preview test typecheck clean stills
+.PHONY: help catalog catalog-check install dev dev-study build preview test typecheck clean stills
 
 .DEFAULT_GOAL := help
 
@@ -15,9 +15,12 @@ help: ## 显示帮助信息
 	@echo "Available commands:"
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-16s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-catalog: ## 从 studies/*/study.json 生成 docs/catalog.md
+catalog: ## 从 studies/*/study.json 生成 docs/catalog.md 与 README 标记块
 	node scripts/sync-catalog.mjs
 	@sed -n '1,80p' docs/catalog.md
+
+catalog-check: ## 校验 catalog.md 与 README 标记块是否与 study.json 一致
+	node scripts/sync-catalog.mjs --check
 
 install: ## 安装 lab、genui 与全部 study 的依赖（npm workspaces）
 	npm install
@@ -34,11 +37,11 @@ build: ## 构建 lab 与全部 study
 preview: ## 预览 lab 构建产物
 	npm run preview -w @lightui/lab
 
-test: ## 运行全部 workspace 测试
-	npm run test --workspaces --if-present
+test: ## 运行目录一致性检查与全部 workspace 测试
+	npm test
 
-typecheck: ## 类型检查全部 workspace
-	npm run typecheck --workspaces --if-present
+typecheck: ## 校验目录产物并类型检查全部 workspace
+	npm run typecheck
 
 stills: ## 从本仓库舞台导出 references 静帧
 	python3 scripts/capture-stage.py $(if $(PROJECT),--project $(PROJECT),)
