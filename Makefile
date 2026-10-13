@@ -19,7 +19,7 @@ catalog: ## 从 studies/*/study.json 生成 docs/catalog.md
 	node scripts/sync-catalog.mjs
 	@sed -n '1,80p' docs/catalog.md
 
-install: ## 安装 lab 与全部 study 的依赖（npm workspaces）
+install: ## 安装 lab、genui 与全部 study 的依赖（npm workspaces）
 	npm install
 
 dev: ## 启动 lab（可呈现目录，默认入口）

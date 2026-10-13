@@ -13,6 +13,8 @@ description: >
 Product root: `products/lab/`. Read its `AGENTS.md`.
 
 This is the unified public face. Do not add a second site product.
+`products/genui` is a sibling package for agent-facing components, not a
+second site. Import it only as `@lightui/genui`.
 Do not link out to sibling private repositories.
 
 ## Rules

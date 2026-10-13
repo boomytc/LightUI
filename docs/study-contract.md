@@ -6,6 +6,9 @@ Mount surface: `studies/<slug>/src/StudyView.tsx` exporting `StudyView`.
 Stage: `studies/<slug>/src/StageView.tsx` exporting `StageView`.
 Generated stills are not part of the contract.
 
+Generative UI components are not part of this contract. They live in
+`products/genui/`.
+
 The lab (`products/lab`) discovers studies with `import.meta.glob`.
 Adding a study does not require editing a catalog array. Lab category
 chips use `products/lab/src/lib/categories.ts` `SLUG_CATEGORY_MAP` —

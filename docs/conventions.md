@@ -30,7 +30,8 @@ The first question is not only “which widget machine is this.” It may be:
 | Physics reconstruction | Sparse samples or a throw rebuilt as continuous motion | 协作光标的弹簧积分 |
 
 A later idea is another `studies/<slug>/`. It does not need a new top-level
-lab tab (效果 / 几何 / 游戏) or a workspace-level component library.
+lab tab (效果 / 几何 / 游戏). Deliverable generative-UI components live only
+in `products/genui/`. Do not start a component library anywhere else.
 
 | Looks like | Still the same question | Different question |
 | --- | --- | --- |
@@ -111,6 +112,20 @@ study gets both fields today; editing a neighbor's links only bumps
 that neighbor's `updated`. Set `asks` (the question) and `links`
 (next questions / mix-ups). Do not write “和另外 N 则” in `idea.md`.
 
+## Generative UI
+
+Agent-facing components, the registry, and the versioned contract live in
+`products/genui/` (`@lightui/genui`). They are not studies.
+
+- `products/genui` does not import `studies/*` or `products/lab`.
+- Studies and the lab import it only through `@lightui/genui`
+  (`src/index.ts`). Deep paths are rejected by `npm test` and
+  `npm run typecheck`.
+- External agents, including LightAgent, read `products/genui/contract/`
+  (current version `v0`). That directory is the contract. Do not generate it
+  from the implementation.
+- Styles reference `design/tokens.css`. Do not add a second theme.
+
 ## Runtime
 
 - Each study owns its own `package.json` (workspace package `@lightui/<slug>`).
@@ -142,7 +157,9 @@ that neighbor's `updated`. Set `asks` (the question) and `links`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.
 - Keep demo fixtures next to the playground. Do not import another study.
-- If two studies later share a true primitive, extract it then.
+- A shared generative-UI component belongs in `products/genui/`. Any other
+  primitive shared by two studies is extracted only when that sharing is
+  real — do not start a second component library.
 
 ## After adding
 

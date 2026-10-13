@@ -25,7 +25,8 @@ Do not invent a second copy of these rules. Follow the files:
    discrete state, or sparse samples rebuilt as continuous motion. See
    `docs/conventions.md`. Name the **behavior** (`intent-cascade`,
    `inverted-notch`, not `grok-demo`). Do not add a lab nav module or a
-   workspace component library to “make room”.
+   component library to “make room”. Deliverable generative-UI components
+   go in `products/genui/`.
 2. Write `idea.md` **before** scaffolding UI. Problem, rule, why not the
    naive alternative. Do not add lineage or a kept/dropped source diary.
 3. Add `study.json` matching the folder slug. Set `created` and
