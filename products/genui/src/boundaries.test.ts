@@ -176,6 +176,8 @@ describe("workspace sources", () => {
     assert.deepEqual([...new Set(extractSpecifiers(GENUI, source))].sort(), [
       "./components/Text",
       "./registry",
+      "./render-route",
+      "./sandbox",
     ]);
   });
 

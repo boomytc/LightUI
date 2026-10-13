@@ -27,11 +27,18 @@ This package does not import `studies/*` or `products/lab`.
 
 ## Contract
 
-`contract/v0/components.json` is the file LightAgent reads. Version rules:
-`contract/README.md`.
+`contract/v0/` is what LightAgent reads. Version rules: `contract/README.md`.
 
-Keep `src/registry.ts` aligned with that file by editing both. The registry
-must not import the JSON. `src/contract.test.ts` fails on drift.
+- `components.json` — native components. Keep `src/registry.ts` aligned by
+  editing both. The registry must not import the JSON.
+- `render-route.json` — in-place route errors (`unknown_component`,
+  `invalid_props`). Implementation: `src/render-route.ts`.
+- `sandbox.json` — sandbox activity (field order, callbacks, height, trust).
+  Implementation: `src/sandbox.ts`.
+
+None of those TypeScript files import the JSON. `src/contract.test.ts` and
+`src/protocol.test.ts` fail on drift. The human statement is
+`docs/protocol-v0.md`.
 
 ## Styles
 
@@ -41,6 +48,6 @@ or a local stylesheet that redefines tokens.
 
 ## Out of scope here
 
-Rendering routes, iframe sandbox bridges, and CopilotKit / OpenIntelligentUI
-runtimes are later changes. Do not add them in this package until that work
-starts.
+The render-route and sandbox-bridge playgrounds stay in `studies/`. This
+package holds their shared protocol and checks, not the pages. CopilotKit /
+OpenIntelligentUI runtimes stay out.

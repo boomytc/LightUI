@@ -1,0 +1,25 @@
+{
+  "protocol": "lightui.genui",
+  "version": "v0",
+  "envelopeIsComponent": false,
+  "partialJson": {
+    "isError": false,
+    "action": "wait-until-closed"
+  },
+  "errors": [
+    {
+      "code": "unknown_component",
+      "when": "The component name is not in the contract catalog.",
+      "host": "in-place",
+      "fallbackRoute": false,
+      "degradeToText": false
+    },
+    {
+      "code": "invalid_props",
+      "when": "Props fail that component's schema.",
+      "host": "in-place",
+      "fallbackRoute": false,
+      "degradeToText": false
+    }
+  ]
+}

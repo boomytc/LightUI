@@ -34,8 +34,8 @@ The lab mounts `StudyView` at `/s/sandbox-bridge`.
 ## Rules
 
 - Keep machines free of React and DOM.
-- Relative imports only. The lab compiles this tree from outside this folder.
-- The iframe uses `sandbox="allow-scripts"` and the host checks `event.source`.
+- Relative imports inside this study, plus the public package `@lightui/genui` for the field order, height clamp, callback whitelist, and `event.source` check. The lab compiles this tree from outside this folder.
+- The iframe uses `sandbox="allow-scripts"` and the host checks `event.source` through `sandboxEventTrusted`.
 - Do not import `products/genui` internals or `contract/`. Do not put API keys in the client.
 - Bind the standalone server to `127.0.0.1:5234`.
 - `requestedModel` is the request name (`DEEPSEEK_MODEL`, default `deepseek-chat`). `model` is the name on the response stream; this endpoint has reported `deepseek-flash` for a `deepseek-chat` request. Record runs the shared checks and does not write the file when they fail, or when the response has no `model`.

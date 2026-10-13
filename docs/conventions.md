@@ -124,7 +124,9 @@ Agent-facing components, the registry, and the versioned contract live in
   `npm run typecheck`.
 - External agents, including LightAgent, read `products/genui/contract/`
   (current version `v0`). That directory is the contract. Do not generate it
-  from the implementation.
+  from the implementation. Route errors and the sandbox activity are
+  `docs/protocol-v0.md` plus `contract/v0/render-route.json` and
+  `contract/v0/sandbox.json`.
 - Styles reference `design/tokens.css`. Do not add a second theme.
 
 ## Runtime
