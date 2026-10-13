@@ -38,5 +38,5 @@ The lab mounts `StudyView` at `/s/sandbox-bridge`.
 - The iframe uses `sandbox="allow-scripts"` and the host checks `event.source`.
 - Do not import `products/genui` internals or `contract/`. Do not put API keys in the client.
 - Bind the standalone server to `127.0.0.1:5234`.
-- `DEEPSEEK_MODEL` is the request name (default `deepseek-chat`). A recorded sample's `model` is the name the API returns; this endpoint has reported `deepseek-flash`.
+- `requestedModel` is the request name (`DEEPSEEK_MODEL`, default `deepseek-chat`). `model` is the name on the response stream; this endpoint has reported `deepseek-flash` for a `deepseek-chat` request. Record runs the shared checks and does not write the file when they fail, or when the response has no `model`.
 - Recorded-sample checks live in `src/lib/sample-check.ts` and call the page parser. The record script must not grow a second copy. `recordedSample === null` skips that test.

@@ -1,5 +1,6 @@
 export type RecordedSample = {
   provider: "deepseek";
+  requestedModel: string;
   model: string;
   recordedOn: string;
   id: string;

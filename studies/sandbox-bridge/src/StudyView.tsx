@@ -23,7 +23,7 @@ const SOURCES: SourceChoice[] = [
         {
           id: "recorded",
           label: "DeepSeek 录制",
-          note: `${recordedSample.model} · ${recordedSample.recordedOn}`,
+          note: `请求 ${recordedSample.requestedModel}，响应 ${recordedSample.model} · ${recordedSample.recordedOn}`,
           source: recordedSample.source,
         },
       ]

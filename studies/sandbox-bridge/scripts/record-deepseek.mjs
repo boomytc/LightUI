@@ -9,7 +9,7 @@ if (!key) {
   process.exit(1);
 }
 
-const model = process.env.DEEPSEEK_MODEL || "deepseek-chat";
+const requestedModel = process.env.DEEPSEEK_MODEL || "deepseek-chat";
 const endpoint = "https://api.deepseek.com/chat/completions";
 const prompt = `输出一个 JSON 对象，不要 markdown 围栏，键必须按这个顺序出现：
 initialHeight, placeholderMessages, css, html, jsFunctions, jsExpressions。
@@ -28,7 +28,7 @@ const response = await fetch(endpoint, {
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    model,
+    model: requestedModel,
     stream: true,
     temperature: 0.3,
     messages: [
@@ -50,7 +50,7 @@ if (!response.ok || !response.body) {
 
 let raw = "";
 let id = "";
-let seenModel = model;
+let responseModel = "";
 const decoder = new TextDecoder();
 let buffer = "";
 for await (const chunk of response.body) {
@@ -64,7 +64,7 @@ for await (const chunk of response.body) {
     if (data === "[DONE]") continue;
     const payload = JSON.parse(data);
     if (typeof payload.id === "string") id = payload.id;
-    if (typeof payload.model === "string") seenModel = payload.model;
+    if (typeof payload.model === "string" && payload.model.length > 0) responseModel = payload.model;
     const delta = payload.choices?.[0]?.delta?.content;
     if (typeof delta === "string") raw += delta;
   }
@@ -81,11 +81,16 @@ if (failed) {
   console.error("样本校验未通过，未写入 recorded-sample.ts");
   process.exit(1);
 }
+if (!responseModel) {
+  console.error("响应里没有 model，未写入 recorded-sample.ts");
+  process.exit(1);
+}
 
 const recordedOn = new Date().toISOString().slice(0, 10);
 const sample = {
   provider: "deepseek",
-  model: seenModel,
+  requestedModel,
+  model: responseModel,
   recordedOn,
   id: id || "unknown",
   source,
@@ -96,7 +101,9 @@ const file = `import type { RecordedSample } from "./samples";
 export const recordedSample: RecordedSample = ${JSON.stringify(sample, null, 2)};
 `;
 await writeFile(out, file);
-console.log(`Wrote ${path.relative(process.cwd(), out)} (${seenModel}, ${source.length} chars)`);
+console.log(
+  `Wrote ${path.relative(process.cwd(), out)} (requested ${requestedModel}, response ${responseModel}, ${source.length} chars)`,
+);
 
 function stripFence(text) {
   const fence = text.match(/^\s*```(?:json)?\s*\n/);
