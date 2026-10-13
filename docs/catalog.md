@@ -62,6 +62,7 @@ Category chips read `category` on each study. Do not keep a second registry.
 | [timer-taxonomy](../studies/timer-taxonomy/) | feedback | 这一段时间是正数累计，还是倒数专注？先定会话的方向。累计没有上限；专注到 0 自己停住，不要变成负数，也不要弹一条 toast。 | active | 2026-08-23 | 2026-09-11 |
 | [touch-context](../studies/touch-context/) | pointer | 触控长按不是简单弹窗。原地按住约 460ms 且位移在 10px 容差内触发；位移超标立即销毁定时器让路给滚动；菜单紧贴触控点就近浮现并在视口边界自动翻转避让。 | active | 2026-09-09 | 2026-09-11 |
 | [validation-taxonomy](../studies/validation-taxonomy/) | controls | 「做个表单校验」只说了会报错。先定是失焦就说、这一栏立刻说，还是提交时一次说完。 | active | 2026-08-23 | 2026-09-11 |
+| [sandbox-bridge](../studies/sandbox-bridge/) | craft | 宿主按固定字段顺序接住沙盒流：样式没写完前只留占位，高度只采用沙盒报上来且被钳制的数字，回传只放行校验过的 sendPrompt 与 openLink。 | draft | 2026-10-13 | 2026-10-13 |
 
 ## Questions
 
@@ -121,6 +122,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **计时** (`timer-taxonomy`) — 这一段时间是正数累计，还是倒数专注？
 - **长按上下文** (`touch-context`) — 触控长按目标时，手势如何在误触位移与持续时间中消歧，并在目标就近定位上下文操作？
 - **校验** (`validation-taxonomy`) — 错误该在什么时候说？
+- **沙盒桥** (`sandbox-bridge`) — iframe 沙盒一边生成一边送到宿主时，字段怎样依次渲染、高度怎样跟着内容走、不合法的回传怎样被拦住？
 
 ## Edges
 
@@ -299,6 +301,9 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `validation-taxonomy` contrast `notify-taxonomy` — 行内报错不是一条 toast
 - `validation-taxonomy` contrast `overlay-taxonomy` — 提交一次标出不是 modal 确认
 - `validation-taxonomy` contrast `fill-taxonomy` — 何时开口不是三个时刻该交代什么
+- `sandbox-bridge` contrast `transcript-stream` — 沙盒桥按固定字段拼一份隔离文档，不是话轮上的增量打字
+- `sandbox-bridge` contrast `pending-taxonomy` — 占位句只持续到 css 完成，之后必须让出预览，不是一块一直占着的骨架
+- `sandbox-bridge` contrast `assistant-chrome` — 回传是沙盒里两个白名单函数，不是助手壳该放在页面哪一侧
 
 ## How to read a row
 

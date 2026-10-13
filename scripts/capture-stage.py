@@ -293,6 +293,12 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("prep", "default", "prep-default.png"),
         ("summary", "default", "summary-default.png"),
     ],
+    "sandbox-bridge": [
+        ("stream", "placeholder", "stream-placeholder.png"),
+        ("stream", "preview", "stream-preview.png"),
+        ("stream", "final", "stream-final.png"),
+        ("bridge", "rejected", "bridge-rejected.png"),
+    ],
 }
 
 def stage_url(slug: str, kind: str, state: str) -> str:
