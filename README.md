@@ -49,7 +49,7 @@ LightUI 是一个专注于 **「先回答问题，再决定交互机器与外观
 ## 🧩 精选专题与分类学 (Featured Studies)
 
 <!-- catalog:featured -->
-LightUI 目前收录了 **55 个经过深思与实战检验的交互课题**（完整列表见 [docs/catalog.md](docs/catalog.md)）：
+LightUI 目前收录了 **56 个经过深思与实战检验的交互课题**（完整列表见 [docs/catalog.md](docs/catalog.md)）：
 
 下表按每个 `study.json` 的 `category` 与 `summary` 生成。改课题后运行 `make catalog`，不要手改表。
 
@@ -182,7 +182,7 @@ LightUI/
 │   ├── study-contract.md     #   Study 契约接口定义
 │   └── writing.md            #   设计笔记写作约定
 ├── products/lab/             # 🔬 Lab 综合站点（首页 / 作品列表 / 知识图谱 / 思考笔记）
-├── studies/                  # 🧪 55 个独立的交互研究课题目录
+├── studies/                  # 🧪 56 个独立的交互研究课题目录
 │   ├── intent-cascade/
 │   ├── path-morph/
 │   ├── confirm-taxonomy/
