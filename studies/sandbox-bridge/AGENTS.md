@@ -11,7 +11,7 @@ Vite 8 + React 19 + TypeScript + Tailwind v4. No router. The page replays a reco
 From this directory, or `make dev-study STUDY=sandbox-bridge` at repo root:
 
 ```bash
-npm run dev          # http://127.0.0.1:5233/
+npm run dev          # http://127.0.0.1:5234/
 npm test             # stream parser, height clamp, callback whitelist
 npm run typecheck
 npm run build
@@ -36,4 +36,4 @@ The lab mounts `StudyView` at `/s/sandbox-bridge`.
 - Relative imports only. The lab compiles this tree from outside this folder.
 - The iframe uses `sandbox="allow-scripts"` and the host checks `event.source`.
 - Do not import `products/genui` internals or `contract/`. Do not put API keys in the client.
-- Bind the standalone server to `127.0.0.1:5233`.
+- Bind the standalone server to `127.0.0.1:5234`.

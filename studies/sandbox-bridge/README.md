@@ -12,8 +12,8 @@ npm test -w @lightui/sandbox-bridge
 npm run typecheck -w @lightui/sandbox-bridge
 ```
 
-Binds to `http://127.0.0.1:5233`.
-Stage fixture: `http://127.0.0.1:5233/?stage=1`
+Binds to `http://127.0.0.1:5234`.
+Stage fixture: `http://127.0.0.1:5234/?stage=1`
 
 Lab: `/s/sandbox-bridge`.
 

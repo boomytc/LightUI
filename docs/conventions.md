@@ -153,8 +153,8 @@ Agent-facing components, the registry, and the versioned contract live in
   `5227` cone-reveal, `5228` sling-throw, `5229` empty-taxonomy,
   `5230` picker-taxonomy, `5231` table-taxonomy,
   `5232` transcript-stream,
-  `5233` sandbox-bridge.
-  Next free: `5234`.
+  `5234` sandbox-bridge.
+  Next free: `5235`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.
