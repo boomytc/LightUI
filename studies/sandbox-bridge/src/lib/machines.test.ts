@@ -222,6 +222,7 @@ describe("frame isolation", () => {
     assert.equal(doc.includes("openLink"), true);
     assert.equal(doc.includes("<script src"), false);
     assert.equal(doc.includes("localStorage"), false);
+    assert.equal(doc.includes("firstElementChild"), true);
   });
 });
 

@@ -11,8 +11,9 @@ const BOOTSTRAP = `
   function measure() {
     if (!started) return;
     var root = document.getElementById("root");
-    if (!root) return;
+    if (!root || !root.firstElementChild) return;
     var height = Math.ceil(root.getBoundingClientRect().height);
+    if (!(height > 0)) return;
     parent.postMessage({ channel: SANDBOX, kind: "resize", height: height }, "*");
   }
 
@@ -51,14 +52,13 @@ const BOOTSTRAP = `
     if (data.kind === "css" && typeof data.css === "string") {
       var style = document.getElementById("sandbox-css");
       if (style) style.textContent = data.css;
-      started = true;
       measure();
       return;
     }
     if (data.kind === "html" && typeof data.html === "string") {
       var root = document.getElementById("root");
       if (root) root.innerHTML = data.html;
-      started = true;
+      if (root && root.firstElementChild) started = true;
       measure();
       return;
     }
