@@ -18,6 +18,7 @@ export function DegradeBoard({ locale, lock }: { locale: Locale; lock?: string }
   const buffer = partial ? (PARTIAL_STEPS[activeStep] ?? item.buffer) : item.buffer;
   const result = routeBuffer(buffer, catalog);
   const paint = paintSurface(result);
+  const names = componentNames(catalog);
 
   function selectCase(id: DegradeId) {
     setCaseId(id);
@@ -26,14 +27,15 @@ export function DegradeBoard({ locale, lock }: { locale: Locale; lock?: string }
 
   return (
     <div
-      data-route-board="degrade"
-      data-degrade={item.id}
+      data-route-board="error"
+      data-error={item.id}
       data-status={result.status}
+      data-error-code={result.errorCode ?? ""}
       data-degradation={result.degradation ?? ""}
       className="grid gap-4"
     >
       {locked ? null : (
-        <div className="flex flex-wrap gap-2" role="tablist" aria-label={locale === "en" ? "Degradations" : "降级"}>
+        <div className="flex flex-wrap gap-2" role="tablist" aria-label={locale === "en" ? "Errors" : "错误"}>
           {DEGRADE_CASES.map((entry) => {
             const selected = entry.id === item.id;
             return (
@@ -95,21 +97,30 @@ export function DegradeBoard({ locale, lock }: { locale: Locale; lock?: string }
             locale={locale}
             title={locale === "en" ? "Host commit" : "宿主提交"}
             chosen={result.status === "committed"}
+            notice={result.status === "error" ? hostExplanation(result, names, locale) : undefined}
             badge={
               result.status === "pending"
                 ? locale === "en"
                   ? "Held"
                   : "先不挂"
-                : result.status === "degraded"
+                : result.status === "error"
                   ? locale === "en"
-                    ? "Degraded"
-                    : "已降级"
-                  : locale === "en"
-                    ? "Committed"
-                    : "本轮提交"
+                    ? "Error"
+                    : "错误"
+                  : result.status === "degraded"
+                    ? locale === "en"
+                      ? "Degraded"
+                      : "已降级"
+                    : locale === "en"
+                      ? "Committed"
+                      : "本轮提交"
             }
           />
-          <p className="mt-3 text-[13px] leading-relaxed text-fg">{hostExplanation(result, componentNames(catalog), locale)}</p>
+          {result.status === "error" ? null : (
+            <p className="mt-3 text-[13px] leading-relaxed text-fg">
+              {hostExplanation(result, names, locale)}
+            </p>
+          )}
         </div>
       </div>
     </div>

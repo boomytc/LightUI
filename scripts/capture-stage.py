@@ -297,9 +297,9 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
         ("compare", "text", "compare-text.png"),
         ("compare", "native", "compare-native.png"),
         ("compare", "iframe", "compare-iframe.png"),
-        ("degrade", "unknown", "degrade-unknown.png"),
-        ("degrade", "props", "degrade-props.png"),
-        ("degrade", "partial", "degrade-partial.png"),
+        ("error", "unknown", "error-unknown.png"),
+        ("error", "props", "error-props.png"),
+        ("error", "partial", "error-partial.png"),
     ],
 }
 

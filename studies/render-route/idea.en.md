@@ -12,12 +12,13 @@ Each turn arrives as one route object. The host commits one of three surfaces:
 
 The basis is the model's declared `surface`, plus the host check. When all three surfaces are legal, the host keeps the declaration and leaves the reason on screen. It does not pick a prettier one.
 
-Degradation happens before mount:
+An illegal name or illegal props stay an error in place. The host does not mount them, and does not switch the turn onto another surface:
 
-- A component name missing from the contract is not mounted. The host commits the text fallback.
-- Props that fail the schema are not mounted. The host commits the text fallback and lists the schema errors.
-- A streaming fragment commits nothing until the JSON closes. Seeing `native` or `Text` inside that fragment does not mount a component early.
+- A component name missing from the contract returns `unknown_component`, with the reason beside it.
+- Props that fail the schema return `invalid_props`, with the schema errors listed.
+
+An unclosed fragment is not an error. The host keeps waiting until the JSON closes, then validates and mounts. Seeing `native` or `Text` inside that fragment does not mount a component early.
 
 ## Why the naive alternatives are worse
 
-All-text makes an editable estimate look like a sentence, so there is nothing to operate. Rendering every name lets an unknown component or bad props crash or go blank. Mounting during the stream treats a half packet as a surface, then tears it down. Overriding a legal choice splits the reason from the picture, and the turn no longer shows why that surface was the one.
+All-text makes an editable estimate look like a sentence, so there is nothing to operate. Rendering every name lets an unknown component or bad props crash or go blank. Quietly rewriting a bad packet as plain text hides the error. Mounting during the stream treats a half packet as a surface, then tears it down. Overriding a legal choice splits the reason from the picture, and the turn no longer shows why that surface was the one.

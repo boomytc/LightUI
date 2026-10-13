@@ -94,3 +94,29 @@
   border: 0;
   background: var(--color-surface);
 }
+
+.route-error {
+  display: grid;
+  gap: 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--color-wrong) 35%, transparent);
+  border-radius: var(--radius-md);
+  background: var(--color-wrong-soft);
+  padding: 0.75rem 0.85rem;
+}
+
+.route-error-label {
+  margin: 0;
+  color: var(--color-wrong);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.route-error-code {
+  margin: 0;
+  color: var(--color-wrong);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+}

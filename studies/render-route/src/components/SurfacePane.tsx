@@ -9,12 +9,14 @@ export function SurfacePane({
   title,
   badge,
   chosen = false,
+  notice,
 }: {
   result: RouteResult;
   locale: Locale;
   title: string;
   badge?: string;
   chosen?: boolean;
+  notice?: string;
 }) {
   const paint = paintSurface(result);
   const native = committedNative(result);
@@ -30,7 +32,11 @@ export function SurfacePane({
       <header className="flex items-start justify-between gap-2">
         <h3 className="text-[14px] font-semibold text-fg">{title}</h3>
         {badge ? (
-          <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent">
+          <span
+            className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
+              result.status === "error" ? "bg-wrong-soft text-wrong" : "bg-accent-soft text-accent"
+            }`}
+          >
             {badge}
           </span>
         ) : null}
@@ -38,6 +44,13 @@ export function SurfacePane({
       <div className="min-w-0 flex-1">
         {paint === "none" ? (
           <p className="text-[13px] leading-relaxed text-fg-muted">{surfaceLabel("none", locale)}</p>
+        ) : null}
+        {paint === "error" && result.errorCode ? (
+          <div className="route-error" role="alert" data-error-code={result.errorCode}>
+            <p className="route-error-label">{locale === "en" ? "Error" : "错误"}</p>
+            <p className="route-error-code">{result.errorCode}</p>
+            {notice ? <p className="text-[13px] leading-relaxed text-fg">{notice}</p> : null}
+          </div>
         ) : null}
         {paint === "text" ? <p className="text-[15px] leading-relaxed text-fg">{result.text}</p> : null}
         {paint === "native" && native ? (

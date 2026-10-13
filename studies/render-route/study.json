@@ -5,10 +5,10 @@
   "titleEn": "Render route",
   "eyebrow": "GenUI · Surface",
   "eyebrowEn": "GenUI · Surface",
-  "summary": "同一轮回答在纯文本、契约组件和 iframe 沙盒里各长什么样；声明不合法或 JSON 还没写完时，宿主降级，不提前挂载。",
-  "summaryEn": "How one turn looks as plain text, a contract component, or an iframe sandbox, and how the host degrades when the declaration is illegal or the JSON is still incomplete.",
-  "asks": "这一轮该用纯文本、契约组件，还是 iframe 沙盒？不合法时怎么降级？",
-  "asksEn": "Should this turn be plain text, a contract component, or an iframe sandbox — and how does an illegal turn degrade?",
+  "summary": "同一轮回答在纯文本、契约组件和 iframe 沙盒里各长什么样；名字或 props 不合法时宿主在原位报错，半截 JSON 先等闭合。",
+  "summaryEn": "How one turn looks as plain text, a contract component, or an iframe sandbox. An illegal name or props stay an in-place error, and unclosed JSON waits.",
+  "asks": "这一轮该用纯文本、契约组件，还是 iframe 沙盒？坏包怎么报错？",
+  "asksEn": "Should this turn be plain text, a contract component, or an iframe sandbox — and how does a bad packet surface as an error?",
   "links": [
     {
       "slug": "assistant-chrome",

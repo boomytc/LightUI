@@ -5,7 +5,7 @@ import { RecordingPanel } from "./components/RecordingPanel";
 import { pick, useLocale, loc } from "./lib/site-locale";
 import "./route/route.css";
 
-const MODES = ["compare", "degrade"] as const;
+const MODES = ["compare", "error"] as const;
 type Mode = (typeof MODES)[number];
 
 export function StudyView() {
@@ -15,11 +15,11 @@ export function StudyView() {
     kicker: loc("呈现路由", "Render route"),
     title: loc("同一轮回答，三种表面。不合法就不挂。", "One turn, three surfaces. An illegal one does not mount."),
     lede: loc(
-      "模型声明纯文本、契约里的组件，或一份沙盒文档。宿主只校验这份声明：名字要在目录里，props 要对上 schema，JSON 没写完就先不提交。",
-      "The model declares plain text, a contract component, or a sandbox document. The host only checks that declaration: the name has to be in the catalog, the props have to match the schema, and unclosed JSON commits nothing.",
+      "模型声明纯文本、契约里的组件，或一份沙盒文档。宿主只校验这份声明：名字不在目录里或 props 对不上 schema，就在原位报错；JSON 没写完就先等它闭合。",
+      "The model declares plain text, a contract component, or a sandbox document. The host only checks that declaration: an unknown name or props that miss the schema become an in-place error, and unclosed JSON waits.",
     ),
     compare: loc("对照", "Compare"),
-    degrade: loc("降级", "Degrade"),
+    error: loc("错误", "Error"),
   };
 
   return (
@@ -39,7 +39,7 @@ export function StudyView() {
       <div className="mt-5 flex gap-2" role="tablist" aria-label={pick(copy.kicker, locale)}>
         {MODES.map((id) => {
           const selected = mode === id;
-          const label = id === "compare" ? copy.compare : copy.degrade;
+          const label = id === "compare" ? copy.compare : copy.error;
           return (
             <button
               key={id}

@@ -60,7 +60,7 @@ describe("routeTurn", () => {
     });
   });
 
-  it("degrades an unknown component to text and does not keep the name mounted", () => {
+  it("returns unknown_component in place and does not mount the name", () => {
     const result = routeTurn(
       {
         surface: "native",
@@ -71,16 +71,18 @@ describe("routeTurn", () => {
       },
       catalog,
     );
-    assert.equal(result.status, "degraded");
+    assert.equal(result.status, "error");
+    assert.equal(result.errorCode, "unknown_component");
     assert.equal(result.degradation, "unknown-component");
     assert.equal(result.requestedComponent, "Table");
     assert.equal(result.component, null);
     assert.equal(result.props, null);
-    assert.equal(paintSurface(result), "text");
-    assert.equal(result.text, "周三站会 10:30");
+    assert.equal(result.surface, null);
+    assert.equal(paintSurface(result), "error");
+    assert.equal(committedNative(result), null);
   });
 
-  it("degrades props that add a field the schema rejects", () => {
+  it("returns invalid_props when a field is outside the schema", () => {
     const result = routeTurn(
       {
         surface: "native",
@@ -90,26 +92,33 @@ describe("routeTurn", () => {
       },
       catalog,
     );
+    assert.equal(result.status, "error");
+    assert.equal(result.errorCode, "invalid_props");
     assert.equal(result.degradation, "invalid-props");
     assert.equal(result.component, null);
-    assert.equal(paintSurface(result), "text");
+    assert.equal(result.surface, null);
+    assert.equal(paintSurface(result), "error");
+    assert.equal(committedNative(result), null);
     assert.ok(result.errors.some((error) => error.path === "tone" && error.code === "unexpected"));
   });
 
-  it("degrades a content value of the wrong type", () => {
+  it("returns invalid_props when content has the wrong type", () => {
     const errors = validateProps(catalog.components[0].props, { content: 123 });
     assert.ok(errors.some((error) => error.path === "content" && error.code === "type"));
     const result = routeTurn(
       { surface: "native", component: "Text", props: { content: 123 }, text: "回退" },
       catalog,
     );
-    assert.equal(result.degradation, "invalid-props");
+    assert.equal(result.errorCode, "invalid_props");
+    assert.equal(paintSurface(result), "error");
     assert.equal(committedNative(result), null);
   });
 
-  it("degrades missing required props", () => {
+  it("returns invalid_props when a required prop is missing", () => {
     const result = routeTurn({ surface: "native", component: "Text", props: {}, text: "回退" }, catalog);
-    assert.equal(result.degradation, "invalid-props");
+    assert.equal(result.errorCode, "invalid_props");
+    assert.equal(paintSurface(result), "error");
+    assert.equal(committedNative(result), null);
     assert.ok(result.errors.some((error) => error.path === "content" && error.code === "missing"));
   });
 
@@ -140,6 +149,7 @@ describe("routeBuffer", () => {
       const result = routeBuffer(buffer, catalog);
       assert.equal(result.status, "pending");
       assert.equal(result.degradation, "partial-stream");
+      assert.equal(result.errorCode, null);
       assert.equal(paintSurface(result), "none");
       assert.equal(result.component, null);
       assert.equal(result.document, null);

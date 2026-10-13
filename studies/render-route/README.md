@@ -1,6 +1,6 @@
 # @lightui/render-route
 
-One generated turn, shown three ways: plain text, a native component from the genui v0 contract, or an iframe document. Illegal names, props that fail the schema, and unclosed JSON degrade before anything mounts.
+One generated turn, shown three ways: plain text, a native component from the genui v0 contract, or an iframe document. An unknown name returns `unknown_component` and props that fail the schema return `invalid_props`, both in place, with nothing mounted. Unclosed JSON waits until it closes.
 
 ## Commands
 

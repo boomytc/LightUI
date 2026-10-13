@@ -8,16 +8,16 @@ export function hostExplanation(
 ): string {
   const listed = names.join(locale === "en" ? ", " : "、");
   const name = result.requestedComponent || (locale === "en" ? "that name" : "这个名字");
-  if (result.degradation === "unknown-component") {
+  if (result.errorCode === "unknown_component") {
     return locale === "en"
-      ? `${name} is not in the catalog. Nothing by that name is mounted. Text fallback is committed. Catalog: ${listed}.`
-      : `目录里没有 ${name}。这个名字不会被挂载，已改交纯文本。目录现有：${listed}。`;
+      ? `${result.errorCode}. ${name} is not in the catalog. The host reports the error in place. Catalog: ${listed}.`
+      : `${result.errorCode}。目录里没有 ${name}。宿主在原位报错。目录现有：${listed}。`;
   }
-  if (result.degradation === "invalid-props") {
+  if (result.errorCode === "invalid_props") {
     const detail = result.errors.map((error) => schemaError(error, locale)).join(locale === "en" ? " " : "");
     return locale === "en"
-      ? `Props failed the schema, so the component stays unmounted. ${detail}`
-      : `props 没通过 schema，组件没有挂载。${detail}`;
+      ? `${result.errorCode}. Props failed the schema. The host reports the error in place. ${detail}`
+      : `${result.errorCode}。props 没通过 schema。宿主在原位报错。${detail}`;
   }
   if (result.degradation === "partial-stream") {
     return locale === "en"
@@ -67,9 +67,13 @@ function schemaError(error: SchemaError, locale: Locale): string {
   return locale === "en" ? "Props are not an object." : "props 不是对象。";
 }
 
-export function surfaceLabel(surface: "text" | "native" | "iframe" | "none", locale: Locale): string {
+export function surfaceLabel(
+  surface: "text" | "native" | "iframe" | "none" | "error",
+  locale: Locale,
+): string {
   if (surface === "text") return locale === "en" ? "Plain text" : "纯文本";
   if (surface === "native") return locale === "en" ? "Native component" : "原生组件";
   if (surface === "iframe") return locale === "en" ? "iframe sandbox" : "iframe 沙盒";
+  if (surface === "error") return locale === "en" ? "Error" : "错误";
   return locale === "en" ? "Not committed" : "尚未提交";
 }

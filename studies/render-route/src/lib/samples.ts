@@ -99,8 +99,8 @@ export const DEGRADE_CASES: readonly DegradeCase[] = [
     id: "unknown",
     title: loc("未知组件", "Unknown component"),
     detail: loc(
-      "声明了目录里没有的 Table。宿主不挂这个名字，改交文本。",
-      "The turn names Table, which is not in the catalog. The host does not mount that name and commits text.",
+      "声明了目录里没有的 Table。宿主在原位给出 unknown_component，不挂这个名字。",
+      "The turn names Table, which is not in the catalog. The host shows unknown_component and does not mount that name.",
     ),
     buffer: JSON.stringify(unknownPayload, null, 2),
   },
@@ -108,8 +108,8 @@ export const DEGRADE_CASES: readonly DegradeCase[] = [
     id: "props",
     title: loc("props 不通过", "Props fail"),
     detail: loc(
-      "Text 的 schema 不允许 tone。多出来的字段让这一轮不能挂组件。",
-      "Text's schema does not allow tone. The extra field blocks the mount.",
+      "Text 的 schema 不允许 tone。宿主在原位给出 invalid_props，不挂组件。",
+      "Text's schema does not allow tone. The host shows invalid_props and does not mount the component.",
     ),
     buffer: JSON.stringify(propsPayload, null, 2),
   },

@@ -9,6 +9,10 @@ export type Degradation =
   | "invalid-document"
   | "invalid-surface";
 
+export type RouteErrorCode = "unknown_component" | "invalid_props";
+
+export type Paint = Surface | "none" | "error";
+
 export type PropField = {
   type: string;
   description?: string;
@@ -50,7 +54,7 @@ export type SchemaError = {
 };
 
 export type RouteResult = {
-  status: "pending" | "committed" | "degraded";
+  status: "pending" | "committed" | "degraded" | "error";
   surface: Surface | null;
   requested: Surface | null;
   text: string;
@@ -59,6 +63,7 @@ export type RouteResult = {
   props: Record<string, unknown> | null;
   document: string | null;
   degradation: Degradation | null;
+  errorCode: RouteErrorCode | null;
   errors: SchemaError[];
   requestedComponent: string | null;
   buffer: string;
@@ -147,11 +152,16 @@ export function routeTurn(draft: RouteDraft, catalog: Catalog): RouteResult {
   if (requested === "native") {
     const known = catalog.components.find((component) => component.name === requestedComponent);
     if (!requestedComponent || !known) {
-      return degrade("unknown-component", { requested, requestedComponent, text, reason });
+      return fail("unknown_component", "unknown-component", {
+        requested,
+        requestedComponent,
+        text,
+        reason,
+      });
     }
     const errors = validateProps(known.props, draft.props);
     if (errors.length > 0) {
-      return degrade("invalid-props", {
+      return fail("invalid_props", "invalid-props", {
         requested,
         requestedComponent,
         text,
@@ -198,8 +208,9 @@ export function routeBuffer(buffer: string, catalog: Catalog): RouteResult {
   return routeTurn(parsed as RouteDraft, catalog);
 }
 
-export function paintSurface(result: RouteResult): Surface | "none" {
+export function paintSurface(result: RouteResult): Paint {
   if (result.status === "pending") return "none";
+  if (result.status === "error") return "error";
   if (result.status === "committed" && result.surface === "native") return "native";
   if (result.status === "committed" && result.surface === "iframe") return "iframe";
   if (result.status === "committed" && result.surface === "text") return "text";
@@ -263,6 +274,7 @@ function blank(): RouteResult {
     props: null,
     document: null,
     degradation: null,
+    errorCode: null,
     errors: [],
     requestedComponent: null,
     buffer: "",
@@ -293,6 +305,31 @@ function commit(input: {
     props: input.props ?? null,
     document: input.document ?? null,
     degradation: null,
+  };
+}
+
+function fail(
+  errorCode: RouteErrorCode,
+  degradation: "unknown-component" | "invalid-props",
+  input: {
+    requested: Surface | null;
+    requestedComponent: string | null;
+    text: string;
+    reason: string;
+    errors?: SchemaError[];
+  },
+): RouteResult {
+  return {
+    ...blank(),
+    status: "error",
+    surface: null,
+    requested: input.requested,
+    text: input.text,
+    reason: input.reason,
+    degradation,
+    errorCode,
+    errors: input.errors ?? [],
+    requestedComponent: input.requestedComponent,
   };
 }
 

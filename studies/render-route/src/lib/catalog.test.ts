@@ -49,25 +49,37 @@ describe("live genui catalog", () => {
     }
   });
 
-  it("degrades an unknown name and invalid props, and holds the partial stream", () => {
+  it("reports an unknown name and invalid props in place, and holds the partial stream", () => {
     const unknown = DEGRADE_CASES.find((item) => item.id === "unknown");
     const props = DEGRADE_CASES.find((item) => item.id === "props");
     assert.ok(unknown && props);
     const unknownRoute = routeBuffer(unknown.buffer, catalog);
+    assert.equal(unknownRoute.status, "error");
+    assert.equal(unknownRoute.errorCode, "unknown_component");
     assert.equal(unknownRoute.degradation, "unknown-component");
     assert.equal(unknownRoute.requestedComponent, "Table");
-    assert.equal(paintSurface(unknownRoute), "text");
+    assert.equal(unknownRoute.surface, null);
+    assert.equal(paintSurface(unknownRoute), "error");
     assert.equal(componentNames(catalog).includes("Table"), false);
     const explained = hostExplanation(unknownRoute, componentNames(catalog), "zh");
+    assert.match(explained, /unknown_component/);
     assert.match(explained, /Table/);
     assert.match(explained, /Text/);
 
     const propsRoute = routeBuffer(props.buffer, catalog);
+    assert.equal(propsRoute.status, "error");
+    assert.equal(propsRoute.errorCode, "invalid_props");
     assert.equal(propsRoute.degradation, "invalid-props");
-    assert.equal(paintSurface(propsRoute), "text");
+    assert.equal(paintSurface(propsRoute), "error");
     assert.equal(propsRoute.component, null);
+    const propsExplained = hostExplanation(propsRoute, componentNames(catalog), "zh");
+    assert.match(propsExplained, /invalid_props/);
+    assert.match(propsExplained, /tone/);
 
-    assert.equal(routeBuffer(PARTIAL_STEPS[1] ?? "", catalog).status, "pending");
+    const partial = routeBuffer(PARTIAL_STEPS[1] ?? "", catalog);
+    assert.equal(partial.status, "pending");
+    assert.equal(partial.errorCode, null);
+    assert.equal(paintSurface(partial), "none");
     assert.equal(paintSurface(routeBuffer(PARTIAL_STEPS[2] ?? "", catalog)), "native");
   });
 
