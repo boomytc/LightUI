@@ -1,6 +1,7 @@
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { checkRecordedSource, formatSampleCheck } from "../src/lib/sample-check.ts";
 
 const key = process.env.DEEPSEEK_API_KEY;
 if (!key) {
@@ -70,34 +71,14 @@ for await (const chunk of response.body) {
 }
 
 const source = stripFence(raw).trim();
-let parsed;
-try {
-  parsed = JSON.parse(source);
-} catch (error) {
-  console.error("Model output was not JSON.");
-  console.error(error instanceof Error ? error.message : error);
-  process.exit(1);
+const checks = checkRecordedSource(source);
+let failed = false;
+for (const check of checks) {
+  console.log(formatSampleCheck(check));
+  if (!check.ok) failed = true;
 }
-
-const keys = Object.keys(parsed);
-const expected = [
-  "initialHeight",
-  "placeholderMessages",
-  "css",
-  "html",
-  "jsFunctions",
-  "jsExpressions",
-];
-if (keys.join(",") !== expected.join(",")) {
-  console.error(`Unexpected keys: ${keys.join(", ")}`);
-  process.exit(1);
-}
-if (!Array.isArray(parsed.html) || !parsed.html.every((item) => typeof item === "string")) {
-  console.error("html must be a string array");
-  process.exit(1);
-}
-if (!Array.isArray(parsed.jsExpressions) || !parsed.jsExpressions.every((item) => typeof item === "string")) {
-  console.error("jsExpressions must be a string array");
+if (failed) {
+  console.error("样本校验未通过，未写入 recorded-sample.ts");
   process.exit(1);
 }
 

@@ -12,8 +12,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit --pretty false",
-    "test": "tsx --test src/lib/machines.test.ts",
-    "record": "node scripts/record-deepseek.mjs"
+    "test": "tsx --test src/lib/machines.test.ts src/lib/recorded-sample.test.ts",
+    "record": "tsx scripts/record-deepseek.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",
