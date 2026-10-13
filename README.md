@@ -49,7 +49,7 @@ LightUI 是一个专注于 **「先回答问题，再决定交互机器与外观
 ## 🧩 精选专题与分类学 (Featured Studies)
 
 <!-- catalog:featured -->
-LightUI 目前收录了 **55 个经过深思与实战检验的交互课题**（完整列表见 [docs/catalog.md](docs/catalog.md)）：
+LightUI 目前收录了 **56 个经过深思与实战检验的交互课题**（完整列表见 [docs/catalog.md](docs/catalog.md)）：
 
 下表按每个 `study.json` 的 `category` 与 `summary` 生成。改课题后运行 `make catalog`，不要手改表。
 
@@ -132,6 +132,7 @@ LightUI 目前收录了 **55 个经过深思与实战检验的交互课题**（�
 | **[glyph-sweep](studies/glyph-sweep/)** 扫光 | 扫光跟字形走。光带宽度用 ch，时长等于字数乘每字秒数，不要去扫整块盒子。 |
 | **[inverted-notch](studies/inverted-notch/)** 内凹角 | 内凹角该在父级挖孔。同色补丁缝回去，背景一变缝就露馅。 |
 | **[path-morph](studies/path-morph/)** 路径变形 | 矢量路径变形。2D Procrustes 相似分解求解旋转与缩放，极坐标插值杜绝弦长塌陷，角点锚定保证静止态保真。 |
+| **[sandbox-bridge](studies/sandbox-bridge/)** 沙盒桥 | 宿主按固定字段顺序接住沙盒流：样式没写完前只留占位，高度只采用沙盒报上来且被钳制的数字，回传只放行校验过的 sendPrompt 与 openLink。 |
 <!-- /catalog:featured -->
 
 ---
@@ -181,7 +182,7 @@ LightUI/
 │   ├── study-contract.md     #   Study 契约接口定义
 │   └── writing.md            #   设计笔记写作约定
 ├── products/lab/             # 🔬 Lab 综合站点（首页 / 作品列表 / 知识图谱 / 思考笔记）
-├── studies/                  # 🧪 55 个独立的交互研究课题目录
+├── studies/                  # 🧪 56 个独立的交互研究课题目录
 │   ├── intent-cascade/
 │   ├── path-morph/
 │   ├── confirm-taxonomy/

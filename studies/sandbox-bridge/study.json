@@ -1,0 +1,36 @@
+{
+  "slug": "sandbox-bridge",
+  "category": "craft",
+  "title": "沙盒桥",
+  "titleEn": "Sandbox Bridge",
+  "eyebrow": "Generative UI · iframe bridge",
+  "eyebrowEn": "Generative UI · iframe bridge",
+  "summary": "宿主按固定字段顺序接住沙盒流：样式没写完前只留占位，高度只采用沙盒报上来且被钳制的数字，回传只放行校验过的 sendPrompt 与 openLink。",
+  "summaryEn": "The host consumes a sandbox stream in a fixed field order: placeholders until CSS is complete, height only from a clamped sandbox report, and callbacks only for schema-checked sendPrompt and openLink.",
+  "asks": "iframe 沙盒一边生成一边送到宿主时，字段怎样依次渲染、高度怎样跟着内容走、不合法的回传怎样被拦住？",
+  "asksEn": "As an iframe sandbox streams into the host, how do fields render in order, how does height follow the content, and how are illegal callbacks refused?",
+  "links": [
+    {
+      "slug": "transcript-stream",
+      "rel": "contrast",
+      "when": "沙盒桥按固定字段拼一份隔离文档，不是话轮上的增量打字",
+      "whenEn": "the bridge assembles an isolated document in a fixed field order, not turn-by-turn tokens"
+    },
+    {
+      "slug": "pending-taxonomy",
+      "rel": "contrast",
+      "when": "占位句只持续到 css 完成，之后必须让出预览，不是一块一直占着的骨架",
+      "whenEn": "placeholder lines last only until css completes, then the preview must take over"
+    },
+    {
+      "slug": "assistant-chrome",
+      "rel": "contrast",
+      "when": "回传是沙盒里两个白名单函数，不是助手壳该放在页面哪一侧",
+      "whenEn": "callbacks are two whitelisted sandbox functions, not where an assistant shell sits"
+    }
+  ],
+  "status": "draft",
+  "created": "2026-10-13",
+  "updated": "2026-10-13",
+  "tags": ["sandbox", "stream", "iframe", "bridge"]
+}
