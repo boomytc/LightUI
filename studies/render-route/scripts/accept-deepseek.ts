@@ -2,6 +2,7 @@ import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { catalogFromRegistry } from "../src/lib/catalog";
+import { readChatCompletion, requestedModelName } from "../src/lib/deepseek-completion";
 import { buildRoutePrompt, extractRouteJson, routeTurn } from "../src/lib/machines";
 import { readRecording } from "../src/lib/recording";
 import { ACCEPT_REQUEST } from "../src/lib/samples";
@@ -12,7 +13,7 @@ if (!key) {
   process.exit(2);
 }
 
-const model = process.env.DEEPSEEK_MODEL ?? "deepseek-chat";
+const requestedModel = requestedModelName(process.env.DEEPSEEK_MODEL);
 const catalog = catalogFromRegistry();
 const prompt = buildRoutePrompt(catalog, ACCEPT_REQUEST);
 
@@ -23,7 +24,7 @@ const response = await fetch("https://api.deepseek.com/chat/completions", {
     Authorization: `Bearer ${key}`,
   },
   body: JSON.stringify({
-    model,
+    model: requestedModel,
     temperature: 0,
     response_format: { type: "json_object" },
     messages: [
@@ -39,19 +40,16 @@ if (!response.ok) {
   process.exit(1);
 }
 
-const body = (await response.json()) as {
-  choices?: { message?: { content?: string } }[];
-};
-const content = body.choices?.[0]?.message?.content;
-if (typeof content !== "string" || !content.trim()) {
-  console.error("DeepSeek returned no message content.");
+const completion = readChatCompletion(await response.json());
+if (!completion.ok) {
+  console.error(completion.error);
   process.exit(1);
 }
 
-const extracted = extractRouteJson(content);
+const extracted = extractRouteJson(completion.content);
 if (!extracted.ok || !extracted.value || typeof extracted.value !== "object" || Array.isArray(extracted.value)) {
   console.error(extracted.ok ? "DeepSeek JSON was not an object." : extracted.error);
-  console.error(content.slice(0, 500));
+  console.error(completion.content.slice(0, 500));
   process.exit(1);
 }
 
@@ -63,7 +61,8 @@ if (routed.status === "pending") {
 
 const payload = {
   status: "recorded" as const,
-  model,
+  requestedModel,
+  model: completion.model,
   recordedAt: new Date().toISOString(),
   request: ACCEPT_REQUEST,
   raw: JSON.stringify(extracted.value),
@@ -77,4 +76,6 @@ if (readRecording(payload).status !== "recorded") {
 const file = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../src/lib/recording-data.ts");
 const source = `export const recordingData: unknown = ${JSON.stringify(payload, null, 2)};\n`;
 writeFileSync(file, source);
-console.log(`recorded ${routed.status} surface=${routed.surface ?? "none"} degradation=${routed.degradation ?? "none"}`);
+console.log(
+  `recorded ${routed.status} surface=${routed.surface ?? "none"} degradation=${routed.degradation ?? "none"} (requested ${requestedModel}, response ${completion.model})`,
+);

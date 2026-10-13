@@ -12,7 +12,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit --pretty false",
-    "test": "tsx --test src/lib/machines.test.ts src/lib/catalog.test.ts",
+    "test": "tsx --test src/lib/machines.test.ts src/lib/catalog.test.ts src/lib/deepseek-completion.test.ts",
     "accept": "tsx scripts/accept-deepseek.ts"
   },
   "dependencies": {

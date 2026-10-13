@@ -97,6 +97,7 @@ describe("live genui catalog", () => {
       assert.match(deepseekRecording.reason, /DEEPSEEK_API_KEY/);
       return;
     }
+    assert.equal(deepseekRecording.requestedModel.length > 0, true);
     assert.equal(deepseekRecording.model.length > 0, true);
     assert.equal(deepseekRecording.request.length > 0, true);
     const routed = routeBuffer(deepseekRecording.raw, catalog);

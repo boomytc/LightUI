@@ -2,7 +2,7 @@ import { catalogFromRegistry } from "../lib/catalog";
 import { hostExplanation, surfaceLabel } from "../lib/explain";
 import { componentNames, paintSurface, routeBuffer } from "../lib/machines";
 import { deepseekRecording } from "../lib/recorded";
-import type { Locale } from "../lib/site-locale";
+import { loc, pick, type Locale } from "../lib/site-locale";
 
 export function RecordingPanel({ locale }: { locale: Locale }) {
   if (deepseekRecording.status === "not-run") {
@@ -22,7 +22,13 @@ export function RecordingPanel({ locale }: { locale: Locale }) {
   return (
     <section data-recording="recorded" className="grid gap-2 rounded-xl border border-border bg-surface px-4 py-3">
       <p className="route-kicker">
-        DeepSeek · {deepseekRecording.model} · {deepseekRecording.recordedAt}
+        {pick(
+          loc(
+            `DeepSeek · 请求 ${deepseekRecording.requestedModel}，响应 ${deepseekRecording.model} · ${deepseekRecording.recordedAt}`,
+            `DeepSeek · requested ${deepseekRecording.requestedModel}, response ${deepseekRecording.model} · ${deepseekRecording.recordedAt}`,
+          ),
+          locale,
+        )}
       </p>
       <p className="text-[14px] leading-relaxed text-fg">{deepseekRecording.request}</p>
       <p className="text-[13px] font-medium text-fg">
