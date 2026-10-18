@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { categoryLabel, getStudyCategory } from "../lib/categories";
 import {
   afterEdges,
@@ -29,6 +29,24 @@ type DrawnEdge = {
   mx: number;
   my: number;
 };
+
+function sameDrawnEdges(a: readonly DrawnEdge[], b: readonly DrawnEdge[]): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i += 1) {
+    const left = a[i]!;
+    const right = b[i]!;
+    if (
+      left.key !== right.key ||
+      left.d !== right.d ||
+      left.hot !== right.hot ||
+      left.mx !== right.mx ||
+      left.my !== right.my
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
 
 function boxOf(el: HTMLElement, root: DOMRect): Box {
   const r = el.getBoundingClientRect();
@@ -119,8 +137,15 @@ export function GraphCanvas({
   const [edges, setEdges] = useState<DrawnEdge[]>([]);
 
   const activeSlug = hoverSlug ?? selectedSlug;
-  const lineage = activeSlug ? lineageOf(activeSlug, studies) : null;
-  const levels = graphLevels(studies);
+  // `lineageOf` returns a fresh object and `studies` is rebuilt by the page on
+  // every render. Without memoising, the measure effect below depends on a new
+  // object each render while calling setEdges with a new array, which loops
+  // forever as soon as a node is hovered.
+  const lineage = useMemo(
+    () => (activeSlug ? lineageOf(activeSlug, studies) : null),
+    [activeSlug, studies],
+  );
+  const levels = useMemo(() => graphLevels(studies), [studies]);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -190,7 +215,7 @@ export function GraphCanvas({
         });
       }
 
-      setEdges(drawn);
+      setEdges((previous) => (sameDrawnEdges(previous, drawn) ? previous : drawn));
     }
 
     measure();

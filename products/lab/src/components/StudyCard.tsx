@@ -3,7 +3,7 @@ import { ArrowUpRight, HelpCircle } from "lucide-react";
 import { DateStamp } from "./DateStamp";
 import { categoryLabel, getStudyCategory } from "../lib/categories";
 import { messages } from "../lib/i18n";
-import { studyAsks, studySummary, studyTitle } from "../lib/localize";
+import { studyAsks, studyEyebrow, studySummary, studyTitle } from "../lib/localize";
 import { navigate } from "../lib/nav";
 import type { Locale } from "../lib/prefs";
 import type { StudyMeta } from "../lib/study";
@@ -105,7 +105,7 @@ export function StudyCard({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="text-[11px] font-medium tracking-wide text-accent">
-              {meta.eyebrow || categoryLabel(categoryId, locale)}
+              {studyEyebrow(meta, locale) || categoryLabel(categoryId, locale)}
             </p>
             <h2 className="mt-1 text-[1.2rem] font-semibold tracking-tight text-fg transition-colors duration-150 group-hover:text-accent">
               {studyTitle(meta, locale)}
