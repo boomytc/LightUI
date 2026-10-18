@@ -24,7 +24,10 @@ export function studyUpdated(meta: Pick<StudyMeta, "created" | "updated">): stri
 
 export function compareStudies(a: StudyMeta, b: StudyMeta): number {
   const rank: Record<StudyMeta["status"], number> = { active: 0, draft: 1, retired: 2 };
-  const byStatus = rank[a.status] - rank[b.status];
+  // study.json is not schema-validated at load time, so an unknown status must
+  // not turn the comparator into NaN (which makes the catalog order undefined).
+  // 9 matches scripts/sync-catalog.mjs: unknown statuses sort last.
+  const byStatus = (rank[a.status] ?? 9) - (rank[b.status] ?? 9);
   if (byStatus !== 0) return byStatus;
   const byUpdated = compareDayDesc(studyUpdated(a), studyUpdated(b));
   if (byUpdated !== 0) return byUpdated;

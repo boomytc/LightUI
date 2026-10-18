@@ -16,6 +16,7 @@ const CATEGORIES = [
   { id: "craft", nameZh: "工程与几何", nameEn: "Craft & Geometry" },
 ];
 const VALID_CATEGORIES = new Set(CATEGORIES.map((c) => c.id));
+const VALID_STATUS = new Set(["active", "draft", "retired"]);
 
 function fail(message) {
   console.error(message);
@@ -95,6 +96,9 @@ for (const slug of slugs) {
   }
   if (!VALID_CATEGORIES.has(meta.category)) {
     fail(`invalid or missing category: ${slug} -> ${meta.category ?? "(missing)"}`);
+  }
+  if (!VALID_STATUS.has(meta.status)) {
+    fail(`invalid or missing status: ${slug} -> ${meta.status ?? "(missing)"}`);
   }
   rows.push(meta);
 }

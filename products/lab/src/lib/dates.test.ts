@@ -61,6 +61,16 @@ describe("compareStudies", () => {
     const b = meta({ slug: "beta", created: "2026-08-15", updated: "2026-08-15" });
     assert.ok(compareStudies(a, b) < 0);
   });
+
+  it("keeps a total order when a status is not in the schema", () => {
+    const unknown = meta({ slug: "aaa", status: "archived" as StudyMeta["status"], updated: "2026-12-01" });
+    const draft = meta({ slug: "zzz", status: "draft", updated: "2026-01-01" });
+    const retired = meta({ slug: "mmm", status: "retired", updated: "2026-12-01" });
+    assert.equal(Number.isNaN(compareStudies(unknown, draft)), false);
+    assert.ok(compareStudies(unknown, draft) > 0);
+    assert.ok(compareStudies(unknown, retired) > 0);
+    assert.equal(compareStudies(unknown, unknown), 0);
+  });
 });
 
 describe("stampLabel", () => {

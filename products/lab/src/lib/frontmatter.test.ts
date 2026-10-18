@@ -25,4 +25,28 @@ related: intent-cascade
     assert.deepEqual(data, {});
     assert.equal(body.includes("一段话"), true);
   });
+
+  it("strips an empty fence block instead of leaking it into the body", () => {
+    const { data, body } = parseFrontmatter("---\n---\n正文。\n");
+    assert.deepEqual(data, {});
+    assert.equal(body, "正文。\n");
+  });
+
+  it("reads a note that starts with a byte-order mark", () => {
+    const { data, body } = parseFrontmatter("\uFEFF---\ntitle: 标题\n---\n正文。\n");
+    assert.equal(data.title, "标题");
+    assert.equal(body.startsWith("正文"), true);
+  });
+
+  it("accepts CRLF fences and bodies", () => {
+    const { data, body } = parseFrontmatter("---\r\ntitle: 标题\r\n---\r\n正文。\r\n");
+    assert.equal(data.title, "标题");
+    assert.equal(body.startsWith("正文"), true);
+  });
+
+  it("keeps the fence in the body when the closing fence is missing", () => {
+    const { data, body } = parseFrontmatter("---\ntitle: x\n\n正文");
+    assert.deepEqual(data, {});
+    assert.equal(body.startsWith("---"), true);
+  });
 });
