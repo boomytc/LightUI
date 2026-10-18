@@ -31,13 +31,9 @@ import {
   validateSandboxPayload,
 } from "./index";
 
-const textProps = {
-  type: "object" as const,
-  additionalProperties: false,
-  properties: { content: { type: "string", description: "Visible text." } },
-  required: ["content"],
-};
-
+const textEntry = registry.find((entry) => entry.name === "Text");
+assert.ok(textEntry, "registry exposes the Text component");
+const textProps = textEntry.props;
 const catalog = [{ name: "Text", props: textProps }];
 
 function loadContract(name: string): Record<string, unknown> {
@@ -166,6 +162,25 @@ describe("render-route contract", () => {
       assert.equal(decision.degradeToText, false);
       assert.equal(decision.surface, null);
     }
+  });
+
+  it("commits the first balanced object and ignores text after it", () => {
+    const full = JSON.stringify({ surface: "native", component: "Text", props: { content: "好" } });
+
+    const trailing = readClosedJsonObject(`${full}\n\n希望有帮助`);
+    assert.equal(trailing.status, "closed");
+    if (trailing.status === "closed") assert.equal(trailing.value.component, "Text");
+
+    const adjacent = readClosedJsonObject(`${full}${full}`);
+    assert.equal(adjacent.status, "closed");
+    if (adjacent.status === "closed") assert.equal(adjacent.value.component, "Text");
+
+    const braceInString = readClosedJsonObject('{"text":"}{"}');
+    assert.equal(braceInString.status, "closed");
+    if (braceInString.status === "closed") assert.equal(braceInString.value.text, "}{");
+
+    assert.equal(readClosedJsonObject('{"text":"}{').status, "pending");
+    assert.equal(readClosedJsonObject("[1,2]").status, "pending");
   });
 
   it("does not register the route envelope as a component", () => {

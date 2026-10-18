@@ -133,15 +133,16 @@ export function classifyNativeRoute(
 }
 
 /**
- * A partial JSON packet is not an error. Validation waits until `JSON.parse`
- * yields a closed object.
+ * A partial JSON packet is not an error. Validation waits until the first
+ * balanced object closes; trailing prose after that object is not part of the
+ * packet and must not keep the turn pending forever.
  */
 export function readClosedJsonObject(buffer: string): ClosedJsonObject {
-  const trimmed = buffer.trim();
-  if (!trimmed) return { status: "pending" };
+  const candidate = closedObjectPrefix(buffer);
+  if (!candidate) return { status: "pending" };
   let parsed: unknown;
   try {
-    parsed = JSON.parse(trimmed);
+    parsed = JSON.parse(candidate);
   } catch {
     return { status: "pending" };
   }
@@ -149,6 +150,31 @@ export function readClosedJsonObject(buffer: string): ClosedJsonObject {
     return { status: "pending" };
   }
   return { status: "closed", value: parsed as Record<string, unknown> };
+}
+
+/** The first complete top-level `{...}` in the buffer, or null while open. */
+function closedObjectPrefix(buffer: string): string | null {
+  const start = buffer.search(/\S/);
+  if (start < 0 || buffer[start] !== "{") return null;
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let i = start; i < buffer.length; i += 1) {
+    const ch = buffer[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === "\\") escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') inString = true;
+    else if (ch === "{") depth += 1;
+    else if (ch === "}") {
+      depth -= 1;
+      if (depth === 0) return buffer.slice(start, i + 1);
+    }
+  }
+  return null;
 }
 
 function hostError(
