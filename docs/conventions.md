@@ -173,8 +173,11 @@ Same change also updates:
 - This file’s port list (take **Next free**; do not skip)
 - `category` on `study.json` (`pointer` | `layout` | `controls` | `feedback` | `craft`)
 - `scripts/capture-stage.py` `SHOTS` — tuples are `(kind, state, file)`;
-  the capture URL is always `?kind=&state=`, so the study’s
-  `src/lib/stage-query.ts` must alias those params
+  those studies read `?kind=&state=`, so the study’s
+  `src/lib/stage-query.ts` must alias those params. A study that locks
+  on other params (`snap`, `preset`/`t`, `hour`/`minute`, …) goes in
+  `QUERY_SHOTS` as `(query, file)` instead. Every study needs one entry
+  in one of the two tables.
 
 Then:
 

@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
+from urllib.parse import urlencode
 
 from playwright.sync_api import sync_playwright
 
@@ -309,8 +310,75 @@ SHOTS: dict[str, list[tuple[str, str, str]]] = {
     ],
 }
 
-def stage_url(slug: str, kind: str, state: str) -> str:
-    return f"{LAB}/s/{slug}/stage?kind={kind}&state={state}"
+# Studies whose stage locks on its own query parameters instead of kind/state.
+# Entries are (query, file name). Keep in sync with each study's StageView.
+QUERY_SHOTS: dict[str, list[tuple[dict[str, str], str]]] = {
+    "confirm-taxonomy": [
+        ({"kind": kind, "state": "default"}, f"{kind}.png")
+        for kind in ("undo", "hold", "swipe", "pop", "modal", "type", "select")
+    ],
+    "locator-taxonomy": [
+        ({"kind": kind, "state": "default"}, f"{kind}.png")
+        for kind in (
+            "progress",
+            "back-to-top",
+            "anchor",
+            "stepper",
+            "accordion",
+            "search",
+            "status-filter",
+        )
+    ],
+    "group-taxonomy": [
+        ({"kind": kind, "mode": "grouped"}, f"{kind}.png")
+        for kind in ("cards", "whitespace", "form", "list", "bands", "compare")
+    ]
+    + [
+        ({"kind": "whitespace", "mode": "cards"}, "whitespace-cards.png"),
+    ],
+    "path-morph": [
+        ({"preset": preset, "t": "0.5", "mode": "polar"}, f"{preset}-mid.png")
+        for preset in (
+            "menu-x",
+            "arrow-turn",
+            "play-pause",
+            "plus-x",
+            "square-diamond",
+            "check-x",
+            "sun-moon",
+            "zap-bolt",
+        )
+    ]
+    + [
+        ({"preset": "arrow-turn", "t": "0", "mode": "polar"}, "arrow-turn-start.png"),
+        ({"preset": "arrow-turn", "t": "1", "mode": "polar"}, "arrow-turn-end.png"),
+        ({"preset": "arrow-turn", "t": "0.5", "mode": "linear"}, "arrow-turn-linear.png"),
+        (
+            {"preset": "arrow-turn", "t": "0.5", "mode": "polar", "points": "1"},
+            "arrow-turn-points.png",
+        ),
+    ],
+    "sheet-snap": [
+        ({"snap": snap}, f"{snap}.png") for snap in ("peek", "half", "full")
+    ],
+    "swipe-action": [
+        (
+            {"row": row, "overswipe": over},
+            f"row{row}{'-overswipe' if over == '1' else ''}.png",
+        )
+        for row, over in (("1", "0"), ("2", "0"), ("3", "1"), ("4", "0"))
+    ],
+    "touch-context": [
+        ({"id": ident}, f"{ident}.png") for ident in ("c1", "c2", "c3")
+    ],
+    "wheel-picker": [
+        ({"hour": hour, "minute": minute}, f"{hour}-{minute}.png")
+        for hour, minute in (("8", "30"), ("0", "0"), ("23", "59"))
+    ],
+}
+
+def stage_url(slug: str, query: dict[str, str]) -> str:
+    return f"{LAB}/s/{slug}/stage?{urlencode(query)}"
 
 
 def union_clip(page):
@@ -341,15 +409,25 @@ def wipe_pngs(folder: Path) -> None:
             path.unlink()
 
 
+def shots_for(slug: str) -> list[tuple[dict[str, str], str]]:
+    """Every capture in this study, as (query parameters, file name)."""
+    if slug in QUERY_SHOTS:
+        return QUERY_SHOTS[slug]
+    return [
+        ({"kind": kind, "state": state}, name)
+        for kind, state, name in SHOTS[slug]
+    ]
+
+
 def capture_slug(page, slug: str) -> None:
     dest = ROOT / "studies" / slug / "references"
     dest.mkdir(parents=True, exist_ok=True)
     wipe_pngs(dest)
-    for kind, state, name in SHOTS[slug]:
-        page.goto(stage_url(slug, kind, state), wait_until="networkidle")
+    for query, name in shots_for(slug):
+        page.goto(stage_url(slug, query), wait_until="networkidle")
         page.wait_for_timeout(350)
         if page.locator("[data-stage=fixture]").count() == 0:
-            raise SystemExit(f"stage missing for {slug} {kind} {state}: {page.url}")
+            raise SystemExit(f"stage missing for {slug} {query}: {page.url}")
         clip = union_clip(page)
         out = dest / name
         page.screenshot(path=str(out), clip=clip, animations="disabled")
@@ -360,8 +438,9 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--project", default="")
     args = parser.parse_args()
-    slugs = [args.project] if args.project else list(SHOTS)
-    unknown = [s for s in slugs if s not in SHOTS]
+    all_slugs = [*SHOTS, *QUERY_SHOTS]
+    slugs = [args.project] if args.project else all_slugs
+    unknown = [s for s in slugs if s not in SHOTS and s not in QUERY_SHOTS]
     if unknown:
         print(f"unknown project: {', '.join(unknown)}", file=sys.stderr)
         return 2
