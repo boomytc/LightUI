@@ -27,7 +27,3 @@ export interface Sampled {
   closed: boolean;
 }
 
-/** Number of cubic segments in a CubicPath. */
-export function segCount(path: CubicPath): number {
-  return (path.pts.length / 2 - 1) / 3;
-}

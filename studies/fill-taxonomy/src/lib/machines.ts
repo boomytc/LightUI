@@ -61,8 +61,6 @@ export const DUTY_IDS: DutyId[] = [
   "done",
 ];
 
-export const PHASE_IDS: Phase[] = ["before", "during", "after"];
-
 export const SHORT_PHONE = "138 0000 0";
 
 export const SIGNUP_FIELDS: FieldSpec[] = [

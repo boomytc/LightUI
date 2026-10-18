@@ -58,4 +58,4 @@ Those three, in one sentence, are the “Say it this way” card.
 
 ## The machines
 
-The calls live in DOM-free modules: `dueCards`, `canGrade`, `applyGrade`, `intervalDays`, `nextIndexAfterGrade` (forgot rotates the current card to the end; fuzzy / knew drop it from the front). Dates are ISO.
+The calls live in DOM-free modules: `dueCards`, `canGrade`, `applyGrade`, `intervalDays`. Forgot rotates the current card to the end; fuzzy / knew drop it from the front. Dates are ISO.

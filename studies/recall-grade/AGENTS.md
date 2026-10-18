@@ -12,7 +12,7 @@ From this directory, or `make dev-study STUDY=recall-grade` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5224/
-npm test             # dueCards / canGrade / applyGrade / intervalDays / nextIndexAfterGrade
+npm test             # dueCards / canGrade / applyGrade / intervalDays
 npm run typecheck
 npm run build
 ```

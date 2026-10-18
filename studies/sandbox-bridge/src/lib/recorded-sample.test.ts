@@ -24,11 +24,6 @@ const CHECK_IDS = [
 ];
 
 describe("recorded sample", () => {
-  if (recordedSample === null) {
-    it("replays the recorded source through the page parser", { skip: "recordedSample is null" }, () => {});
-    return;
-  }
-
   const checks = checkRecordedSource(recordedSample.source);
 
   it("runs the shared checks", () => {

@@ -15,7 +15,6 @@
     "test": "tsx --test src/lib/machines.test.ts"
   },
   "dependencies": {
-    "lucide-react": "^0.510.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

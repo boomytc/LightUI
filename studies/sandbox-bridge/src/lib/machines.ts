@@ -419,15 +419,6 @@ export function decideSandboxMessage(input: { sourceIsFrame: boolean; data: unkn
   return parsed;
 }
 
-export function probeExpectation(probe: Probe): "accept" | "reject" | "clamp" | "foreign" {
-  if (probe.kind === "foreign") return "foreign";
-  if (probe.kind === "resize") {
-    if (probe.expect === "clamp") return "clamp";
-    return probe.expect === "apply" ? "accept" : "reject";
-  }
-  return probe.expect;
-}
-
 function classifyMessage(data: unknown): Decision {
   if (!isPlainObject(data)) return { type: "ignore" };
   if (data.channel !== SANDBOX_CHANNEL) return { type: "ignore" };

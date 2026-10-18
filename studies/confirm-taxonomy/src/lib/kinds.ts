@@ -48,44 +48,6 @@ export const FORMULA = [
   },
 ];
 
-export const RISK_LADDER: {
-  level: RiskLevel;
-  label: Localized;
-  advice: Localized;
-  slugs: ConfirmSlug[];
-}[] = [
-  {
-    level: "reversible",
-    label: loc("后果可逆", "Reversible"),
-    advice: loc("用事后撤销（零打断）", "Use Undo Toast (Zero interrupt)"),
-    slugs: ["undo"],
-  },
-  {
-    level: "light",
-    label: loc("轻微风险 · 防误触", "Mild Risk · Anti-slip"),
-    advice: loc("用长按蓄力或滑动露出", "Use Hold-to-confirm or Swipe-to-reveal"),
-    slugs: ["hold", "swipe"],
-  },
-  {
-    level: "medium",
-    label: loc("中等局部风险", "Medium Local Risk"),
-    advice: loc("用锚点气泡确认（局部打断）", "Use Popconfirm (Local interrupt)"),
-    slugs: ["pop"],
-  },
-  {
-    level: "severe",
-    label: loc("严重破坏性决策", "Severe Decision"),
-    advice: loc("用模态弹窗（全局阻断）", "Use Modal Dialog (Global blocking)"),
-    slugs: ["modal"],
-  },
-  {
-    level: "irreversible",
-    label: loc("不可逆 · 最高风险", "Irreversible · Maximum Risk"),
-    advice: loc("用文本匹配或后果清单勾选页", "Use Type-to-confirm or Checklist review"),
-    slugs: ["type", "select"],
-  },
-];
-
 export const PATTERNS: ConfirmPattern[] = [
   {
     slug: "undo",

@@ -14,11 +14,8 @@ import {
   durationSeconds,
   isNaivePath,
   paceFromSecondsPerChar,
-  pathOf,
   secondsPerCharFromPace,
-  spreadCh,
   spreadOffsetCss,
-  spreadUnitOf,
 } from "./shimmer";
 
 describe("durationSeconds", () => {
@@ -48,10 +45,8 @@ describe("secondsPerCharFromPace", () => {
   });
 });
 
-describe("pathOf", () => {
-  it("keeps glyph as the letter path and box as the naive flood", () => {
-    assert.equal(pathOf("glyph"), "glyph");
-    assert.equal(pathOf("box"), "box");
+describe("isNaivePath / durationFor", () => {
+  it("marks only the box as the naive flood", () => {
     assert.equal(isNaivePath("glyph"), false);
     assert.equal(isNaivePath("box"), true);
   });
@@ -63,19 +58,14 @@ describe("pathOf", () => {
     assert.ok(durationFor("glyph", 24, 0.12) > durationFor("glyph", 8, 0.12));
   });
 
-  it("keeps glyph spread in ch and the box sheen in px", () => {
-    assert.equal(spreadUnitOf("glyph"), "ch");
-    assert.equal(spreadUnitOf("box"), "px");
+  it("keeps the box sheen at a fixed pixel width", () => {
     assert.equal(BOX_SPREAD_PX, 72);
-    assert.equal(SPREAD_UNIT, "ch");
   });
 });
 
-describe("spread in ch", () => {
+describe("spread offset", () => {
   it("expresses half-width in ch so the band tracks type size", () => {
     assert.equal(SPREAD_UNIT, "ch");
-    assert.equal(spreadCh(3), "1.5ch");
-    assert.equal(spreadCh(4), "2ch");
     assert.match(spreadOffsetCss(3), /0\.5ch|0\.5\*ch|0\.5ch/);
     assert.match(spreadOffsetCss(3), /ch/);
     assert.equal(spreadOffsetCss(3).includes("px"), false);

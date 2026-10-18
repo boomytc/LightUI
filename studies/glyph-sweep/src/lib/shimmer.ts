@@ -20,15 +20,6 @@ export function durationSeconds(charCount: number, secondsPerChar: number): numb
   return Math.max(1, charCount) * secondsPerChar;
 }
 
-export function isSweepPath(value: string): value is SweepPath {
-  return (PATHS as readonly string[]).includes(value);
-}
-
-/** Glyph path follows letters. Box path floods the element — the naive alternative. */
-export function pathOf(path: SweepPath): SweepPath {
-  return path;
-}
-
 export function isNaivePath(path: SweepPath): boolean {
   return path === "box";
 }
@@ -40,10 +31,6 @@ export function durationFor(
   secondsPerChar: number,
 ): number {
   return path === "box" ? BOX_DURATION_S : durationSeconds(charCount, secondsPerChar);
-}
-
-export function spreadUnitOf(path: SweepPath): "ch" | "px" {
-  return path === "box" ? "px" : SPREAD_UNIT;
 }
 
 /**
@@ -59,11 +46,6 @@ export function secondsPerCharFromPace(pace: number): number {
 export function paceFromSecondsPerChar(secondsPerChar: number): number {
   const span = PER_CHAR_FAST - PER_CHAR_SLOW;
   return (secondsPerChar - PER_CHAR_SLOW) / span;
-}
-
-/** Half-width of the band, in `ch`, so it tracks type size. */
-export function spreadCh(spread: number): string {
-  return `${spread * 0.5}${SPREAD_UNIT}`;
 }
 
 export function spreadOffsetCss(spread: number): string {

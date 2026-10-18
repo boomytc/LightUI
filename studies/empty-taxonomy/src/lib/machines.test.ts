@@ -13,7 +13,6 @@ import {
   keepsExistingList,
   showsPrimaryCta,
   snapshotOf,
-  stageState,
   visibleCustomers,
   type KindId,
 } from "./machines";
@@ -199,15 +198,12 @@ describe("emptyAction / flags", () => {
   });
 });
 
-describe("stageState", () => {
+describe("defaultStageState", () => {
   it("locks each kind to its diagnostic empty presentation", () => {
     assert.equal(defaultStageState("first-use"), "empty");
     assert.equal(defaultStageState("search"), "miss");
     assert.equal(defaultStageState("filter"), "miss");
     assert.equal(defaultStageState("error"), "banner");
     assert.equal(defaultStageState("done"), "clear");
-    assert.equal(stageState("", "search"), "miss");
-    assert.equal(stageState("open", "error"), "banner");
-    assert.equal(stageState("empty", "done"), "clear");
   });
 });

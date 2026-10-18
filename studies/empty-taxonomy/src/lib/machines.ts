@@ -145,12 +145,6 @@ export function defaultStageState(kind: KindId): StageState {
   }
 }
 
-/** Each kind has one diagnostic fixture. Any other `state` param falls back to it. */
-export function stageState(raw: string, kind: KindId): StageState {
-  const expected = defaultStageState(kind);
-  return raw === expected ? raw : expected;
-}
-
 export function customerMatchesFilters(
   customer: Customer,
   filters: readonly FilterId[],

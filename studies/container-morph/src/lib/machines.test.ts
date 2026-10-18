@@ -6,7 +6,6 @@ import {
   contentVisible,
   fixtureBox,
   isKindId,
-  keepsIdentity,
   locksSize,
   morphAnchor,
   morphAxis,
@@ -82,12 +81,6 @@ describe("locksSize", () => {
     for (const id of KIND_IDS) {
       assert.equal(locksSize(id), id === "radius");
     }
-  });
-});
-
-describe("keepsIdentity", () => {
-  it("is true for every leaf, including the check in the reverse dot", () => {
-    for (const id of KIND_IDS) assert.equal(keepsIdentity(id), true);
   });
 });
 

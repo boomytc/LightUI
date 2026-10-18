@@ -1,23 +1,4 @@
-import { loc, type Localized } from "./site-locale";
-
-export type WheelColumnMeta = {
-  id: "hour" | "minute";
-  label: Localized;
-  length: number;
-};
-
-export const WHEEL_COLUMNS: WheelColumnMeta[] = [
-  {
-    id: "hour",
-    label: loc("小时", "Hour"),
-    length: 24,
-  },
-  {
-    id: "minute",
-    label: loc("分钟", "Minute"),
-    length: 60,
-  },
-];
+import { loc } from "./site-locale";
 
 export const FORMULA = {
   name: loc("滚轮选择器 (Wheel Picker)", "Wheel Picker"),

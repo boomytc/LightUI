@@ -76,22 +76,6 @@ export function cosine(a: Float64Array, b: Float64Array): number {
   return dot / (Math.sqrt(na) * Math.sqrt(nb));
 }
 
-export function conceptHits(terms: string[]): string[] {
-  const names: string[] = [];
-  const seen = new Set<string>();
-  for (const t of terms) {
-    const ids = TERM_TO_CONCEPT.get(t);
-    if (!ids) continue;
-    for (const i of ids) {
-      const n = CONCEPTS[i]!.name;
-      if (seen.has(n)) continue;
-      seen.add(n);
-      names.push(n);
-    }
-  }
-  return names;
-}
-
 export function scoreVector(
   documents: LabDocument[],
   query: string,

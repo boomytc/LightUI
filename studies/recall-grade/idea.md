@@ -58,4 +58,4 @@
 
 ## 机器
 
-判断在无 DOM 的模块里：`dueCards`、`canGrade`、`applyGrade`、`intervalDays`、`nextIndexAfterGrade`（忘了把当前牌转到队尾；模糊 / 记得从队头拿掉）。日期是 ISO。
+判断在无 DOM 的模块里：`dueCards`、`canGrade`、`applyGrade`、`intervalDays`。忘了把当前牌转到队尾；模糊 / 记得从队头拿掉。日期是 ISO。

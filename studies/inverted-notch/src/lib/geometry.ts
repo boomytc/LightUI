@@ -77,10 +77,6 @@ export function pathStartX(w: number, g: Geom): number {
   return Math.min(nw, w * 0.7);
 }
 
-export function scoopCornerCss(radius: number): string {
-  return `border-radius: ${radius}px;\ncorner-shape: scoop round round round;`;
-}
-
 export function prettyShapeCss(): string {
   return `clip-path: shape(
   from var(--nw) 0px,

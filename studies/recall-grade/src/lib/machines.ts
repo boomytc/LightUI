@@ -92,8 +92,3 @@ export function advanceDueQueue<T>(queue: readonly T[], grade: Grade): T[] {
   if (grade === "again") return [...rest, current];
   return rest;
 }
-
-export function nextIndexAfterGrade(queue: readonly unknown[], grade: Grade): number {
-  void advanceDueQueue(queue, grade);
-  return 0;
-}

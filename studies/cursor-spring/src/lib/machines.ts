@@ -203,8 +203,6 @@ export function pushSample(trail: TrailPoint[], x: number, y: number, now: numbe
   trail.push({ x, y, t: safeNow });
 }
 
-export const DEMO_PERIOD = 8.4;
-
 /**
  * A looping human-like hand-drawn trajectory in normalized [0, 1] unit space.
  * Stacks harmonic frequencies so it looks like an organic collaborator mouse.

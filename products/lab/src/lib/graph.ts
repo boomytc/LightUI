@@ -181,44 +181,6 @@ export function graphLevels(studies: readonly StudyMeta[]): StudyMeta[][] {
     .filter((level) => level.length > 0);
 }
 
-export function graphNodes(studies: readonly StudyMeta[]): StudyMeta[] {
-  return graphLevels(studies).flat();
-}
-
-export type DualEdge = {
-  key: string;
-  from: string;
-  to: string;
-  type: "after" | "contrast";
-  when?: string;
-  whenEn?: string;
-};
-
-export function allGraphEdges(studies: readonly StudyMeta[]): DualEdge[] {
-  const edges: DualEdge[] = [];
-  for (const edge of afterEdges(studies)) {
-    edges.push({
-      key: `after:${edge.from}>${edge.to}`,
-      from: edge.from,
-      to: edge.to,
-      type: "after",
-      when: edge.when,
-      whenEn: edge.whenEn,
-    });
-  }
-  for (const pair of contrastPairs(studies)) {
-    edges.push({
-      key: `contrast:${pair.a}<>${pair.b}`,
-      from: pair.a,
-      to: pair.b,
-      type: "contrast",
-      when: pair.when,
-      whenEn: pair.whenEn,
-    });
-  }
-  return edges;
-}
-
 export type Lineage = {
   self: string;
   ancestors: Set<string>;

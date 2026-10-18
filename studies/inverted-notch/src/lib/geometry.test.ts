@@ -9,7 +9,6 @@ import {
   pathStartX,
   prettyShapeCss,
   punchesChipHole,
-  scoopCornerCss,
   shapeClipValue,
   svgPath,
   type Geom,
@@ -62,14 +61,6 @@ describe("clip construction vs scoop", () => {
     assert.notEqual(pathA, pathB);
     assert.equal(pathA.startsWith(`M ${a} 0`), true);
     assert.equal(pathB.startsWith(`M ${b} 0`), true);
-  });
-
-  it("scoop CSS is a single corner and does not mention the chip", () => {
-    const css = scoopCornerCss(18);
-    assert.match(css, /corner-shape:\s*scoop/);
-    assert.equal(css.includes("--nw"), false);
-    assert.equal(css.includes("chip"), false);
-    assert.equal(css.includes("ccw"), false);
   });
 
   it("only shape and path punch a chip-sized hole", () => {

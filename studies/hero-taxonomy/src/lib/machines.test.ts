@@ -3,7 +3,6 @@ import { describe, it } from "node:test";
 import {
   allowsCarousel,
   KIND_IDS,
-  primaryCtaCount,
   questionOf,
   tooManyBanners,
   type KindId,
@@ -30,14 +29,6 @@ describe("questionOf", () => {
   it("keeps eight distinct jobs", () => {
     const unique = new Set(KIND_IDS.map((kind) => questionOf(kind)));
     assert.equal(unique.size, KIND_IDS.length);
-  });
-});
-
-describe("primaryCtaCount", () => {
-  it("is 1 for every first-fold kind", () => {
-    for (const kind of KIND_IDS) {
-      assert.equal(primaryCtaCount(kind), 1);
-    }
   });
 });
 

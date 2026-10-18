@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { afterEdges, afterLeftover, contrastPairs, graphLevels, graphNodes, neighborsOf, normalizeLinks } from "./graph";
+import { afterEdges, afterLeftover, contrastPairs, graphLevels, neighborsOf, normalizeLinks } from "./graph";
 import type { StudyMeta } from "./study";
 
 function study(partial: Partial<StudyMeta> & Pick<StudyMeta, "slug">): StudyMeta {
@@ -80,7 +80,7 @@ describe("neighborsOf", () => {
   });
 });
 
-describe("afterEdges / contrastPairs / graphNodes", () => {
+describe("afterEdges / contrastPairs", () => {
   it("lists each after edge once", () => {
     const edges = afterEdges(pack);
     assert.deepEqual(
@@ -94,13 +94,6 @@ describe("afterEdges / contrastPairs / graphNodes", () => {
     assert.equal(pairs.length, 1);
     assert.equal(pairs[0]?.a, "nav");
     assert.equal(pairs[0]?.b, "side");
-  });
-
-  it("orders nodes so earlier questions come first", () => {
-    assert.deepEqual(
-      graphNodes(pack).map((s) => s.slug),
-      ["nav", "orphan", "drop", "side", "intent"],
-    );
   });
 
   it("layers the after-DAG", () => {

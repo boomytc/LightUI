@@ -181,16 +181,6 @@ export const PATTERN_MAP = Object.fromEntries(
   PATTERNS.map((pattern) => [pattern.id, pattern]),
 ) as Record<Exclude<PatternId, "overview">, PatternMeta>;
 
-export const NAV_ITEMS: { id: PatternId; label: string; num?: string }[] = [
-  { id: "overview", label: "概览" },
-  { id: "cards", label: "默认卡片", num: "00" },
-  { id: "whitespace", label: "留白分区", num: "01" },
-  { id: "form", label: "表单分组", num: "02" },
-  { id: "list", label: "单列列表", num: "03" },
-  { id: "bands", label: "通栏色块", num: "04" },
-  { id: "compare", label: "竖向分割线", num: "05" },
-];
-
 export const MASTER_PROMPT = `设计页面时先判断内容关系，再选择分组方式。禁止把每个模块默认装进带圆角、边框、阴影的卡片。
 
 规则：

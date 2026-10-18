@@ -52,10 +52,6 @@ export function pointInTriangle(p: Point, a: Point, b: Point, c: Point, pad = 0)
   return !(hasNeg && hasPos);
 }
 
-export function pointInTriangleShape(p: Point, t: Triangle, pad = 0): boolean {
-  return pointInTriangle(p, t.cursor, t.top, t.bottom, pad);
-}
-
 /**
  * Slope test for a submenu opening to the right: if the slope to the top
  * corner falls and the slope to the bottom corner rises, the pointer is

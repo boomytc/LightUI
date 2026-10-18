@@ -11,7 +11,6 @@ import {
   isFace,
   isGrade,
   isKindId,
-  nextIndexAfterGrade,
   shiftISO,
   stageState,
   todayISO,
@@ -148,29 +147,24 @@ describe("applyGrade", () => {
   });
 });
 
-describe("nextIndexAfterGrade", () => {
-  it("again rotates the current card to the end; the next front is index 0", () => {
+describe("advanceDueQueue", () => {
+  it("again rotates the current card to the end", () => {
     const queue = [card({ id: "a" }), card({ id: "b" }), card({ id: "c" })];
-    const next = advanceDueQueue(queue, "again");
     assert.deepEqual(
-      next.map((c) => c.id),
+      advanceDueQueue(queue, "again").map((c) => c.id),
       ["b", "c", "a"],
     );
-    assert.equal(nextIndexAfterGrade(queue, "again"), 0);
-    assert.equal(next[nextIndexAfterGrade(queue, "again")]?.id, "b");
   });
 
   it("again on a single card stays due at the front", () => {
     const queue = [card({ id: "only" })];
-    const next = advanceDueQueue(queue, "again");
     assert.deepEqual(
-      next.map((c) => c.id),
+      advanceDueQueue(queue, "again").map((c) => c.id),
       ["only"],
     );
-    assert.equal(nextIndexAfterGrade(queue, "again"), 0);
   });
 
-  it("hard and good remove from the front; next index is still 0", () => {
+  it("hard and good remove the front card", () => {
     const queue = [card({ id: "a" }), card({ id: "b" }), card({ id: "c" })];
     assert.deepEqual(
       advanceDueQueue(queue, "hard").map((c) => c.id),
@@ -180,15 +174,12 @@ describe("nextIndexAfterGrade", () => {
       advanceDueQueue(queue, "good").map((c) => c.id),
       ["b", "c"],
     );
-    assert.equal(nextIndexAfterGrade(queue, "hard"), 0);
-    assert.equal(nextIndexAfterGrade(queue, "good"), 0);
   });
 
   it("hard or good on the last card empties the pile", () => {
     const queue = [card({ id: "last" })];
     assert.deepEqual(advanceDueQueue(queue, "good"), []);
     assert.deepEqual(advanceDueQueue(queue, "hard"), []);
-    assert.equal(nextIndexAfterGrade(queue, "good"), 0);
   });
 });
 

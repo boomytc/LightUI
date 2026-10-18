@@ -3,8 +3,6 @@ import { describe, it } from "node:test";
 import {
   axisFromZero,
   hasAlt,
-  intentOf,
-  KIND_IDS,
   lineRequiresTime,
   markFor,
   maxPieSlices,
@@ -13,15 +11,6 @@ import {
   type IntentId,
   type Mark,
 } from "./machines";
-
-describe("intentOf", () => {
-  it("treats the six leaves as the questions, not the marks", () => {
-    for (const kind of KIND_IDS) {
-      assert.equal(intentOf(kind), kind);
-      assert.notEqual(markFor(kind, "primary"), kind);
-    }
-  });
-});
 
 describe("markFor", () => {
   it("maps each intent to its primary mark", () => {
