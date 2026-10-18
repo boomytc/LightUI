@@ -36,7 +36,8 @@ export function itemCap(kind: KindId): number | null {
 
 export function occupiesEdge(kind: KindId): Edge {
   if (kind === "bottom") return "bottom";
-  if (kind === "sidebar") return "left";
-  if (kind === "floating" || kind === "shrink" || kind === "scrollspy") return "top";
+  // Scrollspy is a side rail in `placeSketch`/`ScrollspyDemo`, not a top bar.
+  if (kind === "sidebar" || kind === "scrollspy") return "left";
+  if (kind === "floating" || kind === "shrink") return "top";
   return "none";
 }

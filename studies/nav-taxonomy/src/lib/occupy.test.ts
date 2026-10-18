@@ -29,9 +29,11 @@ describe("navOccupancy", () => {
 });
 
 describe("occupiesEdge", () => {
-  it("pins bottom-nav to the bottom edge", () => {
+  it("pins each nav to the edge its demo uses", () => {
     assert.equal(occupiesEdge("bottom"), "bottom");
     assert.equal(occupiesEdge("sidebar"), "left");
+    assert.equal(occupiesEdge("scrollspy"), "left");
+    assert.equal(occupiesEdge("floating"), "top");
     assert.equal(occupiesEdge("drawer"), "none");
   });
 });
