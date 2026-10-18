@@ -2,8 +2,6 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   KIND_IDS,
-  MAX_DOTS,
-  MIN_DOTS,
   atStart,
   dotCount,
   focusDot,
@@ -80,8 +78,9 @@ describe("quantize", () => {
   });
 
   it("keeps dot count in the rail band", () => {
-    assert.equal(dotCount(16), MIN_DOTS);
-    assert.equal(dotCount(800), MAX_DOTS);
+    // Design values, not the module's own constants: a changed constant must fail here.
+    assert.equal(dotCount(16), 6);
+    assert.equal(dotCount(800), 18);
     assert.equal(dotCount(160), 10);
   });
 });

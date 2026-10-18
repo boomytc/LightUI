@@ -7,9 +7,6 @@ import {
   KIND_IDS,
   READING_MEASURE_PX,
   readingMeasurePx,
-  SPLIT_DEFAULT,
-  SPLIT_MAX,
-  SPLIT_MIN,
   splitPanes,
   splitRatioFromPointer,
   type KindId,
@@ -67,24 +64,24 @@ describe("splitPanes", () => {
 describe("clampSplit", () => {
   it("keeps a ratio inside the pane min/max", () => {
     assert.equal(clampSplit(0.4), 0.4);
-    assert.equal(clampSplit(0), SPLIT_MIN);
-    assert.equal(clampSplit(1), SPLIT_MAX);
+    assert.equal(clampSplit(0), 0.22);
+    assert.equal(clampSplit(1), 0.56);
   });
 
   it("falls back when the value is not finite", () => {
-    assert.equal(clampSplit(Number.NaN), SPLIT_DEFAULT);
-    assert.equal(clampSplit(Number.POSITIVE_INFINITY), SPLIT_DEFAULT);
+    assert.equal(clampSplit(Number.NaN), 0.32);
+    assert.equal(clampSplit(Number.POSITIVE_INFINITY), 0.32);
   });
 });
 
 describe("splitRatioFromPointer", () => {
   it("maps a pointer into the clamped ratio", () => {
     assert.equal(splitRatioFromPointer(132, 0, 400), 0.33);
-    assert.equal(splitRatioFromPointer(0, 0, 400), SPLIT_MIN);
-    assert.equal(splitRatioFromPointer(400, 0, 400), SPLIT_MAX);
+    assert.equal(splitRatioFromPointer(0, 0, 400), 0.22);
+    assert.equal(splitRatioFromPointer(400, 0, 400), 0.56);
   });
 
   it("returns the default when the group has no size", () => {
-    assert.equal(splitRatioFromPointer(40, 0, 0), SPLIT_DEFAULT);
+    assert.equal(splitRatioFromPointer(40, 0, 0), 0.32);
   });
 });

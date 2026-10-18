@@ -22,6 +22,7 @@ function loadContract(): ContractFile {
   const record = parsed as Record<string, unknown>;
   assert.equal(record.protocol, "lightui.genui");
   assert.equal(record.version, PROTOCOL_VERSION);
+  assert.deepEqual(Object.keys(record).sort(), ["components", "protocol", "version"]);
   assert.ok(Array.isArray(record.components));
   return {
     protocol: "lightui.genui",
@@ -35,6 +36,9 @@ describe("contract v0", () => {
     const contract = loadContract();
     const errors = diffComponents([...registry], contract.components);
     assert.deepEqual(errors, [], errors.join("\n"));
+    for (const entry of registry) {
+      assert.equal(typeof entry.component, "function", entry.name);
+    }
     const text = registry.find((entry) => entry.name === "Text");
     assert.equal(text?.component, Text);
   });

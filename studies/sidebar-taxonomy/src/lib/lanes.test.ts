@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { KINDS, type KindId } from "./kinds";
 import { LANES, laneOf, mixedPair, spaceSnap } from "./lanes";
-import { occupyPx, overlayPx } from "./space";
 
 describe("laneOf", () => {
   it("puts only off-canvas on the layer lane", () => {
@@ -20,10 +19,10 @@ describe("laneOf", () => {
 
 describe("spaceSnap", () => {
   it("keeps occupancy in the flow except off-canvas", () => {
-    assert.equal(spaceSnap("floating").occupy, occupyPx("floating", true));
-    assert.equal(spaceSnap("collapsible").occupy, occupyPx("collapsible", true));
+    assert.equal(spaceSnap("floating").occupy, 216);
+    assert.equal(spaceSnap("collapsible").occupy, 240);
     assert.equal(spaceSnap("offcanvas").occupy, 0);
-    assert.equal(spaceSnap("offcanvas").overlay, overlayPx("offcanvas", true));
+    assert.equal(spaceSnap("offcanvas").overlay, 256);
     assert.equal(spaceSnap("collapsible").overlay, 0);
   });
 });

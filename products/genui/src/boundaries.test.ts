@@ -182,7 +182,10 @@ describe("workspace sources", () => {
   });
 
   it("accepts the current workspace", () => {
-    const violations = checkBoundaries(readWorkspaceSources(repoRootFrom(import.meta.url)));
+    const sources = readWorkspaceSources(repoRootFrom(import.meta.url));
+    // Without a floor an empty scan would silently satisfy deepEqual([], []).
+    assert.ok(sources.length > 500, `scanned only ${sources.length} files`);
+    const violations = checkBoundaries(sources);
     assert.deepEqual(
       violations,
       [],

@@ -61,7 +61,7 @@ describe("backHref", () => {
     assert.equal(backHref("/about", "/notes"), "/notes");
   });
 
-  it("pops history when the previous page is the fallback itself", () => {
+  it("pops history for an in-app referrer that is not the current page", () => {
     assert.equal(canPopHistory("/studies", "/studies", "/s/button-taxonomy"), true);
     assert.equal(canPopHistory("/notes/name-the-button", "/studies", "/s/button-taxonomy"), true);
     assert.equal(canPopHistory(null, "/studies", "/s/button-taxonomy"), false);
