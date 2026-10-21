@@ -1,0 +1,33 @@
+{
+  "slug": "overflow-trace",
+  "category": "craft",
+  "title": "溢出定位",
+  "titleEn": "Trace overflow",
+  "eyebrow": "Measure · Constrain",
+  "summary": "横向溢出先测越界元素。隐藏滚动条不会修好宽度、收缩和断行约束。",
+  "summaryEn": "Measure escaped elements before clipping. Hiding a scrollbar does not repair width, shrink, or wrapping constraints.",
+  "asks": "是谁越过容器边界，隐藏还是修好约束？",
+  "asksEn": "Which element escapes its container, and should we clip or repair its constraints?",
+  "links": [
+    {
+      "slug": "layout-taxonomy",
+      "rel": "after",
+      "when": "边界修好后再决定页面骨架",
+      "whenEn": "choose the page skeleton after repairing boundaries"
+    },
+    {
+      "slug": "align-craft",
+      "rel": "contrast",
+      "when": "越界约束不是基线与焦点对齐",
+      "whenEn": "escaping constraints differ from baseline and focal alignment"
+    }
+  ],
+  "status": "active",
+  "created": "2026-10-21",
+  "updated": "2026-10-21",
+  "tags": [
+    "overflow",
+    "geometry",
+    "constraints"
+  ]
+}

@@ -63,3 +63,7 @@ Continuous reading demands a stable left origin line: centering a container must
 | Feedback card | Indiscriminately centering all rows | Hero on center axis, details left-aligned |
 
 Swapping the page skeleton is a different question. This one only asks which seam you are lining up.
+
+## Compute a subject crop
+
+The cover lab switches target ratios and compares centered and subject-aware crops. Compute the visible window from source and target aspect ratios, center it around the annotated subject, clamp it inside the image, then convert its origin into object-position. Subject detection is a separate input. If the subject is larger than the window, change the ratio or use contain.

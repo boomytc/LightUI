@@ -1,3 +1,4 @@
+import { CropLab } from "./CropLab";
 import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import "../align.css";
@@ -167,6 +168,7 @@ export function Playground() {
         {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
 
         <KindDemo id={meta.id} />
+        {meta.id === "cover" && <CropLab />}
 
         <SpecCard
           locale={locale}
