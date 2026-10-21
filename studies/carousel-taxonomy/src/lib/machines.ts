@@ -179,3 +179,19 @@ export function stageIndex(
   if (!Number.isFinite(n)) return clampIndex(fallback, length);
   return clampIndex(n, length);
 }
+
+export type FrameKind = Exclude<KindId,"spin">;
+export type FrameIndicator = "dots"|"bars"|"count"|"none";
+export function defaultIndicator(kind:FrameKind):FrameIndicator {
+ if(kind==="flip")return "count";
+ if(kind==="parallax")return "bars";
+ if(kind==="accordion")return "none";
+ return "dots";
+}
+export function normalizeAngle(angle:number):number {
+ if(!Number.isFinite(angle))return 0;
+ return ((angle%360)+360)%360;
+}
+export function dragAngle(origin:number, displacement:number):number {
+ return origin+displacement*0.7;
+}

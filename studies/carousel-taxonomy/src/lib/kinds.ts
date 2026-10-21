@@ -161,11 +161,11 @@ export const KINDS: KindMeta[] = [
     rules: [
       loc("当前项展开，其余收窄", "The current column grows; the others shrink"),
       loc("改的是列宽，不是切走整屏", "Columns retune; the view is not taken away"),
-      loc("圆点与当前展开项同步", "Dots sync the expanded item"),
+      loc("展开项就是当前位置", "The expanded item is the position"),
     ],
     spec: loc(
-      "做手风琴画廊。四张竖图横排，当前项展开、其余只露一条边。点击或箭头切换展开项，圆点同步。不要做成一次只露一张的轨道轮播。",
-      "An accordion gallery. Four vertical frames in a row; the current one expands, the others keep a strip. Click or arrows retune which is open; dots sync. Not a one-frame track.",
+      "做手风琴画廊。四张竖图横排，当前项展开、其余只露一条边。点击或箭头切换展开项，可不加圆点。不要做成一次只露一张的轨道轮播。",
+      "An accordion gallery. Four vertical frames in a row; the current one expands, the others keep a strip. Click or arrows retune which is open; dots are optional. Not a one-frame track.",
     ),
     note: loc("手风琴还看得见旁边。轨道会把整块切走。", "An accordion still shows neighbors. A track takes the view away."),
     tells: loc("旁边还露着，没有切走", "Neighbors stay; the view is not cut away"),
@@ -186,12 +186,12 @@ export const KINDS: KindMeta[] = [
     ],
     rules: [
       loc("拖的是 rotateY，不是切页", "Drag changes rotateY, not the page"),
-      loc("圆点 / 滑杆同步同一角度", "Dots and the slider share one angle"),
+      loc("滑杆与读数同步连续角度", "Slider and readout share the continuous angle"),
       loc("不要做成四张侧面图左右滑", "Do not turn four side photos into a track"),
     ],
     spec: loc(
-      "做 360° 产品旋转展示。中央是可拖的立方体，转的是产品角度，不是一组幻灯片。圆点与滑杆同步同一角度。不要做成图片左右滑。",
-      "A 360° product turn. The cube in the middle is dragged; you rotate an object, not a list of slides. Dots and the slider share one angle. Not a sideways photo track.",
+      "做 360° 产品旋转展示。中央是可拖的立方体，转的是产品角度，不是一组幻灯片。滑杆与读数同步同一连续角度，松手不吸附到某一面。不要做成图片左右滑。",
+      "A 360° product turn. The cube in the middle is dragged; you rotate an object, not a list of slides. Slider and readout share the continuous angle; release does not snap to a face. Not a sideways photo track.",
     ),
     note: loc("360 转的是物体。木马转的是一组卡片。", "360 rotates an object. Coverflow rotates a set of cards."),
     tells: loc("按住转一圈，不是翻下一张", "Hold and turn — you are not paging"),
@@ -213,11 +213,11 @@ export const KINDS: KindMeta[] = [
     rules: [
       loc("背景 0.3、中层 0.7、前景 1.0", "Background 0.3, mid 0.7, foreground 1.0"),
       loc("切页共用同一进度，只改 transform", "One progress drives every layer; transform only"),
-      loc("圆点同步当前场景；不要单层左右滑", "Dots sync the scene; not a single-layer slide"),
+      loc("短条同步当前场景；不要单层左右滑", "Bars sync the scene; not a single-layer slide"),
     ],
     spec: loc(
-      "做视差轮播。背景、中层、前景用不同位移系数（0.3 / 0.7 / 1.0）错开，切页时三层共用同一进度。圆点同步当前场景。品牌主视觉，不要单层左右滑。",
-      "A parallax carousel. Background, mid, and foreground shift at 0.3 / 0.7 / 1.0 on one progress. Dots sync the scene. A brand hero, not a single-layer slide.",
+      "做视差轮播。背景、中层、前景用不同位移系数（0.3 / 0.7 / 1.0）错开，切页时三层共用同一进度。短条同步当前场景。品牌主视觉，不要单层左右滑。",
+      "A parallax carousel. Background, mid, and foreground shift at 0.3 / 0.7 / 1.0 on one progress. Bars sync the scene. A brand hero, not a single-layer slide.",
     ),
     tells: loc("远的慢、近的快", "Far is slow; near is fast"),
     cut: loc("视差", "Parallax"),

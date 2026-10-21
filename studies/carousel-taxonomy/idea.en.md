@@ -34,7 +34,7 @@ Ask what the motion commits. Skin comes after.
 | 360° spin | Rotate a product, not slides | Drag is an angle |
 | Parallax | Layers at 0.3 / 0.7 / 1.0 | Not a single-layer slide |
 
-The control-dictionary rule holds for every cut: **dots sync the index**; autoplay **pauses on hover**; `prefers-reduced-motion` **kills autoplay**; if a fade still moves, it is **opacity only**.
+Frame indicators sync the index; product rotation uses a continuous angle. Dots, bars, page counts, or no indicator are independent choices. Flip defaults to a page count, parallax to bars, and accordion to the expanded item. The autoplay rule still holds; autoplay **pauses on hover**; `prefers-reduced-motion` **kills autoplay**; if a fade still moves, it is **opacity only**.
 
 The three pairs people mix up:
 
@@ -67,3 +67,6 @@ Those three become the line on the spec card.
 ## The machines
 
 The rules live in DOM-free modules: `stepIndex` (classic wraps), `shouldAutoplay` (false on hover or reduced motion), `fadeUsesOpacityOnly`, `transitionProps`, `isRotateNotSlide`. Reduced motion keeps fade on opacity and jumps every other cut.
+
+
+The 360 view owns its angle independently of slide indices. Drag, slider, and degree steps update that one state; release retains it. Rotation pauses for hover, control focus, and reduced motion. Manual frame changes restart the full autoplay dwell.

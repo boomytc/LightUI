@@ -2,6 +2,9 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   accordionWeights,
+  normalizeAngle,
+  dragAngle,
+  defaultIndicator,
   angleToIndex,
   clampIndex,
   coverflowHidden,
@@ -167,4 +170,20 @@ describe("parallaxOffset", () => {
     assert.equal(parallaxOffset(1, 0.7, 100), -70);
     assert.equal(parallaxOffset(1, 1, 100), -100);
   });
+});
+
+describe("continuous product rotation",()=>{
+ it("keeps a non-cardinal angle instead of snapping to a slide face",()=>{
+  const angle=dragAngle(28,64);
+  assert.ok(Math.abs(angle-72.8)<1e-8);
+  assert.notEqual(angle,spinAngle(angleToIndex(angle)));
+  assert.equal(normalizeAngle(-45),315);
+  assert.equal(normalizeAngle(765),45);
+ });
+ it("selects indicators by the thing being represented",()=>{
+  assert.equal(defaultIndicator("flip"),"count");
+  assert.equal(defaultIndicator("parallax"),"bars");
+  assert.equal(defaultIndicator("accordion"),"none");
+  assert.equal(defaultIndicator("classic"),"dots");
+ });
 });

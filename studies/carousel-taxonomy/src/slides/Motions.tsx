@@ -1,13 +1,11 @@
-import { useEffect, useRef, useState, type PointerEvent } from "react";
-import { SLIDES, SPIN_FACES } from "../lib/fixtures";
+import { useRef, useState, type PointerEvent } from "react";
+import { SLIDES } from "../lib/fixtures";
 import {
   accordionWeights,
-  angleToIndex,
   coverflowHidden,
   motionMs,
   parallaxOffset,
   shortestOffset,
-  spinAngle,
   stackLayer,
   wrapIndex,
 } from "../lib/machines";
@@ -23,13 +21,6 @@ export type MotionProps = {
   jump: boolean;
   locale: Locale;
 };
-
-const FACE_BG = [
-  "slide-tone-0",
-  "slide-tone-1",
-  "slide-tone-2",
-  "slide-tone-3",
-] as const;
 
 export function ClassicMotion({ index, next, prev, jump, locale }: MotionProps) {
   const start = useRef<{ x: number; y: number } | null>(null);
@@ -385,90 +376,6 @@ export function AccordionMotion({ index, go, jump, locale }: MotionProps) {
           </button>
         );
       })}
-    </div>
-  );
-}
-
-export function SpinMotion({ index, go, jump, locale }: MotionProps) {
-  const [angle, setAngle] = useState(() => spinAngle(index));
-  const [dragging, setDragging] = useState(false);
-  const lastX = useRef(0);
-
-  useEffect(() => {
-    if (!dragging) setAngle(spinAngle(index));
-  }, [index, dragging]);
-
-  function onDown(e: PointerEvent<HTMLDivElement>) {
-    lastX.current = e.clientX;
-    setDragging(true);
-    e.currentTarget.setPointerCapture(e.pointerId);
-  }
-
-  function onMove(e: PointerEvent<HTMLDivElement>) {
-    if (!dragging) return;
-    const dx = e.clientX - lastX.current;
-    lastX.current = e.clientX;
-    setAngle((a) => a + dx * 0.45);
-  }
-
-  function onUp() {
-    if (!dragging) return;
-    setDragging(false);
-    const snapped = angleToIndex(angle);
-    setAngle(spinAngle(snapped));
-    go(snapped);
-  }
-
-  const shown = Math.round((((angle % 360) + 360) % 360));
-
-  return (
-    <div className="px-4 pt-3 pb-1">
-      <div className="cube-scene relative mx-auto w-full">
-        <div
-          className="absolute inset-0 touch-none"
-          onPointerDown={onDown}
-          onPointerMove={onMove}
-          onPointerUp={onUp}
-          onPointerCancel={onUp}
-        >
-          <div
-            className={cn("cube absolute top-6 left-1/2", jump ? "is-jump" : dragging ? "" : "is-ease")}
-            style={{ transform: `rotateX(-16deg) rotateY(${angle}deg)` }}
-          >
-            {SPIN_FACES.map((name, i) => (
-              <div
-                key={i}
-                className={cn(
-                  "cube-face absolute flex items-center justify-center text-[13px] font-medium tracking-widest",
-                  FACE_BG[i],
-                  `cube-face-${i}`,
-                )}
-              >
-                {pick(name, locale)}
-              </div>
-            ))}
-          </div>
-          <div className="cube-ground absolute bottom-3 left-1/2 -translate-x-1/2 rounded-[100%] bg-fg/20 blur-[5px]" />
-        </div>
-      </div>
-      <label className="mt-1 block px-1">
-        <span className="sr-only">{locale === "en" ? "Angle" : "旋转角度"}</span>
-        <input
-          type="range"
-          min={0}
-          max={360}
-          value={shown}
-          onChange={(e) => {
-            const next = Number(e.target.value);
-            setAngle(next);
-            go(angleToIndex(next));
-          }}
-          className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-border-strong accent-[var(--color-accent)]"
-        />
-        <span className="mt-1 block text-center font-mono text-[11px] tabular-nums text-fg-subtle">
-          {shown}°
-        </span>
-      </label>
     </div>
   );
 }

@@ -29,3 +29,5 @@ npm run dev
 8. 视差：远的慢、近的快
 
 舞台查询：`?stage=1&kind=classic|fade|coverflow|stack|flip|accordion|spin|parallax&state=0|1|2`，默认 `classic` / `1`。
+
+360° 模式直接持有连续角度，松手不吸附；图片序列可选圆点、短条、页码或无指示器。

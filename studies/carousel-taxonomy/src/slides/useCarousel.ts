@@ -36,11 +36,11 @@ export function useCarousel({
 
   useEffect(() => {
     if (!auto || length <= 1 || intervalMs <= 0) return;
-    const id = window.setInterval(() => {
+    const id = window.setTimeout(() => {
       setIndex((i) => stepIndex(i, 1, length, "wrap"));
     }, intervalMs);
-    return () => window.clearInterval(id);
-  }, [auto, intervalMs, length]);
+    return () => window.clearTimeout(id);
+  }, [auto, intervalMs, length, index]);
 
   return { index, go, next, prev };
 }

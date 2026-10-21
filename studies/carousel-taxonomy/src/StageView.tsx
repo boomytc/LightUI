@@ -11,7 +11,7 @@ export function StageView() {
   const index = stageIndex(state);
   return (
     <div data-stage="root" className="grid min-h-dvh place-items-center overflow-x-hidden bg-bg px-4 py-12">
-      <div data-stage="fixture" className="w-[390px] max-w-full min-w-0">
+      <div data-stage="fixture" inert className="w-[390px] max-w-full min-w-0">
         <KindDemo id={id} index={index} autoplay={false} />
       </div>
     </div>

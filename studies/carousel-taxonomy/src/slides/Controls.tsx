@@ -1,9 +1,10 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { dotsIndex } from "../lib/machines";
+import { dotsIndex, type FrameIndicator } from "../lib/machines";
 import type { Locale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 
 export function Controls({
+  indicator,
   index,
   length,
   locale,
@@ -11,6 +12,7 @@ export function Controls({
   next,
   prev,
 }: {
+  indicator: FrameIndicator;
   index: number;
   length: number;
   locale: Locale;
@@ -30,33 +32,49 @@ export function Controls({
       >
         <ChevronLeft className="size-4" />
       </button>
-      <div
-        className="flex min-w-0 items-center justify-center gap-0.5"
-        role="tablist"
-        aria-label={locale === "en" ? "Frames" : "画面"}
-      >
-        {Array.from({ length }, (_, i) => {
-          const on = i === current;
-          return (
-            <button
-              key={i}
-              type="button"
-              role="tab"
-              aria-selected={on}
-              aria-label={locale === "en" ? `Frame ${i + 1}` : `第 ${i + 1} 张`}
-              onClick={() => go(i)}
-              className="grid size-7 place-items-center"
-            >
-              <span
-                className={cn(
-                  "rounded-full transition-[width,background-color,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
-                  on ? "h-2 w-5 bg-fg" : "size-2 bg-border-strong",
-                )}
-              />
-            </button>
-          );
-        })}
-      </div>
+      {indicator === "count" ? (
+        <span data-frame-count className="font-mono text-xs tabular-nums">
+          {current + 1} / {length}
+        </span>
+      ) : indicator === "none" ? (
+        <span aria-hidden="true" />
+      ) : (
+        <div
+          data-frame-indicator={indicator}
+          className="flex min-w-0 items-center justify-center gap-0.5"
+          role="group"
+          aria-label={locale === "en" ? "Frames" : "画面"}
+        >
+          {Array.from({ length }, (_, i) => {
+            const on = i === current;
+            return (
+              <button
+                key={i}
+                type="button"
+                aria-pressed={on}
+                aria-label={
+                  locale === "en" ? `Frame ${i + 1}` : `第 ${i + 1} 张`
+                }
+                onClick={() => go(i)}
+                className="grid size-7 place-items-center"
+              >
+                <span
+                  className={cn(
+                    "rounded-full transition-[width,background-color,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                    indicator === "bars"
+                      ? on
+                        ? "h-1.5 w-7 bg-fg"
+                        : "h-1.5 w-7 bg-border-strong"
+                      : on
+                        ? "h-2 w-5 bg-fg"
+                        : "size-2 bg-border-strong",
+                  )}
+                />
+              </button>
+            );
+          })}
+        </div>
+      )}
       <button
         type="button"
         aria-label={locale === "en" ? "Next" : "下一张"}

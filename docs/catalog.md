@@ -10,6 +10,7 @@ Category chips read `category` on each study. Do not keep a second registry.
 | --- | --- | --- | --- | --- | --- |
 | [align-craft](../studies/align-craft/) | craft | 对齐不是看起来正。先问对齐的是文字基线、画面焦点、数位还是盒子。间距用 gap，贴边用帽高，定位用 inset，金额用等宽，列表用两端扫读。 | active | 2026-08-23 | 2026-10-21 |
 | [assistant-chrome](../studies/assistant-chrome/) | layout | 助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。 | active | 2026-08-23 | 2026-10-21 |
+| [carousel-taxonomy](../studies/carousel-taxonomy/) | feedback | 一组画面只说了会换。先定是平移、淡入、木马、叠卡、翻页、手风琴、360 还是视差。 | active | 2026-08-23 | 2026-10-21 |
 | [dashboard-layers](../studies/dashboard-layers/) | layout | 看板该从结果往下钻。一盘端上 KPI、图、表，扫得到皮，钻不到因。 | active | 2026-08-23 | 2026-10-21 |
 | [event-timeline](../studies/event-timeline/) | feedback | 时间轴记录何时发生了什么；播放只控制展示，不代表业务进度。日期、节点和最新标记各司其职。 | active | 2026-10-21 | 2026-10-21 |
 | [layout-taxonomy](../studies/layout-taxonomy/) | layout | 「做个页面」只说了有块。先定是单栏、落地、瀑布、全屏、分栏、仪表盘还是模块拼贴。 | active | 2026-08-23 | 2026-10-21 |
@@ -31,7 +32,6 @@ Category chips read `category` on each study. Do not keep a second registry.
 | [bm25-explain](../studies/bm25-explain/) | craft | 检索排序不是黑盒总分。先定稀疏与向量的分数不可直接相加，再把得分拆解为词频饱和与篇幅惩罚。 | active | 2026-08-25 | 2026-09-11 |
 | [border-beam](../studies/border-beam/) | craft | 高光沿圆角边框绕行，不要铺满卡片。内层实心底，外层透明边框叠光束。品牌强调色，不要彩虹。 | active | 2026-08-23 | 2026-09-11 |
 | [button-taxonomy](../studies/button-taxonomy/) | controls | 「做个按钮」只说了能点。先定这一区的主操作、次操作还是弱操作，一区只能有一个面状。 | active | 2026-08-23 | 2026-09-11 |
-| [carousel-taxonomy](../studies/carousel-taxonomy/) | feedback | 一组画面只说了会换。先定是平移、淡入、木马、叠卡、翻页、手风琴、360 还是视差。 | active | 2026-08-23 | 2026-09-11 |
 | [chart-read](../studies/chart-read/) | pointer | 图画好之后，这一手是读数、过滤还是改窗口。选图种是另一问；看板层递也是另一问。 | active | 2026-08-25 | 2026-09-11 |
 | [chart-taxonomy](../studies/chart-taxonomy/) | craft | 「做个图表」只说了有数。先定要看变化、大小、占比、关系、流程还是能力，再选痕迹。 | active | 2026-08-23 | 2026-09-11 |
 | [confirm-taxonomy](../studies/confirm-taxonomy/) | feedback | 二次确认不是一律弹窗。打断程度与认知摩擦，必须与后果的不可逆性及影响范围严格成正比。 | active | 2026-08-30 | 2026-09-11 |
@@ -73,6 +73,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 - **对齐** (`align-craft`) — 对齐的是基线、焦点、数位，还是盒子？
 - **助手** (`assistant-chrome`) — 助手住在对话、侧栏、插件、浮层、画布，还是看不见？
+- **轮播** (`carousel-taxonomy`) — 这一组画面怎么切？
 - **层递** (`dashboard-layers`) — 看板从结果往下钻，还是一盘端上来？
 - **事件时间轴** (`event-timeline`) — 这一条线记录历史事件，还是表示任务完成步骤？
 - **布局** (`layout-taxonomy`) — 这一页的骨架是哪一种？
@@ -94,7 +95,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **检索可解释性** (`bm25-explain`) — 检索排序怎么让人看明白？
 - **边光** (`border-beam`) — 高光该走边框还是铺满卡片？
 - **按钮** (`button-taxonomy`) — 这个动作该有多重？
-- **轮播** (`carousel-taxonomy`) — 这一组画面怎么切？
 - **读图** (`chart-read`) — 图上这一手是读数、过滤，还是改窗口？
 - **图表** (`chart-taxonomy`) — 这组数据要看什么？
 - **二次确认** (`confirm-taxonomy`) — 执行破坏性操作时，该用多重的二次确认？
@@ -135,6 +135,9 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `align-craft` contrast `layout-taxonomy` — 对齐不是换骨架
 - `assistant-chrome` contrast `layout-taxonomy` — 助手住哪不是整页骨架
 - `assistant-chrome` contrast `overlay-taxonomy` — 选区工具条不是弹窗
+- `carousel-taxonomy` contrast `notify-taxonomy` — 切画面不是通知跑马灯
+- `carousel-taxonomy` contrast `layout-taxonomy` — 切画面不是瀑布骨架
+- `carousel-taxonomy` contrast `recall-grade` — 切下一张不是提交记得程度
 - `dashboard-layers` contrast `chart-taxonomy` — 下钻不是换图种
 - `dashboard-layers` contrast `layout-taxonomy` — 层递不是仪表盘皮
 - `event-timeline` contrast `progress-taxonomy` — 日期事件不是完成步骤
@@ -209,9 +212,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `bm25-explain` contrast `control-taxonomy` — 检索输入与参数实验不是普通表单填写
 - `border-beam` contrast `glyph-sweep` — 高光走边框不是走字形
 - `button-taxonomy` contrast `control-taxonomy` — 按钮重量不是填还是选
-- `carousel-taxonomy` contrast `notify-taxonomy` — 切画面不是通知跑马灯
-- `carousel-taxonomy` contrast `layout-taxonomy` — 切画面不是瀑布骨架
-- `carousel-taxonomy` contrast `recall-grade` — 切下一张不是提交记得程度
 - `chart-read` contrast `chart-taxonomy` — 读数手势不是选图种
 - `chart-read` contrast `dashboard-layers` — 图内换层不是看板从结果往下钻
 - `chart-read` contrast `look-quantize` — 最近邻吸附是读点，不是视线落到格子
