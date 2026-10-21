@@ -278,7 +278,7 @@ function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   );
 }
 
-export function KindDemo({ id, state = "default" }: { id: KindId; state?: string }) {
+export function KindDemo({ id, state = "default", locked = false }: { id: KindId; state?: string; locked?: boolean }) {
   switch (id) {
     case "chat":
       return <ChatDemo />;
@@ -291,6 +291,6 @@ export function KindDemo({ id, state = "default" }: { id: KindId; state?: string
     case "canvas":
       return <CanvasDemo />;
     case "invisible":
-      return <InvisibleDemo />;
+      return <InvisibleDemo locked={locked} />;
   }
 }

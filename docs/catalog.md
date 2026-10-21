@@ -8,6 +8,7 @@ Category chips read `category` on each study. Do not keep a second registry.
 
 | Slug | Category | Idea | Status | Created | Updated |
 | --- | --- | --- | --- | --- | --- |
+| [assistant-chrome](../studies/assistant-chrome/) | layout | 助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。 | active | 2026-08-23 | 2026-10-21 |
 | [transcript-stream](../studies/transcript-stream/) | layout | 实时多说话人转录流不应粗暴全量重绘；在会前声纹抽屉预先建档，在会中以打字机平滑追加字词、解决后验换名与重叠抢话碰撞，并在会后无缝跃迁至双栏时间轴与结构化纪要。 | active | 2026-09-26 | 2026-09-26 |
 | [table-taxonomy](../studies/table-taxonomy/) | controls | 记录表先问找、看、改落在哪一层。筛在这一列的表头，条件留在上方；表头钉在表自己的滚动区，名称列不能藏；一行只露出查看；有勾选，批量条才换掉搜索。 | active | 2026-09-22 | 2026-09-23 |
 | [control-taxonomy](../studies/control-taxonomy/) | controls | 「做个输入框」只说了能填。先定是自己填一行或一段，还是从答案里选：可见比较、短列表、边搜边选，或同时多个。 | active | 2026-08-23 | 2026-09-20 |
@@ -21,7 +22,6 @@ Category chips read `category` on each study. Do not keep a second registry.
 | [sling-throw](../studies/sling-throw/) | pointer | 沿轨道调值时，离轨不该被夹回一维。拉过离轨阈值，松手按抛体落点改值。 | active | 2026-09-15 | 2026-09-15 |
 | [align-craft](../studies/align-craft/) | craft | 对齐不是看起来正。先问对齐的是文字基线、画面焦点、数位还是盒子。间距用 gap，贴边用帽高，定位用 inset，金额用等宽，列表用两端扫读。 | active | 2026-08-23 | 2026-09-14 |
 | [slide-confirm](../studies/slide-confirm/) | pointer | 高危不可逆操作，如何用连续物理位移杜绝误触疲劳？滑动确认强制用户执行一段具有明确矢量方向的物理行程，未达阈值松手弹性回退，超过判定阈值才完成破坏性承诺。 | active | 2026-09-14 | 2026-09-14 |
-| [assistant-chrome](../studies/assistant-chrome/) | layout | 助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。 | active | 2026-08-23 | 2026-09-11 |
 | [bm25-explain](../studies/bm25-explain/) | craft | 检索排序不是黑盒总分。先定稀疏与向量的分数不可直接相加，再把得分拆解为词频饱和与篇幅惩罚。 | active | 2026-08-25 | 2026-09-11 |
 | [border-beam](../studies/border-beam/) | craft | 高光沿圆角边框绕行，不要铺满卡片。内层实心底，外层透明边框叠光束。品牌强调色，不要彩虹。 | active | 2026-08-23 | 2026-09-11 |
 | [button-taxonomy](../studies/button-taxonomy/) | controls | 「做个按钮」只说了能点。先定这一区的主操作、次操作还是弱操作，一区只能有一个面状。 | active | 2026-08-23 | 2026-09-11 |
@@ -69,6 +69,7 @@ Category chips read `category` on each study. Do not keep a second registry.
 
 Each study answers one question (`asks`). Edges live on the study as `links`.
 
+- **助手** (`assistant-chrome`) — 助手住在对话、侧栏、插件、浮层、画布，还是看不见？
 - **转录流** (`transcript-stream`) — 实时多说话人转录流如何平滑处理增量打字、声纹后验认人与重叠抢话？
 - **记录表** (`table-taxonomy`) — 找、看、改，分别落在记录表的哪一层？
 - **控件** (`control-taxonomy`) — 这一格是自己填还是从答案里选？
@@ -82,7 +83,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **弹弓抛掷** (`sling-throw`) — 沿轨道调值时，离轨该夹回一维，还是变成弹弓按落点改值？
 - **对齐** (`align-craft`) — 对齐的是基线、焦点、数位，还是盒子？
 - **滑动确认** (`slide-confirm`) — 高危不可逆操作，如何用连续物理位移杜绝误触疲劳？
-- **助手** (`assistant-chrome`) — 助手住在对话、侧栏、插件、浮层、画布，还是看不见？
 - **检索可解释性** (`bm25-explain`) — 检索排序怎么让人看明白？
 - **边光** (`border-beam`) — 高光该走边框还是铺满卡片？
 - **按钮** (`button-taxonomy`) — 这个动作该有多重？
@@ -128,6 +128,8 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 ## Edges
 
+- `assistant-chrome` contrast `layout-taxonomy` — 助手住哪不是整页骨架
+- `assistant-chrome` contrast `overlay-taxonomy` — 选区工具条不是弹窗
 - `transcript-stream` contrast `assistant-chrome` — 转录流是真实人际多轮对话与声纹时空绑定，不是单体 AI 助手交互形态
 - `transcript-stream` contrast `page-append` — 流式语音是持续时间轴上的 token/turn 增量打字机，不是记录集翻页或末尾批量追加
 - `transcript-stream` contrast `notify-taxonomy` — 重叠抢话是就地气泡视觉呼吸与状态胶囊，不是模态或打断式通知
@@ -178,8 +180,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `slide-confirm` contrast `confirm-taxonomy` — 连续物理位移滑块是极限不可逆门禁，不同于模态弹窗与点击阶梯
 - `slide-confirm` contrast `swipe-action` — 滑动确认是单向单一阈值防误触门禁，列表侧滑是多动作就近露出与全滑触发
 - `slide-confirm` contrast `drag-commit` — 滑动确认是标量位移承诺，拖拽提交是空间落位与列表重排
-- `assistant-chrome` contrast `layout-taxonomy` — 助手住哪不是整页骨架
-- `assistant-chrome` contrast `overlay-taxonomy` — 选区工具条不是弹窗
 - `bm25-explain` contrast `dashboard-layers` — 检索分数拆解不是业务看板层递
 - `bm25-explain` contrast `chart-taxonomy` — 排序贡献瀑布图不是通用数据图表
 - `bm25-explain` contrast `control-taxonomy` — 检索输入与参数实验不是普通表单填写

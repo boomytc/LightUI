@@ -15,23 +15,18 @@ const TONE: Record<string, string> = {
   night: "chrome-photo-night",
 };
 
-export function InvisibleDemo() {
+export function InvisibleDemo({ locked = false }: { locked?: boolean }) {
   const locale = useLocale();
   const meta = KINDS[5]!;
-  const [tagged, setTagged] = useState(false);
+  const [tagged, setTagged] = useState(locked);
+  const [run, setRun] = useState(0);
 
   useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      const target = e.target as HTMLElement | null;
-      if (target && ["INPUT", "TEXTAREA"].includes(target.tagName)) return;
-      if (e.key !== "k" && e.key !== "K") return;
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      e.preventDefault();
-      setTagged((v) => !v);
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
+    if (locked) return;
+    setTagged(false);
+    const timer = window.setTimeout(() => setTagged(true), 900);
+    return () => window.clearTimeout(timer);
+  }, [locked, run]);
 
   const done = tagged ? PHOTOS.length : 0;
 
@@ -40,7 +35,7 @@ export function InvisibleDemo() {
       <div data-album className="flex h-full min-w-0 flex-col overflow-x-hidden">
         <div className="flex items-center justify-between gap-2 px-3 pt-3">
           <h2 className="text-[15px] font-semibold">{locale === "en" ? "Photos" : "时光相册"}</h2>
-          <p className="text-[11px] text-fg-subtle">{locale === "en" ? "K to sort" : "按 K 整理"}</p>
+          <p className="text-[11px] text-fg-subtle">{locale === "en" ? "Automatic sorting" : "后台自动分类"}</p>
         </div>
 
         <div className="chrome-album-grid min-h-0 min-w-0 flex-1 gap-1.5 overflow-auto p-3">
@@ -61,7 +56,7 @@ export function InvisibleDemo() {
           ))}
         </div>
 
-        <div className="flex items-center justify-between gap-2 border-t border-border px-3 py-2 text-[11px] text-fg-muted">
+        <div aria-live="polite" className="flex items-center justify-between gap-2 border-t border-border px-3 py-2 text-[11px] text-fg-muted">
           {done > 0 ? (
             <p className="inline-flex min-w-0 items-center gap-1">
               <Check className="size-3 shrink-0 text-accent" />
@@ -70,9 +65,11 @@ export function InvisibleDemo() {
               </span>
             </p>
           ) : (
-            <p className="truncate">{locale === "en" ? "No resident chrome" : "没有常驻铬"}</p>
+            <p className="truncate">{locale === "en" ? "Sorting in the background…" : "正在后台整理…"}</p>
           )}
-          <span className="shrink-0 text-fg-subtle">{locale === "en" ? "K again undoes" : "再按 K 还原"}</span>
+          {!locked && <button type="button" disabled={!tagged} onClick={() => setRun((n) => n + 1)} className="shrink-0 text-fg-subtle underline disabled:opacity-40">
+            {locale === "en" ? "Replay sorting" : "重播整理过程"}
+          </button>}
         </div>
       </div>
     </Window>

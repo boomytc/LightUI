@@ -26,7 +26,7 @@ Ask where the assistant lives first. Skin comes after. This is not how the page 
 | Plugin | The host does not move; a toolbar appears on select | `needsSelection`; save the Range |
 | Float | A draggable mini window; the skeleton does not change | Keep reading; the ball drags |
 | Canvas | Nodes on an infinite canvas | `occupiesPage`; output is nodes, not a chat window |
-| Invisible | A shortcut; no resident chrome | `chromeVisible` is false |
+| Invisible | Automatic background work; no resident chrome | `chromeVisible` is false |
 
 The pairs people mix up:
 
@@ -52,7 +52,9 @@ Those three, in one sentence, are the “Say it this way” card.
 | An old product | New layout, a new rail | A toolbar on select; save the Range |
 | A document you are reading | Jump into another app | A draggable mini window; the skeleton stays |
 | Brainstorm | Timeline bubbles | Nodes and edges on a canvas |
-| Sort an album | Extra chrome | A shortcut; results write back in place |
+| Sort an album | Extra chrome | Automatic sorting; results write back in place |
+
+The album sorts automatically on entry and writes tags onto the photos. Replay is a teaching control. The stage locks the completed state; leaving the demo cancels its timer.
 
 ## The machines
 

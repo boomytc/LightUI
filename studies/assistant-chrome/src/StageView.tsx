@@ -11,7 +11,7 @@ export function StageView() {
   return (
     <div data-stage="root" className="grid min-h-dvh place-items-center overflow-x-hidden bg-bg px-4 py-10 sm:px-8">
       <div data-stage="fixture" className="w-[390px] max-w-full min-w-0 overflow-x-hidden">
-        <KindDemo id={id} state={locked} />
+        <KindDemo id={id} state={locked} locked />
       </div>
     </div>
   );

@@ -143,7 +143,7 @@ export const KINDS: KindMeta[] = [
     index: "06",
     name: "Invisible",
     zh: loc("看不见", "Invisible"),
-    oneLiner: loc("快捷键触发，没有常驻铬", "A shortcut; no resident chrome"),
+    oneLiner: loc("后台自动执行，没有常驻铬", "Automatic background work; no resident chrome"),
     scenes: [
       loc("相册分类", "Sort an album"),
       loc("邮件归档", "File mail"),
@@ -152,14 +152,14 @@ export const KINDS: KindMeta[] = [
     rules: [
       loc("不加聊天、悬浮球、侧栏", "No chat, no ball, no rail"),
       loc("结果写进已有 UI", "Write results into the UI that is already there"),
-      loc("标签可逆", "Tags are reversible"),
+      loc("过程可重播", "Replay the process"),
     ],
     spec: loc(
-      "做没有常驻铬的助手。快捷键触发，结果写进已有界面。不要加聊天、悬浮球或侧栏。",
-      "An assistant with no resident chrome. A shortcut fires it; results write into the UI that is already there. No chat, no ball, no rail.",
+      "做没有常驻铬的助手。后台自动执行，结果写进已有界面。不要加聊天、悬浮球或侧栏。",
+      "An assistant with no resident chrome. Background processing runs automatically; results write into the UI that is already there. No chat, no ball, no rail.",
     ),
     note: loc("没有常驻铬。需要讨论时再升级成对话或面板。", "No resident chrome. Upgrade to chat or a panel when you need to discuss."),
-    tells: loc("相册还是相册，按 K 才写回标签", "The album is still an album; press K to write tags back"),
+    tells: loc("相册还是相册，标签自动写回原处", "The album stays an album; tags appear in place automatically"),
     window: loc("相册", "Photos"),
   },
 ];
@@ -204,7 +204,7 @@ export const CONTRASTS: {
     id: "invisible",
     scene: loc("相册分类", "Sort an album"),
     naive: loc("多一块铬", "Another piece of chrome"),
-    matched: loc("快捷键；结果写回原处", "A shortcut; write results back in place"),
+    matched: loc("自动整理；结果写回原处", "Automatic sorting; write results back in place"),
   },
 ];
 
