@@ -1,3 +1,4 @@
+import { useTabs } from "./useTabs";
 import { useRef, useState } from "react";
 import { SALES, SEGMENTED_TABS } from "../lib/fixtures";
 import { pick, useLocale } from "../lib/site-locale";
@@ -14,6 +15,7 @@ export function SegmentedDemo({
   const allowed = new Set(SEGMENTED_TABS.map((t) => t.id));
   const initial = defaultTab && allowed.has(defaultTab) ? defaultTab : "today";
   const [tab, setTab] = useState(initial);
+  const tabs = useTabs(SEGMENTED_TABS.map((item) => item.id), tab, setTab);
   const { box, transition } = useBox(listRef, tab, "button");
   const slice = SALES[tab] ?? SALES.today;
 
@@ -53,7 +55,7 @@ export function SegmentedDemo({
         style={{
           left: box.left,
           width: box.width,
-          transition,
+          transitionProperty: transition,
           transitionDuration: transition === "none" ? "0ms" : "320ms",
           transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
         }}
@@ -64,10 +66,7 @@ export function SegmentedDemo({
           <button
             key={item.id}
             type="button"
-            role="tab"
-            data-tab={item.id}
-            aria-selected={on}
-            onClick={() => setTab(item.id)}
+            {...tabs.tabProps(item.id)}
             className={cn(
               "relative z-[1] rounded-full px-3 py-1.5 text-[12px] transition-colors",
               fill ? "min-w-0 flex-1" : "min-w-12",
@@ -108,7 +107,7 @@ export function SegmentedDemo({
           </div>
         )}
 
-        <div className={cn(fill ? "min-h-0 flex-1 overflow-auto px-5 py-4" : "mt-4")}>
+        <div {...tabs.panelProps(tab)} className={cn(fill ? "min-h-0 flex-1 overflow-auto px-5 py-4" : "mt-4")}>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {stats.map((s) => (
               <div key={s.l} className="rounded-xl border border-border bg-surface-2 px-3 py-3">

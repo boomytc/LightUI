@@ -1,3 +1,4 @@
+import { useTabs } from "./useTabs";
 import { useState } from "react";
 import { CART_ITEMS, CHEVRON_TABS } from "../lib/fixtures";
 import "../tabs.css";
@@ -14,6 +15,7 @@ export function ChevronDemo({
   const allowed = new Set(CHEVRON_TABS.map((t) => t.id));
   const initial = defaultTab && allowed.has(defaultTab) ? defaultTab : "cart";
   const [tab, setTab] = useState(initial);
+  const tabs = useTabs(CHEVRON_TABS.map((item) => item.id), tab, setTab);
   const current = Math.max(0, CHEVRON_TABS.findIndex((t) => t.id === tab));
 
   return (
@@ -42,9 +44,7 @@ export function ChevronDemo({
               <button
                 key={item.id}
                 type="button"
-                role="tab"
-                aria-selected={kind === "current"}
-                onClick={() => setTab(item.id)}
+                {...tabs.tabProps(item.id)}
                 style={{ zIndex: index + 1 }}
                 className={cn(
                   "tab-chevron-item min-h-10 flex-1 px-2 text-[11px] font-medium tracking-tight whitespace-nowrap transition-colors duration-300 sm:px-4 sm:text-[12px]",
@@ -82,6 +82,7 @@ export function ChevronDemo({
             fill ? "min-h-0 flex-1 content-start overflow-auto px-5 py-5" : "mt-5",
           )}
           key={tab}
+          {...tabs.panelProps(tab)}
         >
           <div>
             {tab === "cart" ? <Cart locale={locale} /> : null}

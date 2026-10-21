@@ -8,6 +8,7 @@ import {
   indicatorTransition,
   stepKind,
   textIndicator,
+  nextTabIndex,
 } from "./machines";
 
 describe("textIndicator", () => {
@@ -66,4 +67,18 @@ describe("bevelInset", () => {
     assert.equal(bevelInset(32, 0), 0);
     assert.ok(Math.abs(bevelInset(32, 30) - 32 * Math.tan(Math.PI / 6)) < 1e-9);
   });
+});
+
+describe("tab focus and scrolled geometry", () => {
+ it("wraps, reaches endpoints, and leaves typing keys alone", () => {
+  assert.equal(nextTabIndex("ArrowRight",3,4),0);
+  assert.equal(nextTabIndex("ArrowLeft",0,4),3);
+  assert.equal(nextTabIndex("Home",2,4),0);
+  assert.equal(nextTabIndex("End",0,4),3);
+  assert.equal(nextTabIndex("a",1,4),null);
+  assert.equal(nextTabIndex("ArrowRight",0,0),null);
+ });
+ it("keeps the indicator in list-content coordinates after scrolling", () => {
+  assert.deepEqual(textIndicator(100,124,36,80),{left:104,width:36});
+ });
 });

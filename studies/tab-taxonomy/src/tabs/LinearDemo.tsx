@@ -1,3 +1,4 @@
+import { useTabs } from "./useTabs";
 import { useRef, useState } from "react";
 import {
   LINEAR_ACTIVITY,
@@ -19,6 +20,7 @@ export function LinearDemo({
   const allowed = new Set(LINEAR_TABS.map((t) => t.id));
   const initial = defaultTab && allowed.has(defaultTab) ? defaultTab : "overview";
   const [tab, setTab] = useState(initial);
+  const tabs = useTabs(LINEAR_TABS.map((item) => item.id), tab, setTab);
   const { box, transition } = useBox(listRef, tab, "label");
 
   return (
@@ -47,10 +49,7 @@ export function LinearDemo({
               <button
                 key={item.id}
                 type="button"
-                role="tab"
-                data-tab={item.id}
-                aria-selected={on}
-                onClick={() => setTab(item.id)}
+                {...tabs.tabProps(item.id)}
                 className={cn(
                   "flex min-h-11 items-center justify-center px-2 py-3 text-[13px] transition-colors",
                   on ? "font-medium text-fg" : "text-fg-muted hover:text-fg",
@@ -66,14 +65,14 @@ export function LinearDemo({
             style={{
               left: box.left,
               width: box.width,
-              transition,
+              transitionProperty: transition,
               transitionDuration: transition === "none" ? "0ms" : "320ms",
               transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
             }}
           />
         </div>
 
-        <div className={cn("tab-swap", fill ? "min-h-0 flex-1 overflow-auto px-5 py-4" : "mt-4")} key={tab}>
+        <div {...tabs.panelProps(tab)} className={cn("tab-swap", fill ? "min-h-0 flex-1 overflow-auto px-5 py-4" : "mt-4")} key={tab}>
           {tab === "overview" ? <Overview locale={locale} /> : null}
           {tab === "tasks" ? <Tasks locale={locale} /> : null}
           {tab === "files" ? <Files locale={locale} /> : null}

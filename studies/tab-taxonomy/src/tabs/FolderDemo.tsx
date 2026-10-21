@@ -1,3 +1,4 @@
+import { useTabs } from "./useTabs";
 import { useState } from "react";
 import { FOLDER_FILES, FOLDER_TABS } from "../lib/fixtures";
 import "../tabs.css";
@@ -14,6 +15,7 @@ export function FolderDemo({
   const allowed = new Set(FOLDER_TABS.map((t) => t.id));
   const initial = defaultTab && allowed.has(defaultTab) ? defaultTab : "req";
   const [tab, setTab] = useState(initial);
+  const tabs = useTabs(FOLDER_TABS.map((item) => item.id), tab, setTab);
   const files = FOLDER_FILES[tab] ?? FOLDER_FILES.req;
   const count = FOLDER_TABS.length;
   const selected = FOLDER_TABS.findIndex((t) => t.id === tab);
@@ -42,9 +44,7 @@ export function FolderDemo({
                 <button
                   key={item.id}
                   type="button"
-                  role="tab"
-                  aria-selected={layer.raised}
-                  onClick={() => setTab(item.id)}
+                  {...tabs.tabProps(item.id)}
                   style={{ zIndex: layer.z }}
                   className={cn(
                     "tab-folder-item min-w-24 px-4 py-2 text-[13px] transition-[transform,color,background-color] duration-300",
@@ -64,6 +64,7 @@ export function FolderDemo({
               "relative rounded-b-xl rounded-tr-xl border border-border bg-surface",
               fill && "min-h-0 flex-1 overflow-auto",
             )}
+            {...tabs.panelProps(tab)}
             style={{ zIndex: folderPanelZ(count) }}
           >
             <div className="tab-swap" key={tab}>

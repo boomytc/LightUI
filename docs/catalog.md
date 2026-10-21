@@ -14,6 +14,7 @@ Category chips read `category` on each study. Do not keep a second registry.
 | [event-timeline](../studies/event-timeline/) | feedback | 时间轴记录何时发生了什么；播放只控制展示，不代表业务进度。日期、节点和最新标记各司其职。 | active | 2026-10-21 | 2026-10-21 |
 | [notify-taxonomy](../studies/notify-taxonomy/) | feedback | 报一条消息只说了要出声。先定打断到哪一档：瞄一眼、自动消失、还能撤销、留档、还是必须处理。 | active | 2026-08-23 | 2026-10-21 |
 | [overflow-trace](../studies/overflow-trace/) | craft | 横向溢出先测越界元素。隐藏滚动条不会修好宽度、收缩和断行约束。 | active | 2026-10-21 | 2026-10-21 |
+| [tab-taxonomy](../studies/tab-taxonomy/) | controls | 一排标签只说了能切。先定选中态是短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。 | active | 2026-08-23 | 2026-10-21 |
 | [transcript-stream](../studies/transcript-stream/) | layout | 实时多说话人转录流不应粗暴全量重绘；在会前声纹抽屉预先建档，在会中以打字机平滑追加字词、解决后验换名与重叠抢话碰撞，并在会后无缝跃迁至双栏时间轴与结构化纪要。 | active | 2026-09-26 | 2026-09-26 |
 | [table-taxonomy](../studies/table-taxonomy/) | controls | 记录表先问找、看、改落在哪一层。筛在这一列的表头，条件留在上方；表头钉在表自己的滚动区，名称列不能藏；一行只露出查看；有勾选，批量条才换掉搜索。 | active | 2026-09-22 | 2026-09-23 |
 | [control-taxonomy](../studies/control-taxonomy/) | controls | 「做个输入框」只说了能填。先定是自己填一行或一段，还是从答案里选：可见比较、短列表、边搜边选，或同时多个。 | active | 2026-08-23 | 2026-09-20 |
@@ -60,7 +61,6 @@ Category chips read `category` on each study. Do not keep a second registry.
 | [sheet-snap](../studies/sheet-snap/) | pointer | 多档抽屉不是简单的二元开合。拖动时全量跟手并带越界阻尼，松手依据位移与速度综合裁定落入哪个离散档位。 | active | 2026-09-09 | 2026-09-11 |
 | [sidebar-taxonomy](../studies/sidebar-taxonomy/) | layout | 靠左只是外观。先定占不占位，展开改的是宽度还是图层。 | active | 2026-08-15 | 2026-09-11 |
 | [swipe-action](../studies/swipe-action/) | pointer | 列表行向左侧滑时，8px 矢量消歧区分纵向滚动与横向侧滑；释放时依据位移与阻尼裁定回弹、吸附露出快捷操作，或超过深滑阈值直接全滑提交删除。 | active | 2026-09-09 | 2026-09-11 |
-| [tab-taxonomy](../studies/tab-taxonomy/) | controls | 一排标签只说了能切。先定选中态是短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。 | active | 2026-08-23 | 2026-09-11 |
 | [timer-taxonomy](../studies/timer-taxonomy/) | feedback | 这一段时间是正数累计，还是倒数专注？先定会话的方向。累计没有上限；专注到 0 自己停住，不要变成负数，也不要弹一条 toast。 | active | 2026-08-23 | 2026-09-11 |
 | [touch-context](../studies/touch-context/) | pointer | 触控长按不是简单弹窗。原地按住约 460ms 且位移在 10px 容差内触发；位移超标立即销毁定时器让路给滚动；菜单紧贴触控点就近浮现并在视口边界自动翻转避让。 | active | 2026-09-09 | 2026-09-11 |
 | [validation-taxonomy](../studies/validation-taxonomy/) | controls | 「做个表单校验」只说了会报错。先定是失焦就说、这一栏立刻说，还是提交时一次说完。 | active | 2026-08-23 | 2026-09-11 |
@@ -77,6 +77,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **事件时间轴** (`event-timeline`) — 这一条线记录历史事件，还是表示任务完成步骤？
 - **提示** (`notify-taxonomy`) — 这条提示该打断到哪一档？
 - **溢出定位** (`overflow-trace`) — 是谁越过容器边界，隐藏还是修好约束？
+- **页签** (`tab-taxonomy`) — 这一排标签，选中态是哪种模型？
 - **转录流** (`transcript-stream`) — 实时多说话人转录流如何平滑处理增量打字、声纹后验认人与重叠抢话？
 - **记录表** (`table-taxonomy`) — 找、看、改，分别落在记录表的哪一层？
 - **控件** (`control-taxonomy`) — 这一格是自己填还是从答案里选？
@@ -123,7 +124,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **抽屉吸附** (`sheet-snap`) — 多档底部抽屉拖拽时，手势如何在连续拖拽与离散档位之间落点？
 - **侧边栏** (`sidebar-taxonomy`) — 靠左那一块占不占位、怎么让路？
 - **列表侧滑** (`swipe-action`) — 列表行向左侧滑时，手势如何区分横竖意图，并在操作露出与全滑提交之间裁定？
-- **页签** (`tab-taxonomy`) — 这一排标签，选中态是哪种模型？
 - **计时** (`timer-taxonomy`) — 这一段时间是正数累计，还是倒数专注？
 - **长按上下文** (`touch-context`) — 触控长按目标时，手势如何在误触位移与持续时间中消歧，并在目标就近定位上下文操作？
 - **校验** (`validation-taxonomy`) — 错误该在什么时候说？
@@ -145,6 +145,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `notify-taxonomy` contrast `fill-taxonomy` — 结果 toast 不是提交后的成功页
 - `overflow-trace` after `layout-taxonomy` — 边界修好后再决定页面骨架
 - `overflow-trace` contrast `align-craft` — 越界约束不是基线与焦点对齐
+- `tab-taxonomy` contrast `nav-taxonomy` — 页签切的是这一页里的面板，不是顶栏去哪
 - `transcript-stream` contrast `assistant-chrome` — 转录流是真实人际多轮对话与声纹时空绑定，不是单体 AI 助手交互形态
 - `transcript-stream` contrast `page-append` — 流式语音是持续时间轴上的 token/turn 增量打字机，不是记录集翻页或末尾批量追加
 - `transcript-stream` contrast `notify-taxonomy` — 重叠抢话是就地气泡视觉呼吸与状态胶囊，不是模态或打断式通知
@@ -301,7 +302,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `swipe-action` contrast `press-select` — 列表侧滑露出针对单行的就近动作，长按则是激活列表多选批处理模式
 - `swipe-action` contrast `pull-refresh` — 侧滑是列表内部各行的水平局部接管，下拉刷新是顶部容器级的纵向接管
 - `swipe-action` contrast `drag-commit` — 侧滑是露出动作面板或触发提交，不是拖拽改变记录的排序位置
-- `tab-taxonomy` contrast `nav-taxonomy` — 页签切的是这一页里的面板，不是顶栏去哪
 - `timer-taxonomy` contrast `progress-taxonomy` — 计时的方向不是进度能不能算
 - `timer-taxonomy` contrast `notify-taxonomy` — 专注到点不是一条 toast
 - `touch-context` contrast `press-select` — 长按就近弹出单条操作菜单，不是长按进入多选批处理模式

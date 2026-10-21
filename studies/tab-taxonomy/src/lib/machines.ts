@@ -9,9 +9,10 @@ export function textIndicator(
   listLeft: number,
   textLeft: number,
   textWidth: number,
+  scrollLeft = 0,
 ): Box {
   return {
-    left: textLeft - listLeft,
+    left: textLeft - listLeft + scrollLeft,
     width: Math.max(0, textWidth),
   };
 }
@@ -60,4 +61,14 @@ export function folderPanelZ(count: number): number {
 export function bevelInset(height: number, degrees: number): number {
   const rad = (degrees * Math.PI) / 180;
   return height * Math.tan(rad);
+}
+
+/** Arrow keys wrap among sibling tabs; unrelated keys do not change selection. */
+export function nextTabIndex(key:string,index:number,count:number):number|null {
+  if (count<=0) return null;
+  if(key==="ArrowRight")return (index+1)%count;
+  if(key==="ArrowLeft")return (index-1+count)%count;
+  if(key==="Home")return 0;
+  if(key==="End")return count-1;
+  return null;
 }

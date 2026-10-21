@@ -54,3 +54,7 @@ To specify one of these, say three things:
 ## The machines
 
 Geometry lives in DOM-free modules: `textIndicator` (the text span for linear, the whole item for segmented), `indicatorTransition`, `stepKind`, `cardPanelRadius`, `folderLayer`, `bevelInset`.
+
+## Keyboard and association
+
+All six skins share one local tab contract: one tab stop, wrapping arrow keys, Home/End, and synchronized focus and selection. Instance-specific ids connect tabs to panels. Indicators use scroll-content coordinates and remeasure after font or size changes. The initial measurement does not fly in from zero.

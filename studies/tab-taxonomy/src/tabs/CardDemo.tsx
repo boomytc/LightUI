@@ -1,3 +1,4 @@
+import { useTabs } from "./useTabs";
 import { useState } from "react";
 import { CARD_INVITES, CARD_MEMBERS, CARD_ROLES, CARD_TABS } from "../lib/fixtures";
 import { cardPanelRadius } from "../lib/machines";
@@ -15,6 +16,7 @@ export function CardDemo({
   const allowed = new Set(CARD_TABS.map((t) => t.id));
   const initial = defaultTab && allowed.has(defaultTab) ? defaultTab : "members";
   const [tab, setTab] = useState(initial);
+  const tabs = useTabs(CARD_TABS.map((item) => item.id), tab, setTab);
   const selected = CARD_TABS.findIndex((t) => t.id === tab);
   const radius = cardPanelRadius(selected, RADIUS);
 
@@ -36,9 +38,7 @@ export function CardDemo({
               <button
                 key={item.id}
                 type="button"
-                role="tab"
-                aria-selected={on}
-                onClick={() => setTab(item.id)}
+                {...tabs.tabProps(item.id)}
                 className={cn(
                   "relative z-[1] px-3.5 py-2 text-[13px] transition-[color,background-color,border-radius,margin] duration-300",
                   on ? "-mb-px rounded-t-xl" : "rounded-xl",
@@ -55,6 +55,7 @@ export function CardDemo({
 
         <div
           className={cn("relative border border-border bg-surface px-4 py-4 transition-[border-radius] duration-300", fill && "min-h-0 flex-1 overflow-auto")}
+          {...tabs.panelProps(tab)}
           style={{
             borderTopLeftRadius: radius.topLeft,
             borderTopRightRadius: radius.topRight,

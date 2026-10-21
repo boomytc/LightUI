@@ -54,3 +54,7 @@
 ## 机器
 
 几何在无 DOM 的模块里：`textIndicator`（线性量文字，分段量整项）、`indicatorTransition`、`stepKind`、`cardPanelRadius`、`folderLayer`、`bevelInset`。
+
+## 键盘与关联
+
+六种外形共用同一条本地 tab 契约：只有选中项进入 Tab 顺序，左右键循环切换，Home / End 到两端，焦点与选中项同步。tab 与 panel 使用每个实例独有的 id 互相关联。指示条按滚动内容坐标测量，字体和尺寸变化会复测；首次测量不从 0 飞入。

@@ -1,3 +1,4 @@
+import { useTabs } from "./useTabs";
 import { useState } from "react";
 import { ROOMS, type RoomId } from "../lib/fixtures";
 import { pick, useLocale } from "../lib/site-locale";
@@ -12,6 +13,7 @@ export function ImageDemo({
   const allowed = new Set(ROOMS.map((r) => r.id));
   const initial = (defaultTab && allowed.has(defaultTab as RoomId) ? defaultTab : "living") as RoomId;
   const [tab, setTab] = useState<RoomId>(initial);
+  const tabs = useTabs(ROOMS.map((item) => item.id), tab, setTab);
 
   return (
     <Window title={locale === "en" ? "Mori Studio · case" : "Mori Studio · 项目案例"} dark fill={fill}>
@@ -23,7 +25,7 @@ export function ImageDemo({
               key={item.id}
               className="absolute inset-0 transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
               style={{ opacity: on ? 1 : 0, pointerEvents: on ? "auto" : "none" }}
-              aria-hidden={!on}
+              {...tabs.panelProps(item.id)}
             >
               <RoomArt id={item.id} tone={item.tone} fill={fill} />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/20" />
@@ -57,9 +59,7 @@ export function ImageDemo({
               <button
                 key={item.id}
                 type="button"
-                role="tab"
-                aria-selected={on}
-                onClick={() => setTab(item.id)}
+                {...tabs.tabProps(item.id)}
                 className={cn(
                   "relative overflow-hidden rounded-lg text-left transition-[transform,opacity,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
                   on ? "-translate-y-1 ring-2 ring-white" : "opacity-80 hover:opacity-100",
