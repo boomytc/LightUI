@@ -1,3 +1,4 @@
+import { MiniChart } from "./MiniChart";
 import type { ReactNode } from "react";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import {
@@ -5,7 +6,6 @@ import {
   findDim,
   findKpi,
   type DimRow,
-  type KpiRow,
 } from "../lib/dashboard-data";
 import { formatDelta, formatValue } from "../lib/format";
 import {
@@ -77,7 +77,7 @@ export function Board({
       </div>
 
       <div className="board-grain">
-        {showsChart(view) ? <MiniChart key={kpi.id} kpi={kpi} locale={locale} /> : null}
+        {showsChart(view) ? <MiniChart kpi={kpi} locale={locale} locked={locked} /> : null}
 
         <div className="board-dim-slot">
           {canExpand(view) ? (
@@ -280,7 +280,8 @@ function KpiGrid({
               {formatValue(kpi.value, kpi.unit)}
             </p>
             <p className="mt-1 flex flex-wrap items-center gap-x-2 text-[11px] text-fg-subtle">
-              <Delta value={kpi.mom} />
+              <span>{locale === "en" ? "YoY " : "同比 "}<Delta value={kpi.yoy} /></span>
+              <span>{locale === "en" ? "MoM " : "环比 "}<Delta value={kpi.mom} /></span>
               {on ? (
                 <span className="truncate">{pick(kpi.hint, locale)}</span>
               ) : null}
@@ -297,29 +298,6 @@ function KpiGrid({
   );
 }
 
-function MiniChart({ kpi, locale }: { kpi: KpiRow; locale: Locale }) {
-  const max = Math.max(...kpi.spark);
-  return (
-    <section className="min-w-0 rounded-xl border border-border bg-surface p-3">
-      <p className="text-[12px] font-medium">
-        {locale === "en"
-          ? `7-day ${pick(kpi.label, locale)}`
-          : `近 7 天${pick(kpi.label, locale)}`}
-      </p>
-      <div className="board-bars mt-3">
-        {kpi.spark.map((n, i) => (
-          <span
-            key={i}
-            style={{
-              height: `${Math.max(8, (n / max) * 100)}%`,
-              animationDelay: `${i * 42}ms`,
-            }}
-          />
-        ))}
-      </div>
-    </section>
-  );
-}
 
 function DimTable({
   selection,

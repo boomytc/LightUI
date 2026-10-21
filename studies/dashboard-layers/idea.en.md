@@ -48,3 +48,7 @@ Those three, in one sentence, are the “Say it this way” card.
 ## The machines
 
 The calls live in DOM-free modules: `layerOf(view, selection)` (kpi / dim / detail), `showsAll(view)` (true for platter), `canExpand(view)` (true for layered).
+
+## Trend window
+
+The platter can show 7, 30, or 90 days for one metric. All windows end at the same snapshot. Endpoint change is distinct from YoY and MoM. KPI and channel rows retain the latest snapshot; they are not period aggregates. The history is illustrative.

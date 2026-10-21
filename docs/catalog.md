@@ -10,6 +10,7 @@ Category chips read `category` on each study. Do not keep a second registry.
 | --- | --- | --- | --- | --- | --- |
 | [align-craft](../studies/align-craft/) | craft | 对齐不是看起来正。先问对齐的是文字基线、画面焦点、数位还是盒子。间距用 gap，贴边用帽高，定位用 inset，金额用等宽，列表用两端扫读。 | active | 2026-08-23 | 2026-10-21 |
 | [assistant-chrome](../studies/assistant-chrome/) | layout | 助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。 | active | 2026-08-23 | 2026-10-21 |
+| [dashboard-layers](../studies/dashboard-layers/) | layout | 看板该从结果往下钻。一盘端上 KPI、图、表，扫得到皮，钻不到因。 | active | 2026-08-23 | 2026-10-21 |
 | [overflow-trace](../studies/overflow-trace/) | craft | 横向溢出先测越界元素。隐藏滚动条不会修好宽度、收缩和断行约束。 | active | 2026-10-21 | 2026-10-21 |
 | [transcript-stream](../studies/transcript-stream/) | layout | 实时多说话人转录流不应粗暴全量重绘；在会前声纹抽屉预先建档，在会中以打字机平滑追加字词、解决后验换名与重叠抢话碰撞，并在会后无缝跃迁至双栏时间轴与结构化纪要。 | active | 2026-09-26 | 2026-09-26 |
 | [table-taxonomy](../studies/table-taxonomy/) | controls | 记录表先问找、看、改落在哪一层。筛在这一列的表头，条件留在上方；表头钉在表自己的滚动区，名称列不能藏；一行只露出查看；有勾选，批量条才换掉搜索。 | active | 2026-09-22 | 2026-09-23 |
@@ -31,7 +32,6 @@ Category chips read `category` on each study. Do not keep a second registry.
 | [chart-taxonomy](../studies/chart-taxonomy/) | craft | 「做个图表」只说了有数。先定要看变化、大小、占比、关系、流程还是能力，再选痕迹。 | active | 2026-08-23 | 2026-09-11 |
 | [confirm-taxonomy](../studies/confirm-taxonomy/) | feedback | 二次确认不是一律弹窗。打断程度与认知摩擦，必须与后果的不可逆性及影响范围严格成正比。 | active | 2026-08-30 | 2026-09-11 |
 | [container-morph](../studies/container-morph/) | craft | 同一入口连续变形。先定改宽、高、圆角还是排版；停在展开态，或沿原路收回——内容先走，容器后收。 | active | 2026-08-25 | 2026-09-11 |
-| [dashboard-layers](../studies/dashboard-layers/) | layout | 看板该从结果往下钻。一盘端上 KPI、图、表，扫得到皮，钻不到因。 | active | 2026-08-23 | 2026-09-11 |
 | [drag-commit](../studies/drag-commit/) | pointer | 同一抓取手势，松手提交的不是同一种结果。先定是新顺序、一次接收、跨组转移，还是无效回弹。 | active | 2026-08-25 | 2026-09-11 |
 | [expand-inflow](../studies/expand-inflow/) | layout | 多出来的内容先问撑开文档流还是盖一层。互斥还是独立，是流里的第二问。不要把抽屉再做一遍。 | active | 2026-08-25 | 2026-09-11 |
 | [fill-taxonomy](../studies/fill-taxonomy/) | controls | 「做个表单」只说了有格子。先定填写前、填写中、提交后这一栏该交代什么：标签常在、必填先标、错在栏下能改、成功带下一步。 | active | 2026-08-26 | 2026-09-11 |
@@ -72,6 +72,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 
 - **对齐** (`align-craft`) — 对齐的是基线、焦点、数位，还是盒子？
 - **助手** (`assistant-chrome`) — 助手住在对话、侧栏、插件、浮层、画布，还是看不见？
+- **层递** (`dashboard-layers`) — 看板从结果往下钻，还是一盘端上来？
 - **溢出定位** (`overflow-trace`) — 是谁越过容器边界，隐藏还是修好约束？
 - **转录流** (`transcript-stream`) — 实时多说话人转录流如何平滑处理增量打字、声纹后验认人与重叠抢话？
 - **记录表** (`table-taxonomy`) — 找、看、改，分别落在记录表的哪一层？
@@ -93,7 +94,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **图表** (`chart-taxonomy`) — 这组数据要看什么？
 - **二次确认** (`confirm-taxonomy`) — 执行破坏性操作时，该用多重的二次确认？
 - **变形** (`container-morph`) — 容器身份连续时，改的是宽、高、圆角，还是排版？停在展开态还是沿路收回？
-- **层递** (`dashboard-layers`) — 看板从结果往下钻，还是一盘端上来？
 - **拖放** (`drag-commit`) — 这一拖提交的是新顺序、一次接收、跨组转移，还是无效回弹？
 - **展开** (`expand-inflow`) — 这块多出来的内容，是撑开文档流，还是盖一层？
 - **填写** (`fill-taxonomy`) — 填写前、填写中、提交后，这一栏该交代什么？
@@ -133,6 +133,8 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `align-craft` contrast `layout-taxonomy` — 对齐不是换骨架
 - `assistant-chrome` contrast `layout-taxonomy` — 助手住哪不是整页骨架
 - `assistant-chrome` contrast `overlay-taxonomy` — 选区工具条不是弹窗
+- `dashboard-layers` contrast `chart-taxonomy` — 下钻不是换图种
+- `dashboard-layers` contrast `layout-taxonomy` — 层递不是仪表盘皮
 - `overflow-trace` after `layout-taxonomy` — 边界修好后再决定页面骨架
 - `overflow-trace` contrast `align-craft` — 越界约束不是基线与焦点对齐
 - `transcript-stream` contrast `assistant-chrome` — 转录流是真实人际多轮对话与声纹时空绑定，不是单体 AI 助手交互形态
@@ -205,8 +207,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `container-morph` contrast `carousel-taxonomy` — 连续变形不是切画面
 - `container-morph` contrast `sidebar-taxonomy` — 不是侧栏变宽占位
 - `container-morph` contrast `path-morph` — 容器按轴连续变形不是矢量路径极坐标形变
-- `dashboard-layers` contrast `chart-taxonomy` — 下钻不是换图种
-- `dashboard-layers` contrast `layout-taxonomy` — 层递不是仪表盘皮
 - `drag-commit` contrast `look-quantize` — 拖放提交不是视线落到格子
 - `drag-commit` contrast `carousel-taxonomy` — 不是转产品的角度
 - `drag-commit` contrast `layout-taxonomy` — 不是拖动分栏分隔条
