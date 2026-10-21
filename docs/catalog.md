@@ -12,6 +12,7 @@ Category chips read `category` on each study. Do not keep a second registry.
 | [assistant-chrome](../studies/assistant-chrome/) | layout | 助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。 | active | 2026-08-23 | 2026-10-21 |
 | [dashboard-layers](../studies/dashboard-layers/) | layout | 看板该从结果往下钻。一盘端上 KPI、图、表，扫得到皮，钻不到因。 | active | 2026-08-23 | 2026-10-21 |
 | [event-timeline](../studies/event-timeline/) | feedback | 时间轴记录何时发生了什么；播放只控制展示，不代表业务进度。日期、节点和最新标记各司其职。 | active | 2026-10-21 | 2026-10-21 |
+| [layout-taxonomy](../studies/layout-taxonomy/) | layout | 「做个页面」只说了有块。先定是单栏、落地、瀑布、全屏、分栏、仪表盘还是模块拼贴。 | active | 2026-08-23 | 2026-10-21 |
 | [notify-taxonomy](../studies/notify-taxonomy/) | feedback | 报一条消息只说了要出声。先定打断到哪一档：瞄一眼、自动消失、还能撤销、留档、还是必须处理。 | active | 2026-08-23 | 2026-10-21 |
 | [overflow-trace](../studies/overflow-trace/) | craft | 横向溢出先测越界元素。隐藏滚动条不会修好宽度、收缩和断行约束。 | active | 2026-10-21 | 2026-10-21 |
 | [tab-taxonomy](../studies/tab-taxonomy/) | controls | 一排标签只说了能切。先定选中态是短线、连上面板、步骤三态、轨道滑块、叠纸，还是缩略图本身。 | active | 2026-08-23 | 2026-10-21 |
@@ -44,7 +45,6 @@ Category chips read `category` on each study. Do not keep a second registry.
 | [hero-taxonomy](../studies/hero-taxonomy/) | layout | 「做个高级首屏」只说了要花哨。先定第一眼回答什么：能解决什么、你是谁、为什么现在、卖什么、发生了什么、能学到什么、能帮我做什么，还是谁在这里。 | active | 2026-08-23 | 2026-09-11 |
 | [intent-cascade](../studies/intent-cascade/) | pointer | 斜着滑进子菜单时，途经的项不该抢走展开。 | active | 2026-08-15 | 2026-09-11 |
 | [inverted-notch](../studies/inverted-notch/) | craft | 内凹角该在父级挖孔。同色补丁缝回去，背景一变缝就露馅。 | active | 2026-08-21 | 2026-09-11 |
-| [layout-taxonomy](../studies/layout-taxonomy/) | layout | 「做个页面」只说了有块。先定是单栏、落地、瀑布、全屏、分栏、仪表盘还是模块拼贴。 | active | 2026-08-23 | 2026-09-11 |
 | [locator-taxonomy](../studies/locator-taxonomy/) | layout | 页面变长时只是滚动更多。真正要先定的是意图：是连续阅读、结构跳转、折叠展开，还是行内检索与筛选。 | active | 2026-08-30 | 2026-09-11 |
 | [login-taxonomy](../studies/login-taxonomy/) | layout | 「做个登录页」只说了有表单。先定是居中卡片、左右分栏、沉浸背景、角色入口，还是分步。 | active | 2026-08-23 | 2026-09-11 |
 | [look-quantize](../studies/look-quantize/) | pointer | 指针偏了，视线落到图集格子。半径里平滑，格子外夹紧，眨眼走另一行。 | active | 2026-08-21 | 2026-09-11 |
@@ -75,6 +75,7 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **助手** (`assistant-chrome`) — 助手住在对话、侧栏、插件、浮层、画布，还是看不见？
 - **层递** (`dashboard-layers`) — 看板从结果往下钻，还是一盘端上来？
 - **事件时间轴** (`event-timeline`) — 这一条线记录历史事件，还是表示任务完成步骤？
+- **布局** (`layout-taxonomy`) — 这一页的骨架是哪一种？
 - **提示** (`notify-taxonomy`) — 这条提示该打断到哪一档？
 - **溢出定位** (`overflow-trace`) — 是谁越过容器边界，隐藏还是修好约束？
 - **页签** (`tab-taxonomy`) — 这一排标签，选中态是哪种模型？
@@ -107,7 +108,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **首屏** (`hero-taxonomy`) — 打开第一眼要回答什么？
 - **多级菜单** (`intent-cascade`) — 斜向穿越该不该换项？
 - **内凹角** (`inverted-notch`) — 内凹角该挖孔还是缝回去？
-- **布局** (`layout-taxonomy`) — 这一页的骨架是哪一种？
 - **定位器** (`locator-taxonomy`) — 长页面里，用户怎么知道自己在哪里、怎么快速到达目标？
 - **登录** (`login-taxonomy`) — 登录是一张卡、分栏、沉浸、角色入口，还是分步？
 - **视线** (`look-quantize`) — 视线该连续转还是落到格子？
@@ -139,6 +139,15 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `dashboard-layers` contrast `layout-taxonomy` — 层递不是仪表盘皮
 - `event-timeline` contrast `progress-taxonomy` — 日期事件不是完成步骤
 - `event-timeline` contrast `page-append` — 播放已有节点不是加载下一页
+- `layout-taxonomy` after `sidebar-taxonomy` — 若靠左那一栏才是问题
+- `layout-taxonomy` after `nav-taxonomy` — 若问的是顶栏去哪
+- `layout-taxonomy` contrast `sidebar-taxonomy` — 整页骨架不是侧栏占位
+- `layout-taxonomy` contrast `nav-taxonomy` — 这一页怎么铺不是顶栏去哪
+- `layout-taxonomy` contrast `carousel-taxonomy` — 瀑布骨架不是切画面
+- `layout-taxonomy` after `hero-taxonomy` — 若问的是不滚动那一眼要确认什么
+- `layout-taxonomy` contrast `hero-taxonomy` — 一屏占满不是第一眼回答什么
+- `layout-taxonomy` contrast `login-taxonomy` — 工作区分栏不是登录左右栏
+- `layout-taxonomy` after `drag-commit` — 模块骨架定好后，决定拖动何时提交新顺序
 - `notify-taxonomy` after `overlay-taxonomy` — 若必须先处理才能继续
 - `notify-taxonomy` contrast `overlay-taxonomy` — 提示不打断当前任务，弹窗才打断
 - `notify-taxonomy` contrast `progress-taxonomy` — 结果提示不是进度
@@ -237,14 +246,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `guide-interrupt` contrast `inverted-notch` — 挖孔遮罩不是卡片内凹角
 - `hero-taxonomy` contrast `layout-taxonomy` — 第一眼回答什么不是整页怎么铺
 - `hero-taxonomy` contrast `login-taxonomy` — 首屏不是登录卡
-- `layout-taxonomy` after `sidebar-taxonomy` — 若靠左那一栏才是问题
-- `layout-taxonomy` after `nav-taxonomy` — 若问的是顶栏去哪
-- `layout-taxonomy` contrast `sidebar-taxonomy` — 整页骨架不是侧栏占位
-- `layout-taxonomy` contrast `nav-taxonomy` — 这一页怎么铺不是顶栏去哪
-- `layout-taxonomy` contrast `carousel-taxonomy` — 瀑布骨架不是切画面
-- `layout-taxonomy` after `hero-taxonomy` — 若问的是不滚动那一眼要确认什么
-- `layout-taxonomy` contrast `hero-taxonomy` — 一屏占满不是第一眼回答什么
-- `layout-taxonomy` contrast `login-taxonomy` — 工作区分栏不是登录左右栏
 - `locator-taxonomy` contrast `nav-taxonomy` — 页面内定位不是整站全局路由
 - `locator-taxonomy` contrast `scroll-chrome` — 阅读进度不是滚动条皮肤
 - `locator-taxonomy` contrast `tab-taxonomy` — 大纲锚点不是页签切换

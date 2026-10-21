@@ -62,3 +62,7 @@
 ## 机器
 
 判断在无 DOM 的模块里：`readingMeasurePx`、`isFullBleed`、`allowsUnevenHeight`、`splitPanes`。分栏拖拽用 `clampSplit`。
+
+## 操作骨架
+
+分栏的拖线与键盘共用同一组宽度边界，左右键微调，Home / End 到两端，双击复位。模块拼贴允许用手柄和方向键换序；拖动只预览目标，松手才提交，取消保留原顺序。模块 id 与内容一起移动，焦点留在同一手柄上。舞台固定顺序和比例。

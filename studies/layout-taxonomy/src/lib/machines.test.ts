@@ -9,6 +9,8 @@ import {
   readingMeasurePx,
   splitPanes,
   splitRatioFromPointer,
+  splitFromKey,
+  moveModule,
   type KindId,
 } from "./machines";
 
@@ -84,4 +86,22 @@ describe("splitRatioFromPointer", () => {
   it("returns the default when the group has no size", () => {
     assert.equal(splitRatioFromPointer(40, 0, 0), 0.32);
   });
+});
+
+describe("interactive skeletons",()=>{
+ it("clamps keyboard resizing to the same limits as pointer resizing",()=>{
+  assert.equal(splitFromKey("ArrowLeft",0.22),0.22);
+  assert.equal(splitFromKey("ArrowRight",0.56),0.56);
+  assert.equal(splitFromKey("Home",0.4),0.22);
+  assert.equal(splitFromKey("End",0.4),0.56);
+  assert.equal(splitFromKey("Tab",0.4),null);
+ });
+ it("moves identities without losing or mutating modules",()=>{
+  const original=["profile","links","feed","note"];
+  assert.deepEqual(moveModule(original,0,2),["links","feed","profile","note"]);
+  assert.deepEqual(original,["profile","links","feed","note"]);
+  assert.equal(moveModule(original,0,-1),original);
+  assert.equal(moveModule(original,-1,2),original);
+  assert.equal(moveModule(original,3,4),original);
+ });
 });

@@ -62,3 +62,7 @@ Those three, in one sentence, are the “Say it this way” card.
 ## The machines
 
 The calls live in DOM-free modules: `readingMeasurePx`, `isFullBleed`, `allowsUnevenHeight`, `splitPanes`. Splitter drag uses `clampSplit`.
+
+## Operate the skeleton
+
+The separator shares bounds across pointer and keyboard input: arrows adjust, Home/End reach the bounds, and double-click resets. Module handles support drag and arrow-key reordering. Dragging previews the destination; release commits and cancellation keeps the order. Identity and content move together, with focus on the same handle. Stages keep fixed order and ratios.

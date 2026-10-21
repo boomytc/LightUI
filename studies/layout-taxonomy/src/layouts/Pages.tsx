@@ -1,3 +1,4 @@
+import { ModularPage } from "./ModularPage";
 import { useRef, useState, type PointerEvent } from "react";
 import {
   DASH_BARS,
@@ -5,13 +6,15 @@ import {
   DASH_ROWS,
   LANDING_FEATURES,
   MASONRY_TILES,
-  MODULAR_CARDS,
   SPLIT_CODE,
   SPLIT_FILES,
 } from "../lib/fixtures";
 import { KINDS, type KindId } from "../lib/kinds";
 import {
   SPLIT_DEFAULT,
+  SPLIT_MIN,
+  SPLIT_MAX,
+  splitFromKey,
   splitRatioFromPointer,
 } from "../lib/machines";
 import { pick, useLocale } from "../lib/site-locale";
@@ -224,23 +227,23 @@ function FullscreenPage() {
 function SplitterPage() {
   const locale = useLocale();
   const groupRef = useRef<HTMLDivElement>(null);
-  const dragging = useRef(false);
   const [ratio, setRatio] = useState(SPLIT_DEFAULT);
   const [active, setActive] = useState("theme");
 
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
-    dragging.current = true;
+    if (event.button !== 0 || !event.isPrimary) return;
+    event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
   function onPointerMove(event: PointerEvent<HTMLDivElement>) {
-    if (!dragging.current || !groupRef.current) return;
+    if (!event.currentTarget.hasPointerCapture(event.pointerId) || !groupRef.current) return;
     const box = groupRef.current.getBoundingClientRect();
     setRatio(splitRatioFromPointer(event.clientX, box.left, box.width));
   }
 
-  function onPointerUp() {
-    dragging.current = false;
+  function onPointerUp(event: PointerEvent<HTMLDivElement>) {
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
   }
 
   return (
@@ -276,8 +279,8 @@ function SplitterPage() {
         className="layout-split-handle"
         role="separator"
         aria-orientation="vertical"
-        aria-valuemin={0}
-        aria-valuemax={100}
+        aria-valuemin={Math.round(SPLIT_MIN * 100)}
+        aria-valuemax={Math.round(SPLIT_MAX * 100)}
         aria-valuenow={Math.round(ratio * 100)}
         aria-label={locale === "en" ? "Resize panes" : "调整分栏"}
         tabIndex={0}
@@ -285,6 +288,12 @@ function SplitterPage() {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
+        onDoubleClick={() => setRatio(SPLIT_DEFAULT)}
+        onKeyDown={(event) => {
+          const next = splitFromKey(event.key, ratio);
+          if (next === null) return;
+          event.preventDefault();event.stopPropagation();setRatio(next);
+        }}
       />
       <div className="layout-split-pane flex-1 bg-surface">
         <p className="border-b border-border px-3 py-2 font-mono text-[11px] text-fg-subtle">
@@ -347,34 +356,6 @@ function DashboardPage() {
           ))}
         </section>
       </div>
-    </div>
-  );
-}
-
-function ModularPage() {
-  const locale = useLocale();
-  return (
-    <div className="layout-fill-page p-4">
-      <p className="shrink-0 text-[11px] tracking-[0.14em] text-fg-subtle uppercase">
-        {locale === "en" ? "Desk" : "个人主页"}
-      </p>
-      <h3 className="mt-1 mb-3 shrink-0 text-[1.15rem] font-semibold tracking-tight">
-        {locale === "en" ? "One idea per card" : "一块一个主意"}
-      </h3>
-      <ul className="layout-modular">
-        {MODULAR_CARDS.map((card) => (
-          <li
-            key={card.id}
-            className="flex h-full min-h-0 min-w-0 flex-col rounded-xl border border-border bg-surface p-3"
-          >
-            <h4 className="text-[13px] font-semibold">{pick(card.title, locale)}</h4>
-            <p className="mt-1 flex-1 text-[12px] leading-relaxed text-fg-muted">
-              {pick(card.body, locale)}
-            </p>
-            <p className="mt-auto pt-3 text-[11px] font-medium text-accent">{pick(card.action, locale)}</p>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

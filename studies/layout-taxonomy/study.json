@@ -57,10 +57,16 @@
       "rel": "contrast",
       "when": "工作区分栏不是登录左右栏",
       "whenEn": "two work panes are not a brand-and-form login split"
+    },
+    {
+      "slug": "drag-commit",
+      "rel": "after",
+      "when": "模块骨架定好后，决定拖动何时提交新顺序",
+      "whenEn": "after choosing modules, decide when a drag commits the new order"
     }
   ],
   "status": "active",
   "created": "2026-08-23",
-  "updated": "2026-09-11",
+  "updated": "2026-10-21",
   "tags": ["layout", "page", "taxonomy"]
 }
