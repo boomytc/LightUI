@@ -11,6 +11,8 @@ Category chips read `category` on each study. Do not keep a second registry.
 | [align-craft](../studies/align-craft/) | craft | 对齐不是看起来正。先问对齐的是文字基线、画面焦点、数位还是盒子。间距用 gap，贴边用帽高，定位用 inset，金额用等宽，列表用两端扫读。 | active | 2026-08-23 | 2026-10-21 |
 | [assistant-chrome](../studies/assistant-chrome/) | layout | 助手不是默认整页聊天。先定它住在对话、侧栏、插件、浮层、画布，还是看不见。 | active | 2026-08-23 | 2026-10-21 |
 | [dashboard-layers](../studies/dashboard-layers/) | layout | 看板该从结果往下钻。一盘端上 KPI、图、表，扫得到皮，钻不到因。 | active | 2026-08-23 | 2026-10-21 |
+| [event-timeline](../studies/event-timeline/) | feedback | 时间轴记录何时发生了什么；播放只控制展示，不代表业务进度。日期、节点和最新标记各司其职。 | active | 2026-10-21 | 2026-10-21 |
+| [notify-taxonomy](../studies/notify-taxonomy/) | feedback | 报一条消息只说了要出声。先定打断到哪一档：瞄一眼、自动消失、还能撤销、留档、还是必须处理。 | active | 2026-08-23 | 2026-10-21 |
 | [overflow-trace](../studies/overflow-trace/) | craft | 横向溢出先测越界元素。隐藏滚动条不会修好宽度、收缩和断行约束。 | active | 2026-10-21 | 2026-10-21 |
 | [transcript-stream](../studies/transcript-stream/) | layout | 实时多说话人转录流不应粗暴全量重绘；在会前声纹抽屉预先建档，在会中以打字机平滑追加字词、解决后验换名与重叠抢话碰撞，并在会后无缝跃迁至双栏时间轴与结构化纪要。 | active | 2026-09-26 | 2026-09-26 |
 | [table-taxonomy](../studies/table-taxonomy/) | controls | 记录表先问找、看、改落在哪一层。筛在这一列的表头，条件留在上方；表头钉在表自己的滚动区，名称列不能藏；一行只露出查看；有勾选，批量条才换掉搜索。 | active | 2026-09-22 | 2026-09-23 |
@@ -46,7 +48,6 @@ Category chips read `category` on each study. Do not keep a second registry.
 | [login-taxonomy](../studies/login-taxonomy/) | layout | 「做个登录页」只说了有表单。先定是居中卡片、左右分栏、沉浸背景、角色入口，还是分步。 | active | 2026-08-23 | 2026-09-11 |
 | [look-quantize](../studies/look-quantize/) | pointer | 指针偏了，视线落到图集格子。半径里平滑，格子外夹紧，眨眼走另一行。 | active | 2026-08-21 | 2026-09-11 |
 | [nav-taxonomy](../studies/nav-taxonomy/) | layout | 一排链接只说了有入口。先定住在哪、怎么开、滚的时候干什么。 | active | 2026-08-15 | 2026-09-11 |
-| [notify-taxonomy](../studies/notify-taxonomy/) | feedback | 报一条消息只说了要出声。先定打断到哪一档：瞄一眼、自动消失、还能撤销、留档、还是必须处理。 | active | 2026-08-23 | 2026-09-11 |
 | [optimistic-rollback](../studies/optimistic-rollback/) | feedback | 点完这一击，界面是等网络回执还是立即改？成功是默认路径，UI 先行响应；若网络失败，根据快照原位回滚并说明原因；不可逆高风险操作禁止乐观更新。 | active | 2026-08-28 | 2026-09-11 |
 | [overlay-taxonomy](../studies/overlay-taxonomy/) | feedback | 浮在页面上只是外观。先定打不打断当前任务，以及是否贴着触发点。 | active | 2026-08-23 | 2026-09-11 |
 | [page-append](../studies/page-append/) | layout | 一批记录先问整页替换还是末尾追加。翻页会丢掉上一页并回到顶部；追加只增加 visibleCount，旧节点不卸。 | active | 2026-08-25 | 2026-09-11 |
@@ -73,6 +74,8 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **对齐** (`align-craft`) — 对齐的是基线、焦点、数位，还是盒子？
 - **助手** (`assistant-chrome`) — 助手住在对话、侧栏、插件、浮层、画布，还是看不见？
 - **层递** (`dashboard-layers`) — 看板从结果往下钻，还是一盘端上来？
+- **事件时间轴** (`event-timeline`) — 这一条线记录历史事件，还是表示任务完成步骤？
+- **提示** (`notify-taxonomy`) — 这条提示该打断到哪一档？
 - **溢出定位** (`overflow-trace`) — 是谁越过容器边界，隐藏还是修好约束？
 - **转录流** (`transcript-stream`) — 实时多说话人转录流如何平滑处理增量打字、声纹后验认人与重叠抢话？
 - **记录表** (`table-taxonomy`) — 找、看、改，分别落在记录表的哪一层？
@@ -108,7 +111,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - **登录** (`login-taxonomy`) — 登录是一张卡、分栏、沉浸、角色入口，还是分步？
 - **视线** (`look-quantize`) — 视线该连续转还是落到格子？
 - **导航栏** (`nav-taxonomy`) — 这块叫导航的东西住在哪、怎么开？
-- **提示** (`notify-taxonomy`) — 这条提示该打断到哪一档？
 - **乐观更新** (`optimistic-rollback`) — 点完这一击，界面是等网络回执还是立即改？
 - **浮层** (`overlay-taxonomy`) — 这块浮层打不打断、贴不贴触发点？
 - **翻页** (`page-append`) — 这一批记录是整页替换，还是末尾追加？
@@ -135,6 +137,12 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `assistant-chrome` contrast `overlay-taxonomy` — 选区工具条不是弹窗
 - `dashboard-layers` contrast `chart-taxonomy` — 下钻不是换图种
 - `dashboard-layers` contrast `layout-taxonomy` — 层递不是仪表盘皮
+- `event-timeline` contrast `progress-taxonomy` — 日期事件不是完成步骤
+- `event-timeline` contrast `page-append` — 播放已有节点不是加载下一页
+- `notify-taxonomy` after `overlay-taxonomy` — 若必须先处理才能继续
+- `notify-taxonomy` contrast `overlay-taxonomy` — 提示不打断当前任务，弹窗才打断
+- `notify-taxonomy` contrast `progress-taxonomy` — 结果提示不是进度
+- `notify-taxonomy` contrast `fill-taxonomy` — 结果 toast 不是提交后的成功页
 - `overflow-trace` after `layout-taxonomy` — 边界修好后再决定页面骨架
 - `overflow-trace` contrast `align-craft` — 越界约束不是基线与焦点对齐
 - `transcript-stream` contrast `assistant-chrome` — 转录流是真实人际多轮对话与声纹时空绑定，不是单体 AI 助手交互形态
@@ -250,10 +258,6 @@ Each study answers one question (`asks`). Edges live on the study as `links`.
 - `nav-taxonomy` contrast `tab-taxonomy` — 顶栏去哪不是页里切面板
 - `nav-taxonomy` contrast `overlay-taxonomy` — 汉堡抽屉不是这一页的内容抽屉
 - `nav-taxonomy` contrast `scroll-chrome` — 章节锚点不是滚动比例
-- `notify-taxonomy` after `overlay-taxonomy` — 若必须先处理才能继续
-- `notify-taxonomy` contrast `overlay-taxonomy` — 提示不打断当前任务，弹窗才打断
-- `notify-taxonomy` contrast `progress-taxonomy` — 结果提示不是进度
-- `notify-taxonomy` contrast `fill-taxonomy` — 结果 toast 不是提交后的成功页
 - `optimistic-rollback` contrast `pending-taxonomy` — 乐观更新不是等骨架占位
 - `optimistic-rollback` contrast `progress-taxonomy` — 乐观更新不是在等待中转圈算进度
 - `optimistic-rollback` contrast `notify-taxonomy` — 乐观状态不是一条消息通知

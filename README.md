@@ -11,7 +11,7 @@
   <a href="https://vitejs.dev"><img src="https://img.shields.io/badge/Vite-8.1-646CFF?logo=vite&logoColor=white&style=flat-square" alt="Vite" /></a>
   <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?logo=tailwindcss&logoColor=white&style=flat-square" alt="Tailwind CSS" /></a>
   <!-- catalog:badge -->
-  <a href="docs/catalog.md"><img src="https://img.shields.io/badge/Studies-55_Active-10B981?style=flat-square" alt="Studies" /></a>
+  <a href="docs/catalog.md"><img src="https://img.shields.io/badge/Studies-56_Active-10B981?style=flat-square" alt="Studies" /></a>
   <!-- /catalog:badge -->
   <a href="Makefile"><img src="https://img.shields.io/badge/Tests-Passing-success?style=flat-square" alt="Tests" /></a>
   <a href="package.json"><img src="https://img.shields.io/badge/Node-%3E%3D20-339933?logo=node.js&logoColor=white&style=flat-square" alt="Node" /></a>
@@ -49,7 +49,7 @@ LightUI 是一个专注于 **「先回答问题，再决定交互机器与外观
 ## 🧩 精选专题与分类学 (Featured Studies)
 
 <!-- catalog:featured -->
-LightUI 目前收录了 **57 个经过深思与实战检验的交互课题**（完整列表见 [docs/catalog.md](docs/catalog.md)）：
+LightUI 目前收录了 **58 个经过深思与实战检验的交互课题**（完整列表见 [docs/catalog.md](docs/catalog.md)）：
 
 下表按每个 `study.json` 的 `category` 与 `summary` 生成。改课题后运行 `make catalog`，不要手改表。
 
@@ -110,6 +110,7 @@ LightUI 目前收录了 **57 个经过深思与实战检验的交互课题**（�
 | **[carousel-taxonomy](studies/carousel-taxonomy/)** 轮播 | 一组画面只说了会换。先定是平移、淡入、木马、叠卡、翻页、手风琴、360 还是视差。 |
 | **[confirm-taxonomy](studies/confirm-taxonomy/)** 二次确认 | 二次确认不是一律弹窗。打断程度与认知摩擦，必须与后果的不可逆性及影响范围严格成正比。 |
 | **[empty-taxonomy](studies/empty-taxonomy/)** 空白 | 空状态不要一律「暂无数据 + 一个按钮」。先判断为什么空：创建给入口，搜索改关键词，筛选改条件，失败可重试并保留原列表，完成给反馈不要再催。 |
+| **[event-timeline](studies/event-timeline/)** 事件时间轴 | 时间轴记录何时发生了什么；播放只控制展示，不代表业务进度。日期、节点和最新标记各司其职。 |
 | **[guide-interrupt](studies/guide-interrupt/)** 引导 | 教学不是弹窗，也不是一条提示。先定何时出现、钉在谁身上、靠什么推进、结束后还挡不挡。 |
 | **[notify-taxonomy](studies/notify-taxonomy/)** 提示 | 报一条消息只说了要出声。先定打断到哪一档：瞄一眼、自动消失、还能撤销、留档、还是必须处理。 |
 | **[optimistic-rollback](studies/optimistic-rollback/)** 乐观更新 | 点完这一击，界面是等网络回执还是立即改？成功是默认路径，UI 先行响应；若网络失败，根据快照原位回滚并说明原因；不可逆高风险操作禁止乐观更新。 |
@@ -183,7 +184,7 @@ LightUI/
 │   ├── study-contract.md     #   Study 契约接口定义
 │   └── writing.md            #   设计笔记写作约定
 ├── products/lab/             # 🔬 Lab 综合站点（首页 / 作品列表 / 知识图谱 / 思考笔记）
-├── studies/                  # 🧪 57 个独立的交互研究课题目录
+├── studies/                  # 🧪 58 个独立的交互研究课题目录
 │   ├── intent-cascade/
 │   ├── path-morph/
 │   ├── confirm-taxonomy/

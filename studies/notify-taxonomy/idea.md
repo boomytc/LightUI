@@ -65,3 +65,5 @@
 ## 机器
 
 档位在无 DOM 的模块里：`weight`、`autoDismissMs`、`persists`、`needsAction`、`hideBadge`、`badgeLabel`、`interruptsTask`。七种叶子都不打断任务——包括警告。
+
+数字徽标表达数量，0 时卸掉；「新」这样的文字徽标表达状态，不参与未读计数，不能只靠颜色区分含义。

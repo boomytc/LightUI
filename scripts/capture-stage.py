@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LAB = "http://127.0.0.1:5173"
 
 SHOTS: dict[str, list[tuple[str, str, str]]] = {
+    "event-timeline": [("history", state, f"{state}.png") for state in ("start", "mid", "all")],
     "overflow-trace": [("all", state, f"{state}.png") for state in ("bug", "hide", "fix")],
     "dropdown-taxonomy": [
         *(

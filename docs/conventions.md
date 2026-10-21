@@ -157,8 +157,9 @@ Agent-facing components, the registry, and the versioned contract live in
   `5232` transcript-stream,
   `5233` render-route,
   `5234` sandbox-bridge,
-  `5235` overflow-trace.
-  Next free: `5236`.
+  `5235` overflow-trace,
+  `5236` event-timeline.
+  Next free: `5237`.
 - Use **relative imports** inside the study. The lab compiles `StudyView`
   and `StageView` from outside the study root.
 - Import visual tokens from `design/tokens.css`. Do not fork the palette.

@@ -1,0 +1,33 @@
+{
+  "slug": "event-timeline",
+  "category": "feedback",
+  "title": "事件时间轴",
+  "titleEn": "Event timeline",
+  "eyebrow": "Date · Reveal",
+  "summary": "时间轴记录何时发生了什么；播放只控制展示，不代表业务进度。日期、节点和最新标记各司其职。",
+  "summaryEn": "A timeline records what happened and when. Playback reveals entries without changing business progress.",
+  "asks": "这一条线记录历史事件，还是表示任务完成步骤？",
+  "asksEn": "Does this line record events or track task completion?",
+  "links": [
+    {
+      "slug": "progress-taxonomy",
+      "rel": "contrast",
+      "when": "日期事件不是完成步骤",
+      "whenEn": "dated events are not completion steps"
+    },
+    {
+      "slug": "page-append",
+      "rel": "contrast",
+      "when": "播放已有节点不是加载下一页",
+      "whenEn": "revealing known entries is not fetching another page"
+    }
+  ],
+  "status": "active",
+  "created": "2026-10-21",
+  "updated": "2026-10-21",
+  "tags": [
+    "timeline",
+    "chronology",
+    "reveal"
+  ]
+}

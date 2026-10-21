@@ -58,6 +58,10 @@ export function BadgeDemo({ state }: { state?: string } = {}) {
             hint={locale === "en" ? "Due today" : "今天到期"}
           />
         </div>
+        <p className="mt-5 flex items-center gap-2 text-[12px]" data-status-badge>
+          <span className="rounded-full bg-accent-soft px-2 py-0.5 text-accent">{locale === "en" ? "New" : "新"}</span>
+          {locale === "en" ? "Project created · a status, not an unread count" : "项目已创建 · 这是状态，不是未读数量"}
+        </p>
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <Action onClick={bump}>{locale === "en" ? "Add unread" : "增加未读"}</Action>
         </div>

@@ -65,3 +65,5 @@ Those three, in one sentence, are the “Say it this way” card. Copy it and it
 ## The machines
 
 The rungs live in DOM-free modules: `weight`, `autoDismissMs`, `persists`, `needsAction`, `hideBadge`, `badgeLabel`, `interruptsTask`. None of the seven leaves interrupt the task — including alert.
+
+Numeric badges express quantity and unload at zero. A text badge such as New expresses status, independent of unread counts; color alone cannot carry the distinction.
