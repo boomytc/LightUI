@@ -9,7 +9,6 @@ This study examines list row swipe actions, focusing on axis disambiguation, lat
 ## Local verification
 
 ```bash
-npm test             # run pure machines tests
 npm run typecheck    # verify typescript
 npm run dev          # standalone playground at 127.0.0.1:5218
 ```

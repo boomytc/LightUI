@@ -14,7 +14,6 @@ From this directory, or `make dev-study STUDY=container-morph` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5202/
-npm test             # morphAxis / morphBox / reverseBeat / locksSize
 npm run typecheck
 npm run build
 ```

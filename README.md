@@ -13,7 +13,6 @@
   <!-- catalog:badge -->
   <a href="docs/catalog.md"><img src="https://img.shields.io/badge/Studies-56_Active-10B981?style=flat-square" alt="Studies" /></a>
   <!-- /catalog:badge -->
-  <a href="Makefile"><img src="https://img.shields.io/badge/Tests-Passing-success?style=flat-square" alt="Tests" /></a>
   <a href="package.json"><img src="https://img.shields.io/badge/Node-%3E%3D20-339933?logo=node.js&logoColor=white&style=flat-square" alt="Node" /></a>
 </p>
 
@@ -165,7 +164,7 @@ studies/<slug>/
 ├── package.json          # 📦 独立的 npm workspace package (@lightui/<slug>)
 └── src/
     ├── StudyView.tsx     # 🎛️ 交互式教学操场（Playground）：包含参数调节器、对比视图与说明
-    ├── StageView.tsx     # 🎬 零干扰纯净舞台（Fixture）：供测试、快照录制与嵌入使用
+    ├── StageView.tsx     # 🎬 零干扰纯净舞台（Fixture）：供演示录制、静帧导出与嵌入使用
     └── main.tsx          # 🚀 独立运行的 Vite 启动入口
 ```
 
@@ -244,14 +243,15 @@ make dev-study STUDY=path-morph
 | :--- | :--- |
 | `make dev` | 启动 Lab 综合呈现站点 (`http://127.0.0.1:5173`) |
 | `make dev-study STUDY=<slug>` | 启动指定 Study 的独立 Playground |
-| `make test` | 先做目录一致性检查，再跑全部 workspace 测试 |
-| `make typecheck` | 先做目录一致性检查，再做 TypeScript 严格类型检查 |
+| `make typecheck` | 检查目录一致性、TypeScript 类型、模块边界与 GenUI 契约 |
 | `make catalog` | 从各 `study.json` 生成 `docs/catalog.md` 与 README 标记块 |
 | `make catalog-check` | 目录或 README 标记块与 `study.json` 不一致时失败 |
-| `make build` | 构建 Lab 与全部 Study 产物 |
+| `make build` | 检查目录、GenUI 边界与契约，构建 Lab 与全部 Study 产物 |
 | `make preview` | 本地预览 Lab 构建产物 |
 | `make stills` | 从各 Study Stage 导出高保真静帧截图 |
 | `make clean` | 清理各目录下的构建缓存与临时文件 |
+
+开发采用 confident-development-conventions。先用类型、状态归属和模块边界保证逻辑闭环，再按改动选择必要的类型检查、构建或实际交互验收。临时验证文件放在系统临时目录，验收后清除；演示数据、模型录制与静帧工具随产品保留。
 
 ---
 
@@ -266,9 +266,8 @@ make dev-study STUDY=path-morph
 4. **同步与验证**：
    ```bash
    make catalog        # 写入 docs/catalog.md 与 README 标记块
-   make catalog-check  # 产物与 study.json 不一致则失败
-   make test           # 含 catalog-check，并跑全部测试
-   make typecheck      # 含 catalog-check，并做类型检查
+   make typecheck      # 含 catalog-check、模块边界与 GenUI 契约检查
+   make build          # 构建 Lab 与 Study
    make dev            # 在 Lab 中验证卡片与交互
    ```
 

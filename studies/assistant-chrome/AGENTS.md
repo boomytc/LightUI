@@ -13,7 +13,6 @@ From this directory, or `make dev-study STUDY=assistant-chrome` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5195/
-npm test             # occupiesPage / needsSelection / chromeVisible / shouldSendOnEnter
 npm run typecheck
 npm run build
 ```

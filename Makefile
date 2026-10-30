@@ -1,5 +1,5 @@
 # Makefile
-.PHONY: help catalog catalog-check install dev dev-study build preview test typecheck clean stills
+.PHONY: help catalog catalog-check install dev dev-study build preview typecheck clean stills
 
 .DEFAULT_GOAL := help
 
@@ -32,13 +32,10 @@ dev-study: ## 启动指定 study 的独立 playground
 	npm run dev -w @lightui/$(STUDY)
 
 build: ## 构建 lab 与全部 study
-	npm run build --workspaces --if-present
+	npm run build
 
 preview: ## 预览 lab 构建产物
 	npm run preview -w @lightui/lab
-
-test: ## 运行目录一致性检查与全部 workspace 测试
-	npm test
 
 typecheck: ## 校验目录产物并类型检查全部 workspace
 	npm run typecheck

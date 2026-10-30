@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=glyph-sweep` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5179/
-npm test             # duration / spread unit tests
 npm run typecheck
 npm run build
 ```

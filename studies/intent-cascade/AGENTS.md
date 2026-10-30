@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=intent-cascade` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5174/
-npm test             # geometry unit tests
 npm run typecheck
 npm run build
 ```

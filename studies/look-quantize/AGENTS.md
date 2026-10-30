@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=look-quantize` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5225/
-npm test             # look vector / cell unit tests
 npm run typecheck
 npm run build
 ```

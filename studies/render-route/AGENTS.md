@@ -13,7 +13,6 @@ From this directory, or `make dev-study STUDY=render-route` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5233/
-npm test             # routeTurn / routeBuffer / live v0 catalog
 npm run typecheck
 npm run build
 npm run accept       # optional; DEEPSEEK_API_KEY, then rewrites the offline recording
@@ -32,7 +31,7 @@ The lab mounts `StudyView` at `/s/render-route`.
 - `src/StageView.tsx` — one locked fixture, no lab chrome
 - `src/lib/stage-query.ts` — `kind=compare|error`, `state=text|native|iframe|unknown|props|partial`
 - `src/lib/deepseek-completion.ts` — request name and response `model` from a completion body
-- `scripts/accept-deepseek.ts` — writes the recording; not part of `npm test`
+- `scripts/accept-deepseek.ts` — explicitly invoked model-recording command
 
 ## Rules
 

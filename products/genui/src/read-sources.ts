@@ -11,7 +11,6 @@ export function readWorkspaceSources(repoRoot: string): SourceFile[] {
   const files: SourceFile[] = [];
   for (const root of ROOTS) {
     const absolute = path.join(repoRoot, root);
-    if (!fs.existsSync(absolute)) continue;
     walk(absolute, repoRoot, files);
   }
   files.sort((a, b) => a.path.localeCompare(b.path));

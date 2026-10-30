@@ -13,7 +13,6 @@ From this directory, or `make dev-study STUDY=transcript-stream` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5232/
-npm test             # processMeetingEvent / calcSessionMetrics / filterTurns / getSpeakerTheme
 npm run typecheck
 npm run build
 ```

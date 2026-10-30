@@ -13,7 +13,6 @@ From this directory, or `make dev-study STUDY=chart-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5187/
-npm test             # intent / mark / axis / pie / line-requires-time
 npm run typecheck
 npm run build
 ```

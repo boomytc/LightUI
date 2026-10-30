@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=overlay-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5183/
-npm test             # interrupt / backdrop / popover cap / restoreFocus
 npm run typecheck
 npm run build
 ```

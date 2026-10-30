@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=dropdown-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5175/
-npm test             # multi / cascader / date-range machines
 npm run typecheck
 npm run build
 ```

@@ -38,6 +38,7 @@ JSON files.
   optional property into a required one is a new directory (`contract/v1/`).
   The same applies to a route error code, the sandbox field order, a callback
   name, or a numeric limit. Leave the published version's files as they were.
-- `src/registry.ts` is the implementation copy of the current version. `npm test`
+- `src/registry.ts` is the implementation copy of the current version. `npm run check:contract`
   fails when that registry and `contract/<PROTOCOL_VERSION>/components.json`
-  disagree. Do not satisfy the test by importing the JSON into the registry.
+  disagree. Typecheck and build include this check. Do not satisfy it by
+  importing the JSON into the registry.

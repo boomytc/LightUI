@@ -7,7 +7,6 @@
 - `idea.md` / `idea.en.md` — Core design rationale and interaction models
 - `study.json` — Catalog entry and graph relations
 - `src/lib/machines.ts` — Pure mathematical algorithms and damping formulas
-- `src/lib/machines.test.ts` — Unit tests (`tsx --test`)
 - `src/StudyView.tsx` — Educational interactive playground
 - `src/StageView.tsx` — Clean fixture view (`?stage=1`)
 

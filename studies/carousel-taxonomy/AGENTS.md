@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=carousel-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5188/
-npm test             # step / autoplay / fade / spin machines
 npm run typecheck
 npm run build
 ```

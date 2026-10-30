@@ -6,7 +6,6 @@ One generated turn, shown three ways: plain text, a native component from the ge
 
 ```bash
 npm run dev -w @lightui/render-route
-npm test -w @lightui/render-route
 npm run typecheck -w @lightui/render-route
 ```
 

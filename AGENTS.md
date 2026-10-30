@@ -54,12 +54,12 @@ primitive that is not a generative-UI component, extract it then.
 Dependency direction is checked, not only documented. `products/genui` must
 not import `studies/*` or `products/lab`. Studies and lab may import the
 public entry `@lightui/genui` (`products/genui/src/index.ts`) and nothing
-deeper. `npm test` and `npm run typecheck` fail on a violation.
+deeper. `npm run typecheck` and `npm run build` fail on a violation.
 
 The contract external agents read is `products/genui/contract/` (current
 version `v0`). LightAgent uses that directory as the only source. Do not
-derive or export the contract from the TypeScript implementation. A test
-fails when the registry and `contract/v0/components.json` disagree.
+derive or export the contract from the TypeScript implementation. The GenUI
+contract check fails when the implementation and contract files disagree.
 
 ## Study contract
 
@@ -105,13 +105,24 @@ Do not put them in `.grok/skills/`.
 
 ## Validation
 
+Follow `confident-development-conventions`: put correctness in implementation
+invariants and use the smallest acceptance check that answers the current
+question. Temporary verification assets belong in the system temporary
+directory and are removed after use. Demo fixtures, model recordings, and
+stage capture tools are product assets.
+
 ```bash
 make install
 make catalog
-make test
 make typecheck
+make build
 make dev
 ```
+
+`make typecheck` includes catalog, dependency-boundary, and GenUI contract
+checks. Run the relevant workspace commands for a local change; check the
+affected interaction in the lab when behavior changes. Reuse passing results
+until a new change or failure requires another check.
 
 Lab: `http://127.0.0.1:5173/`.
 Standalone study: `make dev-study STUDY=<slug>`. Ports: see

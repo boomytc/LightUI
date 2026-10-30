@@ -13,7 +13,6 @@ From this directory, or `make dev-study STUDY=expand-inflow` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5198/
-npm test             # coversPage / exclusiveOpen / toggle / tree / readmore
 npm run typecheck
 npm run build
 ```

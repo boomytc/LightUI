@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=button-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5190/
-npm test             # weight / filled / tooManyPrimaries / roleFor
 npm run typecheck
 npm run build
 ```

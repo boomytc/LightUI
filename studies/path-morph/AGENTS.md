@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=path-morph` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5214/
-npm test             # invariants: Procrustes, polar interpolation, corners, surjective matching
 npm run typecheck
 npm run build
 ```

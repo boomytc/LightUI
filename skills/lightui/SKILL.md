@@ -36,12 +36,13 @@ only in `products/genui/`. Do not start a component library anywhere else.
 ```bash
 make install
 make catalog
-make test
 make typecheck
+make build
 make dev                 # lab at http://127.0.0.1:5173/
 make dev-study STUDY=<slug>
 ```
 
 After adding or renaming a study, set `category` on `study.json` and run
-`make catalog` in the same change. `make test` and `make typecheck` run
-`make catalog-check`.
+`make catalog` in the same change. `make typecheck` and `make build` include
+catalog, dependency-boundary, and GenUI contract checks. Follow the root
+`AGENTS.md` validation policy and choose checks for the affected scope.

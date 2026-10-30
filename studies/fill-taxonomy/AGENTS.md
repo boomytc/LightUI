@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=fill-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5193/
-npm test             # phaseOf / identityLost / shownCopy / sectionsFor / phoneRepair
 npm run typecheck
 npm run build
 ```

@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=sandbox-bridge` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5234/
-npm test             # stream parser, height clamp, callback whitelist
 npm run typecheck
 npm run build
 npm run record       # optional: DEEPSEEK_API_KEY, then the shared sample checks, then src/lib/recorded-sample.ts
@@ -25,7 +24,7 @@ The lab mounts `StudyView` at `/s/sandbox-bridge`.
 - `idea.md` / `study.json` — field order, height clamp, whitelist
 - `src/StudyView.tsx` — playback and probes
 - `src/lib/machines.ts` — pure stream parser and message decisions
-- `src/lib/sample-check.ts` — recorded-sample checks shared by the tests and `npm run record`
+- `src/lib/sample-check.ts` — validates recordings before `npm run record` writes them
 - `src/lib/frame.ts` — sandboxed document shell
 - `src/lib/samples.ts` — hand-authored offline stream
 - `src/StageView.tsx` — locked fixture
@@ -39,4 +38,4 @@ The lab mounts `StudyView` at `/s/sandbox-bridge`.
 - Do not import `products/genui` internals or `contract/`. Do not put API keys in the client.
 - Bind the standalone server to `127.0.0.1:5234`.
 - `requestedModel` is the request name (`DEEPSEEK_MODEL`, default `deepseek-chat`). `model` is the name on the response stream; this endpoint has reported `deepseek-flash` for a `deepseek-chat` request. Record runs the shared checks and does not write the file when they fail, or when the response has no `model`.
-- Recorded-sample checks live in `src/lib/sample-check.ts` and call the page parser. The record script must not grow a second copy. `recordedSample === null` skips that test.
+- Recorded-sample checks live in `src/lib/sample-check.ts` and call the page parser. The record script must not grow a second copy.

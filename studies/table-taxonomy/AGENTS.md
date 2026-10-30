@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=table-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5231/
-npm test             # rowMatches / cycleSort / chips / columnOn / selectionMark / reduceDesk
 npm run typecheck
 npm run build
 ```

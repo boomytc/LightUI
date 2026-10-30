@@ -8,9 +8,6 @@ Isolated study and interactive playground for Lucene BM25 scoring, term saturati
 # Standalone dev server (http://127.0.0.1:5195/)
 npm run dev
 
-# Run unit tests
-npm test
-
 # Typecheck
 npm run typecheck
 ```

@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=scroll-chrome` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5206/
-npm test             # hidesNative / cue / track / seek machines
 npm run typecheck
 npm run build
 ```

@@ -14,11 +14,11 @@ import { registry, Text } from "@lightui/genui";
 
 它指向 `src/index.ts`。`package.json` 的 `exports` 只暴露这一条。不要引用 `src/components/*`、`src/registry.ts` 或 `contract/*`。
 
-`products/genui` 不引用 `studies/*` 或 `products/lab`。study 和 lab 也不能钻进本包的内部路径。`npm test` 与 `npm run typecheck` 会检查这三条方向，违规即失败。
+`products/genui` 不引用 `studies/*` 或 `products/lab`。study 和 lab 也不能钻进本包的内部路径。`npm run typecheck` 与 `npm run build` 会检查这三条方向，违规即失败。
 
 ## 契约
 
-`contract/v0/` 是外部 agent（LightAgent）读取的契约，协议版本 **v0**。不要从实现里生成这些 JSON。`components.json` 对照 `src/registry.ts`；`render-route.json` 与 `sandbox.json` 对照 `src/render-route.ts`、`src/sandbox.ts`。测试不一致即失败。说明见 `docs/protocol-v0.md`。
+`contract/v0/` 是外部 agent 读取的契约，协议版本 **v0**。不要从实现里生成这些 JSON。`components.json` 对照 `src/registry.ts`；`render-route.json` 与 `sandbox.json` 对照 `src/render-route.ts`、`src/sandbox.ts`。`check:contract` 检查这三份文件，一致性检查随类型检查和构建运行。说明见 `docs/protocol-v0.md`。
 
 版本规则见 `contract/README.md`。
 
@@ -32,9 +32,8 @@ import { registry, Text } from "@lightui/genui";
 
 ```bash
 npm install
-npm test
 npm run typecheck
 npm run build
 ```
 
-只跑本包：`npm test -w @lightui/genui`。
+只检查本包：`npm run typecheck -w @lightui/genui`。只检查契约：`npm run check:contract -w @lightui/genui`。

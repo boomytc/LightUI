@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=align-craft` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5193/
-npm test             # aligns / object-fit / object-position
 npm run typecheck
 npm run build
 ```

@@ -8,7 +8,6 @@
 
 ```bash
 npm run dev -w @lightui/sandbox-bridge
-npm test -w @lightui/sandbox-bridge
 npm run typecheck -w @lightui/sandbox-bridge
 ```
 
@@ -29,5 +28,5 @@ Lab: `/s/sandbox-bridge`.
 真跑顺序：
 
 1. 在有密钥的机器上运行 `npm run record -w @lightui/sandbox-bridge`。脚本自己做逐项校验，并打印每一项是通过还是失败：六个字段是否按序到达，每个 `*Complete` 是否在该字段内容结束时才置位、`generating` 是否最后落下，`jsFunctions` 是否在 `jsFunctionsComplete` 之前不注入，`jsExpressions` 是否只执行已经闭合的条目（未闭合的那一条在字段完成前不执行），`initialHeight` 是否钳在 50–4000，样本里的 `sendPrompt` / `openLink` 是否放行（文本去掉首尾空白后长度 1–4000，链接只允许 https，带未知字段的消息拒绝），以及把样本改成 http 链接或加进未知字段后是否被拒。任一项失败，或者响应流里没有 `model`，进程以非零状态退出，并且不写 `src/lib/recorded-sample.ts`。
-2. 在仓库根目录运行 `npm test`。`recordedSample` 不为 null 时，同一组校验会把样本 `source` 切成小块，喂进页面用的解析和状态机；为 null 时这组测试跳过。
+2. 在 Lab 的 `/s/sandbox-bridge` 回放录制样本，检查预览、高度与回调显示。未录制时页面使用手写离线样例。
 3. 把生成的 `studies/sandbox-bridge/src/lib/recorded-sample.ts` 作为普通提交推到当前分支。不要改写历史，不要强推。

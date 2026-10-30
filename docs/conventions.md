@@ -120,8 +120,8 @@ Agent-facing components, the registry, and the versioned contract live in
 
 - `products/genui` does not import `studies/*` or `products/lab`.
 - Studies and the lab import it only through `@lightui/genui`
-  (`src/index.ts`). Deep paths are rejected by `npm test` and
-  `npm run typecheck`.
+  (`src/index.ts`). Deep paths are rejected by `npm run typecheck` and
+  `npm run build`.
 - External agents, including LightAgent, read `products/genui/contract/`
   (current version `v0`). That directory is the contract. Do not generate it
   from the implementation. Route errors and the sandbox activity are
@@ -185,8 +185,8 @@ Then:
 
 ```bash
 make catalog
-make test          # includes make catalog-check
 make typecheck     # includes catalog-check
+make build
 make dev
 ```
 

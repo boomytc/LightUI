@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=control-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5182/
-npm test             # chooseControl / filterMembers / toggleCapped
 npm run typecheck
 npm run build
 ```

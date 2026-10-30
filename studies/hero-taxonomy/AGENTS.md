@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=hero-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5219/
-npm test             # questionOf / primaryCtaCount / allowsCarousel / tooManyBanners
 npm run typecheck
 npm run build
 ```

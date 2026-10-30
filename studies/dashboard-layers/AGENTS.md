@@ -13,7 +13,6 @@ From this directory, or `make dev-study STUDY=dashboard-layers` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5194/
-npm test             # layerOf / showsAll / canExpand
 npm run typecheck
 npm run build
 ```

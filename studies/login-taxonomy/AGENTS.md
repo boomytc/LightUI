@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=login-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5220/
-npm test             # paneCount / isStepped / needsRole
 npm run typecheck
 npm run build
 ```

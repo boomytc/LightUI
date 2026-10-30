@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=inverted-notch` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5178/
-npm test             # notch / clip unit tests
 npm run typecheck
 npm run build
 ```

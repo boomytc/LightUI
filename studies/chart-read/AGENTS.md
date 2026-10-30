@@ -13,7 +13,6 @@ From this directory, or `make dev-study STUDY=chart-read` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5205/
-npm test             # gestureClass / nearestIndex / brush / stats / legend / zoom / drill
 npm run typecheck
 npm run build
 ```

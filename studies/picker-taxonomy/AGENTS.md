@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=picker-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5230/
-npm test             # choosePicker / snapRuler / applyRangeThumb / stepQty / cascadeSelect / pickDate
 npm run typecheck
 npm run build
 ```

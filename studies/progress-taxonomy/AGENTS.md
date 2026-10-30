@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=progress-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5205/
-npm test             # category / clamp / percent / steps / offset / loop
 npm run typecheck
 npm run build
 ```

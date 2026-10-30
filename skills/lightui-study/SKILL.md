@@ -49,7 +49,9 @@ Do not invent a second copy of these rules. Follow the files:
 6. Do not add the study to a catalog array. Discovery is `import.meta.glob`.
    Set `category` on `study.json`. Do update the after-add files listed in
    `docs/conventions.md` (port, `scripts/capture-stage.py` `SHOTS`).
-7. Run `make catalog`, then `make test` and `make typecheck`.
+7. Run `make catalog`. For a new study or workspace change, run
+   `make typecheck` and `make build` to check lab integration. For a local
+   change, use the affected workspace's typecheck or build as needed.
 8. Open `/studies` and `/s/<slug>`. Exercise the interaction, not just a
    screenshot. Check the 理念 tab renders `idea.md`. Confirm the category
    chip. If the source was a sandbox, move
@@ -78,7 +80,7 @@ it as the study.
    (`package.json`, `vite.config.ts`, `tsconfig.json`, `index.html`,
    `src/main.tsx`, `src/App.tsx`, `src/lib/stage-query.ts`). Bind the
    **Next free** port from `docs/conventions.md`. Rewrite the core into
-   `src/lib/machines.ts` (pure, tested) and the playground. Relative
+   `src/lib/machines.ts` (pure, DOM-free) and the playground. Relative
    imports. Tokens from `design/tokens.css`. `StageView` locks one
    state, sets `data-stage="fixture"`, and aliases `kind` / `state`
    query params (`scripts/capture-stage.py` always sends those).

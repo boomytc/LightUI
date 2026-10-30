@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=nav-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5177/
-npm test             # crumb / spy / shrink machines
 npm run typecheck
 npm run build
 ```

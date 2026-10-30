@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=tab-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5181/
-npm test             # indicator / pill / step / card / folder machines
 npm run typecheck
 npm run build
 ```

@@ -13,7 +13,6 @@ From this directory, or `make dev-study STUDY=drag-commit` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5203/
-npm test             # commitKind / insertIndexY / dropzoneHit / moveItem / transfer / snapback / threshold / edge scroll
 npm run typecheck
 npm run build
 ```

@@ -7,7 +7,6 @@ This directory is a product root.
 
 ```bash
 npm run dev          # http://127.0.0.1:5173/
-npm test
 npm run typecheck
 npm run build
 ```

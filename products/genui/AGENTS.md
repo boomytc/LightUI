@@ -7,12 +7,11 @@ no component kit, no second theme.
 ## Commands
 
 ```bash
-npm test
 npm run typecheck
 npm run build
 ```
 
-From the workspace root these run as part of `make test` and `make typecheck`.
+From the workspace root these run as part of `make typecheck` and `make build`.
 
 ## Public entry
 
@@ -21,7 +20,7 @@ Other packages may import `@lightui/genui`, which resolves to `src/index.ts`.
 
 Do not import `src/components/*`, `src/registry.ts`, `contract/*`, or any
 `@lightui/genui/...` subpath. Studies and `products/lab` follow the same rule.
-`npm test` and `npm run typecheck` fail when a scanned file breaks it.
+`npm run typecheck` and `npm run build` fail when a scanned file breaks it.
 
 This package does not import `studies/*` or `products/lab`.
 
@@ -36,9 +35,9 @@ This package does not import `studies/*` or `products/lab`.
 - `sandbox.json` — sandbox activity (field order, callbacks, height, trust).
   Implementation: `src/sandbox.ts`.
 
-None of those TypeScript files import the JSON. `src/contract.test.ts` and
-`src/protocol.test.ts` fail on drift. The human statement is
-`docs/protocol-v0.md`.
+None of those TypeScript files import the JSON. `npm run check:contract`
+compares the files with the registry and exported protocol declarations.
+Typecheck and build both run it. The human statement is `docs/protocol-v0.md`.
 
 ## Styles
 

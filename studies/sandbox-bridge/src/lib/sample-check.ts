@@ -54,7 +54,7 @@ type Draft = {
 
 /**
  * Checks a recorded model source with the page parser and the page's call/height decisions.
- * The record script and the recorded-sample tests both call this. Neither reimplements it.
+ * The record script calls this before writing the sample.
  */
 export function checkRecordedSource(source: string): SampleCheck[] {
   const replayed = replay(source);

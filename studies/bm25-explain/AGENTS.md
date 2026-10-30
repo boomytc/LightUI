@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=bm25-explain` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5195/
-npm test             # algorithm, tokenizer, and scoring unit tests
 npm run typecheck
 npm run build
 ```
@@ -33,7 +32,6 @@ The lab mounts `StudyView` at `/s/bm25-explain`.
   - `hybrid.ts` — RRF & normalized weighted fusion
   - `explain.ts` — formulas, insight cards, and explanation helpers
   - `engine.ts` — unified `search()` entry
-  - `engine.test.ts` — unit tests
 - `src/components/` — UI (CompareView, ScaleCompare, ScoreView, ScoreLedger, PipelineView, SaturationChart, DocPanel, QueryDock, FormulaSheet, HitList)
 - `src/bm25/bm25.css` — scoped study theme tokens (@theme for bm25/vector), slider styling, and animations
 

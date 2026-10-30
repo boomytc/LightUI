@@ -9,7 +9,6 @@ This study examines off-track slingshot throws on a 1-D value rail: a 14px thres
 ## Local verification
 
 ```bash
-npm test             # run pure machines tests
 npm run typecheck    # verify typescript
 npm run dev          # standalone playground at 127.0.0.1:5228
 ```

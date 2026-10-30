@@ -6,5 +6,5 @@ Read the repo-level `AGENTS.md` and `docs/study-contract.md` first.
 - Export `StudyView` from `src/StudyView.tsx` (the teaching playground).
 - Export `StageView` from `src/StageView.tsx` (the locked fixture).
 - Use relative imports only within `src/` (`./lib/...`).
-- Run `make test` to verify the state machine tests.
+- Run `npm run typecheck` from this study root.
 - Standalone port: `5216`.

@@ -13,7 +13,6 @@ From this directory, or `make dev-study STUDY=guide-interrupt` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5204/
-npm test             # advance / block / persist / skip / hotspot / hint / tour / cutout
 npm run typecheck
 npm run build
 ```

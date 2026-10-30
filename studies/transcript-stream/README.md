@@ -16,9 +16,6 @@ npm run dev -w @lightui/transcript-stream
 
 # Typecheck
 npm run typecheck -w @lightui/transcript-stream
-
-# Tests
-npm run test -w @lightui/transcript-stream
 ```
 
 Binds to `http://127.0.0.1:5232`.

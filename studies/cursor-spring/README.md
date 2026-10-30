@@ -7,7 +7,6 @@
 - `idea.md` — Core design rationale, dynamics equations, and failure modes of naive alternatives
 - `study.json` — Catalog entry and graph relations
 - `src/lib/machines.ts` — Pure spring physics, damping ratio formulas, and trail math
-- `src/lib/machines.test.ts` — Unit tests (`tsx --test`)
 - `src/StudyView.tsx` — Educational interactive comparative playground
 - `src/StageView.tsx` — Clean fixture view (`?stage=1`)
 

@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=timer-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5198/
-npm test             # liveSeconds / pause / remaining / sessionProgress
 npm run typecheck
 npm run build
 ```

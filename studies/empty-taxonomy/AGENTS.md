@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=empty-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5229/
-npm test             # emptyCause / emptyAction / showsPrimaryCta / keepsExistingList
 npm run typecheck
 npm run build
 ```

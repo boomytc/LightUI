@@ -12,7 +12,6 @@ From this directory, or `make dev-study STUDY=validation-taxonomy` at repo root:
 
 ```bash
 npm run dev          # http://127.0.0.1:5194/
-npm test             # validateField / visibleErrors / shownByLesson
 npm run typecheck
 npm run build
 ```

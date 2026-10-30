@@ -9,7 +9,6 @@ This study examines per-glyph secret reveal under a directional cone: angular co
 ## Local verification
 
 ```bash
-npm test             # run pure machines tests
 npm run typecheck    # verify typescript
 npm run dev          # standalone playground at 127.0.0.1:5227
 ```

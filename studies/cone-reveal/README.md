@@ -7,7 +7,6 @@
 - `idea.md` / `idea.en.md` — Core design rationale and naive alternatives
 - `study.json` — Catalog entry and graph relations
 - `src/lib/machines.ts` — Pure cone coverage, reveal, and search-angle math
-- `src/lib/machines.test.ts` — Unit tests (`tsx --test`)
 - `src/StudyView.tsx` — Educational playground (cone / whole-string / nearest)
 - `src/StageView.tsx` — Clean fixture view (`?stage=1`)
 
