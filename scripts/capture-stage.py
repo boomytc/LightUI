@@ -447,8 +447,13 @@ def capture_slug(page, base_url: str, slug: str) -> None:
         staging_dir = Path(tmp)
         for query, name in shots_for(slug):
             page.goto(stage_url(base_url, slug, query), wait_until="networkidle")
+            fixture = page.locator("[data-stage=fixture]")
+            try:
+                fixture.first.wait_for(state="attached", timeout=8000)
+            except PlaywrightError as exc:
+                raise SystemExit(f"stage missing for {slug} {query}: {page.url}") from exc
             page.wait_for_timeout(350)
-            if page.locator("[data-stage=fixture]").count() == 0:
+            if fixture.count() == 0:
                 raise SystemExit(f"stage missing for {slug} {query}: {page.url}")
             clip = union_clip(page)
             page.screenshot(path=str(staging_dir / name), clip=clip, animations="disabled")

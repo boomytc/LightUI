@@ -32,7 +32,13 @@ class PreviewErrorBoundary extends Component<{ fallback: ReactNode; children: Re
 
 const MAX_PREVIEW_SCALE = 0.46;
 const MIN_PREVIEW_SCALE = 0.08;
+const MAX_FIT_ASPECT_RATIO = 2;
 const PREVIEW_PADDING_PX = 8;
+
+type PreviewLayout = {
+  scale: number;
+  topAligned: boolean;
+};
 
 function StagePlaceholder({ loading = false }: { loading?: boolean }) {
   return (
@@ -49,7 +55,10 @@ function StagePlaceholder({ loading = false }: { loading?: boolean }) {
 function ScaledStagePreview({ StageView }: { StageView: ComponentType }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(MAX_PREVIEW_SCALE);
+  const [layout, setLayout] = useState<PreviewLayout>({
+    scale: MAX_PREVIEW_SCALE,
+    topAligned: false,
+  });
 
   useLayoutEffect(() => {
     const frame = frameRef.current;
@@ -67,9 +76,16 @@ function ScaledStagePreview({ StageView }: { StageView: ComponentType }) {
       const contentH = Math.max(content.offsetHeight, content.scrollHeight);
       if (contentW <= 0 || contentH <= 0) return;
 
-      const raw = Math.min(MAX_PREVIEW_SCALE, availW / contentW, availH / contentH);
-      const next = Math.max(MIN_PREVIEW_SCALE, Math.floor(raw * 10000) / 10000);
-      setScale((prev) => (Math.abs(prev - next) > 0.0005 ? next : prev));
+      const topAligned = contentH / contentW > MAX_FIT_ASPECT_RATIO;
+      const raw = topAligned
+        ? Math.min(MAX_PREVIEW_SCALE, availW / contentW)
+        : Math.min(MAX_PREVIEW_SCALE, availW / contentW, availH / contentH);
+      const nextScale = Math.max(MIN_PREVIEW_SCALE, Math.floor(raw * 10000) / 10000);
+      setLayout((prev) =>
+        prev.topAligned === topAligned && Math.abs(prev.scale - nextScale) <= 0.0005
+          ? prev
+          : { scale: nextScale, topAligned },
+      );
     };
 
     update();
@@ -84,11 +100,25 @@ function ScaledStagePreview({ StageView }: { StageView: ComponentType }) {
   }, [StageView]);
 
   return (
-    <div ref={frameRef} className="absolute inset-0 flex items-center justify-center overflow-hidden">
+    <div
+      ref={frameRef}
+      className={
+        layout.topAligned
+          ? "absolute inset-0 flex items-start justify-center overflow-hidden pt-2"
+          : "absolute inset-0 flex items-center justify-center overflow-hidden"
+      }
+      style={
+        layout.topAligned
+          ? { maskImage: "linear-gradient(to bottom, black 78%, transparent)" }
+          : undefined
+      }
+    >
       <div
         ref={contentRef}
-        className="w-[560px] shrink-0 origin-center"
-        style={{ transform: `scale(${scale})` }}
+        className={
+          layout.topAligned ? "w-[560px] shrink-0 origin-top" : "w-[560px] shrink-0 origin-center"
+        }
+        style={{ transform: `scale(${layout.scale})` }}
       >
         <div className="lab-stage-preview">
           <StageView />

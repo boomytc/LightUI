@@ -59,9 +59,13 @@ export function Studies() {
 
   const handleCategoryChange = (catId: CategoryId) => {
     cancelPendingQuerySync();
+    lastSyncedQueryRef.current = searchQuery;
     setActiveCategory(catId);
     setSelectedTag(undefined);
-    updateSearchParams({ category: catId === "all" ? null : catId, tag: null }, { replace: true });
+    updateSearchParams(
+      { category: catId === "all" ? null : catId, tag: null, q: searchQuery || null },
+      { replace: true },
+    );
   };
 
   const handleQueryChange = (q: string) => {
@@ -83,8 +87,9 @@ export function Studies() {
 
   const handleSelectTag = (tag: string | undefined) => {
     cancelPendingQuerySync();
+    lastSyncedQueryRef.current = searchQuery;
     setSelectedTag(tag);
-    updateSearchParams({ tag: tag || null }, { replace: true });
+    updateSearchParams({ tag: tag || null, q: searchQuery || null }, { replace: true });
   };
 
   const handleClearAll = () => {

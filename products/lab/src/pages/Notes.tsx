@@ -52,8 +52,12 @@ export function Notes() {
 
   const handleCategoryChange = (catId: CategoryId) => {
     cancelPendingQuerySync();
+    lastSyncedQueryRef.current = query;
     setCategory(catId);
-    updateSearchParams({ category: catId === "all" ? null : catId }, { replace: true });
+    updateSearchParams(
+      { category: catId === "all" ? null : catId, q: query || null },
+      { replace: true },
+    );
   };
 
   const handleQueryChange = (q: string) => {
