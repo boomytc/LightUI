@@ -11,7 +11,7 @@
   <a href="https://vitejs.dev"><img src="https://img.shields.io/badge/Vite-8.1-646CFF?logo=vite&logoColor=white&style=flat-square" alt="Vite" /></a>
   <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?logo=tailwindcss&logoColor=white&style=flat-square" alt="Tailwind CSS" /></a>
   <!-- catalog:badge -->
-  <a href="docs/catalog.md"><img src="https://img.shields.io/badge/Studies-56_Active-10B981?style=flat-square" alt="Studies" /></a>
+  <a href="docs/catalog.md"><img src="https://img.shields.io/badge/Studies-58_(56_Active_%C2%B7_2_Draft)-10B981?style=flat-square" alt="Studies" /></a>
   <!-- /catalog:badge -->
   <a href="package.json"><img src="https://img.shields.io/badge/Node-%3E%3D20-339933?logo=node.js&logoColor=white&style=flat-square" alt="Node" /></a>
 </p>
@@ -48,7 +48,7 @@ LightUI 是一个专注于 **「先回答问题，再决定交互机器与外观
 ## 🧩 精选专题与分类学 (Featured Studies)
 
 <!-- catalog:featured -->
-LightUI 目前收录了 **58 个经过深思与实战检验的交互课题**（完整列表见 [docs/catalog.md](docs/catalog.md)）：
+LightUI 目前收录了 **58 个经过深思与实战检验的交互课题**（56 个 Active，2 个 Draft）（完整列表见 [docs/catalog.md](docs/catalog.md)）：
 
 下表按每个 `study.json` 的 `category` 与 `summary` 生成。改课题后运行 `make catalog`，不要手改表。
 
@@ -180,9 +180,12 @@ LightUI/
 ├── docs/                     # 📚 架构与设计契约
 │   ├── catalog.md            #   由 study.json 自动汇总生成的完整索引
 │   ├── conventions.md        #   如何新增 Study 与设计规范
+│   ├── protocol-v0.md        #   GenUI v0 协议说明（呈现路由与沙盒桥）
 │   ├── study-contract.md     #   Study 契约接口定义
 │   └── writing.md            #   设计笔记写作约定
-├── products/lab/             # 🔬 Lab 综合站点（首页 / 作品列表 / 知识图谱 / 思考笔记）
+├── products/                 # 📦 产品目录
+│   ├── lab/                  #   🔬 Lab 综合站点（首页 / 作品列表 / 知识图谱 / 思考笔记）
+│   └── genui/                #   🧩 生成式 UI 组件、注册表与 v0 契约
 ├── studies/                  # 🧪 58 个独立的交互研究课题目录
 │   ├── intent-cascade/
 │   ├── path-morph/
@@ -190,9 +193,10 @@ LightUI/
 │   └── ...
 ├── writing/                  # ✍️ 公开设计与交互工程笔记（中英双语）
 ├── skills/                   # 🤖 仓库 Agent 规范与工作流技能
-├── scripts/                  # 🛠️ 自动化同步与静帧抓取脚本
+├── scripts/                  # 🛠️ 自动化同步、静帧抓取与清理脚本
 │   ├── sync-catalog.mjs      #   自动扫描 study.json 并生成 catalog.md 与 README 标记块
-│   └── capture-stage.py      #   自动化 Playwright 舞台静帧导出
+│   ├── capture-stage.py      #   自动化 Playwright 舞台静帧导出
+│   └── clean.mjs             #   跨平台清理构建缓存与系统残留文件
 ├── package.json              # 根目录 npm workspace 编排配置
 └── Makefile                  # 统一工作流命令入口
 ```

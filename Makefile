@@ -4,8 +4,8 @@
 .DEFAULT_GOAL := help
 
 STUDY ?= intent-cascade
-LAB_DIR := products/lab
 PROJECT ?=
+PYTHON ?= python3
 
 help: ## 显示帮助信息
 	@echo "LightUI workspace commands"
@@ -41,9 +41,7 @@ typecheck: ## 校验目录产物并类型检查全部 workspace
 	npm run typecheck
 
 stills: ## 从本仓库舞台导出 references 静帧
-	python3 scripts/capture-stage.py $(if $(PROJECT),--project $(PROJECT),)
+	$(PYTHON) scripts/capture-stage.py $(if $(PROJECT),--project $(PROJECT),)
 
-clean: ## 清理构建缓存
-	@find products studies -type d \( -name dist -o -name .cache \) -exec rm -rf {} +
-	@find . -name '.DS_Store' -delete
-	@echo "Cleaning completed."
+clean: ## 清理构建缓存（跳过 node_modules）
+	node scripts/clean.mjs

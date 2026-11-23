@@ -5,7 +5,7 @@ import type { SourceFile } from "./boundaries";
 
 const ROOTS = ["products/genui", "products/lab", "studies"];
 const SKIP_DIRS = new Set(["node_modules", "dist", ".cache", "references"]);
-const EXTS = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".css"]);
+const EXTS = new Set([".ts", ".tsx", ".mts", ".cts", ".js", ".jsx", ".mjs", ".cjs", ".css"]);
 
 export function readWorkspaceSources(repoRoot: string): SourceFile[] {
   const files: SourceFile[] = [];

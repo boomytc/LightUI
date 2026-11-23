@@ -26,6 +26,7 @@ products/genui/          generative UI: components, registry, contract v0
 studies/<slug>/          one idea + playground + stage
 scripts/sync-catalog.mjs regenerate docs/catalog.md
 scripts/capture-stage.py export stage stills (`make stills`)
+scripts/clean.mjs        cross-platform build cache cleanup (`make clean`)
 sandboxes/               gitignored local inbox (not a package, not a study)
 ```
 
@@ -126,7 +127,7 @@ until a new change or failure requires another check.
 
 Lab: `http://127.0.0.1:5173/`.
 Standalone study: `make dev-study STUDY=<slug>`. Ports: see
-`docs/conventions.md` (5174–5177 taken, next `5178`).
+`docs/conventions.md`.
 
 ## Cleanup
 

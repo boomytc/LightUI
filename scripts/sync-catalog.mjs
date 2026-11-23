@@ -23,8 +23,14 @@ function fail(message) {
   process.exitCode = 1;
 }
 
+function normalizeEol(value) {
+  return String(value).replace(/\r\n/g, "\n");
+}
+
 function cell(value) {
-  return String(value ?? "").replace(/\|/g, "\\|");
+  return String(value ?? "")
+    .replace(/\r?\n/g, " ")
+    .replace(/\|/g, "\\|");
 }
 
 function trimOuterNewlines(value) {
@@ -87,7 +93,14 @@ for (const slug of slugs) {
     fail(`missing study.json: ${slug}`);
     continue;
   }
-  const meta = JSON.parse(raw);
+  let meta;
+  try {
+    meta = JSON.parse(raw);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    fail(`invalid JSON in studies/${slug}/study.json: ${message}`);
+    continue;
+  }
   if (meta.slug !== slug) {
     fail(`slug mismatch: folder=${slug} study.json=${meta.slug}`);
   }
@@ -105,14 +118,23 @@ for (const slug of slugs) {
 
 const known = new Set(rows.map((m) => m.slug));
 for (const m of rows) {
+  const seenEdges = new Set();
   for (const link of Array.isArray(m.links) ? m.links : []) {
     if (!link?.slug) continue;
+    if (link.slug === m.slug) {
+      fail(`self link on ${m.slug}`);
+    }
     if (!known.has(link.slug)) {
       fail(`broken link: ${m.slug} -> ${link.slug}`);
     }
-    if (link.rel && link.rel !== "after" && link.rel !== "contrast") {
-      fail(`bad rel on ${m.slug}: ${link.rel}`);
+    if (link.rel !== "after" && link.rel !== "contrast") {
+      fail(`missing or bad rel on ${m.slug} -> ${link.slug}: ${link.rel ?? "(missing)"}`);
     }
+    const edgeKey = `${link.rel}:${link.slug}`;
+    if (seenEdges.has(edgeKey)) {
+      fail(`duplicate link on ${m.slug}: ${link.rel} -> ${link.slug}`);
+    }
+    seenEdges.add(edgeKey);
   }
 }
 
@@ -180,7 +202,13 @@ ${edges.join("\n") || "_No edges yet._"}
 
 const total = rows.length;
 const active = rows.filter((m) => m.status === "active").length;
-const badgeLabel = active === total ? `${total}_Active` : `${active}_Active`;
+const draft = rows.filter((m) => m.status === "draft").length;
+const retired = rows.filter((m) => m.status === "retired").length;
+const statusParts = [`${active}_Active`];
+if (draft > 0) statusParts.push(`${draft}_Draft`);
+if (retired > 0) statusParts.push(`${retired}_Retired`);
+const badgeLabel =
+  active === total ? `${total}_Active` : `${total}_(${statusParts.join("_%C2%B7_")})`;
 
 const badge = `  <a href="docs/catalog.md"><img src="https://img.shields.io/badge/Studies-${badgeLabel}-10B981?style=flat-square" alt="Studies" /></a>`;
 
@@ -198,8 +226,13 @@ const featuredSections = CATEGORIES.filter((c) => byCategory.get(c.id).length > 
   return `### ${c.nameZh} (${c.nameEn})\n\n${lines.join("\n")}`;
 });
 
+const breakdown =
+  active === total
+    ? ""
+    : `（${active} 个 Active${draft > 0 ? `，${draft} 个 Draft` : ""}${retired > 0 ? `，${retired} 个 Retired` : ""}）`;
+
 const featured = [
-  `LightUI 目前收录了 **${total} 个经过深思与实战检验的交互课题**（完整列表见 [docs/catalog.md](docs/catalog.md)）：`,
+  `LightUI 目前收录了 **${total} 个经过深思与实战检验的交互课题**${breakdown}（完整列表见 [docs/catalog.md](docs/catalog.md)）：`,
   "",
   "下表按每个 `study.json` 的 `category` 与 `summary` 生成。改课题后运行 `make catalog`，不要手改表。",
   "",
@@ -212,9 +245,12 @@ LightUI/
 ├── docs/                     # 📚 架构与设计契约
 │   ├── catalog.md            #   由 study.json 自动汇总生成的完整索引
 │   ├── conventions.md        #   如何新增 Study 与设计规范
+│   ├── protocol-v0.md        #   GenUI v0 协议说明（呈现路由与沙盒桥）
 │   ├── study-contract.md     #   Study 契约接口定义
 │   └── writing.md            #   设计笔记写作约定
-├── products/lab/             # 🔬 Lab 综合站点（首页 / 作品列表 / 知识图谱 / 思考笔记）
+├── products/                 # 📦 产品目录
+│   ├── lab/                  #   🔬 Lab 综合站点（首页 / 作品列表 / 知识图谱 / 思考笔记）
+│   └── genui/                #   🧩 生成式 UI 组件、注册表与 v0 契约
 ├── studies/                  # 🧪 ${total} 个独立的交互研究课题目录
 │   ├── intent-cascade/
 │   ├── path-morph/
@@ -222,14 +258,15 @@ LightUI/
 │   └── ...
 ├── writing/                  # ✍️ 公开设计与交互工程笔记（中英双语）
 ├── skills/                   # 🤖 仓库 Agent 规范与工作流技能
-├── scripts/                  # 🛠️ 自动化同步与静帧抓取脚本
+├── scripts/                  # 🛠️ 自动化同步、静帧抓取与清理脚本
 │   ├── sync-catalog.mjs      #   自动扫描 study.json 并生成 catalog.md 与 README 标记块
-│   └── capture-stage.py      #   自动化 Playwright 舞台静帧导出
+│   ├── capture-stage.py      #   自动化 Playwright 舞台静帧导出
+│   └── clean.mjs             #   跨平台清理构建缓存与系统残留文件
 ├── package.json              # 根目录 npm workspace 编排配置
 └── Makefile                  # 统一工作流命令入口
 \`\`\``;
 
-const readmeRaw = await readFile(readmeFile, "utf8");
+const readmeRaw = normalizeEol(await readFile(readmeFile, "utf8"));
 let readme = readmeRaw;
 for (const [name, body] of [
   ["badge", badge],
@@ -242,7 +279,7 @@ for (const [name, body] of [
 }
 
 if (check) {
-  const existingCatalog = await readFile(catalogFile, "utf8").catch(() => "");
+  const existingCatalog = normalizeEol(await readFile(catalogFile, "utf8").catch(() => ""));
   let stale = false;
   if (existingCatalog !== catalog) {
     stale = true;

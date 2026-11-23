@@ -13,20 +13,16 @@ export type BoundaryViolation = {
 
 const PUBLIC_ENTRY = "@lightui/genui";
 
-const PUBLIC_INDEXES = new Set([
-  "products/genui/src/index.ts",
-  "products/genui/src/index.tsx",
-  "products/genui/src/index.js",
-  "products/genui/src/index.mjs",
-  "products/genui",
-]);
-
 const GENUI_IMPORT =
   "products/genui must not import studies/* or products/lab";
 const DEEP_IMPORT =
-  "import @lightui/genui only; deep imports into products/genui are not allowed";
+  "import @lightui/genui only; deep or relative imports into products/genui are not allowed";
 const CONTRACT_IMPORT =
   "read products/genui/contract as files; do not import it";
+const STUDY_TO_STUDY_IMPORT =
+  "studies stay independent and must not import another study";
+const STUDY_TO_LAB_IMPORT =
+  "studies must not import products/lab";
 
 export function checkBoundaries(files: readonly SourceFile[]): BoundaryViolation[] {
   const violations: BoundaryViolation[] = [];
@@ -51,8 +47,15 @@ function violationReason(filePath: string, specifier: string): string | null {
   if (zone === "genui") {
     return targetsStudiesOrLab(filePath, specifier) ? GENUI_IMPORT : null;
   }
-  if (targetsGenui(filePath, specifier) && !isPublicGenuiEntry(filePath, specifier)) {
+  if (targetsGenui(filePath, specifier) && !isPublicGenuiEntry(specifier)) {
     return DEEP_IMPORT;
+  }
+  if (zone === "study") {
+    if (targetsLab(filePath, specifier)) return STUDY_TO_LAB_IMPORT;
+    const ownSlug = studySlugOf(filePath);
+    if (ownSlug && targetsOtherStudy(filePath, specifier, ownSlug)) {
+      return STUDY_TO_STUDY_IMPORT;
+    }
   }
   return null;
 }
@@ -65,12 +68,38 @@ function zoneOf(filePath: string): "genui" | "lab" | "study" | null {
   return null;
 }
 
+function studySlugOf(filePath: string): string | null {
+  const normalized = normalize(filePath);
+  if (!normalized.startsWith("studies/")) return null;
+  const slug = normalized.slice("studies/".length).split("/")[0];
+  return slug || null;
+}
+
 function targetsStudiesOrLab(filePath: string, specifier: string): boolean {
   const pkg = lightuiPackage(specifier);
   if (pkg !== null) return pkg !== "genui";
   const resolved = resolveSpecifier(filePath, specifier);
   if (!resolved) return false;
   return isUnder(resolved, "studies") || isUnder(resolved, "products/lab");
+}
+
+function targetsLab(filePath: string, specifier: string): boolean {
+  const pkg = lightuiPackage(specifier);
+  if (pkg === "lab") return true;
+  const resolved = resolveSpecifier(filePath, specifier);
+  return resolved !== null && isUnder(resolved, "products/lab");
+}
+
+function targetsOtherStudy(filePath: string, specifier: string, ownSlug: string): boolean {
+  const pkg = lightuiPackage(specifier);
+  if (pkg !== null) {
+    return pkg !== "genui" && pkg !== "lab" && pkg !== ownSlug;
+  }
+  const resolved = resolveSpecifier(filePath, specifier);
+  if (!resolved || !isUnder(resolved, "studies")) return false;
+  if (resolved === "studies") return true;
+  const targetSlug = studySlugOf(resolved);
+  return targetSlug !== null && targetSlug !== ownSlug;
 }
 
 function targetsGenui(filePath: string, specifier: string): boolean {
@@ -91,12 +120,9 @@ function targetsContract(filePath: string, specifier: string): boolean {
   return resolved !== null && isUnder(resolved, "products/genui/contract");
 }
 
-function isPublicGenuiEntry(filePath: string, specifier: string): boolean {
+function isPublicGenuiEntry(specifier: string): boolean {
   const { path: specPath, suffix } = splitSuffix(specifier);
-  if (suffix) return false;
-  if (specPath === PUBLIC_ENTRY) return true;
-  const resolved = resolveSpecifier(filePath, specifier);
-  return resolved !== null && PUBLIC_INDEXES.has(resolved);
+  return !suffix && specPath === PUBLIC_ENTRY;
 }
 
 function lightuiPackage(specifier: string): string | null {
@@ -109,13 +135,14 @@ function lightuiPackage(specifier: string): string | null {
 
 function resolveSpecifier(filePath: string, specifier: string): string | null {
   const { path: specPath } = splitSuffix(specifier);
-  if (specPath.startsWith(".")) return resolveRelative(filePath, specPath);
+  const stripped = specPath.startsWith("!") ? specPath.slice(1) : specPath;
+  if (stripped.startsWith(".")) return resolveRelative(filePath, stripped);
   if (
-    specPath.startsWith("products/") ||
-    specPath.startsWith("studies/") ||
-    specPath.startsWith("design/")
+    stripped.startsWith("products/") ||
+    stripped.startsWith("studies/") ||
+    stripped.startsWith("design/")
   ) {
-    return normalize(specPath);
+    return normalize(stripped);
   }
   return null;
 }
@@ -159,25 +186,61 @@ function extractTsSpecifiers(filePath: string, source: string): string[] {
   const sourceFile = ts.createSourceFile(filePath, source, ts.ScriptTarget.Latest, true, kind);
   const specs: string[] = [];
   const visit = (node: ts.Node) => {
+    if ((ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) && node.moduleSpecifier) {
+      const value = readStaticString(node.moduleSpecifier);
+      if (value !== null) specs.push(value);
+    }
+    if (ts.isImportTypeNode(node) && ts.isLiteralTypeNode(node.argument)) {
+      const value = readStaticString(node.argument.literal);
+      if (value !== null) specs.push(value);
+    }
     if (
-      (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) &&
-      node.moduleSpecifier &&
-      ts.isStringLiteral(node.moduleSpecifier)
+      ts.isImportEqualsDeclaration(node) &&
+      ts.isExternalModuleReference(node.moduleReference) &&
+      node.moduleReference.expression
     ) {
-      specs.push(node.moduleSpecifier.text);
+      const value = readStaticString(node.moduleReference.expression);
+      if (value !== null) specs.push(value);
     }
-    if (ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword) {
-      const arg = node.arguments[0];
-      if (arg && ts.isStringLiteral(arg)) specs.push(arg.text);
-    }
-    if (ts.isCallExpression(node) && isImportMetaGlob(node)) {
-      const arg = node.arguments[0];
-      if (arg && ts.isStringLiteral(arg)) specs.push(arg.text);
+    if (ts.isCallExpression(node)) {
+      if (node.expression.kind === ts.SyntaxKind.ImportKeyword || isRequireCall(node)) {
+        const value = node.arguments[0] ? readStaticString(node.arguments[0]) : null;
+        if (value !== null) specs.push(value);
+      }
+      if (isImportMetaGlob(node)) {
+        const arg = node.arguments[0];
+        if (arg) collectGlobSpecifiers(arg, specs);
+      }
     }
     ts.forEachChild(node, visit);
   };
   visit(sourceFile);
   return specs;
+}
+
+function readStaticString(node: ts.Node): string | null {
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+    return node.text;
+  }
+  return null;
+}
+
+function isRequireCall(node: ts.CallExpression): boolean {
+  return ts.isIdentifier(node.expression) && node.expression.text === "require";
+}
+
+function collectGlobSpecifiers(arg: ts.Expression, specs: string[]): void {
+  const single = readStaticString(arg);
+  if (single !== null) {
+    specs.push(single);
+    return;
+  }
+  if (ts.isArrayLiteralExpression(arg)) {
+    for (const element of arg.elements) {
+      const value = readStaticString(element);
+      if (value !== null) specs.push(value);
+    }
+  }
 }
 
 function isImportMetaGlob(node: ts.CallExpression): boolean {

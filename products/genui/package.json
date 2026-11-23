@@ -12,7 +12,7 @@
   },
   "scripts": {
     "check:boundaries": "tsx src/check-workspace-boundaries.ts",
-    "typecheck": "tsc --noEmit --pretty false && npm run check:boundaries && npm run check:contract",
+    "typecheck": "tsc --noEmit --pretty false && tsc -p tsconfig.checks.json --noEmit --pretty false && npm run check:boundaries && npm run check:contract",
     "build": "npm run typecheck",
     "check:contract": "tsx src/check-contract.ts"
   },

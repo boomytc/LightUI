@@ -4,14 +4,22 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
+import tempfile
 from pathlib import Path
 from urllib.parse import urlencode
 
-from playwright.sync_api import sync_playwright
+try:
+    from playwright.sync_api import Error as PlaywrightError
+    from playwright.sync_api import sync_playwright
+except ImportError as exc:
+    raise SystemExit(
+        "playwright is not installed. Run `pip install playwright && playwright install chromium`."
+    ) from exc
 
 ROOT = Path(__file__).resolve().parents[1]
-LAB = "http://127.0.0.1:5173"
+DEFAULT_LAB = "http://127.0.0.1:5173"
 
 SHOTS: dict[str, list[tuple[str, str, str]]] = {
     "event-timeline": [("history", state, f"{state}.png") for state in ("start", "mid", "all")],
@@ -379,8 +387,8 @@ QUERY_SHOTS: dict[str, list[tuple[dict[str, str], str]]] = {
     ],
 }
 
-def stage_url(slug: str, query: dict[str, str]) -> str:
-    return f"{LAB}/s/{slug}/stage?{urlencode(query)}"
+def stage_url(base_url: str, slug: str, query: dict[str, str]) -> str:
+    return f"{base_url}/s/{slug}/stage?{urlencode(query)}"
 
 
 def union_clip(page):
@@ -402,13 +410,24 @@ def union_clip(page):
     top = max(0, top)
     right = min(vp["width"], right)
     bottom = min(vp["height"], bottom)
-    return {"x": left, "y": top, "width": max(1, right - left), "height": max(1, bottom - top)}
+    width = right - left
+    height = bottom - top
+    if width <= 1 or height <= 1:
+        raise RuntimeError(
+            f"fixture clip outside viewport ({left}, {top}, {width}x{height}) at {page.url}"
+        )
+    return {"x": left, "y": top, "width": width, "height": height}
 
 
-def wipe_pngs(folder: Path) -> None:
-    for path in folder.iterdir():
-        if path.suffix.lower() == ".png":
-            path.unlink()
+def replace_pngs(staging_dir: Path, dest: Path) -> None:
+    dest.mkdir(parents=True, exist_ok=True)
+    new_names = {p.name for p in staging_dir.iterdir() if p.suffix.lower() == ".png"}
+    for staged in staging_dir.iterdir():
+        if staged.suffix.lower() == ".png":
+            staged.replace(dest / staged.name)
+    for existing in dest.iterdir():
+        if existing.suffix.lower() == ".png" and existing.name not in new_names:
+            existing.unlink()
 
 
 def shots_for(slug: str) -> list[tuple[dict[str, str], str]]:
@@ -421,45 +440,60 @@ def shots_for(slug: str) -> list[tuple[dict[str, str], str]]:
     ]
 
 
-def capture_slug(page, slug: str) -> None:
-    dest = ROOT / "studies" / slug / "references"
-    dest.mkdir(parents=True, exist_ok=True)
-    wipe_pngs(dest)
-    for query, name in shots_for(slug):
-        page.goto(stage_url(slug, query), wait_until="networkidle")
-        page.wait_for_timeout(350)
-        if page.locator("[data-stage=fixture]").count() == 0:
-            raise SystemExit(f"stage missing for {slug} {query}: {page.url}")
-        clip = union_clip(page)
-        out = dest / name
-        page.screenshot(path=str(out), clip=clip, animations="disabled")
-        print(f"  {out.relative_to(ROOT)}")
+def capture_slug(page, base_url: str, slug: str) -> None:
+    study_dir = ROOT / "studies" / slug
+    dest = study_dir / "references"
+    with tempfile.TemporaryDirectory(prefix=f".capture-{slug}-", dir=study_dir) as tmp:
+        staging_dir = Path(tmp)
+        for query, name in shots_for(slug):
+            page.goto(stage_url(base_url, slug, query), wait_until="networkidle")
+            page.wait_for_timeout(350)
+            if page.locator("[data-stage=fixture]").count() == 0:
+                raise SystemExit(f"stage missing for {slug} {query}: {page.url}")
+            clip = union_clip(page)
+            page.screenshot(path=str(staging_dir / name), clip=clip, animations="disabled")
+            print(f"  {(dest / name).relative_to(ROOT)}")
+        replace_pngs(staging_dir, dest)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--project", default="")
+    parser.add_argument(
+        "--base-url",
+        default=os.environ.get("LIGHTUI_LAB_URL", DEFAULT_LAB),
+        help="Base URL of the running lab dev server (default: LIGHTUI_LAB_URL or http://127.0.0.1:5173)",
+    )
     args = parser.parse_args()
+    base_url = args.base_url.rstrip("/")
     all_slugs = [*SHOTS, *QUERY_SHOTS]
     slugs = [args.project] if args.project else all_slugs
     unknown = [s for s in slugs if s not in SHOTS and s not in QUERY_SHOTS]
     if unknown:
         print(f"unknown project: {', '.join(unknown)}", file=sys.stderr)
         return 2
+    missing_dirs = [s for s in slugs if not (ROOT / "studies" / s).is_dir()]
+    if missing_dirs:
+        print(f"missing study directory: {', '.join(missing_dirs)}", file=sys.stderr)
+        return 2
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        page = browser.new_page(viewport={"width": 1440, "height": 1000}, device_scale_factor=2)
         try:
-            page.goto(f"{LAB}/", wait_until="domcontentloaded", timeout=8000)
-        except Exception:
-            print("lab is not running at 127.0.0.1:5173 — start it with `make dev`", file=sys.stderr)
+            page = browser.new_page(viewport={"width": 1440, "height": 1000}, device_scale_factor=2)
+            try:
+                page.goto(f"{base_url}/", wait_until="domcontentloaded", timeout=8000)
+            except PlaywrightError as exc:
+                print(
+                    f"failed to reach lab at {base_url} ({exc}) — start it with `make dev`",
+                    file=sys.stderr,
+                )
+                return 1
+            for slug in slugs:
+                print(slug)
+                capture_slug(page, base_url, slug)
+        finally:
             browser.close()
-            return 1
-        for slug in slugs:
-            print(slug)
-            capture_slug(page, slug)
-        browser.close()
     return 0
 
 

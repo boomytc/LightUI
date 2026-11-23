@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": [
+    "src/boundaries.ts",
+    "src/check-contract.ts",
+    "src/check-workspace-boundaries.ts",
+    "src/contract-diff.ts",
+    "src/read-sources.ts"
+  ],
+  "exclude": []
+}

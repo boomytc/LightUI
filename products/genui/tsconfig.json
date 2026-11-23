@@ -14,7 +14,14 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
-    "types": ["node"]
+    "types": []
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": [
+    "src/boundaries.ts",
+    "src/check-contract.ts",
+    "src/check-workspace-boundaries.ts",
+    "src/contract-diff.ts",
+    "src/read-sources.ts"
+  ]
 }
