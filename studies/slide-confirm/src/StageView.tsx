@@ -245,11 +245,11 @@ export function StageView() {
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
-              className={`absolute left-1 top-1 bottom-1 size-12 rounded-full flex items-center justify-center text-white shadow-md cursor-grab active:cursor-grabbing transition-transform ${
+              className={`absolute left-1 top-1 bottom-1 size-12 rounded-full flex items-center justify-center shadow-md cursor-grab active:cursor-grabbing transition-transform ${
                 state === "committed"
-                  ? "bg-wrong text-white"
+                  ? "bg-wrong text-wrong-fg"
                   : thresholdReached
-                    ? "bg-wrong"
+                    ? "bg-wrong text-wrong-fg"
                     : "bg-fg text-surface"
               }`}
               style={{

@@ -575,7 +575,7 @@ function ProductCard({
               disabled={record.phase === "syncing" || Boolean(record.current)}
               onClick={onTrigger}
               data-motion={motion}
-              className="or-action inline-flex items-center gap-2 rounded-full bg-wrong px-4 text-[13px] font-medium text-white disabled:opacity-55"
+              className="or-action inline-flex items-center gap-2 rounded-full bg-wrong px-4 text-[13px] font-medium text-wrong-fg disabled:opacity-55"
             >
               {record.phase === "syncing" ? <RefreshCw className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
               {record.current

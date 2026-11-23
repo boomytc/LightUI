@@ -134,7 +134,7 @@ function SwipeRow({
       <button
         type="button"
         onClick={onDelete}
-        className="absolute inset-y-0 right-0 flex w-20 items-center justify-center bg-wrong text-xs font-semibold text-white transition-colors hover:bg-wrong/90"
+        className="absolute inset-y-0 right-0 flex w-20 items-center justify-center bg-wrong text-xs font-semibold text-wrong-fg transition-colors hover:bg-wrong/90"
         tabIndex={isOpen ? 0 : -1}
       >
         删除

@@ -827,7 +827,7 @@ function InteractiveSwipeRow({
           type="button"
           onClick={() => beginExit(false)}
           className={cn(
-            "flex items-center justify-center gap-1 font-medium text-white transition-colors",
+            "flex items-center justify-center gap-1 font-medium text-wrong-fg transition-colors",
             isOverswiped || exiting
               ? "w-full bg-wrong text-[13px] font-semibold"
               : "flex-1 flex-col bg-wrong/90 text-[11px] hover:bg-wrong",

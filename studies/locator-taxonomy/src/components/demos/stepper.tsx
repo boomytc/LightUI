@@ -76,7 +76,7 @@ export function StepperDemo() {
                     <span
                       className={cn(
                         "flex size-7 items-center justify-center rounded-full text-[11px] font-semibold transition-colors",
-                        isDone && "bg-intent text-accent-fg",
+                        isDone && "bg-intent text-intent-fg",
                         isCurrent && "bg-accent text-accent-fg ring-4 ring-accent/20",
                         !isDone && !isCurrent && "border border-border bg-surface-2 text-fg-subtle",
                       )}
@@ -208,7 +208,7 @@ export function StepperDemo() {
             <button
               type="button"
               onClick={() => setStep(0)}
-              className="inline-flex min-h-10 items-center rounded-lg bg-intent px-4 text-[12px] font-medium text-accent-fg hover:bg-intent/90"
+              className="inline-flex min-h-10 items-center rounded-lg bg-intent px-4 text-[12px] font-medium text-intent-fg hover:bg-intent/90"
             >
               重新配置
             </button>

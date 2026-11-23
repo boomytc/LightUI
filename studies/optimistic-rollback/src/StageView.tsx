@@ -48,7 +48,7 @@ export function StageView() {
           {forbid ? (
             <div
               className={cn(
-                "or-action inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[12px] font-medium text-white",
+                "or-action inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[12px] font-medium text-wrong-fg",
                 deleted ? "bg-wrong/80" : "bg-wrong",
                 waiting && "opacity-70",
               )}

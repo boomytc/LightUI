@@ -91,7 +91,7 @@ function CoverFigure({ state }: { state: StageState }) {
       <span
         className={cn(
           "pointer-events-none absolute bottom-2 left-2 rounded-full px-2 py-0.5 font-mono text-[10px] font-medium",
-          right ? "bg-intent text-white" : "bg-wrong text-white",
+          right ? "bg-intent text-intent-fg" : "bg-wrong text-wrong-fg",
         )}
       >
         {right ? `cover · ${SUBJECT_POSITION}` : `contain · ${GEOMETRIC_POSITION}`}

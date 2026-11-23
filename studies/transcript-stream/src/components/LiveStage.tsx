@@ -139,7 +139,7 @@ export function LiveStage({
           <button
             type="button"
             onClick={onEndMeeting}
-            className="px-3.5 py-1.5 text-xs font-semibold text-white bg-wrong hover:bg-wrong/90 rounded-lg shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-1.5 text-xs font-semibold text-wrong-fg bg-wrong hover:bg-wrong/90 rounded-lg shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
           >
             <CheckCircle className="w-3.5 h-3.5" />
             {en ? "End & Generate Minutes" : "结束会议并生成纪要"}
@@ -297,8 +297,8 @@ export function LiveStage({
 
                   <div className="flex items-center gap-2 text-xs">
                     {isOverlap && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-wrong text-white shadow-xs animate-pulse">
-                        <Zap className="w-3 h-3 fill-white" />
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-wrong text-wrong-fg shadow-xs animate-pulse">
+                        <Zap className="w-3 h-3 fill-current" />
                         {en ? "Overlap" : "⚡重叠"}
                       </span>
                     )}

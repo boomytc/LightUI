@@ -66,7 +66,7 @@ function ModalInner({ onReset }: { onReset: () => void }) {
               <button
                 type="button"
                 onClick={() => setTarget(doc)}
-                className="rounded-lg bg-wrong-soft px-2.5 py-1 text-xs font-semibold text-wrong hover:bg-wrong hover:text-white transition-colors"
+                className="rounded-lg bg-wrong-soft px-2.5 py-1 text-xs font-semibold text-wrong hover:bg-wrong hover:text-wrong-fg transition-colors"
               >
                 删除文档
               </button>
@@ -109,7 +109,7 @@ function ModalInner({ onReset }: { onReset: () => void }) {
                   setDocs((prev) => prev.filter((d) => d.id !== target.id));
                   setTarget(null);
                 }}
-                className="rounded-lg bg-wrong px-3 py-1.5 text-xs font-semibold text-white hover:bg-wrong/90 transition-colors"
+                className="rounded-lg bg-wrong px-3 py-1.5 text-xs font-semibold text-wrong-fg hover:bg-wrong/90 transition-colors"
               >
                 确认永久删除
               </button>

@@ -66,16 +66,18 @@ function TypeInner({ onReset }: { onReset: () => void }) {
           <div className="flex flex-col justify-between rounded-xl border border-border bg-fg p-4 text-surface shadow-card">
             <div>
               <p className="font-mono text-[11px] text-surface/60">$ cluster db destroy sue-prod-db</p>
-              <p className="mt-1 font-mono text-[11px] text-wrong">WARNING: Action is completely irreversible.</p>
+              <p className="mt-1.5 inline-flex rounded bg-wrong px-1.5 py-0.5 font-mono text-[11px] font-medium text-wrong-fg">
+                WARNING: Action is completely irreversible.
+              </p>
 
               {destroyed ? (
-                <div className="mt-6 rounded-lg bg-wrong/20 p-3 text-center text-xs font-semibold text-wrong">
+                <div className="mt-6 rounded-lg bg-wrong p-3 text-center text-xs font-semibold text-wrong-fg">
                   💥 生产数据库 sue-prod-db 已正式注销销毁。
                 </div>
               ) : (
                 <div className="mt-4 space-y-2">
                   <label htmlFor="type-input" className="block text-[11px] text-surface/80">
-                    请输入 <strong className="font-mono text-white">DELETE</strong> 以解锁销毁按钮：
+                    请输入 <strong className="font-mono text-surface">DELETE</strong> 以解锁销毁按钮：
                   </label>
                   <input
                     id="type-input"
@@ -85,7 +87,7 @@ function TypeInner({ onReset }: { onReset: () => void }) {
                     placeholder="在此输入 DELETE"
                     autoComplete="off"
                     spellCheck={false}
-                    className="h-9 w-full rounded-lg border border-surface/20 bg-surface/10 px-3 font-mono text-xs text-white placeholder:text-surface/40 outline-none focus:border-wrong focus:ring-2 focus:ring-wrong/30"
+                    className="h-9 w-full rounded-lg border border-surface/20 bg-surface/10 px-3 font-mono text-xs text-surface placeholder:text-surface/50 outline-none focus:border-wrong focus:ring-2 focus:ring-wrong/30"
                   />
                 </div>
               )}
@@ -96,7 +98,7 @@ function TypeInner({ onReset }: { onReset: () => void }) {
                 type="button"
                 disabled={!isValid}
                 onClick={() => setDestroyed(true)}
-                className="mt-4 flex h-9 w-full items-center justify-center rounded-lg bg-wrong text-xs font-semibold text-white shadow-sm transition-all hover:bg-wrong/90 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="mt-4 flex h-9 w-full items-center justify-center rounded-lg bg-wrong text-xs font-semibold text-wrong-fg shadow-sm transition-all hover:bg-wrong/90 disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 永久销毁 sue-prod-db (生产库)
               </button>

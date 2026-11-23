@@ -340,15 +340,15 @@ export function StudyView() {
                   onPointerMove={handlePointerMove}
                   onPointerUp={handlePointerUp}
                   onPointerCancel={handlePointerUp}
-                  className={`absolute left-1 top-1 bottom-1 size-12 rounded-full flex items-center justify-center text-white shadow-md cursor-grab active:cursor-grabbing transition-transform select-none ${
+                  className={`absolute left-1 top-1 bottom-1 size-12 rounded-full flex items-center justify-center shadow-md cursor-grab active:cursor-grabbing transition-transform select-none ${
                     state === "committed"
                       ? selectedScenario.danger
-                        ? "bg-wrong text-white"
-                        : "bg-accent text-surface"
+                        ? "bg-wrong text-wrong-fg"
+                        : "bg-accent text-accent-fg"
                       : thresholdReached
                         ? selectedScenario.danger
-                          ? "bg-wrong"
-                          : "bg-accent"
+                          ? "bg-wrong text-wrong-fg"
+                          : "bg-accent text-accent-fg"
                         : "bg-fg text-surface"
                   }`}
                   style={{

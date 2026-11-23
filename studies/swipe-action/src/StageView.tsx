@@ -42,7 +42,7 @@ export function StageView() {
                   )}
                   <div
                     className={cn(
-                      "flex items-center justify-center gap-1 bg-wrong font-medium text-white",
+                      "flex items-center justify-center gap-1 bg-wrong font-medium text-wrong-fg",
                       overswipe && isOpen ? "w-full text-[12px] font-semibold" : "flex-1 flex-col text-[10px]",
                     )}
                   >

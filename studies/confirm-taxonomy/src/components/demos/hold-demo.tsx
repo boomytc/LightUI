@@ -71,7 +71,7 @@ function HoldInner({ onReset }: { onReset: () => void }) {
 
         <div className="relative mt-4 overflow-hidden rounded-xl border border-border bg-fg p-4 text-surface shadow-card">
           {deleted && (
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 rounded-b-lg bg-wrong px-3 py-1 text-[11px] font-medium text-white shadow-sm">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 rounded-b-lg bg-wrong px-3 py-1 text-[11px] font-medium text-wrong-fg shadow-sm">
               已永久删除 30 秒访谈录音
             </div>
           )}
@@ -129,7 +129,7 @@ function HoldInner({ onReset }: { onReset: () => void }) {
               <span
                 className={cn(
                   "relative z-10 flex items-center gap-1.5 tabular-nums",
-                  progress > 0.42 ? "text-white" : "text-wrong",
+                  progress > 0.42 ? "text-wrong-fg" : "text-wrong",
                 )}
               >
                 {holding

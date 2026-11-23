@@ -86,7 +86,7 @@ export function Calendar({
                 isPast && !isSelected && "text-fg-subtle",
                 isToday && !isSelected && "font-medium ring-1 ring-accent/40",
                 isSelected && "bg-accent font-medium text-accent-fg",
-                isPast && isSelected && "bg-wrong text-accent-fg",
+                isPast && isSelected && "bg-wrong text-wrong-fg",
                 !isSelected && "hover:bg-accent-soft",
               )}
             >

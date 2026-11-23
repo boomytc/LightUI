@@ -500,7 +500,7 @@ export function RecordDialog({
             <button
               type="button"
               onClick={onDelete}
-              className="inline-flex h-8 items-center rounded-lg bg-wrong px-3 text-[12px] font-medium text-white"
+              className="inline-flex h-8 items-center rounded-lg bg-wrong px-3 text-[12px] font-medium text-wrong-fg"
             >
               {locale === "en" ? "Delete" : "删除"}
             </button>

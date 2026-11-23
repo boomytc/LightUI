@@ -250,16 +250,18 @@ function SpecCard({
       </div>
       <p className="px-4 pt-1.5 text-[14px] leading-relaxed text-surface/90">{text}</p>
       <div className="mt-3 grid gap-px bg-surface/10 sm:grid-cols-2">
-        <pre className="bg-wrong/20 px-4 py-3 font-mono text-[11px] leading-relaxed text-surface/70">
-          <span className="mb-1 block text-[10px] font-medium tracking-wide text-wrong">
+        <pre className="bg-wrong/20 px-4 py-3 font-mono text-[11px] leading-relaxed text-surface/80">
+          <span className="mb-1.5 inline-block rounded bg-wrong px-1.5 py-0.5 text-[10px] font-medium tracking-wide text-wrong-fg">
             {locale === "en" ? "Wrong" : "错"}
           </span>
+          {"\n"}
           {wrong}
         </pre>
         <pre className="bg-intent/15 px-4 py-3 font-mono text-[11px] leading-relaxed text-surface/85">
-          <span className="mb-1 block text-[10px] font-medium tracking-wide text-intent">
+          <span className="mb-1.5 inline-block rounded bg-intent px-1.5 py-0.5 text-[10px] font-medium tracking-wide text-intent-fg">
             {locale === "en" ? "Right" : "对"}
           </span>
+          {"\n"}
           {right}
         </pre>
       </div>

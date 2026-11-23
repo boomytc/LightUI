@@ -107,7 +107,7 @@ function PopInner({ onReset }: { onReset: () => void }) {
                         setRules((prev) => prev.filter((r) => r.id !== targetRule.id));
                         setTargetId(null);
                       }}
-                      className="rounded-md bg-wrong px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-wrong/90"
+                      className="rounded-md bg-wrong px-2.5 py-1 text-[11px] font-semibold text-wrong-fg hover:bg-wrong/90"
                     >
                       确认移除
                     </button>

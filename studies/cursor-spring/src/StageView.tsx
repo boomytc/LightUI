@@ -371,7 +371,7 @@ export function StageView() {
                   <svg width="12" height="12" viewBox="0 0 12 12" className="mt-px shrink-0 text-wrong" aria-hidden="true">
                     <path d="M0 0 L12 4.2 L4.6 12 Z" fill="currentColor" />
                   </svg>
-                  <span className="rounded-md bg-wrong px-2 py-0.5 text-[11px] font-medium text-white shadow-sm">
+                  <span className="rounded-md bg-wrong px-2 py-0.5 text-[11px] font-medium text-wrong-fg shadow-sm">
                     {en ? "Collaborator (raw)" : "协作者 (瞬移)"}
                   </span>
                 </div>
@@ -397,7 +397,7 @@ export function StageView() {
                   <svg width="12" height="12" viewBox="0 0 12 12" className="mt-px shrink-0 text-intent" aria-hidden="true">
                     <path d="M0 0 L12 4.2 L4.6 12 Z" fill="currentColor" />
                   </svg>
-                  <span className="rounded-md bg-intent px-2 py-0.5 text-[11px] font-medium text-white shadow-sm">
+                  <span className="rounded-md bg-intent px-2 py-0.5 text-[11px] font-medium text-intent-fg shadow-sm">
                     {en ? "Collaborator (spring)" : "协作者 (弹簧)"}
                   </span>
                 </div>

@@ -843,7 +843,7 @@ function HoldArc({ progress, mine }: { progress: number; mine: boolean }) {
       viewBox="0 0 20 20"
       aria-hidden
     >
-      <circle cx="10" cy="10" r={r} className={mine ? "stroke-white/25" : "stroke-border-strong"} fill="none" strokeWidth="2" />
+      <circle cx="10" cy="10" r={r} className={mine ? "stroke-accent-fg/25" : "stroke-border-strong"} fill="none" strokeWidth="2" />
       <circle
         cx="10"
         cy="10"
@@ -853,7 +853,7 @@ function HoldArc({ progress, mine }: { progress: number; mine: boolean }) {
         strokeDasharray={c}
         strokeDashoffset={offset}
         strokeLinecap="round"
-        className={mine ? "stroke-white" : "stroke-accent"}
+        className={mine ? "stroke-accent-fg" : "stroke-accent"}
         transform="rotate(-90 10 10)"
       />
     </svg>

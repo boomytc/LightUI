@@ -296,7 +296,7 @@ export function VoiceprintDrawer({
                       type="button"
                       disabled={!newName.trim()}
                       onClick={handleStartSimulatedRecord}
-                      className="mt-2 px-4 py-2 text-xs font-medium text-white bg-wrong hover:bg-wrong/90 rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 mx-auto cursor-pointer"
+                      className="mt-2 px-4 py-2 text-xs font-medium text-wrong-fg bg-wrong hover:bg-wrong/90 rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 mx-auto cursor-pointer"
                     >
                       <Mic className="w-3.5 h-3.5" />
                       {en ? "Start 3s Recording" : "开始 3 秒录制"}

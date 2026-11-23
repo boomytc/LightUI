@@ -94,9 +94,9 @@ function SelectInner({ onReset }: { onReset: () => void }) {
                     >
                       <span
                         className={cn(
-                          "mt-0.5 flex size-4.5 shrink-0 items-center justify-center rounded-md border text-white transition-all",
+                          "mt-0.5 flex size-4.5 shrink-0 items-center justify-center rounded-md border transition-all",
                           isChecked
-                            ? "bg-wrong border-wrong"
+                            ? "bg-wrong border-wrong text-wrong-fg"
                             : "border-border bg-surface",
                         )}
                       >
@@ -116,7 +116,7 @@ function SelectInner({ onReset }: { onReset: () => void }) {
               type="button"
               disabled={!allReady || wiped}
               onClick={() => setWiped(true)}
-              className="mt-4 flex h-9 w-full items-center justify-center rounded-lg bg-wrong text-xs font-semibold text-white shadow-sm transition-all hover:bg-wrong/90 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="mt-4 flex h-9 w-full items-center justify-center rounded-lg bg-wrong text-xs font-semibold text-wrong-fg shadow-sm transition-all hover:bg-wrong/90 disabled:opacity-30 disabled:cursor-not-allowed"
             >
               {wiped ? "组织空间已成功注销" : "已确认全部影响 · 永久注销团队空间"}
             </button>
