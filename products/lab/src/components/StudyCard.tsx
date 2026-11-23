@@ -1,4 +1,12 @@
-import { Component, type ComponentType, type ReactNode, useEffect, useRef, useState } from "react";
+import {
+  Component,
+  type ComponentType,
+  type ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { ArrowUpRight, HelpCircle } from "lucide-react";
 import { DateStamp } from "./DateStamp";
 import { Link } from "./Link";
@@ -22,6 +30,10 @@ class PreviewErrorBoundary extends Component<{ fallback: ReactNode; children: Re
   }
 }
 
+const MAX_PREVIEW_SCALE = 0.46;
+const MIN_PREVIEW_SCALE = 0.08;
+const PREVIEW_PADDING_PX = 8;
+
 function StagePlaceholder({ loading = false }: { loading?: boolean }) {
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-surface-2/30">
@@ -30,6 +42,58 @@ function StagePlaceholder({ loading = false }: { loading?: boolean }) {
       ) : (
         <div className="size-7 rounded-full border border-border/60 opacity-25" />
       )}
+    </div>
+  );
+}
+
+function ScaledStagePreview({ StageView }: { StageView: ComponentType }) {
+  const frameRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(MAX_PREVIEW_SCALE);
+
+  useLayoutEffect(() => {
+    const frame = frameRef.current;
+    const content = contentRef.current;
+    if (!frame || !content) return;
+
+    const update = () => {
+      const frameW = frame.clientWidth;
+      const frameH = frame.clientHeight;
+      if (frameW <= 0 || frameH <= 0) return;
+
+      const availW = Math.max(1, frameW - PREVIEW_PADDING_PX * 2);
+      const availH = Math.max(1, frameH - PREVIEW_PADDING_PX * 2);
+      const contentW = Math.max(content.offsetWidth, content.scrollWidth);
+      const contentH = Math.max(content.offsetHeight, content.scrollHeight);
+      if (contentW <= 0 || contentH <= 0) return;
+
+      const raw = Math.min(MAX_PREVIEW_SCALE, availW / contentW, availH / contentH);
+      const next = Math.max(MIN_PREVIEW_SCALE, Math.floor(raw * 10000) / 10000);
+      setScale((prev) => (Math.abs(prev - next) > 0.0005 ? next : prev));
+    };
+
+    update();
+    const raf = requestAnimationFrame(update);
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(update) : null;
+    observer?.observe(frame);
+    observer?.observe(content);
+    return () => {
+      cancelAnimationFrame(raf);
+      observer?.disconnect();
+    };
+  }, [StageView]);
+
+  return (
+    <div ref={frameRef} className="absolute inset-0 flex items-center justify-center overflow-hidden">
+      <div
+        ref={contentRef}
+        className="w-[560px] shrink-0 origin-center"
+        style={{ transform: `scale(${scale})` }}
+      >
+        <div className="lab-stage-preview">
+          <StageView />
+        </div>
+      </div>
     </div>
   );
 }
@@ -123,13 +187,7 @@ export function StudyCard({
         >
           {StageView && isInView ? (
             <PreviewErrorBoundary fallback={<StagePlaceholder />}>
-              <div className="absolute inset-0 flex items-center justify-center p-2">
-                <div className="flex h-[300px] w-[560px] shrink-0 origin-center scale-[0.46] items-center justify-center">
-                  <div className="lab-stage-preview">
-                    <StageView />
-                  </div>
-                </div>
-              </div>
+              <ScaledStagePreview StageView={StageView} />
             </PreviewErrorBoundary>
           ) : (
             <StagePlaceholder loading={isInView && isStageLoading} />
