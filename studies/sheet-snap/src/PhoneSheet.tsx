@@ -2,7 +2,7 @@ import type { CSSProperties, PointerEvent as ReactPointerEvent, RefObject } from
 import { Coffee, MapPin, Navigation, Phone, Search, Share2 } from "lucide-react";
 import { DEFAULT_SNAP_HEIGHTS, type SnapPoint } from "./lib/machines";
 import { PLACE_DATA, SNAPS_META } from "./lib/kinds";
-import { useLocale } from "./lib/site-locale";
+import { pick, useLocale } from "./lib/site-locale";
 import { cn } from "./lib/utils";
 import "./sheet.css";
 
@@ -55,12 +55,12 @@ export function PhoneSheet({
 }: PhoneSheetProps) {
   const locale = useLocale();
   const progress = sheetProgress(height);
-  const cafeName = PLACE_DATA.name.split(" · ")[0];
+  const cafeName = pick(PLACE_DATA.name, locale);
 
   return (
     <div
-      className="relative isolate overflow-hidden rounded-[36px] border-[5px] border-fg/12 bg-surface shadow-menu ring-1 ring-border"
-      style={{ width: PHONE_WIDTH, height: PHONE_HEIGHT }}
+      className="relative isolate min-w-0 overflow-hidden rounded-[36px] border-[5px] border-fg/12 bg-surface shadow-menu ring-1 ring-border"
+      style={{ width: PHONE_WIDTH, maxWidth: "100%", height: PHONE_HEIGHT }}
     >
       <div className="pointer-events-none absolute top-3 left-1/2 z-40 h-5 w-28 -translate-x-1/2 rounded-full bg-fg/80" />
 
@@ -154,7 +154,7 @@ export function PhoneSheet({
                 <h3 className="text-[16px] font-semibold tracking-tight text-fg">{cafeName}</h3>
                 <p className="mt-0.5 flex flex-wrap items-center gap-2 text-[12px]">
                   <span className="font-medium text-intent">{locale === "en" ? "Open" : "营业中"}</span>
-                  <span className="text-fg-muted">{PLACE_DATA.distance}</span>
+                  <span className="text-fg-muted">{pick(PLACE_DATA.distance, locale)}</span>
                 </p>
               </div>
               <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
@@ -204,8 +204,8 @@ export function PhoneSheet({
             <p className="font-medium text-fg">
               {locale === "en" ? "Address & hours" : "地址与营业详情"}
             </p>
-            <p className="mt-0.5">{PLACE_DATA.address}</p>
-            <p className="mt-0.5 text-fg-subtle">{PLACE_DATA.status}</p>
+            <p className="mt-0.5">{pick(PLACE_DATA.address, locale)}</p>
+            <p className="mt-0.5 text-fg-subtle">{pick(PLACE_DATA.status, locale)}</p>
           </div>
 
           <div>
@@ -215,10 +215,10 @@ export function PhoneSheet({
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {PLACE_DATA.tags.map((tag) => (
                 <span
-                  key={tag}
+                  key={tag.zh}
                   className="rounded-lg border border-border/70 bg-surface-2 px-2 py-0.5 text-[11px] text-fg"
                 >
-                  {tag}
+                  {pick(tag, locale)}
                 </span>
               ))}
             </div>
@@ -242,14 +242,14 @@ export function PhoneSheet({
             <div className="space-y-2">
               {PLACE_DATA.reviews.map((review) => (
                 <div
-                  key={review.user}
+                  key={review.id}
                   className="rounded-xl border border-border/60 bg-surface-2/80 p-2.5"
                 >
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-medium text-fg">{review.user}</span>
+                    <span className="font-medium text-fg">{pick(review.user, locale)}</span>
                     <span className="font-mono text-[10px] text-accent">5.0</span>
                   </div>
-                  <p className="mt-1 text-[11px] leading-relaxed text-fg-muted">{review.comment}</p>
+                  <p className="mt-1 text-[11px] leading-relaxed text-fg-muted">{pick(review.comment, locale)}</p>
                 </div>
               ))}
             </div>

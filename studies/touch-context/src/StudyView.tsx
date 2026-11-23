@@ -79,14 +79,28 @@ export function StudyView() {
   const phoneBodyRef = useRef<HTMLDivElement>(null);
   const feedRef = useRef<HTMLDivElement>(null);
   const scrimDrag = useRef<{ y: number; scrollTop: number } | null>(null);
+  const toastTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
+      if (toastTimerRef.current !== null) {
+        window.clearTimeout(toastTimerRef.current);
+        toastTimerRef.current = null;
+      }
       if (!holdState.current) return;
       window.clearTimeout(holdState.current.timerId);
       cancelAnimationFrame(holdState.current.rafId);
     };
   }, []);
+
+  useEffect(() => {
+    if (!activeMenu) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveMenu(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [activeMenu]);
 
   function clientToPhone(clientX: number, clientY: number) {
     const box = phoneBodyRef.current?.getBoundingClientRect();
@@ -96,7 +110,11 @@ export function StudyView() {
 
   function showToast(msg: string) {
     setToastMessage(msg);
-    window.setTimeout(() => setToastMessage(null), 2000);
+    if (toastTimerRef.current !== null) window.clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = window.setTimeout(() => {
+      setToastMessage(null);
+      toastTimerRef.current = null;
+    }, 2000);
   }
 
   function openMenuAt(msgId: string, clientX: number, clientY: number) {
@@ -448,7 +466,16 @@ export function StudyView() {
 
                 {activeMenu && (
                   <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label={locale === "en" ? "Dismiss context menu" : "关闭上下文菜单"}
                     onClick={() => setActiveMenu(null)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " " || e.key === "Escape") {
+                        e.preventDefault();
+                        setActiveMenu(null);
+                      }
+                    }}
                     onWheel={(e) => {
                       e.stopPropagation();
                       setActiveMenu(null);

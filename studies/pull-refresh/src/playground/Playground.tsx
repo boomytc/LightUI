@@ -414,7 +414,7 @@ function Instrument({
         <ThresholdTrack pullPx={pullPx} progress={progress} qualified={qualified} busy={busy} locale={locale} />
       </div>
 
-      <div className="relative z-10 mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-4">
+      <div className="relative z-10 mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-surface/15 pt-4">
         <p className="text-[11px] leading-relaxed text-surface/45">
           {pick(PHASE_COPY[phase].hint, locale)}
         </p>
@@ -449,8 +449,8 @@ function ConditionLamp({
         on
           ? accent
             ? "border-accent/40 bg-accent/15"
-            : "border-white/16 bg-white/8"
-          : "border-white/8 bg-black/20 opacity-70",
+            : "border-surface/20 bg-surface/10"
+          : "border-surface/12 bg-surface/5 opacity-70",
       )}
     >
       <div className="flex items-center gap-1.5">
@@ -492,7 +492,7 @@ function Meter({
           {unit}
         </span>
       </div>
-      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/8">
+      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface/12">
         <div
           className={cn("h-full rounded-full", accent ? "bg-accent" : "bg-surface/55")}
           style={{ width: `${pct}%` }}
@@ -518,7 +518,7 @@ function PullRuler({
 
   return (
     <div className="relative h-[156px] w-full">
-      <div className="absolute inset-y-0 left-6 right-2 rounded-full bg-white/8" />
+      <div className="absolute inset-y-0 left-6 right-2 rounded-full bg-surface/12" />
       <div
         className={cn(
           "absolute bottom-0 left-6 right-2 rounded-full",
@@ -587,9 +587,9 @@ function ThresholdTrack({
                   : `未达线 · 将复位 ${Math.round(progress * 100)}%`}
         </span>
       </div>
-      <div className="relative mt-2 h-3 overflow-hidden rounded-full bg-white/8">
+      <div className="relative mt-2 h-3 overflow-hidden rounded-full bg-surface/12">
         <div
-          className="absolute inset-y-0 left-0 bg-white/10"
+          className="absolute inset-y-0 left-0 bg-surface/14"
           style={{ width: `${thresholdPct}%` }}
         />
         <div
@@ -632,7 +632,7 @@ function SeekButton({
       onClick={onClick}
       className={cn(
         "rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors disabled:opacity-40",
-        active ? "bg-white/12 text-surface" : "text-surface/55 hover:bg-white/8 hover:text-surface",
+        active ? "bg-surface/16 text-surface" : "text-surface/60 hover:bg-surface/10 hover:text-surface",
       )}
     >
       {children}

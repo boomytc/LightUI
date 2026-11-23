@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Copy } from "lucide-react";
+import { useLocale } from "../lib/site-locale.js";
 
 export function CopyBlock({
   label,
@@ -8,7 +9,15 @@ export function CopyBlock({
   label: string;
   text: string;
 }) {
+  const locale = useLocale();
   const [copied, setCopied] = useState(false);
+  const timerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+    };
+  }, []);
 
   async function handleCopy() {
     try {
@@ -17,7 +26,11 @@ export function CopyBlock({
       // keep the visual confirm even if clipboard is blocked
     }
     setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
+    if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => {
+      setCopied(false);
+      timerRef.current = null;
+    }, 1800);
   }
 
   return (
@@ -34,12 +47,12 @@ export function CopyBlock({
           {copied ? (
             <>
               <Check className="size-3.5 text-intent" />
-              <span className="text-intent">已复制</span>
+              <span className="text-intent">{locale === "en" ? "Copied" : "已复制"}</span>
             </>
           ) : (
             <>
               <Copy className="size-3.5" />
-              <span>复制</span>
+              <span>{locale === "en" ? "Copy" : "复制"}</span>
             </>
           )}
         </button>

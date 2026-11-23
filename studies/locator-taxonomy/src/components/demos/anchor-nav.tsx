@@ -86,6 +86,17 @@ export function AnchorNavDemo() {
     });
   }, [activeGroup.name, activeIndex, report, t]);
 
+  const lockTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (lockTimerRef.current !== null) {
+        window.clearTimeout(lockTimerRef.current);
+        lockTimerRef.current = null;
+      }
+    };
+  }, []);
+
   function jump(id: string) {
     const root = scrollerRef.current;
     const target = root?.querySelector<HTMLElement>(`#${id}`);
@@ -101,9 +112,11 @@ export function AnchorNavDemo() {
     lockRef.current = true;
     smoothScrollTo(root, Math.max(0, top));
 
-    window.setTimeout(
+    if (lockTimerRef.current !== null) window.clearTimeout(lockTimerRef.current);
+    lockTimerRef.current = window.setTimeout(
       () => {
         lockRef.current = false;
+        lockTimerRef.current = null;
       },
       prefersReducedMotion() ? 50 : 420,
     );

@@ -97,7 +97,7 @@ function SinglePage() {
           : "主标题够大、正文一列、图片不喧宾夺主。"}
       </p>
       <figure className="overflow-hidden rounded-xl">
-        <div className="h-24 bg-linear-to-br from-accent-soft via-[#e8eeff] to-surface-2" />
+        <div className="h-24 bg-linear-to-br from-accent-soft via-play-glow to-surface-2" />
         <figcaption className="mt-2 text-[11px] text-fg-subtle">
           {locale === "en" ? "Figure stays on the same axis." : "配图也落在同一条轴上。"}
         </figcaption>
@@ -208,7 +208,7 @@ function MasonryPage() {
 function FullscreenPage() {
   const locale = useLocale();
   return (
-    <section className="layout-full bg-linear-to-b from-[#f7f8fa] via-accent-soft to-[#dce6ff]">
+    <section className="layout-full bg-linear-to-b from-surface-2 via-accent-soft to-play-glow text-fg">
       <div>
         <p className="text-[11px] font-medium tracking-[0.16em] text-accent uppercase">
           {locale === "en" ? "Autumn launch" : "秋季发布会"}

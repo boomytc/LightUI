@@ -35,7 +35,7 @@ export function FloatingDemo() {
             </span>
             <div className="min-w-0">
               <p className="truncate text-[13px] font-medium">Morrow</p>
-              <p className="truncate text-[11px] text-white/45">
+              <p className="truncate text-[11px] text-surface/60">
                 {locale === "en" ? "Site redesign" : "网站改版"}
               </p>
             </div>
@@ -51,13 +51,13 @@ export function FloatingDemo() {
                   onClick={() => setPage(item.id)}
                   className={cn(
                     "flex h-9 items-center gap-2.5 rounded-md px-2.5 text-left text-[13px]",
-                    on ? "bg-white/10 text-surface" : "text-white/55 hover:bg-white/5 hover:text-surface",
+                    on ? "bg-surface/14 text-surface" : "text-surface/65 hover:bg-surface/8 hover:text-surface",
                   )}
                 >
                   <Icon className="size-3.5 shrink-0" strokeWidth={1.8} />
                   <span className="min-w-0 flex-1 truncate">{pick(item.label, locale)}</span>
                   {"badge" in item && item.badge ? (
-                    <span className="text-[11px] text-white/45 tabular-nums">{item.badge}</span>
+                    <span className="text-[11px] text-surface/60 tabular-nums">{item.badge}</span>
                   ) : null}
                 </button>
               );

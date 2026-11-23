@@ -113,7 +113,7 @@ export function SearchDemo() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="搜索名称、标签或正文"
-          className="w-full min-w-0 bg-transparent text-[13px] text-fg outline-none placeholder:text-fg-subtle"
+          className="w-full min-w-0 rounded-sm bg-transparent text-[13px] text-fg placeholder:text-fg-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         />
         {query.length > 0 && (
           <button

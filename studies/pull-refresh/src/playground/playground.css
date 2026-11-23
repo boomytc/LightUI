@@ -2,8 +2,13 @@
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(120% 80% at 100% 0%, rgb(59 108 255 / 0.18), transparent 46%),
-    linear-gradient(180deg, #1c1d24 0%, var(--color-fg) 48%, #121318 100%);
+    radial-gradient(120% 80% at 100% 0%, color-mix(in oklab, var(--color-accent) 18%, transparent), transparent 46%),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-fg) 92%, var(--color-surface)) 0%,
+      var(--color-fg) 48%,
+      color-mix(in oklab, var(--color-fg) 96%, black) 100%
+    );
   color: var(--color-surface);
 }
 
@@ -17,8 +22,8 @@
     -12deg,
     transparent,
     transparent 2px,
-    rgb(255 255 255 / 0.04) 2px,
-    rgb(255 255 255 / 0.04) 3px
+    color-mix(in oklab, var(--color-surface) 6%, transparent) 2px,
+    color-mix(in oklab, var(--color-surface) 6%, transparent) 3px
   );
 }
 

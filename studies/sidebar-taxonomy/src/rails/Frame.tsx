@@ -18,8 +18,8 @@ export function Frame({
         dark ? "bg-fg text-surface" : "bg-surface",
       )}
     >
-      <div className={cn("shrink-0 border-b px-4 py-2.5", dark ? "border-white/10" : "border-border")}>
-        <p className={cn("truncate text-[12px]", dark ? "text-white/45" : "text-fg-subtle")}>{title}</p>
+      <div className={cn("shrink-0 border-b px-4 py-2.5", dark ? "border-surface/15" : "border-border")}>
+        <p className={cn("truncate text-[12px]", dark ? "text-surface/60" : "text-fg-subtle")}>{title}</p>
       </div>
       <div className="flex min-h-[28rem] w-full min-w-0 flex-1 flex-col">{children}</div>
     </div>

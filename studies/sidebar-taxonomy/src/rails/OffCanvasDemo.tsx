@@ -80,9 +80,13 @@ export function OffCanvasDemo({ defaultOpen = false }: { defaultOpen?: boolean }
   return (
     <Frame title={locale === "en" ? "Design Notes · essay" : "Design Notes · 长文"}>
       <div className="relative min-h-[28rem] w-full min-w-0 flex-1 overflow-hidden bg-surface">
-        <div
+        <button
+          type="button"
+          tabIndex={open ? 0 : -1}
+          aria-hidden={!open}
+          aria-label={locale === "en" ? "Close contents backdrop" : "关闭目录遮罩"}
           className={cn(
-            "rail-veil absolute inset-0 z-[1] bg-fg/30 backdrop-blur-[2px]",
+            "rail-veil absolute inset-0 z-[1] border-0 bg-fg/30 backdrop-blur-[2px]",
             open ? "opacity-100" : "pointer-events-none opacity-0",
           )}
           onClick={close}
@@ -97,7 +101,7 @@ export function OffCanvasDemo({ defaultOpen = false }: { defaultOpen?: boolean }
           aria-hidden={!open}
         >
           <div className="flex h-16 items-center px-5 pl-16">
-            <span className="text-[11px] tracking-[0.16em] text-white/45 uppercase">
+            <span className="text-[11px] tracking-[0.16em] text-surface/60 uppercase">
               {locale === "en" ? "Contents" : "目录"}
             </span>
           </div>
@@ -106,6 +110,7 @@ export function OffCanvasDemo({ defaultOpen = false }: { defaultOpen?: boolean }
               <button
                 key={item.id}
                 type="button"
+                tabIndex={open ? 0 : -1}
                 onClick={() => {
                   setSection(item.id);
                   close();
@@ -113,11 +118,11 @@ export function OffCanvasDemo({ defaultOpen = false }: { defaultOpen?: boolean }
                 className={cn(
                   "flex h-9 items-center gap-3 rounded-md px-3 text-left text-[13px]",
                   section === item.id
-                    ? "bg-white/10 text-surface"
-                    : "text-white/55 hover:bg-white/5 hover:text-surface",
+                    ? "bg-surface/14 text-surface"
+                    : "text-surface/65 hover:bg-surface/8 hover:text-surface",
                 )}
               >
-                <span className="w-5 font-mono text-[11px] tabular-nums text-white/45">{item.n}</span>
+                <span className="w-5 font-mono text-[11px] tabular-nums text-surface/55">{item.n}</span>
                 <span className="truncate">{pick(item.label, locale)}</span>
               </button>
             ))}
@@ -175,7 +180,7 @@ export function OffCanvasDemo({ defaultOpen = false }: { defaultOpen?: boolean }
               </p>
             </div>
             <div className="relative aspect-square w-24 shrink-0 overflow-hidden rounded-lg bg-fg">
-              <span className="absolute top-1/2 left-1/2 size-14 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20" />
+              <span className="absolute top-1/2 left-1/2 size-14 -translate-x-1/2 -translate-y-1/2 rounded-full border border-surface/25" />
             </div>
           </div>
         </article>

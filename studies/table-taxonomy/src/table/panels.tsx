@@ -81,14 +81,14 @@ export function Anchor({
 
   useEffect(() => {
     if (!open) return;
-    const onDoc = (event: MouseEvent) => {
+    const onDoc = (event: PointerEvent) => {
       const target = event.target as Node;
       if (panelRef.current?.contains(target)) return;
       if (anchorRef.current?.contains(target)) return;
       onClose();
     };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
+    document.addEventListener("pointerdown", onDoc);
+    return () => document.removeEventListener("pointerdown", onDoc);
   }, [open, anchorRef, onClose]);
 
   if (!open || !root) return null;
@@ -367,14 +367,14 @@ export function RecordDialog({
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-50 grid place-items-center bg-fg/30 p-4" onMouseDown={onClose}>
+    <div className="fixed inset-0 z-50 grid place-items-center bg-fg/30 p-4" onPointerDown={onClose}>
       <div
         data-stage="popover"
         role="dialog"
         aria-modal="true"
         aria-label={title}
         className="w-full max-w-md rounded-2xl border border-border bg-surface p-5 shadow-menu"
-        onMouseDown={(event) => event.stopPropagation()}
+        onPointerDown={(event) => event.stopPropagation()}
       >
         <h3 className="text-[16px] font-semibold tracking-tight">{title}</h3>
         {deleting ? (

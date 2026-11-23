@@ -9,8 +9,11 @@ export type ScenarioId = "full" | "crosstalk" | "late_resolve";
 export interface StreamScenario {
   id: ScenarioId;
   label: string;
+  labelEn: string;
   badge: string;
+  badgeEn: string;
   description: string;
+  descriptionEn: string;
   events: StreamingMeetingEvent[];
 }
 
@@ -373,22 +376,34 @@ export const STREAM_SCENARIOS: StreamScenario[] = [
   {
     id: "full",
     label: "全流程标准研讨",
+    labelEn: "Full Meeting Flow",
     badge: "全景",
+    badgeEn: "End-to-End",
     description: "涵盖声纹建档、多说话人轮转、声纹迟到更名以及抢话冲突全景演示",
+    descriptionEn:
+      "Covers voiceprint enrollment, multi-speaker turns, late speaker identification, and overlap crosstalk.",
     events: SIMULATED_EVENTS,
   },
   {
     id: "crosstalk",
     label: "密集抢话碰撞焦点",
+    labelEn: "Crosstalk Overlap",
     badge: "重叠冲突",
+    badgeEn: "Overlap",
     description: "聚焦模拟多人同时开口时的行内微光呼吸提示与重叠碰撞徽标吸附",
+    descriptionEn:
+      "Focuses on simultaneous speech with inline amber glow and overlap badges.",
     events: CROSSTALK_EVENTS,
   },
   {
     id: "late_resolve",
     label: "声纹后验平滑更名",
+    labelEn: "Late Speaker Resolve",
     badge: "无感过渡",
+    badgeEn: "Smooth ID",
     description: "聚焦先出字（Speaker 0 占位）、后认人（累积声学采样后无感平滑切换真实姓名）",
+    descriptionEn:
+      "Focuses on streaming text first under a placeholder speaker, then smoothly resolving the real name.",
     events: LATE_RESOLVE_EVENTS,
   },
 ];

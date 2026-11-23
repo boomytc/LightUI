@@ -54,15 +54,18 @@ export function Desk({
 }) {
   const locale = useLocale();
   const teach = mode === "teach";
-  const [state, dispatch] = useReducer(reduceDesk, undefined, () =>
-    mode === "stage" ? stageDesk(kind, stageState) : prime(kind, resting()),
-  );
+  const [state, dispatch] = useReducer(reduceDesk, undefined, () => {
+    if (mode === "stage") return stageDesk(kind, stageState);
+    const narrow = typeof window !== "undefined" && window.matchMedia("(max-width: 639px)").matches;
+    return narrow ? resting() : prime(kind, resting());
+  });
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [rootEl, setRootEl] = useState<HTMLDivElement | null>(null);
   const anchorRef = useRef<HTMLElement | null>(null);
   const primed = useRef(teach ? primeTick : -1);
   const [facetQuery, setFacetQuery] = useState("");
   const [edge, setEdge] = useState({ x: false, y: false });
+  const [scrollX, setScrollX] = useState({ overflow: false, moreRight: false });
   const headRef = useRef<HTMLInputElement>(null);
 
   const visible = visibleCustomers(state.rows, state.facets, state.query, state.sort);
@@ -97,6 +100,22 @@ export function Desk({
     el.scrollLeft = next.left;
     setEdge({ x: next.left > 0, y: next.top > 0 });
   }, [mode, kind, stageState]);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const sync = () => {
+      const overflow = el.scrollWidth > el.clientWidth + 2;
+      const moreRight = overflow && el.scrollLeft + el.clientWidth < el.scrollWidth - 2;
+      setScrollX((prev) =>
+        prev.overflow === overflow && prev.moreRight === moreRight ? prev : { overflow, moreRight },
+      );
+    };
+    sync();
+    const ro = new ResizeObserver(sync);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [fields.length, visible.length]);
 
   useEffect(() => {
     setFacetQuery("");
@@ -275,22 +294,31 @@ export function Desk({
           {flash ? <p className="mt-2 text-[12px] text-accent">{flash}</p> : null}
         </div>
 
-        <div
-          ref={scrollerRef}
-          data-scroller
-          data-stuck={edge.y ? "y" : edge.x ? "x" : "none"}
-          className={cn(
-            "h-80 overflow-auto border-t border-border",
-            teach && kind === "sticky" && "ring-2 ring-inset ring-accent/40",
-          )}
-          onScroll={(event) => {
-            const top = event.currentTarget.scrollTop;
-            const left = event.currentTarget.scrollLeft;
-            const next = { x: left > 0, y: top > 12 };
-            setEdge((prev) => (prev.x === next.x && prev.y === next.y ? prev : next));
-            if (teach && top > 12 && kind !== "sticky") look("sticky");
-          }}
-        >
+        <div className="relative">
+          <div
+            ref={scrollerRef}
+            data-scroller
+            data-stuck={edge.y ? "y" : edge.x ? "x" : "none"}
+            className={cn(
+              "h-80 overflow-auto border-t border-border",
+              teach && kind === "sticky" && "ring-2 ring-inset ring-accent/40",
+            )}
+            onScroll={(event) => {
+              const el = event.currentTarget;
+              const top = el.scrollTop;
+              const left = el.scrollLeft;
+              const next = { x: left > 0, y: top > 12 };
+              setEdge((prev) => (prev.x === next.x && prev.y === next.y ? prev : next));
+              const overflow = el.scrollWidth > el.clientWidth + 2;
+              const moreRight = overflow && left + el.clientWidth < el.scrollWidth - 2;
+              setScrollX((prev) =>
+                prev.overflow === overflow && prev.moreRight === moreRight
+                  ? prev
+                  : { overflow, moreRight },
+              );
+              if (teach && top > 12 && kind !== "sticky") look("sticky");
+            }}
+          >
           <table className="w-full min-w-[720px] border-separate border-spacing-0 text-[13px]">
             <thead>
               <tr className="text-left text-fg-muted">
@@ -473,20 +501,40 @@ export function Desk({
               )}
             </tbody>
           </table>
+          </div>
+          {scrollX.moreRight ? (
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 right-0 z-25 w-8 bg-linear-to-l from-surface via-surface/70 to-transparent"
+            />
+          ) : null}
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 sm:px-5">
-          <p className="text-[12px] text-fg-muted">
-            {locale === "en" ? "Showing" : "当前"}{" "}
-            <span className="tabular-nums text-fg">{visible.length}</span>
-            {visible.length !== state.rows.length ? (
-              <span>
-                {" "}
-                / {locale === "en" ? "all" : "全部"}{" "}
-                <span className="tabular-nums">{state.rows.length}</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-[12px] text-fg-muted">
+              {locale === "en" ? "Showing" : "当前"}{" "}
+              <span className="tabular-nums text-fg">{visible.length}</span>
+              {visible.length !== state.rows.length ? (
+                <span>
+                  {" "}
+                  / {locale === "en" ? "all" : "全部"}{" "}
+                  <span className="tabular-nums">{state.rows.length}</span>
+                </span>
+              ) : null}
+            </p>
+            {scrollX.overflow ? (
+              <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-fg-subtle">
+                {scrollX.moreRight
+                  ? locale === "en"
+                    ? "Swipe table →"
+                    : "左右滑动查看更多列 →"
+                  : locale === "en"
+                    ? "← Scroll back"
+                    : "← 向左滑回首列"}
               </span>
             ) : null}
-          </p>
+          </div>
           {teach ? (
             <button
               type="button"

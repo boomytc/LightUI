@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FileText,
   Copy,
@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import type { ActionItem, MeetingMinutesData, TopicItem, TurnRecord } from "../lib/types";
 import { filterTurnsBySpeaker, formatTimestampFull, getSpeakerTheme } from "../lib/machines";
+import { useLocale } from "../lib/site-locale";
 
 interface MinutesBoardProps {
   turns: TurnRecord[];
@@ -33,25 +34,36 @@ export function MinutesBoard({
   onReturnToLive,
   onResetToPrep,
 }: MinutesBoardProps) {
+  const en = useLocale() === "en";
   const [selectedSpeaker, setSelectedSpeaker] = useState<string | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"preview" | "source">("preview");
   const [copied, setCopied] = useState(false);
   const [isInlineEditing, setIsInlineEditing] = useState(false);
 
-  // Editable session minutes state
   const [executiveSummary, setExecutiveSummary] = useState(minutes.executiveSummary);
   const [topics, setTopics] = useState<TopicItem[]>(minutes.topics);
   const [decisions, setDecisions] = useState<string[]>(minutes.decisions);
   const [actionItems, setActionItems] = useState<ActionItem[]>(minutes.actionItems);
   const [rawMarkdown, setRawMarkdown] = useState(minutes.rawMarkdown);
+  const copyTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current !== null) window.clearTimeout(copyTimerRef.current);
+    };
+  }, []);
 
   const filteredTurns = filterTurnsBySpeaker(turns, selectedSpeaker, searchQuery);
 
   const handleCopyMarkdown = () => {
     navigator.clipboard?.writeText(rawMarkdown);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (copyTimerRef.current !== null) window.clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = window.setTimeout(() => {
+      setCopied(false);
+      copyTimerRef.current = null;
+    }, 2000);
   };
 
   const handleToggleActionItem = (id: string) => {
@@ -75,7 +87,7 @@ export function MinutesBoard({
 
   const handleExportHtml = () => {
     const htmlContent = `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="${en ? "en" : "zh-CN"}">
 <head>
   <meta charset="utf-8">
   <title>${minutes.title}</title>
@@ -96,22 +108,22 @@ export function MinutesBoard({
 <body>
   <h1>${minutes.title}</h1>
   <div class="meta">
-    <span>日期: ${minutes.date}</span>
-    <span>时长: ${minutes.durationStr}</span>
-    <span>参会人: ${minutes.attendees.join("、")}</span>
+    <span>${en ? "Date" : "日期"}: ${minutes.date}</span>
+    <span>${en ? "Duration" : "时长"}: ${minutes.durationStr}</span>
+    <span>${en ? "Attendees" : "参会人"}: ${minutes.attendees.join(en ? ", " : "、")}</span>
   </div>
   <div class="box">
-    <div class="box-title">会议核心摘要</div>
+    <div class="box-title">${en ? "Executive Summary" : "会议核心摘要"}</div>
     <p style="margin: 0; font-size: 14px;">${executiveSummary}</p>
   </div>
-  <div class="section-title">议题讨论与关键决议</div>
+  <div class="section-title">${en ? "Discussion Topics" : "议题讨论与关键决议"}</div>
   ${topics
     .map(
       (t) => `
     <div class="topic-card">
       <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
         <strong>${t.title}</strong>
-        <span style="font-size:12px; color:#64748b;">主要发言: ${t.speakers.join(", ")}</span>
+        <span style="font-size:12px; color:#64748b;">${en ? "Speakers" : "主要发言"}: ${t.speakers.join(", ")}</span>
       </div>
       <p style="font-size:13px; color:#475569; margin: 0 0 8px;">${t.summary}</p>
       <ul style="margin:0; padding-left:20px; font-size:13px; color:#475569;">
@@ -121,7 +133,7 @@ export function MinutesBoard({
   `,
     )
     .join("")}
-  <div class="section-title">核心决议</div>
+  <div class="section-title">${en ? "Key Decisions" : "核心决议"}</div>
   <div class="box" style="background:#f0fdf4; border-color:#bbf7d0;">
     ${decisions
       .map(
@@ -134,7 +146,7 @@ export function MinutesBoard({
       )
       .join("")}
   </div>
-  <div class="section-title">待办事项清单 (Action Items)</div>
+  <div class="section-title">${en ? "Action Items" : "待办事项清单 (Action Items)"}</div>
   ${actionItems
     .map(
       (item) => `
@@ -158,7 +170,6 @@ export function MinutesBoard({
 
   return (
     <div className="w-full flex flex-col h-[740px] bg-surface rounded-2xl border border-border shadow-card overflow-hidden">
-      {/* 1. Header with Meeting Meta & Actions */}
       <div className="px-6 py-4 border-b border-border bg-surface-2/60 flex flex-wrap items-center justify-between gap-3 shrink-0">
         <div>
           <div className="flex items-center gap-2">
@@ -167,7 +178,7 @@ export function MinutesBoard({
             </span>
             <h2 className="text-base font-bold text-fg">{minutes.title}</h2>
           </div>
-          <div className="flex items-center gap-4 text-xs text-fg-muted mt-1.5">
+          <div className="flex flex-wrap items-center gap-4 text-xs text-fg-muted mt-1.5">
             <span className="flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5 text-fg-subtle" /> {minutes.date}
             </span>
@@ -175,7 +186,9 @@ export function MinutesBoard({
               <Clock className="w-3.5 h-3.5 text-fg-subtle" /> {minutes.durationStr}
             </span>
             <span className="flex items-center gap-1">
-              <Users className="w-3.5 h-3.5 text-fg-subtle" /> 参会人: {minutes.attendees.join("、")}
+              <Users className="w-3.5 h-3.5 text-fg-subtle" />{" "}
+              {en ? "Attendees: " : "参会人: "}
+              {minutes.attendees.join(en ? ", " : "、")}
             </span>
           </div>
         </div>
@@ -185,10 +198,10 @@ export function MinutesBoard({
             type="button"
             onClick={onResetToPrep}
             className="px-3 py-1.5 text-xs font-medium text-fg-muted hover:text-fg bg-surface border border-border rounded-lg hover:bg-surface-2 transition-colors flex items-center gap-1.5 cursor-pointer"
-            title="清空当前会议记录并返回会前声纹抽屉"
+            title={en ? "Reset session and return to voiceprints" : "清空当前会议记录并返回会前声纹抽屉"}
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            重置并建档
+            {en ? "Reset to Prep" : "重置并建档"}
           </button>
 
           <button
@@ -197,7 +210,7 @@ export function MinutesBoard({
             className="px-3 py-1.5 text-xs font-medium text-fg-muted hover:text-fg bg-surface border border-border rounded-lg hover:bg-surface-2 transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            回到实时舞台
+            {en ? "Back to Live" : "回到实时舞台"}
           </button>
 
           <button
@@ -206,56 +219,54 @@ export function MinutesBoard({
             className="px-3 py-1.5 text-xs font-medium text-accent bg-accent-soft border border-accent/20 rounded-lg hover:bg-accent/20 transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-intent" /> : <Copy className="w-3.5 h-3.5" />}
-            {copied ? "已复制" : "复制 Markdown"}
+            {copied ? (en ? "Copied" : "已复制") : en ? "Copy Markdown" : "复制 Markdown"}
           </button>
 
           <button
             type="button"
             onClick={handleExportHtml}
             className="px-3 py-1.5 text-xs font-medium text-fg bg-surface border border-border hover:bg-surface-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer"
-            title="导出为独立自包含的 HTML 纪要文件"
+            title={en ? "Export standalone HTML minutes" : "导出为独立自包含的 HTML 纪要文件"}
           >
             <Download className="w-3.5 h-3.5 text-accent" />
-            导出 HTML
+            {en ? "Export HTML" : "导出 HTML"}
           </button>
 
           <button
             type="button"
             onClick={handleExportPdf}
-            className="px-3.5 py-1.5 text-xs font-semibold text-white bg-accent hover:bg-accent/90 rounded-lg shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
-            title="调起打印并导出高保真 PDF"
+            className="px-3.5 py-1.5 text-xs font-semibold text-accent-fg bg-accent hover:bg-accent/90 rounded-lg shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+            title={en ? "Open print dialog to export PDF" : "调起打印并导出高保真 PDF"}
           >
             <Printer className="w-3.5 h-3.5" />
-            导出 PDF
+            {en ? "Export PDF" : "导出 PDF"}
           </button>
         </div>
       </div>
 
-      {/* 2. Split Screen: Left Transcript Stream | Right Structured Minutes */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden divide-y lg:divide-y-0 lg:divide-x divide-border">
-        {/* Left Column (5/12): Chronological Transcript Stream */}
         <div className="lg:col-span-5 flex flex-col h-full bg-surface">
-          {/* Transcript Toolbar */}
           <div className="p-3.5 border-b border-border bg-surface-2/40 space-y-2.5 shrink-0">
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-fg flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-accent" />
-                时间轴对话流水 ({filteredTurns.length} 话轮)
+                {en
+                  ? `Transcript Timeline (${filteredTurns.length} turns)`
+                  : `时间轴对话流水 (${filteredTurns.length} 话轮)`}
               </span>
             </div>
 
-            {/* Speaker Filter Chips */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
               <button
                 type="button"
                 onClick={() => setSelectedSpeaker("all")}
                 className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer text-[11px] ${
                   selectedSpeaker === "all"
-                    ? "bg-accent text-white font-medium"
+                    ? "bg-accent text-accent-fg font-medium"
                     : "bg-surface border border-border text-fg-muted hover:text-fg"
                 }`}
               >
-                全部
+                {en ? "All" : "全部"}
               </button>
               {minutes.attendees.map((name, idx) => (
                 <button
@@ -264,7 +275,7 @@ export function MinutesBoard({
                   onClick={() => setSelectedSpeaker(name)}
                   className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer text-[11px] flex items-center gap-1 ${
                     selectedSpeaker === name
-                      ? "bg-accent text-white font-medium"
+                      ? "bg-accent text-accent-fg font-medium"
                       : "bg-surface border border-border text-fg-muted hover:text-fg"
                   }`}
                 >
@@ -277,24 +288,26 @@ export function MinutesBoard({
               ))}
             </div>
 
-            {/* Keyword Search */}
             <div className="relative">
               <Search className="w-3.5 h-3.5 text-fg-subtle absolute left-2.5 top-2.5" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="搜索转录关键词或人名 (如: 张三、架构)..."
+                placeholder={
+                  en
+                    ? "Search transcript keywords or speakers..."
+                    : "搜索转录关键词或人名 (如: 张三、架构)..."
+                }
                 className="w-full pl-8 pr-3 py-1.5 text-xs bg-surface border border-border rounded-lg focus:outline-none focus:ring-1 focus:ring-accent"
               />
             </div>
           </div>
 
-          {/* Transcript Scroll Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {filteredTurns.length === 0 ? (
               <div className="text-center py-12 text-xs text-fg-subtle">
-                未检索到匹配的发言记录
+                {en ? "No matching transcript turns" : "未检索到匹配的发言记录"}
               </div>
             ) : (
               filteredTurns.map((turn, i) => {
@@ -319,7 +332,7 @@ export function MinutesBoard({
                       <div className="flex items-center gap-1.5">
                         {turn.has_overlap && (
                           <span className="text-[10px] text-amber-600 dark:text-amber-400 flex items-center gap-0.5">
-                            <Zap className="w-2.5 h-2.5" /> 抢话重叠
+                            <Zap className="w-2.5 h-2.5" /> {en ? "Overlap" : "抢话重叠"}
                           </span>
                         )}
                         <span className="font-mono text-fg-subtle">
@@ -337,10 +350,8 @@ export function MinutesBoard({
           </div>
         </div>
 
-        {/* Right Column (7/12): High-Fidelity Markdown Minutes */}
         <div className="lg:col-span-7 flex flex-col h-full bg-surface">
-          {/* Mode Switcher & Inline Edit Control */}
-          <div className="px-6 py-3 border-b border-border bg-surface-2/40 flex items-center justify-between shrink-0">
+          <div className="px-6 py-3 border-b border-border bg-surface-2/40 flex flex-wrap items-center justify-between gap-2 shrink-0">
             <div className="flex items-center gap-1 text-xs">
               <button
                 type="button"
@@ -351,7 +362,7 @@ export function MinutesBoard({
                     : "text-fg-muted hover:text-fg"
                 }`}
               >
-                高保真排版预览
+                {en ? "Formatted Preview" : "高保真排版预览"}
               </button>
               <button
                 type="button"
@@ -362,7 +373,7 @@ export function MinutesBoard({
                     : "text-fg-muted hover:text-fg"
                 }`}
               >
-                Markdown 源码编辑
+                {en ? "Markdown Source" : "Markdown 源码编辑"}
               </button>
             </div>
 
@@ -378,25 +389,29 @@ export function MinutesBoard({
                   }`}
                 >
                   <Edit3 className="w-3 h-3" />
-                  {isInlineEditing ? "退出所见即所得编辑" : "行内富文本编辑"}
+                  {isInlineEditing
+                    ? en
+                      ? "Done Editing"
+                      : "退出所见即所得编辑"
+                    : en
+                      ? "Inline Edit"
+                      : "行内富文本编辑"}
                 </button>
               )}
               <span className="text-[11px] text-fg-subtle flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-accent" />
-                智能结构化纪要
+                {en ? "Structured Minutes" : "智能结构化纪要"}
               </span>
             </div>
           </div>
 
-          {/* Minutes Content Body */}
           <div className="flex-1 overflow-y-auto p-6 text-sm">
             {activeTab === "preview" ? (
               <div className="space-y-6 max-w-2xl">
-                {/* 1. Executive Summary */}
                 <div className="p-4 rounded-xl bg-accent-soft/40 border border-accent/20 space-y-1.5">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-accent flex items-center gap-1">
                     <Sparkles className="w-3.5 h-3.5" />
-                    会议核心摘要 (Executive Summary)
+                    {en ? "Executive Summary" : "会议核心摘要 (Executive Summary)"}
                   </h3>
                   {isInlineEditing ? (
                     <textarea
@@ -404,12 +419,6 @@ export function MinutesBoard({
                       onChange={(e) => {
                         const val = e.target.value;
                         setExecutiveSummary(val);
-                        setRawMarkdown((md) =>
-                          md.replace(
-                            /## 核心决议[\s\S]*?(?=\n\n|\n##|$)/,
-                            (m) => m,
-                          ),
-                        );
                       }}
                       rows={3}
                       className="w-full text-xs text-fg p-2 bg-surface rounded-lg border border-accent/40 focus:outline-none leading-relaxed"
@@ -419,14 +428,13 @@ export function MinutesBoard({
                   )}
                 </div>
 
-                {/* 2. Key Discussion Topics */}
                 <div className="space-y-3">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-fg-subtle">
-                    议题讨论与关键决议
+                    {en ? "Discussion Topics" : "议题讨论与关键决议"}
                   </h3>
                   {topics.map((t, idx) => (
                     <div key={idx} className="p-4 rounded-xl border border-border bg-surface-2/20 space-y-2">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         {isInlineEditing ? (
                           <input
                             type="text"
@@ -441,7 +449,10 @@ export function MinutesBoard({
                         ) : (
                           <h4 className="font-semibold text-fg text-sm">{t.title}</h4>
                         )}
-                        <span className="text-xs text-fg-subtle">主要发言: {t.speakers.join(", ")}</span>
+                        <span className="text-xs text-fg-subtle">
+                          {en ? "Speakers: " : "主要发言: "}
+                          {t.speakers.join(", ")}
+                        </span>
                       </div>
                       {isInlineEditing ? (
                         <textarea
@@ -468,10 +479,9 @@ export function MinutesBoard({
                   ))}
                 </div>
 
-                {/* 3. Core Decisions */}
                 <div className="space-y-2">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-fg-subtle">
-                    核心决议 (Decisions)
+                    {en ? "Key Decisions" : "核心决议 (Decisions)"}
                   </h3>
                   <div className="p-4 rounded-xl border border-intent/20 bg-intent-soft/40 space-y-2">
                     {decisions.map((d, dIdx) => (
@@ -498,20 +508,23 @@ export function MinutesBoard({
                   </div>
                 </div>
 
-                {/* 4. Action Items Checklist */}
                 <div className="space-y-2.5">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-fg-subtle flex items-center justify-between">
-                    <span>待办事项清单 (Action Items)</span>
+                    <span>{en ? "Action Items" : "待办事项清单 (Action Items)"}</span>
                     <span className="font-normal text-[11px] text-fg-subtle">
-                      已完成 {actionItems.filter((i) => i.completed).length} / {actionItems.length}
+                      {en
+                        ? `Completed ${actionItems.filter((i) => i.completed).length} / ${actionItems.length}`
+                        : `已完成 ${actionItems.filter((i) => i.completed).length} / ${actionItems.length}`}
                     </span>
                   </h3>
                   <div className="space-y-2">
                     {actionItems.map((item) => (
-                      <div
+                      <button
                         key={item.id}
+                        type="button"
+                        aria-pressed={item.completed}
                         onClick={() => handleToggleActionItem(item.id)}
-                        className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                        className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                           item.completed
                             ? "border-border bg-surface-2/40 opacity-70"
                             : "border-border bg-surface hover:border-accent hover:shadow-xs"
@@ -534,14 +547,14 @@ export function MinutesBoard({
 
                         <div className="flex items-center gap-2 shrink-0 text-xs">
                           <span className="px-2 py-0.5 rounded-full bg-surface-2 border border-border text-[11px] font-medium text-fg flex items-center gap-1">
-                            <span className="w-4 h-4 rounded-full bg-accent text-white flex items-center justify-center text-[9px] font-bold">
+                            <span className="w-4 h-4 rounded-full bg-accent text-accent-fg flex items-center justify-center text-[9px] font-bold">
                               {item.assigneeAvatar}
                             </span>
                             {item.assignee}
                           </span>
                           <span className="text-[11px] text-fg-subtle font-mono">{item.deadline}</span>
                         </div>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>

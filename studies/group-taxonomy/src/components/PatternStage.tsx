@@ -6,6 +6,7 @@ import {
   type PatternId,
   type PatternMeta,
 } from "../lib/machines.js";
+import { loc, pick, useLocale, type Localized } from "../lib/site-locale.js";
 import { BrowserFrame } from "./BrowserFrame.js";
 import { CopyBlock } from "./CopyBlock.js";
 import { ModeToggle } from "./ModeToggle.js";
@@ -18,31 +19,67 @@ import { PriceCompareDemo } from "./demos/PriceCompareDemo.js";
 
 const MODE_CAPTIONS: Record<
   PatternMeta["id"],
-  { cards: string; grouped: string }
+  { cards: Localized; grouped: Localized }
 > = {
   cards: {
-    cards: "三块内容各套一张卡，阅读被外框切开。",
-    grouped: "同一页上的连续叙述：标题定层，留白推进。",
+    cards: loc(
+      "三块内容各套一张卡，阅读被外框切开。",
+      "Each of the three blocks sits in its own card, cutting the reading flow.",
+    ),
+    grouped: loc(
+      "同一页上的连续叙述：标题定层，留白推进。",
+      "One continuous page: headings establish hierarchy, whitespace sets the rhythm.",
+    ),
   },
   whitespace: {
-    cards: "Why / How / Result 被切成三张便利贴。",
-    grouped: "细线加间距，一条阅读轴顺完。",
+    cards: loc(
+      "Why / How / Result 被切成三张便利贴。",
+      "Why / How / Result are sliced into three separate sticky notes.",
+    ),
+    grouped: loc(
+      "细线加间距，一条阅读轴顺完。",
+      "Hairlines and spacing carry the reader down a single axis.",
+    ),
   },
   form: {
-    cards: "六个字段六张卡，焦点散在格子里。",
-    grouped: "按任务用标题分区，字段本身扁平。",
+    cards: loc(
+      "六个字段六张卡，焦点散在格子里。",
+      "Six fields in six cards scatter focus across isolated boxes.",
+    ),
+    grouped: loc(
+      "按任务用标题分区，字段本身扁平。",
+      "Task headings organize the flow while individual fields stay flat.",
+    ),
   },
   list: {
-    cards: "每条动态一张卡，视线在网格间跳。",
-    grouped: "单列列表，时间与状态沿一条路径扫下。",
+    cards: loc(
+      "每条动态一张卡，视线在网格间跳。",
+      "One card per event forces the eye to zig-zag across a grid.",
+    ),
+    grouped: loc(
+      "单列列表，时间与状态沿一条路径扫下。",
+      "A single-column list aligns timestamps and status down one scan line.",
+    ),
   },
   bands: {
-    cards: "九个入口九张卡，主题边界看不清。",
-    grouped: "三条通栏色带划区，行内项目不再套框。",
+    cards: loc(
+      "九个入口九张卡，主题边界看不清。",
+      "Nine cards for nine links hide where one topic ends and the next begins.",
+    ),
+    grouped: loc(
+      "三条通栏色带划区，行内项目不再套框。",
+      "Three full-width bands mark the themes; inner links need no boxes.",
+    ),
   },
   compare: {
-    cards: "三张孤立定价卡，横向对不齐。",
-    grouped: "共享底板加竖线，参数在同一张表上比。",
+    cards: loc(
+      "三张孤立定价卡，横向对不齐。",
+      "Three isolated pricing cards fracture row-by-row comparison.",
+    ),
+    grouped: loc(
+      "共享底板加竖线，参数在同一张表上比。",
+      "One shared surface with vertical hairlines keeps specs aligned across tiers.",
+    ),
   },
 };
 
@@ -74,9 +111,10 @@ export function PatternStage({
   onMode: (mode: GroupMode) => void;
   onOpen: (id: PatternId) => void;
 }) {
+  const locale = useLocale();
   const prev = prevPattern(pattern.id);
   const next = nextPattern(pattern.id);
-  const caption = MODE_CAPTIONS[pattern.id][mode];
+  const caption = pick(MODE_CAPTIONS[pattern.id][mode], locale);
 
   return (
     <div className="flex flex-col gap-8 pb-8">
@@ -86,28 +124,28 @@ export function PatternStage({
             {pattern.num}
           </p>
           <h1 className="mt-1 text-[1.75rem] leading-tight font-semibold tracking-tight text-fg sm:text-[2rem]">
-            {pattern.name}
+            {pick(pattern.name, locale)}
           </h1>
           <p className="mt-1 text-sm text-fg-subtle">{pattern.en}</p>
         </div>
         <div className="spec-strip mt-6">
           <div>
             <p className="text-[0.65rem] font-medium tracking-wider text-fg-subtle uppercase">
-              关系
+              {locale === "en" ? "Relation" : "关系"}
             </p>
-            <p className="mt-1 text-sm font-medium text-fg">{pattern.relation}</p>
+            <p className="mt-1 text-sm font-medium text-fg">{pick(pattern.relation, locale)}</p>
           </div>
           <div>
             <p className="text-[0.65rem] font-medium tracking-wider text-fg-subtle uppercase">
-              隔断
+              {locale === "en" ? "Divider" : "隔断"}
             </p>
-            <p className="mt-1 text-sm font-medium text-fg">{pattern.cut}</p>
+            <p className="mt-1 text-sm font-medium text-fg">{pick(pattern.cut, locale)}</p>
           </div>
           <div>
             <p className="text-[0.65rem] font-medium tracking-wider text-fg-subtle uppercase">
-              何时
+              {locale === "en" ? "When" : "何时"}
             </p>
-            <p className="mt-1 text-sm font-medium text-fg">{pattern.when}</p>
+            <p className="mt-1 text-sm font-medium text-fg">{pick(pattern.when, locale)}</p>
           </div>
         </div>
       </header>
@@ -130,13 +168,16 @@ export function PatternStage({
       </div>
 
       <p className="border-l-2 border-accent pl-4 text-sm leading-relaxed text-fg-muted">
-        <span className="font-medium text-fg">判定 · </span>
-        {pattern.rule}
+        <span className="font-medium text-fg">{locale === "en" ? "Rule · " : "判定 · "}</span>
+        {pick(pattern.rule, locale)}
       </p>
 
       <div className="grid gap-8 border-t border-border pt-6 lg:grid-cols-2 lg:gap-10">
-        <CopyBlock label="推荐 CSS 结构" text={pattern.css} />
-        <CopyBlock label="给 AI 的局部 Prompt" text={pattern.prompt} />
+        <CopyBlock label={locale === "en" ? "Recommended CSS" : "推荐 CSS 结构"} text={pattern.css} />
+        <CopyBlock
+          label={locale === "en" ? "Local AI Prompt" : "给 AI 的局部 Prompt"}
+          text={pick(pattern.prompt, locale)}
+        />
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4">
@@ -146,15 +187,18 @@ export function PatternStage({
           className="pressable inline-flex items-center gap-1.5 text-xs font-medium text-fg-muted hover:text-fg"
         >
           <ArrowLeft className="size-3.5" />
-          上一技法
+          {locale === "en" ? "Previous pattern" : "上一技法"}
         </button>
-        <p className="text-xs text-fg-subtle">适合 {pattern.scenes.join("、")}</p>
+        <p className="text-xs text-fg-subtle">
+          {locale === "en" ? "Best for " : "适合 "}
+          {pattern.scenes.map((s) => pick(s, locale)).join(locale === "en" ? ", " : "、")}
+        </p>
         <button
           type="button"
           onClick={() => onOpen(next)}
           className="pressable inline-flex items-center gap-1.5 text-xs font-medium text-fg-muted hover:text-fg"
         >
-          下一技法
+          {locale === "en" ? "Next pattern" : "下一技法"}
           <ArrowRight className="size-3.5" />
         </button>
       </div>

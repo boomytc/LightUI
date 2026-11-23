@@ -9,9 +9,11 @@ import {
 import { Overview } from "./components/Overview.js";
 import { PatternStage } from "./components/PatternStage.js";
 import { TaxonomyRail } from "./components/TaxonomyRail.js";
+import { useLocale } from "./lib/site-locale.js";
 import "./group.css";
 
 export function StudyView() {
+  const locale = useLocale();
   const [p, setP] = useState<PatternId>("overview");
   const [mode, setMode] = useState<GroupMode>("grouped");
 
@@ -74,17 +76,17 @@ export function StudyView() {
             p === "overview" ? "text-fg" : "text-fg-muted hover:text-fg"
           }`}
         >
-          概览
+          {locale === "en" ? "Overview" : "概览"}
         </button>
         <p className="hidden items-center gap-1.5 text-[0.7rem] text-fg-subtle sm:flex">
           <kbd className="rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[0.65rem]">
             0–5
           </kbd>
-          选技法
+          {locale === "en" ? "Pattern" : "选技法"}
           <kbd className="ml-1 rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[0.65rem]">
             T
           </kbd>
-          对照
+          {locale === "en" ? "Compare" : "对照"}
         </p>
       </div>
 

@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { CheckCheck, RotateCcw, Trash2 } from "lucide-react";
 import { pick, useLocale } from "./lib/site-locale";
 import {
@@ -50,6 +50,15 @@ export function StudyView() {
   const [lastVerdict, setLastVerdict] = useState<SwipeReleaseVerdict["action"] | null>(null);
   const [telemetry, setTelemetry] = useState<Telemetry>(IDLE_TELEMETRY);
   const toastTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimer.current !== null) {
+        window.clearTimeout(toastTimer.current);
+        toastTimer.current = null;
+      }
+    };
+  }, []);
 
   const latchPx = DEFAULT_ACTIONS_WIDTH * DEFAULT_SNAP_RATIO;
   const commitThresh = enableOverswipeCommit ? DEFAULT_COMMIT_THRESHOLD : 9999;
@@ -171,6 +180,12 @@ export function StudyView() {
               <div
                 onClick={(e) => {
                   if (e.target === e.currentTarget) setOpenRowId(null);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape" && openRowId !== null) {
+                    e.preventDefault();
+                    setOpenRowId(null);
+                  }
                 }}
                 className="relative h-[360px] overflow-y-auto overflow-x-hidden rounded-2xl border border-border/70 bg-surface-2/50"
               >
@@ -633,6 +648,15 @@ function InteractiveSwipeRow({
   const rowRef = useRef<HTMLDivElement>(null);
   const exitTimer = useRef<number | null>(null);
 
+  useEffect(() => {
+    return () => {
+      if (exitTimer.current !== null) {
+        window.clearTimeout(exitTimer.current);
+        exitTimer.current = null;
+      }
+    };
+  }, []);
+
   const dragRef = useRef<{
     pointerId: number;
     startX: number;
@@ -815,10 +839,30 @@ function InteractiveSwipeRow({
       </div>
 
       <div
+        role="button"
+        tabIndex={0}
+        aria-expanded={isOpen}
+        aria-label={t(
+          `${item.sender}：${item.subject}，按回车或左方向键展开操作`,
+          `${item.sender}: ${item.subject}. Press Enter or Left Arrow to toggle actions`,
+        )}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            if (isOpen) onClose();
+            else onOpen();
+          } else if (e.key === "ArrowLeft" && !isOpen) {
+            e.preventDefault();
+            onOpen();
+          } else if ((e.key === "ArrowRight" || e.key === "Escape") && isOpen) {
+            e.preventDefault();
+            onClose();
+          }
+        }}
         onClick={(e) => {
           const now = performance.now();
           if (didDragRef.current || now - dragEndTimeRef.current < 300) {

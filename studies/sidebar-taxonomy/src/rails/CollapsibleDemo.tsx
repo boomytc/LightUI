@@ -50,7 +50,7 @@ export function CollapsibleDemo({ defaultOpen }: { defaultOpen?: boolean } = {})
               open ? "h-12 gap-2 px-3" : "flex-col gap-1 px-2 pt-3",
             )}
           >
-            <span className="grid size-7 shrink-0 place-items-center rounded-md bg-white/10 text-[11px] font-semibold">
+            <span className="grid size-7 shrink-0 place-items-center rounded-md bg-surface/12 text-[11px] font-semibold">
               N
             </span>
             {open ? (
@@ -72,7 +72,7 @@ export function CollapsibleDemo({ defaultOpen }: { defaultOpen?: boolean } = {})
                     : "展开侧栏"
               }
               className={cn(
-                "grid size-7 shrink-0 place-items-center rounded-md text-white/45 hover:bg-white/10 hover:text-surface",
+                "grid size-7 shrink-0 place-items-center rounded-md text-surface/60 hover:bg-surface/12 hover:text-surface",
                 open && "ml-auto",
               )}
             >
@@ -93,7 +93,7 @@ export function CollapsibleDemo({ defaultOpen }: { defaultOpen?: boolean } = {})
                   onClick={() => setPage(item.id)}
                   className={cn(
                     "flex h-9 items-center gap-2.5 rounded-md px-2 text-left text-[13px]",
-                    on ? "bg-white/10 text-surface" : "text-white/55 hover:bg-white/5 hover:text-surface",
+                    on ? "bg-surface/14 text-surface" : "text-surface/65 hover:bg-surface/8 hover:text-surface",
                   )}
                 >
                   <Icon className="size-3.5 shrink-0" strokeWidth={1.8} />

@@ -33,6 +33,7 @@ export function StudyView() {
 
   const startCoord = useRef<{ x: number; y: number } | null>(null);
   const timerRef = useRef<number | null>(null);
+  const scrollFlashTimerRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
   const pressStartTime = useRef(0);
   const armedRef = useRef<{ kind: ArmedKind; fileId: string } | null>(null);
@@ -69,7 +70,13 @@ export function StudyView() {
   function flashScroll() {
     setLastVerdict("scroll");
     setScrollFlash(true);
-    window.setTimeout(() => setScrollFlash(false), 1400);
+    if (scrollFlashTimerRef.current !== null) {
+      window.clearTimeout(scrollFlashTimerRef.current);
+    }
+    scrollFlashTimerRef.current = window.setTimeout(() => {
+      setScrollFlash(false);
+      scrollFlashTimerRef.current = null;
+    }, 1400);
   }
 
   function exitSelect() {
@@ -185,7 +192,13 @@ export function StudyView() {
   }, []);
 
   useEffect(() => {
-    return () => stopTimers();
+    return () => {
+      stopTimers();
+      if (scrollFlashTimerRef.current !== null) {
+        window.clearTimeout(scrollFlashTimerRef.current);
+        scrollFlashTimerRef.current = null;
+      }
+    };
   }, []);
 
   const driftRatio = Math.min(1, driftPx / DRIFT_TOLERANCE_PX);

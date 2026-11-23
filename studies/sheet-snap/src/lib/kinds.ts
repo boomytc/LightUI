@@ -97,14 +97,44 @@ export const PHASE_LABELS = {
 } as const;
 
 export const PLACE_DATA = {
-  name: "河畔咖啡馆 · Waterfront Cafe",
-  status: "营业中 · 08:30–21:00",
-  distance: "距您 350m · 步行约 5 分钟",
-  address: "静安区河畔创意园区 3 号楼 102",
-  tags: ["安静舒适", "景观露台", "电源插座", "免费 WiFi", "手冲单品"],
+  name: loc("河畔咖啡馆", "Waterfront Cafe"),
+  status: loc("营业中 · 08:30–21:00", "Open · 08:30–21:00"),
+  distance: loc("距您 350m · 步行约 5 分钟", "350m away · ~5 min walk"),
+  address: loc("静安区河畔创意园区 3 号楼 102", "Rm 102, Bldg 3, Waterfront Creative Park, Jing'an"),
+  tags: [
+    loc("安静舒适", "Quiet & cozy"),
+    loc("景观露台", "River terrace"),
+    loc("电源插座", "Power outlets"),
+    loc("免费 WiFi", "Free Wi-Fi"),
+    loc("手冲单品", "Pour-over"),
+  ],
   reviews: [
-    { user: "小林", time: "10 分钟前", comment: "窗外河景很棒，适合带电脑办公，燕麦拿铁很香。" },
-    { user: "阿澈", time: "昨天", comment: "二楼有露台，下午光线绝佳，周末人稍微有点多。" },
-    { user: "晨曦", time: "3 天前", comment: "店员态度很好，手冲耶加雪菲风味明亮。" },
+    {
+      id: "r1",
+      user: loc("小林", "Lin"),
+      time: loc("10 分钟前", "10 min ago"),
+      comment: loc(
+        "窗外河景很棒，适合带电脑办公，燕麦拿铁很香。",
+        "Great river view, comfortable for laptop work, and a rich oat latte.",
+      ),
+    },
+    {
+      id: "r2",
+      user: loc("阿澈", "Che"),
+      time: loc("昨天", "Yesterday"),
+      comment: loc(
+        "二楼有露台，下午光线绝佳，周末人稍微有点多。",
+        "Second-floor terrace gets lovely afternoon light; slightly busy on weekends.",
+      ),
+    },
+    {
+      id: "r3",
+      user: loc("晨曦", "Chenxi"),
+      time: loc("3 天前", "3 days ago"),
+      comment: loc(
+        "店员态度很好，手冲耶加雪菲风味明亮。",
+        "Warm staff and a bright, clean Yirgacheffe pour-over.",
+      ),
+    },
   ],
 };

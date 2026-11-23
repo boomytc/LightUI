@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import {
   DEFAULT_DAMPING,
   DEFAULT_SNAP_HEIGHTS,
@@ -56,6 +56,15 @@ export function StudyView() {
   const sampleBuffer = useRef<PointerSample[]>([]);
   const contentRef = useRef<HTMLDivElement>(null);
   const settleTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (settleTimer.current !== null) {
+        window.clearTimeout(settleTimer.current);
+        settleTimer.current = null;
+      }
+    };
+  }, []);
 
   function updateHeight(nextH: number) {
     currentHeightRef.current = nextH;
@@ -281,8 +290,8 @@ export function StudyView() {
       </section>
 
       <div className="grid items-start gap-8 md:grid-cols-[auto_minmax(0,1fr)]">
-        <div className="flex flex-col items-center">
-          <div className="flex items-start gap-2">
+        <div className="flex min-w-0 flex-col items-center">
+          <div className="flex w-full max-w-full min-w-0 items-start justify-center gap-2">
             <SnapSideRail
               height={height}
               snap={snap}

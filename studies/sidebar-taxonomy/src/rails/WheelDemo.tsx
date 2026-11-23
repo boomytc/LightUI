@@ -36,6 +36,7 @@ export function WheelDemo() {
   const locale = useLocale();
   const [active, setActive] = useState(1);
   const lock = useRef(false);
+  const lockTimer = useRef<number | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const work = WORKS[active] ?? WORKS[0];
 
@@ -53,12 +54,20 @@ export function WheelDemo() {
       if (lock.current) return;
       lock.current = true;
       move(step);
-      window.setTimeout(() => {
+      if (lockTimer.current !== null) window.clearTimeout(lockTimer.current);
+      lockTimer.current = window.setTimeout(() => {
         lock.current = false;
+        lockTimer.current = null;
       }, 280);
     };
     el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      if (lockTimer.current !== null) {
+        window.clearTimeout(lockTimer.current);
+        lockTimer.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -83,7 +92,7 @@ export function WheelDemo() {
         className="relative flex min-h-[28rem] w-full min-w-0 flex-1 select-none overflow-hidden bg-fg text-surface"
       >
         <div className="relative z-10 flex w-[44%] min-w-0 flex-col justify-center pl-5">
-          <p className="mb-6 text-[11px] tracking-[0.16em] text-white/45 uppercase">
+          <p className="mb-6 text-[11px] tracking-[0.16em] text-surface/60 uppercase">
             {locale === "en" ? "Studio" : "工作室"}
           </p>
           <div className="relative h-72">
@@ -117,17 +126,17 @@ export function WheelDemo() {
               );
             })}
           </div>
-          <p className="mt-4 text-[11px] text-white/45">
+          <p className="mt-4 text-[11px] text-surface/60">
             {locale === "en" ? "Scroll or ↑↓ · highlight only on the baseline" : "滚动或 ↑↓ · 到达基准线才高亮"}
           </p>
         </div>
         <div className="flex min-w-0 flex-1 flex-col justify-center px-6 py-8">
-          <p className="text-[11px] tracking-[0.14em] text-white/45 uppercase">
+          <p className="text-[11px] tracking-[0.14em] text-surface/60 uppercase">
             {pick(work.label, locale)}
           </p>
           <h3 className="mt-2 text-[1.7rem] font-semibold tracking-tight">{pick(work.label, locale)}</h3>
-          <p className="mt-3 max-w-sm text-[13px] leading-relaxed text-white/55">{pick(work.body, locale)}</p>
-          <div className="mt-6 aspect-[5/3] max-w-sm rounded-xl bg-white/8" />
+          <p className="mt-3 max-w-sm text-[13px] leading-relaxed text-surface/70">{pick(work.body, locale)}</p>
+          <div className="mt-6 aspect-[5/3] max-w-sm rounded-xl bg-surface/12" />
         </div>
       </div>
     </Frame>

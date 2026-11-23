@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { CLASS_META, CLASS_ORDER, KINDS, type KindMeta } from "../lib/kinds";
 import { type GestureClass, type KindId } from "../lib/machines";
@@ -146,12 +146,23 @@ function ClassGroup({
 
 function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   const [copied, setCopied] = useState(false);
+  const timerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+    };
+  }, []);
 
   async function copy() {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => {
+        setCopied(false);
+        timerRef.current = null;
+      }, 1600);
     } catch {
       setCopied(false);
     }
