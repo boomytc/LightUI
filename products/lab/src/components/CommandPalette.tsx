@@ -312,7 +312,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
                 setActiveIndex(0);
                 inputRef.current?.focus();
               }}
-              aria-label={copy.clearFilters}
+              aria-label={copy.clearSearch}
               className="rounded-md p-1 text-fg-subtle transition-colors hover:text-fg"
             >
               <X className="size-4" />

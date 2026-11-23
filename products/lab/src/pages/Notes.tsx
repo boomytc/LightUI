@@ -24,15 +24,27 @@ export function Notes() {
   );
   const [query, setQuery] = useState(() => searchParams.get("q") || "");
   const syncTimerRef = useRef<number | null>(null);
-  const lastSyncedQueryRef = useRef<string>(searchParams.get("q") || "");
+  const lastSyncedSearchRef = useRef<string>(searchParams.toString());
+
+  const cancelPendingQuerySync = () => {
+    if (syncTimerRef.current !== null) {
+      window.clearTimeout(syncTimerRef.current);
+      syncTimerRef.current = null;
+    }
+  };
+
+  const commitSearchParams = (updates: Record<string, string | null | undefined>) => {
+    updateSearchParams(updates, { replace: true });
+    lastSyncedSearchRef.current = new URLSearchParams(window.location.search).toString();
+  };
 
   useEffect(() => {
+    const currentSearch = searchParams.toString();
+    if (currentSearch === lastSyncedSearchRef.current) return;
+    lastSyncedSearchRef.current = currentSearch;
+    cancelPendingQuerySync();
     setCategory(resolveCategory(searchParams.get("category")));
-    const urlQuery = searchParams.get("q") || "";
-    if (syncTimerRef.current === null && urlQuery !== lastSyncedQueryRef.current) {
-      lastSyncedQueryRef.current = urlQuery;
-      setQuery(urlQuery);
-    }
+    setQuery(searchParams.get("q") || "");
   }, [searchParams]);
 
   useEffect(() => {
@@ -43,21 +55,10 @@ export function Notes() {
     };
   }, []);
 
-  const cancelPendingQuerySync = () => {
-    if (syncTimerRef.current !== null) {
-      window.clearTimeout(syncTimerRef.current);
-      syncTimerRef.current = null;
-    }
-  };
-
   const handleCategoryChange = (catId: CategoryId) => {
     cancelPendingQuerySync();
-    lastSyncedQueryRef.current = query;
     setCategory(catId);
-    updateSearchParams(
-      { category: catId === "all" ? null : catId, q: query || null },
-      { replace: true },
-    );
+    commitSearchParams({ category: catId === "all" ? null : catId, q: query || null });
   };
 
   const handleQueryChange = (q: string) => {
@@ -65,24 +66,21 @@ export function Notes() {
     cancelPendingQuerySync();
     syncTimerRef.current = window.setTimeout(() => {
       syncTimerRef.current = null;
-      lastSyncedQueryRef.current = q;
-      updateSearchParams({ q: q || null }, { replace: true });
+      commitSearchParams({ q: q || null });
     }, 250);
   };
 
   const handleClearQuery = () => {
     cancelPendingQuerySync();
-    lastSyncedQueryRef.current = "";
     setQuery("");
-    updateSearchParams({ q: null }, { replace: true });
+    commitSearchParams({ q: null });
   };
 
   const handleClearAll = () => {
     cancelPendingQuerySync();
-    lastSyncedQueryRef.current = "";
     setQuery("");
     setCategory("all");
-    updateSearchParams({ category: null, q: null }, { replace: true });
+    commitSearchParams({ category: null, q: null });
   };
 
   const filteredNotes = filterNotes(allNotes, query, category);
@@ -106,7 +104,7 @@ export function Notes() {
               type="button"
               onClick={handleClearQuery}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1 text-fg-subtle transition-colors hover:text-fg"
-              aria-label={copy.clearFilters}
+              aria-label={copy.clearSearch}
             >
               <X className="size-3.5" />
             </button>

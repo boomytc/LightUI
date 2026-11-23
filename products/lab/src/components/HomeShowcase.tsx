@@ -351,8 +351,20 @@ function WeightsMiniDemo({ locale }: { locale: Locale }) {
         <span>
           {clicked
             ? locale === "en"
-              ? `Selected weight: ${clicked}`
-              : `已触发操作重量：${clicked}`
+              ? `Selected weight: ${
+                  clicked === "solid"
+                    ? "Solid (Primary)"
+                    : clicked === "outline"
+                      ? "Outline"
+                      : "Text"
+                }`
+              : `已触发操作重量：${
+                  clicked === "solid"
+                    ? "面状（主操作）"
+                    : clicked === "outline"
+                      ? "线状（次）"
+                      : "文字（弱）"
+                }`
             : locale === "en"
               ? "Click buttons to feel the visual hierarchy"
               : "点击按钮体验视觉重量层级"}

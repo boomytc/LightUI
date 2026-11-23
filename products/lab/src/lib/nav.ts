@@ -10,11 +10,6 @@ function currentHref(): string {
   return `${window.location.pathname}${window.location.search}${window.location.hash}`;
 }
 
-function resolveHref(path: string): string {
-  const url = new URL(path, window.location.origin);
-  return `${url.pathname}${url.search}${url.hash}`;
-}
-
 function safeDecodeSegment(segment: string): string {
   try {
     return decodeURIComponent(segment);
@@ -63,11 +58,14 @@ export function canPopHistory(from: string | null, fallback: string, current: st
 }
 
 export function navigate(path: string) {
-  const next = resolveHref(path);
+  const nextUrl = new URL(path, window.location.origin);
+  const next = `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`;
   const here = currentHref();
   if (here === next) return;
-  saveCurrentScroll();
-  pendingNavKind = "push";
+  if (nextUrl.pathname !== window.location.pathname) {
+    saveCurrentScroll();
+    pendingNavKind = "push";
+  }
   try {
     window.history.pushState({ lab: true, from: here } satisfies LabHistoryState, "", next);
   } catch {
@@ -79,13 +77,16 @@ export function navigate(path: string) {
 export function back(fallback: string) {
   const from = readFrom(window.history.state);
   if (canPopHistory(from, fallback, currentHref())) {
-    pendingNavKind = "pop";
+    pendingNavKind = null;
     window.history.back();
     return;
   }
-  const next = resolveHref(fallback);
+  const nextUrl = new URL(fallback, window.location.origin);
+  const next = `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`;
   if (currentHref() === next) return;
-  pendingNavKind = "replace";
+  if (nextUrl.pathname !== window.location.pathname) {
+    pendingNavKind = "replace";
+  }
   try {
     window.history.replaceState({ lab: true, from: "" } satisfies LabHistoryState, "", next);
   } catch {
@@ -179,7 +180,6 @@ export function updateSearchParams(
   const here = currentHref();
   if (here === next) return;
 
-  pendingNavKind = options?.replace ? "replace" : "push";
   try {
     if (options?.replace) {
       window.history.replaceState(window.history.state, "", next);

@@ -105,6 +105,8 @@ const zh = {
   graphContrastBadge: "对照",
   domainStudiesCount: (n: number) => `${n} 项`,
   clearFilters: "清空筛选条件",
+  clearSearch: "清空搜索关键词",
+  clearTag: (tag: string) => `移除标签 #${tag}`,
   distinctionBadge: "辨析",
 };
 
@@ -213,6 +215,8 @@ const en: typeof zh = {
   graphContrastBadge: "Contrast",
   domainStudiesCount: (n) => (n === 1 ? "1 study" : `${n} studies`),
   clearFilters: "Clear filters",
+  clearSearch: "Clear search",
+  clearTag: (tag: string) => `Remove tag #${tag}`,
   distinctionBadge: "Distinction",
 };
 
