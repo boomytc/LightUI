@@ -339,7 +339,7 @@ function FakeButton({
       onClick={onClick}
       className={cn(
         "inline-flex h-10 w-full min-w-0 items-center justify-center rounded-lg text-[13px] font-medium",
-        inverse ? "bg-surface text-fg" : "bg-fg text-surface",
+        inverse ? "bg-white text-[#17181c]" : "bg-fg text-surface",
       )}
     >
       {children}

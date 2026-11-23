@@ -109,7 +109,7 @@ export function SnackbarDemo({ state }: { state?: string } = {}) {
             <button
               type="button"
               onClick={undo}
-              className="shrink-0 text-[12px] font-medium text-accent-soft hover:text-accent-fg"
+              className="shrink-0 rounded bg-surface/15 px-2 py-0.5 text-[12px] font-medium text-surface transition-colors hover:bg-surface/25"
             >
               {locale === "en" ? "Undo" : "撤销"}
             </button>

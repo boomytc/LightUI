@@ -409,7 +409,8 @@ export function AccordionMotion({ index, go, jump, locale }: MotionProps) {
             />
             <span
               className={cn(
-                "acc-spine pointer-events-none absolute bottom-3 left-1/2 z-10 origin-bottom -translate-x-1/2 text-[12px] font-medium tracking-widest text-accent-fg drop-shadow transition-opacity duration-300",
+                "acc-spine pointer-events-none absolute bottom-3 left-1/2 z-10 origin-bottom -translate-x-1/2 text-[12px] font-medium tracking-widest drop-shadow transition-opacity duration-300",
+                slide.tone === 2 ? "text-fg" : slide.tone === 3 ? "text-surface" : "text-white",
                 open ? "opacity-0" : "opacity-100",
               )}
             >
@@ -471,7 +472,12 @@ export function ParallaxMotion({ index, jump, locale }: MotionProps) {
         <span className="inline-flex rounded-full bg-surface/70 px-2.5 py-1 text-[11px] tracking-wider text-fg">
           {pick(slide.kicker, locale)}
         </span>
-        <h3 className="mt-2 text-[1.55rem] font-semibold tracking-tight text-accent-fg drop-shadow-sm">
+        <h3
+          className={cn(
+            "mt-2 text-[1.55rem] font-semibold tracking-tight drop-shadow-sm",
+            slide.tone === 2 ? "text-fg" : slide.tone === 3 ? "text-surface" : "text-white",
+          )}
+        >
           {pick(slide.title, locale)}
         </h3>
       </div>

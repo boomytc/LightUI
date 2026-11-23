@@ -148,10 +148,10 @@
   justify-content: flex-end;
   min-height: 9.5rem;
   padding: 1rem 0.95rem 1.05rem;
-  color: var(--color-accent-fg);
+  color: #ffffff;
   background:
-    radial-gradient(90% 70% at 18% 10%, color-mix(in oklab, var(--color-accent) 55%, white) 0%, transparent 58%),
-    linear-gradient(165deg, var(--color-accent) 0%, var(--color-fg) 100%);
+    radial-gradient(90% 70% at 18% 10%, rgb(120 152 255 / 0.45) 0%, transparent 58%),
+    linear-gradient(165deg, #2858e6 0%, #17181c 100%);
 }
 
 .login-split-title {
@@ -216,11 +216,11 @@
   justify-content: space-between;
   gap: 1.25rem;
   padding: 1.35rem 1.05rem 1.2rem;
-  color: var(--color-accent-fg);
+  color: #ffffff;
   background:
     linear-gradient(180deg, rgb(23 24 28 / 0.18) 0%, rgb(23 24 28 / 0.58) 100%),
     radial-gradient(70% 50% at 80% 18%, rgb(255 255 255 / 0.22), transparent 55%),
-    radial-gradient(90% 70% at 18% 10%, color-mix(in oklab, var(--color-accent) 50%, white) 0%, transparent 58%),
+    radial-gradient(90% 70% at 18% 10%, rgb(120 152 255 / 0.45) 0%, transparent 58%),
     linear-gradient(165deg, #3b6cff 0%, #17181c 100%);
 }
 
@@ -305,7 +305,7 @@
   border-radius: 0;
   background: transparent;
   padding: 0.35rem 0;
-  color: var(--color-accent-fg);
+  color: #ffffff;
 }
 
 .login-field-ghost::placeholder {

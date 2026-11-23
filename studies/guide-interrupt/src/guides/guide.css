@@ -244,6 +244,7 @@
 }
 
 .guide-check {
+  position: relative;
   display: grid;
   width: 16px;
   height: 16px;
@@ -253,19 +254,22 @@
   border: 1px solid var(--color-border-strong);
   border-radius: 5px;
   background: var(--color-surface);
-  color: var(--color-surface);
+  color: var(--color-intent-fg);
 }
 
 .guide-check:checked {
   border-color: var(--color-intent);
   background: var(--color-intent);
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M3.5 8.2 6.4 11 12.5 4.8'/></svg>");
-  background-repeat: no-repeat;
-  background-position: center;
+  animation: guide-check-in 180ms ease both;
 }
 
-.guide-check:checked {
-  animation: guide-check-in 180ms ease both;
+.guide-check:checked::after {
+  content: "";
+  width: 9px;
+  height: 5px;
+  border-left: 1.8px solid var(--color-intent-fg);
+  border-bottom: 1.8px solid var(--color-intent-fg);
+  transform: translateY(-1px) rotate(-45deg);
 }
 
 .guide-target-pin {
