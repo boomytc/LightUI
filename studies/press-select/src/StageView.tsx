@@ -10,7 +10,7 @@ export function StageView() {
 
   return (
     <div data-stage="root" className="flex min-h-[420px] w-full items-center justify-center bg-bg p-6 sm:p-10">
-      <div data-stage="fixture" className="ps-stage rounded-[40px] p-5">
+      <div data-stage="fixture" data-stage-bezel="" className="ps-stage rounded-[40px] p-5">
         <FilesPhone
           locale="zh"
           mode={mode}

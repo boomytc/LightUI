@@ -76,9 +76,9 @@ export function FilesPhone({
   const selecting = mode === "selecting";
 
   return (
-    <div className="ps-phone relative w-full max-w-[340px] overflow-hidden rounded-[36px] border border-border bg-fg shadow-[0_24px_60px_rgb(23_24_28/0.22)]">
-      <div className="relative mx-[7px] mt-[7px] mb-[7px] overflow-hidden rounded-[30px] bg-surface">
-        <div className="absolute top-2 left-1/2 z-20 h-5 w-[92px] -translate-x-1/2 rounded-full bg-fg/90" />
+    <div data-stage-bezel="" className="ps-phone relative w-full max-w-[340px] overflow-hidden rounded-[36px] border border-border bg-fg shadow-[0_24px_60px_rgb(23_24_28/0.22)]">
+      <div data-stage-screen="" className="relative mx-[7px] mt-[7px] mb-[7px] overflow-hidden rounded-[30px] bg-surface">
+        <div data-stage-notch="" className="absolute top-2 left-1/2 z-20 h-5 w-[92px] -translate-x-1/2 rounded-full bg-fg/90" />
 
         <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[11px] font-medium text-fg-muted">
           <span className="tabular-nums">9:41</span>

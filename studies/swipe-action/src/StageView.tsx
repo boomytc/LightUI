@@ -14,6 +14,7 @@ export function StageView() {
     <div data-stage="root" className="flex min-h-dvh w-full items-center justify-center bg-bg p-6 sm:p-8">
       <div
         data-stage="fixture"
+        data-stage-bezel=""
         className="relative w-full max-w-[320px] overflow-hidden rounded-[32px] border-4 border-fg/20 bg-surface p-3 shadow-2xl"
       >
         <div className="flex items-center justify-between px-2 pb-3 pt-1">

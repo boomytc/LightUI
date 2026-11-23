@@ -12,8 +12,8 @@ export function StageView() {
 
   return (
     <div data-stage="root" className="flex min-h-[380px] w-full items-center justify-center bg-bg-warm p-8">
-      <div data-stage="fixture" className="pull-phone w-full max-w-[320px] rounded-[32px] p-3">
-        <div className="mx-auto mb-2 h-1.5 w-14 rounded-full bg-fg/12" />
+      <div data-stage="fixture" data-stage-bezel="" className="pull-phone w-full max-w-[320px] rounded-[32px] p-3">
+        <div data-stage-notch="" className="mx-auto mb-2 h-1.5 w-14 rounded-full bg-fg/12" />
         <div className="flex items-center justify-between px-2 pb-2">
           <span className="font-mono text-[10px] text-fg-subtle">9:41</span>
           <h3 className="text-[13px] font-semibold text-fg">

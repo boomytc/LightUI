@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import { isDeepStrictEqual } from "node:util";
-import { checkBoundaries } from "./boundaries";
+import { checkBoundaries, checkStudyStyles } from "./boundaries";
 import { readWorkspaceSources, repoRootFrom } from "./read-sources";
 
 const sources = readWorkspaceSources(repoRootFrom(import.meta.url));
-const errors = checkBoundaries(sources).map(
+const errors = [...checkBoundaries(sources), ...checkStudyStyles(sources)].map(
   (violation) => `${violation.path}: ${violation.reason} (${violation.specifier})`,
 );
 

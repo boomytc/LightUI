@@ -14,25 +14,14 @@ import { usePrefs } from "../lib/prefs";
 const TABS = ["play", "stage", "code", "idea"] as const;
 type StudyTab = (typeof TABS)[number];
 
-const GESTURE_STUDIES = new Set([
-  "pull-refresh",
-  "touch-context",
-  "press-select",
-  "slide-confirm",
-  "sheet-snap",
-  "wheel-picker",
-  "swipe-action",
-  "sling-throw",
-]);
-
 export function StudyPage({ slug }: { slug: string }) {
   const { locale } = usePrefs();
   const copy = messages(locale);
   const study = loadStudy(slug);
   const [tab, setTab] = useState<StudyTab>("play");
   const [activeCodeFile, setActiveCodeFile] = useState<"stage" | "machines">("stage");
-  const isGestureStudy = GESTURE_STUDIES.has(slug);
-  const [useDeviceFrame, setUseDeviceFrame] = useState(isGestureStudy);
+  const prefersDeviceFrame = study?.meta.viewport === "mobile";
+  const [useDeviceFrame, setUseDeviceFrame] = useState(prefersDeviceFrame);
   const panelRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Partial<Record<StudyTab, HTMLButtonElement | null>>>({});
   const skipFocus = useRef(true);
@@ -87,9 +76,9 @@ export function StudyPage({ slug }: { slug: string }) {
   useEffect(() => {
     setTab("play");
     setActiveCodeFile("stage");
-    setUseDeviceFrame(GESTURE_STUDIES.has(slug));
+    setUseDeviceFrame(prefersDeviceFrame);
     skipFocus.current = true;
-  }, [slug]);
+  }, [slug, prefersDeviceFrame]);
 
   useEffect(() => {
     if (!study || tab !== "play") return;
@@ -274,7 +263,7 @@ export function StudyPage({ slug }: { slug: string }) {
             <p className="min-w-0 truncate text-[13px] font-medium text-fg-muted">{title}</p>
           </div>
           <div className="flex items-center gap-2">
-            {isGestureStudy && tab === "stage" ? (
+            {prefersDeviceFrame && tab === "stage" ? (
               <button
                 type="button"
                 onClick={() => setUseDeviceFrame(!useDeviceFrame)}
@@ -351,7 +340,7 @@ export function StudyPage({ slug }: { slug: string }) {
                     <ArrowUpRight className="size-3.5" />
                   </a>
                 </div>
-                {useDeviceFrame && isGestureStudy ? (
+                {useDeviceFrame && prefersDeviceFrame ? (
                   <DeviceFrame>
                     <StageView />
                   </DeviceFrame>

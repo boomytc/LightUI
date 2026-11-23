@@ -59,10 +59,11 @@ export function PhoneSheet({
 
   return (
     <div
+      data-stage-bezel=""
       className="relative isolate min-w-0 overflow-hidden rounded-[36px] border-[5px] border-fg/12 bg-surface shadow-menu ring-1 ring-border"
       style={{ width: PHONE_WIDTH, maxWidth: "100%", height: PHONE_HEIGHT }}
     >
-      <div className="pointer-events-none absolute top-3 left-1/2 z-40 h-5 w-28 -translate-x-1/2 rounded-full bg-fg/80" />
+      <div data-stage-notch="" className="pointer-events-none absolute top-3 left-1/2 z-40 h-5 w-28 -translate-x-1/2 rounded-full bg-fg/80" />
 
       <div
         className="sheet-map relative h-full overflow-hidden"
@@ -257,7 +258,7 @@ export function PhoneSheet({
         </div>
       </div>
 
-      <div className="pointer-events-none absolute bottom-1.5 left-1/2 z-30 h-1 w-28 -translate-x-1/2 rounded-full bg-fg/18" />
+      <div data-stage-notch="" className="pointer-events-none absolute bottom-1.5 left-1/2 z-30 h-1 w-28 -translate-x-1/2 rounded-full bg-fg/18" />
 
       {badge && (
         <div className="absolute top-[5.75rem] right-3 z-30 rounded-full border border-border/70 bg-surface/92 px-2.5 py-0.5 font-mono text-[10px] text-fg-muted shadow-card backdrop-blur-sm">

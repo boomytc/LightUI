@@ -19,9 +19,10 @@ export function StageView() {
     <div data-stage="root" className="flex min-h-dvh items-center justify-center bg-bg p-4 sm:p-8">
       <div
         data-stage="fixture"
+        data-stage-bezel=""
         className="relative flex h-[580px] w-full max-w-[340px] flex-col overflow-hidden rounded-[36px] border-4 border-fg/15 bg-surface shadow-card"
       >
-        <div className="absolute top-3 left-1/2 z-30 h-3.5 w-24 -translate-x-1/2 rounded-full bg-fg/10" />
+        <div data-stage-notch="" className="absolute top-3 left-1/2 z-30 h-3.5 w-24 -translate-x-1/2 rounded-full bg-fg/10" />
 
         <div className="flex items-center justify-between px-7 pt-4 pb-2 text-[11px] font-medium text-fg-muted">
           <span className="tabular-nums">9:41</span>

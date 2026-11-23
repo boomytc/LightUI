@@ -48,6 +48,7 @@ After-add files: `docs/conventions.md`.
 | `asks` | The question this study answers. The node in the judgment graph. |
 | `links` | Outbound edges. `after` is the next question; `contrast` is a mix-up. `when` is the condition. |
 | `status` | `active` \| `draft` \| `retired` |
+| `viewport` | Optional stage viewport hint: `"mobile"` wraps the lab Stage tab in a toggleable mobile device frame. Omit for default full-width stage. |
 | `created` | First day the study existed. `YYYY-MM-DD`. |
 | `updated` | Last day the idea or playground changed. Bump it when you edit. `YYYY-MM-DD`. |
 | `tags` | Lowercase behavior tags, not product names. |
@@ -104,6 +105,15 @@ map may lock a cell. Do not freeze the global contract to `closed|open`.
 `src/lib/stage-query.ts` is a small helper copied into each study that
 reads query params. Do not import it across studies. If you change a
 study’s own query, update that copy and `scripts/capture-stage.py`.
+
+When a study sets `"viewport": "mobile"` and its standalone `StageView`
+draws its own phone bezel or hardware chrome, mark those elements with
+semantic stage attributes so the lab’s `DeviceFrame` unwraps them cleanly
+without reaching into study-private class names:
+
+- `data-stage-bezel` — outer phone shell/bezel (border, shadow, background, and bezel padding removed inside `DeviceFrame`)
+- `data-stage-screen` — nested inner screen wrapper (border, shadow, background, and margin removed inside `DeviceFrame`)
+- `data-stage-notch` — standalone notch, speaker pill, or home indicator hidden inside `DeviceFrame`
 
 ## Discovery paths (from `products/lab/src/lib/catalog.ts`)
 

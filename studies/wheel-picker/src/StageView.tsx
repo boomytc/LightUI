@@ -12,11 +12,12 @@ export function StageView() {
     <div data-stage="root" className="flex min-h-dvh items-center justify-center bg-bg p-4 sm:p-8">
       <div
         data-stage="fixture"
+        data-stage-bezel=""
         className="wheel-phone"
         style={{ maxWidth: 340 }}
       >
-        <div className="wheel-phone-notch" />
-        <div className="wheel-phone-screen" style={{ height: 580 }}>
+        <div data-stage-notch="" className="wheel-phone-notch" />
+        <div data-stage-screen="" className="wheel-phone-screen" style={{ height: 580 }}>
           <div className="flex items-center justify-between px-7 pt-4 pb-1 text-[11px] font-medium text-fg-muted">
             <span className="tabular-nums">9:41</span>
             <span>5G · 100%</span>

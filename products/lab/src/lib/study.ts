@@ -5,6 +5,8 @@ export type StudyCategory = "pointer" | "layout" | "controls" | "feedback" | "cr
 
 export type StudyRel = "after" | "contrast";
 
+export type StudyViewport = "mobile";
+
 export type StudyLink = {
   slug: string;
   rel: StudyRel;
@@ -27,6 +29,8 @@ export type StudyMeta = {
   /** Outbound edges. `after` is the next question; `contrast` is a mix-up. */
   links?: StudyLink[];
   status: StudyStatus;
+  /** Optional stage viewport preference. `"mobile"` wraps StageView in a toggleable device frame. */
+  viewport?: StudyViewport;
   tags: string[];
   created?: string;
   updated?: string;

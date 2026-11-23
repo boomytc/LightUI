@@ -17,6 +17,7 @@ const CATEGORIES = [
 ];
 const VALID_CATEGORIES = new Set(CATEGORIES.map((c) => c.id));
 const VALID_STATUS = new Set(["active", "draft", "retired"]);
+const VALID_VIEWPORTS = new Set(["mobile"]);
 
 function fail(message) {
   console.error(message);
@@ -112,6 +113,9 @@ for (const slug of slugs) {
   }
   if (!VALID_STATUS.has(meta.status)) {
     fail(`invalid or missing status: ${slug} -> ${meta.status ?? "(missing)"}`);
+  }
+  if (meta.viewport !== undefined && !VALID_VIEWPORTS.has(meta.viewport)) {
+    fail(`invalid viewport: ${slug} -> ${String(meta.viewport)}`);
   }
   rows.push(meta);
 }
