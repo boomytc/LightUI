@@ -9,17 +9,33 @@ import {
   type SlideState,
 } from "./lib/machines";
 import { readStageQuery } from "./lib/stage-query";
+import { loc, pick, useLocale } from "./lib/site-locale";
 import "./slide.css";
 
 export function StageView() {
+  const locale = useLocale();
+  const en = locale === "en";
   const query = readStageQuery();
   const [state, setState] = useState<SlideState>(query.state === "committed" ? "committed" : "idle");
   const [rawDx, setRawDx] = useState(0);
   const [trackWidth, setTrackWidth] = useState(360);
+  const [reduced, setReduced] = useState(() =>
+    typeof window === "undefined"
+      ? false
+      : window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
   const trackRef = useRef<HTMLDivElement>(null);
   const startX = useRef(0);
   const resetTimer = useRef<number | null>(null);
   const thumbWidth = 48; // px
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduced(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     function measure() {
@@ -88,12 +104,16 @@ export function StageView() {
         } catch {}
       }
     } else {
-      setState("resetting");
       setRawDx(0);
-      resetTimer.current = window.setTimeout(() => {
+      if (reduced) {
         setState("idle");
-        resetTimer.current = null;
-      }, 300);
+      } else {
+        setState("resetting");
+        resetTimer.current = window.setTimeout(() => {
+          setState("idle");
+          resetTimer.current = null;
+        }, 300);
+      }
     }
   }
 
@@ -102,8 +122,12 @@ export function StageView() {
       window.clearTimeout(resetTimer.current);
       resetTimer.current = null;
     }
-    setState("resetting");
     setRawDx(0);
+    if (reduced) {
+      setState("idle");
+      return;
+    }
+    setState("resetting");
     resetTimer.current = window.setTimeout(() => {
       setState("idle");
       resetTimer.current = null;
@@ -112,22 +136,31 @@ export function StageView() {
 
   const scenarioMeta = {
     destroy: {
-      title: "销毁生产服务器实例",
-      subtitle: "所有实例挂载的卷与未快照数据将永久清除",
-      prompt: "滑动以确认销毁",
-      committedText: "服务器实例已安全销毁",
+      title: loc("销毁生产服务器实例", "Destroy production server"),
+      subtitle: loc(
+        "所有实例挂载的卷与未快照数据将永久清除",
+        "All attached volumes and unbacked data will be permanently erased",
+      ),
+      prompt: loc("滑动以确认销毁", "Slide to confirm destroy"),
+      committedText: loc("服务器实例已安全销毁", "Server instance destroyed"),
     },
     transfer: {
-      title: "向境外未知账户转账 ¥50,000",
-      subtitle: "资金一旦汇出不可撤回，请核对收款人",
-      prompt: "滑动以确认转账",
-      committedText: "大额转账指令已成功提交",
+      title: loc("向境外未知账户转账 ¥50,000", "Wire ¥50,000 to overseas account"),
+      subtitle: loc(
+        "资金一旦汇出不可撤回，请核对收款人",
+        "Funds cannot be recalled once wired — verify recipient first",
+      ),
+      prompt: loc("滑动以确认转账", "Slide to confirm transfer"),
+      committedText: loc("大额转账指令已成功提交", "Wire transfer submitted"),
     },
     delete_account: {
-      title: "永久注销当前主账号",
-      subtitle: "该操作不可撤回，所有权益与资产将彻底清空",
-      prompt: "滑动以确认注销",
-      committedText: "主账号注销流程已锁定",
+      title: loc("永久注销当前主账号", "Permanently delete primary account"),
+      subtitle: loc(
+        "该操作不可撤回，所有权益与资产将彻底清空",
+        "Irreversible — all entitlements and assets will be cleared",
+      ),
+      prompt: loc("滑动以确认注销", "Slide to confirm deletion"),
+      committedText: loc("主账号注销流程已锁定", "Account deletion locked"),
     },
   }[query.scenario];
 
@@ -146,10 +179,10 @@ export function StageView() {
           </div>
           <div>
             <h3 className="text-[15px] font-semibold text-fg tracking-tight">
-              {scenarioMeta.title}
+              {pick(scenarioMeta.title, locale)}
             </h3>
             <p className="text-[12px] text-fg-muted mt-0.5 leading-snug">
-              {scenarioMeta.subtitle}
+              {pick(scenarioMeta.subtitle, locale)}
             </p>
           </div>
         </div>
@@ -171,8 +204,9 @@ export function StageView() {
               }`}
               style={{
                 width: `${visualOffset + thumbWidth}px`,
-                transition:
-                  state === "resetting"
+                transition: reduced
+                  ? "none"
+                  : state === "resetting"
                     ? "width 300ms cubic-bezier(0.25, 1, 0.5, 1)"
                     : state === "committed"
                       ? "width 180ms cubic-bezier(0.25, 1, 0.5, 1)"
@@ -185,8 +219,9 @@ export function StageView() {
               className="pointer-events-none absolute inset-0 flex items-center justify-center font-mono text-[13px] font-medium tracking-wide text-fg-muted"
               style={{
                 opacity: textOpacity,
-                transition:
-                  state === "resetting"
+                transition: reduced
+                  ? "none"
+                  : state === "resetting"
                     ? "opacity 300ms ease"
                     : state === "committed"
                       ? "opacity 150ms ease"
@@ -194,8 +229,8 @@ export function StageView() {
               }}
             >
               <span className="relative overflow-hidden">
-                {scenarioMeta.prompt}
-                {state === "idle" && (
+                {pick(scenarioMeta.prompt, locale)}
+                {state === "idle" && !reduced && (
                   <span
                     aria-hidden="true"
                     className="animate-slide-sheen absolute inset-0 bg-gradient-to-r from-transparent via-fg/20 to-transparent"
@@ -219,8 +254,9 @@ export function StageView() {
               }`}
               style={{
                 transform: `translateX(${visualOffset}px)`,
-                transition:
-                  state === "resetting"
+                transition: reduced
+                  ? "none"
+                  : state === "resetting"
                     ? "transform 300ms cubic-bezier(0.25, 1, 0.5, 1)"
                     : state === "committed"
                       ? "transform 180ms cubic-bezier(0.25, 1, 0.5, 1)"
@@ -230,7 +266,7 @@ export function StageView() {
               {state === "committed" ? (
                 <Check className="size-5" />
               ) : (
-                <ChevronsRight className="size-5 animate-pulse" />
+                <ChevronsRight className={`size-5 ${reduced ? "" : "motion-safe:animate-pulse"}`} />
               )}
             </div>
           </div>
@@ -242,7 +278,7 @@ export function StageView() {
             <span
               className={`inline-block size-2 rounded-full ${
                 state === "committed"
-                  ? "bg-wrong animate-ping"
+                  ? `bg-wrong ${reduced ? "" : "motion-safe:animate-ping"}`
                   : state === "dragging"
                     ? "bg-accent"
                     : "bg-border-strong"
@@ -250,10 +286,14 @@ export function StageView() {
             />
             <span className="font-mono text-fg-subtle">
               {state === "committed"
-                ? scenarioMeta.committedText
+                ? pick(scenarioMeta.committedText, locale)
                 : state === "dragging"
-                  ? `进度: ${Math.round(progress * 100)}% (${thresholdReached ? "已达阈值" : "未达阈值"})`
-                  : "待滑动"}
+                  ? en
+                    ? `Progress: ${Math.round(progress * 100)}% (${thresholdReached ? "threshold met" : "below threshold"})`
+                    : `进度: ${Math.round(progress * 100)}% (${thresholdReached ? "已达阈值" : "未达阈值"})`
+                  : en
+                    ? "Ready to slide"
+                    : "待滑动"}
             </span>
           </div>
 
@@ -264,7 +304,7 @@ export function StageView() {
               className="inline-flex items-center gap-1 rounded-md px-2 py-1 font-medium text-accent hover:bg-surface-2 transition-colors"
             >
               <RotateCcw className="size-3" />
-              <span>重置</span>
+              <span>{en ? "Reset" : "重置"}</span>
             </button>
           )}
         </div>

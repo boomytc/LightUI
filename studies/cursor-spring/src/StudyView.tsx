@@ -17,6 +17,7 @@ import {
   type TrailPoint,
   type Vec2,
 } from "./lib/machines";
+import { useLocale } from "./lib/site-locale";
 import "./cursor-spring.css";
 
 const SPRING_SPACING = 7;
@@ -152,6 +153,8 @@ export type LabSettings = SpringConfig & {
 };
 
 export function StudyView() {
+  const locale = useLocale();
+  const en = locale === "en";
   const labRef = useRef<HTMLDivElement>(null);
   const localPlotRef = useRef<HTMLDivElement>(null);
   const rawPlotRef = useRef<HTMLDivElement>(null);
@@ -176,23 +179,41 @@ export function StudyView() {
   const lagRef = useRef(0);
   const rafRef = useRef(0);
   const seedRef = useRef<() => void>(() => {});
+  const paintRef = useRef<(now: number) => void>(() => {});
+  const [reduced, setReduced] = useState(() =>
+    typeof window === "undefined"
+      ? false
+      : window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  const reducedRef = useRef(reduced);
+  reducedRef.current = reduced;
 
   const [showOverlays, setShowOverlays] = useState(true);
   const [driving, setDriving] = useState<"demo" | "user">("demo");
   const [lagPx, setLagPx] = useState(0);
+  const [customName, setCustomName] = useState<string | null>(null);
   const [settings, setSettings] = useState<LabSettings>({
     stiffness: DEFAULT_PRESET.stiffness,
     damping: DEFAULT_PRESET.damping,
     mass: DEFAULT_PRESET.mass,
     sampleHz: 16,
     trailMs: 1400,
-    name: "协作者",
+    name: en ? "Collaborator" : "协作者",
     presetId: DEFAULT_PRESET.id,
   });
 
+  const displayName = customName ?? (en ? "Collaborator" : "协作者");
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
   overlayRef.current = showOverlays;
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduced(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   const patchSettings = useCallback((patch: Partial<LabSettings>) => {
     setSettings((s) => ({ ...s, ...patch }));
@@ -207,6 +228,7 @@ export function StudyView() {
   const clear = useCallback(() => {
     rawTrail.current = [];
     springTrail.current = [];
+    if (reducedRef.current) paintRef.current(performance.now());
   }, []);
 
   useEffect(() => {
@@ -248,6 +270,23 @@ export function StudyView() {
         setDriving("user");
         lastSampleAt.current = performance.now();
         sampleRef.current = { ...pointerRef.current };
+      }
+      if (reducedRef.current) {
+        const now = performance.now();
+        sampleRef.current = { ...pointerRef.current };
+        springRef.current = createSpring(sampleRef.current.x, sampleRef.current.y);
+        const rawCanvas = rawCanvasRef.current;
+        const springCanvas = springCanvasRef.current;
+        if (rawCanvas) {
+          const { w, h } = sizeCanvas(rawCanvas);
+          pushSample(rawTrail.current, sampleRef.current.x * w, sampleRef.current.y * h, now);
+        }
+        if (springCanvas) {
+          const { w, h } = sizeCanvas(springCanvas);
+          pushSpaced(springTrail.current, springRef.current.x * w, springRef.current.y * h, now, SPRING_SPACING);
+        }
+        paint(now);
+        setLagPx(0);
       }
     };
 
@@ -396,6 +435,7 @@ export function StudyView() {
     };
 
     seedRef.current = seed;
+    paintRef.current = (now: number) => paint(now);
 
     const ro = new ResizeObserver(() => {
       if (rawCanvasRef.current) sizeCanvas(rawCanvasRef.current);
@@ -406,6 +446,17 @@ export function StudyView() {
     if (springCanvasRef.current) ro.observe(springCanvasRef.current);
 
     seed();
+    setLagPx(lagRef.current);
+
+    if (reduced) {
+      return () => {
+        ro.disconnect();
+        lab.removeEventListener("pointerdown", onDown);
+        lab.removeEventListener("pointermove", onMove);
+        lab.removeEventListener("pointerup", onUp);
+        lab.removeEventListener("pointercancel", onUp);
+      };
+    }
 
     const tick = (now: number) => {
       rafRef.current = requestAnimationFrame(tick);
@@ -469,7 +520,13 @@ export function StudyView() {
       lab.removeEventListener("pointerup", onUp);
       lab.removeEventListener("pointercancel", onUp);
     };
-  }, []);
+  }, [reduced]);
+
+  useEffect(() => {
+    if (reduced) {
+      paintRef.current(performance.now());
+    }
+  }, [showOverlays, reduced]);
 
   const zeta = dampingRatio(settings);
 
@@ -482,10 +539,14 @@ export function StudyView() {
           <span>Presence Cursor Reconstruction</span>
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-fg md:text-3xl">
-          多人协作光标：稀疏网络采样的弹簧物理重建
+          {en
+            ? "Collaborative cursors: spring reconstruction from sparse packets"
+            : "多人协作光标：稀疏网络采样的弹簧物理重建"}
         </h1>
         <p className="max-w-3xl text-sm leading-relaxed text-fg-muted">
-          网络只能以 8–20Hz 丢出稀疏采样包。三栏实时对照展示：本地真实高刷光标、无平滑瞬移跳变，以及通过二阶弹簧半隐式欧拉积分实时重建出的自然平滑跟手轨迹。
+          {en
+            ? "Networks emit sparse 8–20Hz position packets. Compare three synchronized lanes: the true high-refresh local pointer, unsmoothed discrete teleportation, and a second-order semi-implicit Euler spring reconstructing a fluid path."
+            : "网络只能以 8–20Hz 丢出稀疏采样包。三栏实时对照展示：本地真实高刷光标、无平滑瞬移跳变，以及通过二阶弹簧半隐式欧拉积分实时重建出的自然平滑跟手轨迹。"}
         </p>
       </div>
 
@@ -499,8 +560,12 @@ export function StudyView() {
           <header className="flex h-11 items-center justify-between border-b border-border/50 bg-surface-2 px-4">
             <div className="flex items-center gap-2">
               <span className="inline-block size-2 rounded-full bg-fg" />
-              <span className="text-xs font-semibold text-fg">本地真实指针 (Local Pointer)</span>
-              <span className="rounded bg-surface px-1.5 py-0.5 text-[10px] text-fg-subtle">60–120Hz 连续</span>
+              <span className="text-xs font-semibold text-fg">
+                {en ? "Local Pointer" : "本地真实指针 (Local Pointer)"}
+              </span>
+              <span className="rounded bg-surface px-1.5 py-0.5 text-[10px] text-fg-subtle">
+                {en ? "60–120Hz continuous" : "60–120Hz 连续"}
+              </span>
             </div>
             <button
               type="button"
@@ -508,7 +573,15 @@ export function StudyView() {
               className="flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1 text-xs font-medium text-fg shadow-xs transition hover:bg-surface-2 active:scale-95"
             >
               {showOverlays ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
-              <span>{showOverlays ? "隐藏轨迹" : "显示轨迹"}</span>
+              <span>
+                {showOverlays
+                  ? en
+                    ? "Hide trails"
+                    : "隐藏轨迹"
+                  : en
+                    ? "Show trails"
+                    : "显示轨迹"}
+              </span>
             </button>
           </header>
           <div className="relative h-36 md:h-44">
@@ -533,9 +606,13 @@ export function StudyView() {
           <header className="flex h-11 items-center justify-between border-b border-border/50 bg-surface-2 px-4">
             <div className="flex items-center gap-2">
               <span className="inline-block size-2 rounded-full bg-wrong" />
-              <span className="text-xs font-semibold text-fg">无平滑瞬移 (Without Smoothing)</span>
+              <span className="text-xs font-semibold text-fg">
+                {en ? "Without Smoothing" : "无平滑瞬移 (Without Smoothing)"}
+              </span>
               <span className="rounded bg-wrong-soft px-1.5 py-0.5 text-[10px] font-semibold text-wrong">
-                {settings.sampleHz}Hz 网络包 · 离散跳跃
+                {en
+                  ? `${settings.sampleHz}Hz packets · discrete jumps`
+                  : `${settings.sampleHz}Hz 网络包 · 离散跳跃`}
               </span>
             </div>
             <span className="font-mono text-xs text-wrong">Stuttering</span>
@@ -549,7 +626,7 @@ export function StudyView() {
                     <path d="M0 0 L12 4.2 L4.6 12 Z" fill="currentColor" />
                   </svg>
                   <span className="rounded-md bg-wrong px-2 py-0.5 text-[11px] font-medium text-white shadow-xs">
-                    {settings.name} (瞬移)
+                    {displayName} ({en ? "raw" : "瞬移"})
                   </span>
                 </div>
               </div>
@@ -562,12 +639,18 @@ export function StudyView() {
           <header className="flex h-11 items-center justify-between border-b border-border/50 bg-surface-2 px-4">
             <div className="flex items-center gap-2">
               <span className="inline-block size-2 rounded-full bg-intent" />
-              <span className="text-xs font-semibold text-fg">弹簧平滑重建 (With Spring Smoothing)</span>
+              <span className="text-xs font-semibold text-fg">
+                {en ? "With Spring Smoothing" : "弹簧平滑重建 (With Spring Smoothing)"}
+              </span>
               <span className="rounded bg-intent-soft px-1.5 py-0.5 text-[10px] font-semibold text-intent">
-                二阶半隐式欧拉 · 自然微过冲
+                {en
+                  ? "Semi-implicit Euler · subtle overshoot"
+                  : "二阶半隐式欧拉 · 自然微过冲"}
               </span>
             </div>
-            <span className="font-mono text-xs text-intent">60/120fps rAF</span>
+            <span className="font-mono text-xs text-intent">
+              {reduced ? (en ? "Reduced · static" : "减动效 · 静态快照") : "60/120fps rAF"}
+            </span>
           </header>
           <div className="relative h-36 md:h-44">
             <div ref={springPlotRef} className="relative size-full touch-none cursor-crosshair">
@@ -578,7 +661,7 @@ export function StudyView() {
                     <path d="M0 0 L12 4.2 L4.6 12 Z" fill="currentColor" />
                   </svg>
                   <span className="rounded-md bg-intent px-2 py-0.5 text-[11px] font-medium text-white shadow-xs">
-                    {settings.name} (弹簧)
+                    {displayName} ({en ? "spring" : "弹簧"})
                   </span>
                 </div>
               </div>
@@ -592,13 +675,36 @@ export function StudyView() {
         <div className="flex items-center gap-2">
           <Activity className="size-4 text-accent" />
           <span>
-            {driving === "demo" ? (
+            {reduced ? (
               <span className="text-fg">
-                正在循环自动演示预制手势轨迹 · <strong>在任一画布区域滑动即可实时接管</strong>
+                {en ? (
+                  <>
+                    Reduced motion active: continuous playback paused ·{" "}
+                    <strong>move on any lane for discrete steps</strong>
+                  </>
+                ) : (
+                  <>
+                    减动效模式：已暂停连续自动播放 · <strong>在画布上移动可离散步进预览</strong>
+                  </>
+                )}
+              </span>
+            ) : driving === "demo" ? (
+              <span className="text-fg">
+                {en ? (
+                  <>
+                    Looping prerecorded gesture · <strong>move over any lane to take control</strong>
+                  </>
+                ) : (
+                  <>
+                    正在循环自动演示预制手势轨迹 · <strong>在任一画布区域滑动即可实时接管</strong>
+                  </>
+                )}
               </span>
             ) : (
               <span className="text-fg">
-                已进入用户实时操控模式 · 上栏为你的手势真轨迹，中栏丢弃中间点按采样率瞬移，底栏用弹簧追赶
+                {en
+                  ? "Live pointer control: top shows true input, middle teleports at sample rate, bottom chases with a spring."
+                  : "已进入用户实时操控模式 · 上栏为你的手势真轨迹，中栏丢弃中间点按采样率瞬移，底栏用弹簧追赶"}
               </span>
             )}
           </span>
@@ -610,7 +716,7 @@ export function StudyView() {
             className="flex items-center gap-1 rounded-md border border-border bg-surface-2 px-2.5 py-1 text-xs font-medium text-fg hover:bg-surface hover:text-accent active:scale-95"
           >
             <RotateCcw className="size-3" />
-            <span>回放演示</span>
+            <span>{reduced ? (en ? "Reseed snapshot" : "刷新快照") : en ? "Replay demo" : "回放演示"}</span>
           </button>
           <button
             type="button"
@@ -618,7 +724,7 @@ export function StudyView() {
             className="flex items-center gap-1 rounded-md border border-border bg-surface-2 px-2.5 py-1 text-xs font-medium text-fg hover:bg-surface hover:text-wrong active:scale-95"
           >
             <Trash2 className="size-3" />
-            <span>清除轨迹</span>
+            <span>{en ? "Clear trails" : "清除轨迹"}</span>
           </button>
         </div>
       </div>
@@ -629,7 +735,9 @@ export function StudyView() {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <Sliders className="size-4 text-accent" />
-            <h2 className="text-sm font-semibold text-fg">物理动力学预设</h2>
+            <h2 className="text-sm font-semibold text-fg">
+              {en ? "Spring presets" : "物理动力学预设"}
+            </h2>
           </div>
           <div className="grid grid-cols-2 gap-2">
             {PRESETS.map((p) => {
@@ -638,6 +746,7 @@ export function StudyView() {
                 <button
                   key={p.id}
                   type="button"
+                  aria-pressed={active}
                   onClick={() =>
                     patchSettings({
                       presetId: p.id,
@@ -652,8 +761,10 @@ export function StudyView() {
                       : "border-border bg-surface-2 text-fg hover:border-border-strong"
                   }`}
                 >
-                  <span className="text-xs font-semibold">{p.label}</span>
-                  <span className="mt-0.5 line-clamp-1 text-[11px] text-fg-muted">{p.hint}</span>
+                  <span className="text-xs font-semibold">{en ? p.labelEn : p.label}</span>
+                  <span className="mt-0.5 line-clamp-1 text-[11px] text-fg-muted">
+                    {en ? p.hintEn : p.hint}
+                  </span>
                 </button>
               );
             })}
@@ -662,18 +773,18 @@ export function StudyView() {
           <div className="mt-auto grid grid-cols-3 gap-2 rounded-xl border border-border bg-surface-2 p-3 text-center">
             <div>
               <div className="font-mono text-sm font-bold text-fg">{zeta.toFixed(2)}</div>
-              <div className="text-[11px] text-fg-subtle">阻尼比 ζ</div>
+              <div className="text-[11px] text-fg-subtle">{en ? "Damping ζ" : "阻尼比 ζ"}</div>
             </div>
             <div>
               <div className="font-mono text-sm font-bold text-accent">{settings.sampleHz} Hz</div>
-              <div className="text-[11px] text-fg-subtle">网络采样</div>
+              <div className="text-[11px] text-fg-subtle">{en ? "Sample rate" : "网络采样"}</div>
             </div>
             <div>
               <div className="font-mono text-sm font-bold text-intent">{Math.round(lagPx)} px</div>
-              <div className="text-[11px] text-fg-subtle">瞬时滞后</div>
+              <div className="text-[11px] text-fg-subtle">{en ? "Live lag" : "瞬时滞后"}</div>
             </div>
           </div>
-          <p className="text-center text-[11px] text-fg-muted">{zetaLabel(zeta)}</p>
+          <p className="text-center text-[11px] text-fg-muted">{zetaLabel(zeta, locale)}</p>
         </div>
 
         {/* Sliders Parameters */}
@@ -681,7 +792,9 @@ export function StudyView() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <div className="mb-1 flex justify-between text-xs">
-                <span className="font-medium text-fg">弹簧刚度 k (Stiffness)</span>
+                <span className="font-medium text-fg">
+                  {en ? "Stiffness (k)" : "弹簧刚度 k (Stiffness)"}
+                </span>
                 <span className="font-mono text-fg-muted">{Math.round(settings.stiffness)}</span>
               </div>
               <input
@@ -692,12 +805,16 @@ export function StudyView() {
                 onChange={(e) => patchSettings({ stiffness: Number(e.target.value), presetId: "custom" })}
                 className="spring-range"
               />
-              <span className="text-[10px] text-fg-subtle">决定拉力大小与加速度上限</span>
+              <span className="text-[10px] text-fg-subtle">
+                {en ? "Controls pull strength and peak acceleration" : "决定拉力大小与加速度上限"}
+              </span>
             </div>
 
             <div>
               <div className="mb-1 flex justify-between text-xs">
-                <span className="font-medium text-fg">阻尼系数 c (Damping)</span>
+                <span className="font-medium text-fg">
+                  {en ? "Damping (c)" : "阻尼系数 c (Damping)"}
+                </span>
                 <span className="font-mono text-fg-muted">{Math.round(settings.damping)}</span>
               </div>
               <input
@@ -708,12 +825,16 @@ export function StudyView() {
                 onChange={(e) => patchSettings({ damping: Number(e.target.value), presetId: "custom" })}
                 className="spring-range"
               />
-              <span className="text-[10px] text-fg-subtle">消耗动能，控制振荡与过冲阻尼</span>
+              <span className="text-[10px] text-fg-subtle">
+                {en ? "Dissipates energy to tame oscillation and overshoot" : "消耗动能，控制振荡与过冲阻尼"}
+              </span>
             </div>
 
             <div>
               <div className="mb-1 flex justify-between text-xs">
-                <span className="font-medium text-fg">虚拟质量 m (Mass)</span>
+                <span className="font-medium text-fg">
+                  {en ? "Virtual mass (m)" : "虚拟质量 m (Mass)"}
+                </span>
                 <span className="font-mono text-fg-muted">{Number(settings.mass.toFixed(2))}</span>
               </div>
               <input
@@ -725,12 +846,16 @@ export function StudyView() {
                 onChange={(e) => patchSettings({ mass: Number(e.target.value), presetId: "custom" })}
                 className="spring-range"
               />
-              <span className="text-[10px] text-fg-subtle">惯性质量，越大启动与转向越沉稳</span>
+              <span className="text-[10px] text-fg-subtle">
+                {en ? "Inertia — higher mass makes starts and turns weightier" : "惯性质量，越大启动与转向越沉稳"}
+              </span>
             </div>
 
             <div>
               <div className="mb-1 flex justify-between text-xs">
-                <span className="font-medium text-fg">模拟网络采样率 (Hz)</span>
+                <span className="font-medium text-fg">
+                  {en ? "Simulated network rate (Hz)" : "模拟网络采样率 (Hz)"}
+                </span>
                 <span className="font-mono text-accent font-semibold">{settings.sampleHz} Hz</span>
               </div>
               <input
@@ -742,12 +867,16 @@ export function StudyView() {
                 onChange={(e) => patchSettings({ sampleHz: Number(e.target.value) })}
                 className="spring-range"
               />
-              <span className="text-[10px] text-fg-subtle">WebSocket广播频率：低频测试弹簧韧性</span>
+              <span className="text-[10px] text-fg-subtle">
+                {en ? "WebSocket broadcast rate: lower values stress-test smoothing" : "WebSocket广播频率：低频测试弹簧韧性"}
+              </span>
             </div>
 
             <div>
               <div className="mb-1 flex justify-between text-xs">
-                <span className="font-medium text-fg">轨迹保留时间 (Trail TTL)</span>
+                <span className="font-medium text-fg">
+                  {en ? "Trail retention (TTL)" : "轨迹保留时间 (Trail TTL)"}
+                </span>
                 <span className="font-mono text-fg-muted">{settings.trailMs} ms</span>
               </div>
               <input
@@ -759,31 +888,50 @@ export function StudyView() {
                 onChange={(e) => patchSettings({ trailMs: Number(e.target.value) })}
                 className="spring-range"
               />
-              <span className="text-[10px] text-fg-subtle">历史拖尾保留时长：调长可观察完整轨迹</span>
+              <span className="text-[10px] text-fg-subtle">
+                {en ? "Increase to inspect the full reconstructed arc" : "历史拖尾保留时长：调长可观察完整轨迹"}
+              </span>
             </div>
 
             <div>
               <div className="mb-1 flex justify-between text-xs">
-                <span className="font-medium text-fg">协作者名称标签</span>
-                <span className="font-mono text-xs text-fg-subtle">{settings.name.length}/24</span>
+                <span className="font-medium text-fg">
+                  {en ? "Collaborator label" : "协作者名称标签"}
+                </span>
+                <span className="font-mono text-xs text-fg-subtle">{displayName.length}/24</span>
               </div>
               <input
                 type="text"
                 maxLength={24}
-                value={settings.name}
-                onChange={(e) => patchSettings({ name: e.target.value.slice(0, 24) })}
-                placeholder="输入协作者名称"
-                className="h-7 w-full rounded-md border border-border bg-surface px-2.5 text-xs text-fg placeholder:text-fg-subtle focus:border-accent focus:outline-none"
+                value={displayName}
+                onChange={(e) => {
+                  const val = e.target.value.slice(0, 24);
+                  setCustomName(val);
+                  patchSettings({ name: val });
+                }}
+                placeholder={en ? "Enter collaborator name" : "输入协作者名称"}
+                className="h-7 w-full rounded-md border border-border bg-surface px-2.5 text-xs text-fg placeholder:text-fg-subtle focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
               />
-              <span className="text-[10px] text-fg-subtle">显示于远程光标跟随的悬浮状态胶囊</span>
+              <span className="text-[10px] text-fg-subtle">
+                {en ? "Shown on the floating badge beside the remote cursor" : "显示于远程光标跟随的悬浮状态胶囊"}
+              </span>
             </div>
           </div>
 
           <div className="flex items-center gap-3 rounded-lg bg-surface-2 p-3 text-xs text-fg-muted">
             <Info className="size-4 shrink-0 text-accent" />
             <span>
-              当把采样率调低至 <strong>6–10 Hz</strong> 时，中栏的跳变已无法肉眼辨识连续轨迹，而底栏依然能依靠
-              <strong>二阶半隐式欧拉积分</strong> 重建出平滑顺畅的连贯路径。
+              {en ? (
+                <>
+                  Drop the sample rate to <strong>6–10 Hz</strong>: the middle lane breaks into unreadable jumps, while the bottom lane still reconstructs a smooth path via{" "}
+                  <strong>semi-implicit Euler integration</strong>.
+                </>
+              ) : (
+                <>
+                  当把采样率调低至 <strong>6–10 Hz</strong> 时，中栏的跳变已无法肉眼辨识连续轨迹，而底栏依然能依靠
+                  <strong>二阶半隐式欧拉积分</strong> 重建出平滑顺畅的连贯路径。
+                </>
+              )}
             </span>
           </div>
         </div>
@@ -792,27 +940,58 @@ export function StudyView() {
       {/* Explainer Cards */}
       <div className="grid gap-6 md:grid-cols-3">
         <div className="rounded-xl border border-border bg-surface p-5 shadow-sm">
-          <div className="font-mono text-xs text-accent">01 / 方程</div>
-          <h3 className="mt-1 font-semibold text-fg">半隐式欧拉积分</h3>
+          <div className="font-mono text-xs text-accent">{en ? "01 / Equation" : "01 / 方程"}</div>
+          <h3 className="mt-1 font-semibold text-fg">
+            {en ? "Semi-implicit Euler" : "半隐式欧拉积分"}
+          </h3>
           <p className="mt-2 text-xs leading-relaxed text-fg-muted">
-            与 React Spring 及 Motion 相同的物理积分器。每帧根据胡克定律计算合力加速度
-            <code>a = (-k·Δx - c·v)/m</code>，更新速度后再推进位移，保证能量守恒与数值稳定。
+            {en ? (
+              <>
+                The same integrator behind React Spring and Motion. Each step evaluates Hooke&apos;s law{" "}
+                <code>a = (-k·Δx - c·v)/m</code>, updating velocity before position for numerical stability.
+              </>
+            ) : (
+              <>
+                与 React Spring 及 Motion 相同的物理积分器。每帧根据胡克定律计算合力加速度
+                <code>a = (-k·Δx - c·v)/m</code>，更新速度后再推进位移，保证能量守恒与数值稳定。
+              </>
+            )}
           </p>
         </div>
 
         <div className="rounded-xl border border-border bg-surface p-5 shadow-sm">
-          <div className="font-mono text-xs text-wrong">02 / 弃用方案</div>
-          <h3 className="mt-1 font-semibold text-fg">为什么不用 Lerp 或 CSS</h3>
+          <div className="font-mono text-xs text-wrong">{en ? "02 / Rejected" : "02 / 弃用方案"}</div>
+          <h3 className="mt-1 font-semibold text-fg">
+            {en ? "Why not lerp or CSS" : "为什么不用 Lerp 或 CSS"}
+          </h3>
           <p className="mt-2 text-xs leading-relaxed text-fg-muted">
-            线性 lerp <code>x += (target - x) * λ</code> 无速度延续，高速转弯像拖泥；CSS transition 在中途到达新包时会重置起点跳闪；样条插值必须等待多个点而引入强制延迟。
+            {en ? (
+              <>
+                Linear lerp <code>x += (target - x) * λ</code> drops momentum on fast turns; CSS transitions restart abruptly when a new packet arrives; splines require lookahead buffers that add latency.
+              </>
+            ) : (
+              <>
+                线性 lerp <code>x += (target - x) * λ</code> 无速度延续，高速转弯像拖泥；CSS transition 在中途到达新包时会重置起点跳闪；样条插值必须等待多个点而引入强制延迟。
+              </>
+            )}
           </p>
         </div>
 
         <div className="rounded-xl border border-border bg-surface p-5 shadow-sm">
-          <div className="font-mono text-xs text-intent">03 / 工业落地</div>
-          <h3 className="mt-1 font-semibold text-fg">稳定三法则</h3>
+          <div className="font-mono text-xs text-intent">{en ? "03 / Production" : "03 / 工业落地"}</div>
+          <h3 className="mt-1 font-semibold text-fg">
+            {en ? "Three stability rules" : "稳定三法则"}
+          </h3>
           <p className="mt-2 text-xs leading-relaxed text-fg-muted">
-            ① <strong>8ms 子步切分</strong>：切后台不飞车；② <strong>死区吸附</strong>：位移与速度微小时归零，消灭微颤；③ <strong>GPU Transform</strong>：脱离 React state，60/120fps 不卡主线程。
+            {en ? (
+              <>
+                ① <strong>8ms sub-steps</strong> prevent tab-switch explosions; ② <strong>deadband settle</strong> snaps micro-jitter to zero; ③ <strong>GPU transforms</strong> bypass React state for smooth 60/120fps frames.
+              </>
+            ) : (
+              <>
+                ① <strong>8ms 子步切分</strong>：切后台不飞车；② <strong>死区吸附</strong>：位移与速度微小时归零，消灭微颤；③ <strong>GPU Transform</strong>：脱离 React state，60/120fps 不卡主线程。
+              </>
+            )}
           </p>
         </div>
       </div>

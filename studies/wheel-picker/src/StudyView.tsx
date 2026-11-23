@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Copy, RotateCcw } from "lucide-react";
 import { useLocale } from "./lib/site-locale";
 import {
@@ -47,6 +47,14 @@ export function StudyView() {
   });
   const [tracking, setTracking] = useState(false);
   const trackingTimer = useRef<ReturnType<typeof setTimeout> | 0>(0);
+  const copyTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (trackingTimer.current) clearTimeout(trackingTimer.current);
+      if (copyTimer.current !== null) window.clearTimeout(copyTimer.current);
+    };
+  }, []);
 
   function markTracking() {
     setTracking(true);
@@ -57,7 +65,11 @@ export function StudyView() {
   function copyPrompt() {
     navigator.clipboard.writeText(zh ? FORMULA.prompt.zh : FORMULA.prompt.en);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (copyTimer.current !== null) window.clearTimeout(copyTimer.current);
+    copyTimer.current = window.setTimeout(() => {
+      copyTimer.current = null;
+      setCopied(false);
+    }, 2000);
   }
 
   function applyTime(h: number, m: number) {

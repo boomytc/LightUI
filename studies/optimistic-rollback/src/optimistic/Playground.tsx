@@ -123,10 +123,17 @@ export function Playground({ path, onPathChange }: Props) {
     return latestRef.current[target] === token;
   }
 
+  useEffect(() => {
+    return () => {
+      if (motionTimer.current !== undefined) clearTimeout(motionTimer.current);
+    };
+  }, []);
+
   function pulseThenLive() {
     if (motionTimer.current !== undefined) clearTimeout(motionTimer.current);
     setMotion("flip");
     motionTimer.current = setTimeout(() => {
+      motionTimer.current = undefined;
       setMotion((current) => (current === "flip" ? "live" : current));
     }, 420);
   }

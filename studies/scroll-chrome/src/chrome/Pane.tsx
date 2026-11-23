@@ -113,6 +113,7 @@ export function Pane({
     const el = ref.current;
     if (!el || lock == null) return;
     const locked = stageFraction(lock);
+    let innerRaf = 0;
     const apply = () => {
       const nextMax = Math.max(0, el.scrollHeight - el.clientHeight);
       applyingRef.current = true;
@@ -122,13 +123,18 @@ export function Pane({
         el.scrollTop = locked * nextMax;
       }
       report(el);
-      requestAnimationFrame(() => {
+      if (innerRaf) cancelAnimationFrame(innerRaf);
+      innerRaf = requestAnimationFrame(() => {
+        innerRaf = 0;
         applyingRef.current = false;
       });
     };
     apply();
     const id = requestAnimationFrame(apply);
-    return () => cancelAnimationFrame(id);
+    return () => {
+      cancelAnimationFrame(id);
+      if (innerRaf) cancelAnimationFrame(innerRaf);
+    };
   }, [lock, seekKey, kind, long, locale]);
 
   useLayoutEffect(() => {
@@ -140,9 +146,10 @@ export function Pane({
     applyingRef.current = true;
     el.scrollTop = target;
     report(el);
-    requestAnimationFrame(() => {
+    const id = requestAnimationFrame(() => {
       applyingRef.current = false;
     });
+    return () => cancelAnimationFrame(id);
   }, [followFraction, lock, kind, long, locale]);
 
   const job = pick(

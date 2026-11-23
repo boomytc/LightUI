@@ -42,7 +42,7 @@ export function Btn({ tone = "primary", className, type = "button", ...props }: 
     <button
       type={type}
       className={cn(
-        "inline-flex h-8 shrink-0 items-center justify-center rounded-lg px-2.5 text-[12px] font-medium outline-none",
+        "inline-flex h-8 shrink-0 items-center justify-center rounded-lg px-2.5 text-[12px] font-medium",
         tone === "primary" && "bg-fg text-surface disabled:opacity-40",
         tone === "outline" && "border border-border-strong bg-surface text-fg hover:bg-surface-2",
         tone === "ghost" && "h-7 px-1.5 text-fg-muted hover:bg-surface-2 hover:text-fg",

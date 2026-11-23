@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   createSpring,
   demoAt,
@@ -12,6 +12,7 @@ import {
   type TrailPoint,
   type Vec2,
 } from "./lib/machines";
+import { useLocale } from "./lib/site-locale";
 import { readStageQuery } from "./lib/stage-query";
 import "./cursor-spring.css";
 
@@ -141,8 +142,23 @@ function drawSpringTrail(
 }
 
 export function StageView() {
+  const locale = useLocale();
+  const en = locale === "en";
   const query = readStageQuery();
   const matchedPreset = PRESETS.find((p) => p.id === query.preset) ?? PRESETS[1]!;
+  const [reduced, setReduced] = useState(() =>
+    typeof window === "undefined"
+      ? false
+      : window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduced(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   const labRef = useRef<HTMLDivElement>(null);
   const localPlotRef = useRef<HTMLDivElement>(null);
@@ -256,6 +272,15 @@ export function StageView() {
     // Paint initial synchronous state so StageView never renders blank
     paint(now, initialRawSize, initialSpringSize);
 
+    if (reduced) {
+      const ro = new ResizeObserver(() => {
+        paint(now, sizeCanvas(rawCanvas), sizeCanvas(springCanvas));
+      });
+      ro.observe(rawCanvas);
+      ro.observe(springCanvas);
+      return () => ro.disconnect();
+    }
+
     let lastFrame = performance.now();
     let raf = 0;
 
@@ -298,7 +323,7 @@ export function StageView() {
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [matchedPreset, query.sampleHz, query.overlay]);
+  }, [matchedPreset, query.sampleHz, query.overlay, reduced]);
 
   return (
     <div data-stage="root" className="grid min-h-dvh place-items-center bg-bg px-4 py-8 md:px-8">
@@ -309,7 +334,9 @@ export function StageView() {
       >
         <section className="border-b border-border">
           <header className="flex h-10 items-center justify-between border-b border-border/50 bg-surface-2 px-4">
-            <span className="text-xs font-medium text-fg">你的光标 (真指针 60–120Hz)</span>
+            <span className="text-xs font-medium text-fg">
+              {en ? "Your cursor (true pointer 60–120Hz)" : "你的光标 (真指针 60–120Hz)"}
+            </span>
             <span className="font-mono text-[11px] text-fg-subtle">Local Pointer</span>
           </header>
           <div className="relative h-32 md:h-36">
@@ -331,7 +358,9 @@ export function StageView() {
 
         <section className="border-b border-border">
           <header className="flex h-10 items-center justify-between border-b border-border/50 bg-surface-2 px-4">
-            <span className="text-xs font-medium text-fg">无平滑 (瞬移采样 {query.sampleHz}Hz)</span>
+            <span className="text-xs font-medium text-fg">
+              {en ? `No smoothing (${query.sampleHz}Hz packets)` : `无平滑 (瞬移采样 ${query.sampleHz}Hz)`}
+            </span>
             <span className="font-mono text-[11px] text-wrong">Discrete Jumps</span>
           </header>
           <div className="relative h-32 md:h-36">
@@ -343,7 +372,7 @@ export function StageView() {
                     <path d="M0 0 L12 4.2 L4.6 12 Z" fill="currentColor" />
                   </svg>
                   <span className="rounded-md bg-wrong px-2 py-0.5 text-[11px] font-medium text-white shadow-sm">
-                    协作者 (瞬移)
+                    {en ? "Collaborator (raw)" : "协作者 (瞬移)"}
                   </span>
                 </div>
               </div>
@@ -353,7 +382,11 @@ export function StageView() {
 
         <section>
           <header className="flex h-10 items-center justify-between border-b border-border/50 bg-surface-2 px-4">
-            <span className="text-xs font-medium text-fg">弹簧平滑 ({matchedPreset.label} · 物理积分重建)</span>
+            <span className="text-xs font-medium text-fg">
+              {en
+                ? `Spring smoothed (${matchedPreset.labelEn} · physics integrator)`
+                : `弹簧平滑 (${matchedPreset.label} · 物理积分重建)`}
+            </span>
             <span className="font-mono text-[11px] text-intent">Spring Smoothed</span>
           </header>
           <div className="relative h-32 md:h-36">
@@ -365,7 +398,7 @@ export function StageView() {
                     <path d="M0 0 L12 4.2 L4.6 12 Z" fill="currentColor" />
                   </svg>
                   <span className="rounded-md bg-intent px-2 py-0.5 text-[11px] font-medium text-white shadow-sm">
-                    协作者 (弹簧)
+                    {en ? "Collaborator (spring)" : "协作者 (弹簧)"}
                   </span>
                 </div>
               </div>

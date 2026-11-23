@@ -731,6 +731,12 @@ function useMorphPlay(kind: KindId, locked: FixtureState | undefined, reduced: b
   const [contentOut, setContentOut] = useState(isReverse && initial !== "card" && initial !== "expanded");
   const [busy, setBusy] = useState(false);
   const gen = useRef(0);
+  const timersRef = useRef<number[]>([]);
+
+  function clearTimers() {
+    for (const timer of timersRef.current) window.clearTimeout(timer);
+    timersRef.current = [];
+  }
 
   useEffect(() => {
     if (lockedState === undefined) return;
@@ -747,6 +753,7 @@ function useMorphPlay(kind: KindId, locked: FixtureState | undefined, reduced: b
   useEffect(() => {
     return () => {
       gen.current += 1;
+      clearTimers();
     };
   }, [kind]);
 
@@ -756,6 +763,7 @@ function useMorphPlay(kind: KindId, locked: FixtureState | undefined, reduced: b
       setExpanded((v) => !v);
       return;
     }
+    clearTimers();
     const ms = morphMs(reduced);
     const id = ++gen.current;
     if (reverseStep === 2) {
@@ -767,16 +775,18 @@ function useMorphPlay(kind: KindId, locked: FixtureState | undefined, reduced: b
       }
       setBusy(true);
       setReverseStep(1);
-      window.setTimeout(() => {
+      const t1 = window.setTimeout(() => {
         if (gen.current !== id) return;
         setReverseStep(0);
-        window.setTimeout(() => {
+        const t2 = window.setTimeout(() => {
           if (gen.current !== id) return;
           setContentOut(false);
           setExpanded(true);
           setBusy(false);
         }, ms);
+        timersRef.current.push(t2);
       }, ms);
+      timersRef.current.push(t1);
       return;
     }
     if (ms === 0) {
@@ -787,16 +797,18 @@ function useMorphPlay(kind: KindId, locked: FixtureState | undefined, reduced: b
     }
     setBusy(true);
     setContentOut(true);
-    window.setTimeout(() => {
+    const t1 = window.setTimeout(() => {
       if (gen.current !== id) return;
       setReverseStep(1);
-      window.setTimeout(() => {
+      const t2 = window.setTimeout(() => {
         if (gen.current !== id) return;
         setReverseStep(2);
         setExpanded(false);
         setBusy(false);
       }, ms);
+      timersRef.current.push(t2);
     }, ms);
+    timersRef.current.push(t1);
   }
 
   const fixture: FixtureState = isReverse

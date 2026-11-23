@@ -25,6 +25,19 @@ export function Ruler() {
   const [value, setValue] = useState<number>(RULER.value);
   const [dragging, setDragging] = useState(false);
   const [saved, setSaved] = useState<number | null>(null);
+  const [reduced, setReduced] = useState(() =>
+    typeof window === "undefined"
+      ? false
+      : window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduced(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     valueRef.current = value;
@@ -113,7 +126,7 @@ export function Ruler() {
     const drag = dragRef.current;
     if (!drag.active) return;
     drag.active = false;
-    if (Math.abs(drag.velocity) > 0.0006) {
+    if (!reduced && Math.abs(drag.velocity) > 0.0006) {
       runInertia(valueRef.current, drag.velocity);
     } else {
       finish(valueRef.current);
@@ -165,7 +178,8 @@ export function Ruler() {
               style={{
                 width: (RULER.max - RULER.min) * RULER.pxPerUnit,
                 transform: `translate3d(${offset}px, 0, 0)`,
-                transition: dragging ? "none" : "transform 280ms cubic-bezier(0.22, 1, 0.36, 1)",
+                transition:
+                  dragging || reduced ? "none" : "transform 280ms cubic-bezier(0.22, 1, 0.36, 1)",
               }}
             >
               <div className="picker-ruler-ticks absolute inset-x-0 bottom-7" />

@@ -68,7 +68,7 @@ export function Btn({ tone = "primary", className, type = "button", ...props }: 
     <button
       type={type}
       className={cn(
-        "inline-flex h-9 shrink-0 items-center justify-center rounded-lg px-3 text-[13px] font-medium outline-none",
+        "inline-flex h-9 shrink-0 items-center justify-center rounded-lg px-3 text-[13px] font-medium",
         tone === "primary" && "bg-fg text-surface",
         tone === "outline" && "border border-border-strong bg-surface text-fg hover:bg-surface-2",
         tone === "ghost" && "h-8 px-2 text-fg-muted hover:bg-surface-2 hover:text-fg",
@@ -80,4 +80,4 @@ export function Btn({ tone = "primary", className, type = "button", ...props }: 
 }
 
 export const fieldClass =
-  "min-h-11 w-full min-w-0 rounded-lg border border-border-strong bg-surface px-3 text-[14px] outline-none placeholder:text-fg-subtle";
+  "min-h-11 w-full min-w-0 rounded-lg border border-border-strong bg-surface px-3 text-[14px] placeholder:text-fg-subtle focus:border-accent";

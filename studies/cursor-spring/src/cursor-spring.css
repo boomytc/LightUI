@@ -13,6 +13,11 @@ input[type="range"].spring-range {
   transition: background 0.15s ease;
 }
 
+input[type="range"].spring-range:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
 input[type="range"].spring-range:hover {
   background: var(--color-border-strong);
 }

@@ -23,14 +23,21 @@ export function KindDemo({ id, locked = false }: { id: KindId; locked?: boolean 
   const meta = KINDS.find((kind) => kind.id === id) ?? KINDS[0]!;
   const [state, dispatch] = useReducer(reduceWorkspace, id, sceneSeed);
   const loadToken = useRef(0);
+  const timersRef = useRef<number[]>([]);
   const cause = causeOf(state);
   const action = emptyAction(cause);
   const visible = visibleCustomers(state.customers, state.query, state.filters);
   const pending = state.followUps.filter((item) => !item.done).length;
 
+  function clearTimers() {
+    for (const timer of timersRef.current) window.clearTimeout(timer);
+    timersRef.current = [];
+  }
+
   useEffect(() => {
     return () => {
       loadToken.current += 1;
+      clearTimers();
     };
   }, []);
 
@@ -44,16 +51,19 @@ export function KindDemo({ id, locked = false }: { id: KindId; locked?: boolean 
 
   function retry() {
     if (locked) return;
+    clearTimers();
     const token = ++loadToken.current;
     dispatch({ type: "loadStatus", status: "loading" });
-    window.setTimeout(() => {
+    const t1 = window.setTimeout(() => {
       if (token !== loadToken.current) return;
       dispatch({ type: "loadStatus", status: "success" });
-      window.setTimeout(() => {
+      const t2 = window.setTimeout(() => {
         if (token !== loadToken.current) return;
         dispatch({ type: "loadStatus", status: "idle" });
       }, 1400);
+      timersRef.current.push(t2);
     }, 900);
+    timersRef.current.push(t1);
   }
 
   const header =

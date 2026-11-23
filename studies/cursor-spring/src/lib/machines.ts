@@ -25,7 +25,9 @@ export type LabPresetId = "follow" | "soft" | "jelly" | "heavy";
 export type LabPreset = SpringConfig & {
   id: LabPresetId;
   label: string;
+  labelEn: string;
   hint: string;
+  hintEn: string;
 };
 
 /** Critical damping value: 2 * sqrt(k * m) */
@@ -43,11 +45,11 @@ export function dampingRatio(cfg: SpringConfig): number {
   return c / crit;
 }
 
-export function zetaLabel(zeta: number): string {
-  if (!Number.isFinite(zeta) || zeta <= 0) return "无阻尼";
-  if (zeta < 0.9) return "欠阻尼 · 有过冲";
-  if (zeta <= 1.1) return "临界阻尼 · 最速贴合";
-  return "过阻尼 · 迟滞";
+export function zetaLabel(zeta: number, locale: "zh" | "en" = "zh"): string {
+  if (!Number.isFinite(zeta) || zeta <= 0) return locale === "en" ? "Undamped" : "无阻尼";
+  if (zeta < 0.9) return locale === "en" ? "Underdamped · overshoot" : "欠阻尼 · 有过冲";
+  if (zeta <= 1.1) return locale === "en" ? "Critically damped · fastest settle" : "临界阻尼 · 最速贴合";
+  return locale === "en" ? "Overdamped · sluggish" : "过阻尼 · 迟滞";
 }
 
 export const MAX_DT = 0.048; // Max frame delta (48ms) to prevent teleportation explosions
@@ -233,7 +235,9 @@ export const PRESETS: LabPreset[] = [
   {
     id: "follow",
     label: "跟手",
+    labelEn: "Snappy",
     hint: "接近临界阻尼，响应极快，几乎无过冲",
+    hintEn: "Near critical damping — crisp response, minimal overshoot",
     stiffness: 280,
     damping: criticalDamping(280, 1) * 0.92,
     mass: 1,
@@ -241,7 +245,9 @@ export const PRESETS: LabPreset[] = [
   {
     id: "soft",
     label: "软弹",
+    labelEn: "Soft",
     hint: "主流协作工具标配：柔和惯性与自然微过冲",
+    hintEn: "Collaborative tool default — gentle inertia with subtle overshoot",
     stiffness: 150,
     damping: 16,
     mass: 1,
@@ -249,7 +255,9 @@ export const PRESETS: LabPreset[] = [
   {
     id: "jelly",
     label: "果冻",
+    labelEn: "Jelly",
     hint: "欠阻尼，大幅度甩尾与弹性回弹",
+    hintEn: "Underdamped — loose tail swing and bouncy rebound",
     stiffness: 110,
     damping: 8,
     mass: 1.15,
@@ -257,7 +265,9 @@ export const PRESETS: LabPreset[] = [
   {
     id: "heavy",
     label: "迟滞",
+    labelEn: "Heavy",
     hint: "大质量高阻尼，厚重追随感",
+    hintEn: "High mass & damping — weighty trailing feel",
     stiffness: 70,
     damping: 18,
     mass: 1.5,

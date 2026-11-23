@@ -9,6 +9,11 @@ input[type="range"].cone-range {
   cursor: pointer;
 }
 
+input[type="range"].cone-range:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
 input[type="range"].cone-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;

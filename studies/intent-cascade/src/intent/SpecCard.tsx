@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import type { Locale } from "../lib/site-locale";
 
@@ -10,13 +10,24 @@ export function specText(locale: Locale, restDelay: number): string {
 
 export function SpecCard({ locale, restDelay }: { locale: Locale; restDelay: number }) {
   const [copied, setCopied] = useState(false);
+  const timerRef = useRef<number | null>(null);
   const text = specText(locale, restDelay);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+    };
+  }, []);
 
   async function copy() {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => {
+        timerRef.current = null;
+        setCopied(false);
+      }, 1600);
     } catch {
       setCopied(false);
     }

@@ -138,7 +138,7 @@ export function Btn({ tone = "ghost", className, type = "button", ...props }: Bt
     <button
       type={type}
       className={cn(
-        "inline-flex h-7 shrink-0 items-center justify-center rounded-md px-2 text-[12px] font-medium outline-none",
+        "inline-flex h-7 shrink-0 items-center justify-center rounded-md px-2 text-[12px] font-medium",
         tone === "ghost" && "text-fg-muted hover:bg-surface-2 hover:text-fg",
         tone === "outline" && "border border-border-strong bg-surface text-fg hover:bg-surface-2",
         className,

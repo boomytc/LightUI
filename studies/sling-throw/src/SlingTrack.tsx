@@ -20,6 +20,7 @@ import {
   type ThrowPrediction,
   type Vec,
 } from "./lib/machines";
+import { useLocale } from "./lib/site-locale";
 import "./sling-throw.css";
 
 type TrackGeom = { minX: number; maxX: number; y: number };
@@ -70,6 +71,8 @@ export function SlingTrack({
   lockState = "idle",
   showHint = true,
 }: SlingTrackProps) {
+  const locale = useLocale();
+  const en = locale === "en";
   const hostRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const geomRef = useRef<TrackGeom | null>(null);
@@ -79,6 +82,7 @@ export function SlingTrack({
   const valueRef = useRef(value);
   const rafMove = useRef(0);
   const rafFlight = useRef(0);
+  const landedTimer = useRef<number | null>(null);
 
   const [drag, setDrag] = useState<DragState | null>(null);
   const [flight, setFlight] = useState<FlightState | null>(null);
@@ -108,7 +112,11 @@ export function SlingTrack({
       const next = quantize(raw, DEMO_MIN, DEMO_MAX, DEMO_STEP);
       onChange?.(next);
       setLanded(true);
-      window.setTimeout(() => setLanded(false), 420);
+      if (landedTimer.current !== null) window.clearTimeout(landedTimer.current);
+      landedTimer.current = window.setTimeout(() => {
+        landedTimer.current = null;
+        setLanded(false);
+      }, 420);
     },
     [onChange],
   );
@@ -284,6 +292,10 @@ export function SlingTrack({
       window.removeEventListener("pointercancel", onPointerUp);
       if (rafMove.current) cancelAnimationFrame(rafMove.current);
       if (rafFlight.current) cancelAnimationFrame(rafFlight.current);
+      if (landedTimer.current !== null) {
+        window.clearTimeout(landedTimer.current);
+        landedTimer.current = null;
+      }
     };
   }, [measure, onPointerMove, onPointerUp]);
 
@@ -386,8 +398,12 @@ export function SlingTrack({
 
   const hint =
     kind === "clamp"
-      ? "离轨仍夹回轨道。Y 被丢掉，只能沿 X 蹭。"
-      : "沿轨道拖是一维调值。竖向离开超过 14px，松手按落点改值。";
+      ? en
+        ? "Pulling off-track still clamps back to the rail. Y is discarded; only X moves."
+        : "离轨仍夹回轨道。Y 被丢掉，只能沿 X 蹭。"
+      : en
+        ? "Drag along the rail for 1D tuning. Pull more than 14px vertically and release to land on a new value."
+        : "沿轨道拖是一维调值。竖向离开超过 14px，松手按落点改值。";
 
   return (
     <div className="flex flex-col gap-3">
@@ -401,7 +417,7 @@ export function SlingTrack({
       >
         <div className="relative z-10 flex min-h-[22rem] flex-col justify-center px-8 py-12 sm:px-12">
           <div className="mb-3 flex items-baseline justify-between gap-4">
-            <span className="text-[13px] text-fg-muted">数值</span>
+            <span className="text-[13px] text-fg-muted">{en ? "Value" : "数值"}</span>
             <span
               className={`font-mono text-[15px] tabular-nums ${
                 sling || landed ? "text-accent" : "text-fg"
@@ -419,9 +435,9 @@ export function SlingTrack({
             aria-valuemax={DEMO_MAX}
             aria-valuenow={shown}
             aria-valuetext={formatDemo(shown)}
-            aria-label="数值"
+            aria-label={en ? "Value" : "数值"}
             aria-disabled={locked}
-            className={`relative h-11 touch-none outline-none ${locked ? "cursor-default" : "cursor-grab"} ${
+            className={`relative h-11 touch-none rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${locked ? "cursor-default" : "cursor-grab"} ${
               active && !locked ? "cursor-grabbing" : ""
             }`}
             style={{ touchAction: "none" }}

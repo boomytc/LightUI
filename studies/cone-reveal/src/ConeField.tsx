@@ -17,6 +17,7 @@ import {
   type Point,
   type RevealKind,
 } from "./lib/machines";
+import { useLocale } from "./lib/site-locale";
 import "./cone-reveal.css";
 
 const BULLET = "•";
@@ -183,6 +184,8 @@ export function ConeField({
   onSecretChange,
   onAwakeChange,
 }: ConeFieldProps) {
+  const locale = useLocale();
+  const en = locale === "en";
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const eyeRef = useRef<HTMLButtonElement>(null);
@@ -191,6 +194,11 @@ export function ConeField({
     Array.from({ length: secret.length }, () => false),
   );
   const [isCoarse, setIsCoarse] = useState(false);
+  const [reduced, setReduced] = useState(() =>
+    typeof window === "undefined"
+      ? false
+      : window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
 
   const awakeRef = useRef(awake);
   const kindRef = useRef(kind);
@@ -202,27 +210,34 @@ export function ConeField({
   const instantRef = useRef(instant);
   const revealedRef = useRef(revealed);
   const pointerRef = useRef({ x: 0, y: 0, t: 0 });
+  const renderOnceRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     awakeRef.current = awake;
+    renderOnceRef.current?.();
   }, [awake]);
   useEffect(() => {
     kindRef.current = kind;
+    renderOnceRef.current?.();
   }, [kind]);
   useEffect(() => {
     beamRef.current = beamWidth;
+    renderOnceRef.current?.();
   }, [beamWidth]);
   useEffect(() => {
     followRef.current = followPointer;
+    renderOnceRef.current?.();
   }, [followPointer]);
   useEffect(() => {
     searchRef.current = autoSearch;
+    renderOnceRef.current?.();
   }, [autoSearch]);
   useEffect(() => {
     speedRef.current = sweepSpeed;
   }, [sweepSpeed]);
   useEffect(() => {
     parkRef.current = park;
+    renderOnceRef.current?.();
   }, [park]);
   useEffect(() => {
     instantRef.current = instant;
@@ -240,8 +255,17 @@ export function ConeField({
   }, []);
 
   useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduced(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
     const onMove = (e: PointerEvent) => {
       pointerRef.current = { x: e.clientX, y: e.clientY, t: performance.now() };
+      renderOnceRef.current?.();
     };
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("pointerdown", onMove, { passive: true });
@@ -261,10 +285,10 @@ export function ConeField({
     let raf = 0;
     let last = performance.now();
     let angle = PARK_ANGLE;
-    let awakeT = instantRef.current && awakeRef.current ? 1 : 0;
+    let awakeT = (instantRef.current || reduced) && awakeRef.current ? 1 : 0;
     let searchT = 0;
 
-    const tick = (now: number) => {
+    const renderFrame = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       const { w, h } = sizeCanvas(canvas, host);
@@ -275,7 +299,7 @@ export function ConeField({
       const glow = readCssColor(host, "--cone-glow", "rgb(59 108 255 / 0.42)");
 
       const targetAwake = isAwake ? 1 : 0;
-      if (instantRef.current) awakeT = targetAwake;
+      if (instantRef.current || reduced) awakeT = targetAwake;
       else awakeT += (targetAwake - awakeT) * Math.min(1, dt * AWAKE_SPEED);
 
       const eye = eyeRef.current;
@@ -293,7 +317,7 @@ export function ConeField({
       const glyphsAbs = glyphCenters(glyphsRef.current);
       const pointer = pointerRef.current;
       const parkMode = parkRef.current;
-      const recentlyMoved = pointer.t > 0 && now - pointer.t < POINTER_HOLD_MS;
+      const recentlyMoved = pointer.t > 0 && (reduced || now - pointer.t < POINTER_HOLD_MS);
 
       const box = glyphsRef.current?.getBoundingClientRect();
       const field = box
@@ -306,24 +330,24 @@ export function ConeField({
       if (k === "cone" && isAwake) {
         if (parkMode === "peek") {
           target = rest;
-        } else if (parkMode === "search") {
+        } else if (parkMode === "search" && !reduced) {
           searchT += dt;
           target = rest + (searchAngle(searchT, speedRef.current) - PARK_ANGLE);
         } else if (followRef.current && recentlyMoved) {
           target = angleTo(originAbs, pointer);
-        } else if (searchRef.current) {
+        } else if (searchRef.current && !reduced) {
           searchT += dt;
           target = rest + (searchAngle(searchT, speedRef.current) - PARK_ANGLE);
         }
       }
 
-      if (instantRef.current && k === "cone" && isAwake && parkMode !== "search") {
+      if (reduced || (instantRef.current && k === "cone" && isAwake && parkMode !== "search")) {
         angle = target;
+      } else {
+        const follow = k === "cone" && isAwake && followRef.current && recentlyMoved && parkMode !== "peek";
+        const smooth = follow ? 11 : 3.2;
+        angle = lerpAngle(angle, target, 1 - Math.exp(-smooth * dt));
       }
-
-      const follow = k === "cone" && isAwake && followRef.current && recentlyMoved && parkMode !== "peek";
-      const smooth = follow ? 11 : 3.2;
-      angle = lerpAngle(angle, target, 1 - Math.exp(-smooth * dt));
 
       if (k === "cone") {
         drawBeam(ctx, w, h, origin, angle, half, awakeT, veil, glow);
@@ -357,13 +381,36 @@ export function ConeField({
         revealedRef.current = next;
         setRevealed(next);
       }
+    };
 
+    if (reduced) {
+      const scheduleOnce = () => {
+        if (raf) return;
+        raf = requestAnimationFrame((now) => {
+          raf = 0;
+          renderFrame(now);
+        });
+      };
+      renderOnceRef.current = scheduleOnce;
+      const ro = new ResizeObserver(scheduleOnce);
+      ro.observe(host);
+      scheduleOnce();
+      return () => {
+        renderOnceRef.current = null;
+        ro.disconnect();
+        if (raf) cancelAnimationFrame(raf);
+      };
+    }
+
+    renderOnceRef.current = null;
+    const tick = (now: number) => {
+      renderFrame(now);
       raf = requestAnimationFrame(tick);
     };
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [secret]);
+  }, [secret, reduced]);
 
   const toggle = useCallback(() => {
     if (locked) return;
@@ -374,15 +421,27 @@ export function ConeField({
 
   const hint = !awake
     ? isCoarse
-      ? "点按右侧灯座，唤醒锥光。"
-      : "点击右侧灯座，唤醒锥光。"
+      ? en
+        ? "Tap the lamp on the right to wake the cone beam."
+        : "点按右侧灯座，唤醒锥光。"
+      : en
+        ? "Click the lamp on the right to wake the cone beam."
+        : "点击右侧灯座，唤醒锥光。"
     : kind === "toggle"
-      ? "整段已经是明文。肩窥一次看完。"
+      ? en
+        ? "The entire secret is exposed at once — vulnerable to shoulder surfing."
+        : "整段已经是明文。肩窥一次看完。"
       : kind === "nearest"
-        ? "只有离指针最近的一格是字。扫过去会闪。"
+        ? en
+          ? "Only the single glyph nearest the pointer appears; sweeping flickers."
+          : "只有离指针最近的一格是字。扫过去会闪。"
         : isCoarse
-          ? "在页面上拖动瞄准。灯座抬在基线之上，锥才能切开这一行。"
-          : "在页面上移动指针瞄准。灯座抬在基线之上，锥才能切开这一行。";
+          ? en
+            ? "Drag across the page to aim. Raising the lamp above the baseline lets the cone slice the row."
+            : "在页面上拖动瞄准。灯座抬在基线之上，锥才能切开这一行。"
+          : en
+            ? "Move your pointer to aim. Raising the lamp above the baseline lets the cone slice the row."
+            : "在页面上移动指针瞄准。灯座抬在基线之上，锥才能切开这一行。";
 
   return (
     <div className="flex flex-col gap-3">
@@ -391,7 +450,7 @@ export function ConeField({
       ) : null}
 
       {showLabel ? (
-        <span className="pl-1 text-[12px] text-fg-subtle">密文</span>
+        <span className="pl-1 text-[12px] text-fg-subtle">{en ? "Secret" : "密文"}</span>
       ) : null}
 
       <div
@@ -407,7 +466,7 @@ export function ConeField({
         <div className="relative z-10 flex min-h-[22rem] flex-col items-center justify-center px-5 py-12 pr-16 sm:px-10 sm:pr-20">
           <div className="relative mx-auto w-fit min-w-[16rem] max-w-full">
             <div
-              className={`relative rounded-full border bg-bg/70 transition-[border-color,box-shadow] duration-300 ${
+              className={`relative rounded-full border bg-bg/70 transition-[border-color,box-shadow] duration-300 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/40 ${
                 awake ? "border-accent shadow-[0_0_0_3px_var(--color-ring)]" : "border-border-strong"
               }`}
             >
@@ -417,7 +476,9 @@ export function ConeField({
                 aria-hidden="true"
               >
                 {chars.length === 0 ? (
-                  <span className="tracking-normal text-fg-subtle">输入一段密文</span>
+                  <span className="tracking-normal text-fg-subtle">
+                    {en ? "Enter a secret" : "输入一段密文"}
+                  </span>
                 ) : (
                   chars.map((ch, i) => (
                     <span key={`${i}-${ch}`} data-glyph className="inline-block">
@@ -435,7 +496,7 @@ export function ConeField({
                   autoCorrect="off"
                   autoCapitalize="off"
                   spellCheck={false}
-                  aria-label="密文"
+                  aria-label={en ? "Secret" : "密文"}
                   value={secret}
                   onChange={(e) => onSecretChange?.(e.target.value)}
                   className="absolute inset-0 z-10 h-full w-full rounded-full bg-transparent px-5 pr-16 font-mono text-[17px] tracking-[0.18em] text-transparent caret-fg outline-none sm:pr-20"
@@ -450,7 +511,15 @@ export function ConeField({
                 onClick={toggle}
                 disabled={locked}
                 aria-pressed={awake}
-                aria-label={awake ? "关闭锥光" : "唤醒锥光"}
+                aria-label={
+                  awake
+                    ? en
+                      ? "Turn off cone beam"
+                      : "关闭锥光"
+                    : en
+                      ? "Wake cone beam"
+                      : "唤醒锥光"
+                }
                 className={`absolute z-30 flex items-center justify-center text-fg transition-[width,height,right,top,transform,color] duration-300 ${
                   awake
                     ? "top-1/2 right-[-1.15rem] h-20 w-20 -translate-y-[58%] text-accent sm:right-[-1.35rem] sm:h-24 sm:w-24"

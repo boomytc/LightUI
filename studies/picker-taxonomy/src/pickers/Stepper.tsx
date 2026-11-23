@@ -28,6 +28,7 @@ function useHoldRepeat(action: () => void, enabled: boolean) {
     onPointerDown: () => {
       if (!enabledRef.current) return;
       actionRef.current();
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       hold.current.t = window.setTimeout(() => {
         hold.current.i = window.setInterval(() => {
           if (!enabledRef.current) {
@@ -35,7 +36,7 @@ function useHoldRepeat(action: () => void, enabled: boolean) {
             return;
           }
           actionRef.current();
-        }, 80);
+        }, reduced ? 240 : 80);
       }, 380);
     },
     onPointerUp: clear,
@@ -90,7 +91,7 @@ export function Stepper() {
               disabled={floor}
               className={cn(
                 "grid size-11 place-items-center rounded-full border border-border text-fg",
-                "transition-transform duration-150 ease-out active:not-disabled:scale-[0.96]",
+                "motion-safe:transition-transform duration-150 ease-out motion-safe:active:not-disabled:scale-[0.96]",
                 "disabled:text-fg-subtle disabled:opacity-50",
               )}
               {...decHold}
@@ -104,7 +105,7 @@ export function Stepper() {
               disabled={ceil}
               className={cn(
                 "grid size-11 place-items-center rounded-full border border-border text-fg",
-                "transition-transform duration-150 ease-out active:not-disabled:scale-[0.96]",
+                "motion-safe:transition-transform duration-150 ease-out motion-safe:active:not-disabled:scale-[0.96]",
                 "disabled:text-fg-subtle disabled:opacity-50",
               )}
               {...incHold}

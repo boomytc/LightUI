@@ -102,7 +102,7 @@ function Panel({
       className="intent-panel w-[232px] shrink-0 overflow-hidden rounded-xl border border-border bg-surface shadow-menu"
     >
       <div className="border-b border-border px-3 py-2">
-        <label className="flex items-center gap-2 text-fg-subtle">
+        <label className="flex items-center gap-2 rounded-md px-1 py-0.5 text-fg-subtle focus-within:ring-2 focus-within:ring-accent/40">
           <Search className="size-3.5 shrink-0" strokeWidth={2} />
           <input
             value={query}
