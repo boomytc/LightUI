@@ -56,7 +56,7 @@ export function NotePage({ slug }: { slug: string }) {
           ) : null}
 
           <div className="note-prose mt-8 border-t border-border/70 pt-8">
-            <Markdown source={note.body} />
+            <Markdown source={note.body} locale={locale} />
           </div>
 
           <NotePagination slug={slug} locale={locale} />

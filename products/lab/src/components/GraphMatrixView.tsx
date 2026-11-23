@@ -57,56 +57,34 @@ export function GraphMatrixView({
 
               {/* Binary Contrast Duel Cards */}
               <div className="mt-auto grid grid-cols-2 gap-2.5 pt-2">
-                {/* Node A */}
-                <button
-                  type="button"
-                  onClick={() => onSelectSlug(a.slug)}
-                  className="flex cursor-pointer flex-col justify-between rounded-xl border border-border/80 bg-bg p-3 text-left transition-colors hover:border-accent hover:bg-surface-2"
-                >
-                  <div>
-                    <span className="block text-[13px] font-semibold text-fg leading-tight">
-                      {studyTitle(a, locale)}
-                    </span>
-                    {a.asks ? (
-                      <p className="mt-1 text-[11px] text-fg-muted line-clamp-2">
-                        {studyAsks(a, locale)}
-                      </p>
-                    ) : null}
-                  </div>
-                  <Link
-                    href={`/s/${a.slug}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="mt-3 inline-flex items-center gap-1 text-[11px] text-accent no-underline hover:underline"
+                {[a, b].map((node) => (
+                  <div
+                    key={node.slug}
+                    className="relative flex flex-col justify-between rounded-xl border border-border/80 bg-bg p-3 text-left transition-colors hover:border-accent hover:bg-surface-2"
                   >
-                    <span>{copy.tryWork}</span>
-                    <ArrowUpRight className="size-3" />
-                  </Link>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => onSelectSlug(b.slug)}
-                  className="flex cursor-pointer flex-col justify-between rounded-xl border border-border/80 bg-bg p-3 text-left transition-colors hover:border-accent hover:bg-surface-2"
-                >
-                  <div>
-                    <span className="block text-[13px] font-semibold text-fg leading-tight">
-                      {studyTitle(b, locale)}
-                    </span>
-                    {b.asks ? (
-                      <p className="mt-1 text-[11px] text-fg-muted line-clamp-2">
-                        {studyAsks(b, locale)}
-                      </p>
-                    ) : null}
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => onSelectSlug(node.slug)}
+                        className="block cursor-pointer text-left text-[13px] font-semibold leading-tight text-fg after:absolute after:inset-0 after:content-['']"
+                      >
+                        {studyTitle(node, locale)}
+                      </button>
+                      {node.asks ? (
+                        <p className="mt-1 line-clamp-2 text-[11px] text-fg-muted">
+                          {studyAsks(node, locale)}
+                        </p>
+                      ) : null}
+                    </div>
+                    <Link
+                      href={`/s/${node.slug}`}
+                      className="relative z-10 mt-3 inline-flex w-fit items-center gap-1 text-[11px] text-accent no-underline hover:underline"
+                    >
+                      <span>{copy.tryWork}</span>
+                      <ArrowUpRight className="size-3" />
+                    </Link>
                   </div>
-                  <Link
-                    href={`/s/${b.slug}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="mt-3 inline-flex items-center gap-1 text-[11px] text-accent no-underline hover:underline"
-                  >
-                    <span>{copy.tryWork}</span>
-                    <ArrowUpRight className="size-3" />
-                  </Link>
-                </button>
+                ))}
               </div>
             </div>
           );

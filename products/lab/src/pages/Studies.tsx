@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { Page } from "../components/Page";
 import { PageHero } from "../components/PageHero";
@@ -9,32 +9,56 @@ import { messages } from "../lib/i18n";
 import { updateSearchParams, useSearchParams } from "../lib/nav";
 import { usePrefs } from "../lib/prefs";
 
+function resolveCategory(raw: string | null): CategoryId {
+  return CATEGORIES.some((c) => c.id === raw) ? (raw as CategoryId) : "all";
+}
+
 export function Studies() {
   const { locale } = usePrefs();
   const copy = messages(locale);
-  const allStudies = loadStudies().filter((s) => s.meta.status !== "retired");
+  const allStudies = useMemo(
+    () => loadStudies().filter((s) => s.meta.status !== "retired"),
+    [],
+  );
 
   const searchParams = useSearchParams();
-  const initialCategory = (searchParams.get("category") as CategoryId) || "all";
-  const initialQuery = searchParams.get("q") || "";
-  const initialTag = searchParams.get("tag") || undefined;
-
-  const [activeCategory, setActiveCategory] = useState<CategoryId>(
-    CATEGORIES.some((c) => c.id === initialCategory) ? initialCategory : "all",
+  const [activeCategory, setActiveCategory] = useState<CategoryId>(() =>
+    resolveCategory(searchParams.get("category")),
   );
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [selectedTag, setSelectedTag] = useState<string | undefined>(initialTag);
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get("q") || "");
+  const [selectedTag, setSelectedTag] = useState<string | undefined>(
+    () => searchParams.get("tag") || undefined,
+  );
+  const syncTimerRef = useRef<number | null>(null);
+  const lastSyncedQueryRef = useRef<string>(searchParams.get("q") || "");
 
   useEffect(() => {
-    const cat = (searchParams.get("category") as CategoryId) || "all";
-    if (CATEGORIES.some((c) => c.id === cat)) {
-      setActiveCategory(cat);
-    }
-    setSearchQuery(searchParams.get("q") || "");
+    setActiveCategory(resolveCategory(searchParams.get("category")));
     setSelectedTag(searchParams.get("tag") || undefined);
+    const urlQuery = searchParams.get("q") || "";
+    if (syncTimerRef.current === null && urlQuery !== lastSyncedQueryRef.current) {
+      lastSyncedQueryRef.current = urlQuery;
+      setSearchQuery(urlQuery);
+    }
   }, [searchParams]);
 
+  useEffect(() => {
+    return () => {
+      if (syncTimerRef.current !== null) {
+        window.clearTimeout(syncTimerRef.current);
+      }
+    };
+  }, []);
+
+  const cancelPendingQuerySync = () => {
+    if (syncTimerRef.current !== null) {
+      window.clearTimeout(syncTimerRef.current);
+      syncTimerRef.current = null;
+    }
+  };
+
   const handleCategoryChange = (catId: CategoryId) => {
+    cancelPendingQuerySync();
     setActiveCategory(catId);
     setSelectedTag(undefined);
     updateSearchParams({ category: catId === "all" ? null : catId, tag: null }, { replace: true });
@@ -42,15 +66,30 @@ export function Studies() {
 
   const handleQueryChange = (q: string) => {
     setSearchQuery(q);
-    updateSearchParams({ q: q || null }, { replace: true });
+    cancelPendingQuerySync();
+    syncTimerRef.current = window.setTimeout(() => {
+      syncTimerRef.current = null;
+      lastSyncedQueryRef.current = q;
+      updateSearchParams({ q: q || null }, { replace: true });
+    }, 250);
+  };
+
+  const handleClearQuery = () => {
+    cancelPendingQuerySync();
+    lastSyncedQueryRef.current = "";
+    setSearchQuery("");
+    updateSearchParams({ q: null }, { replace: true });
   };
 
   const handleSelectTag = (tag: string | undefined) => {
+    cancelPendingQuerySync();
     setSelectedTag(tag);
     updateSearchParams({ tag: tag || null }, { replace: true });
   };
 
   const handleClearAll = () => {
+    cancelPendingQuerySync();
+    lastSyncedQueryRef.current = "";
     setSearchQuery("");
     setSelectedTag(undefined);
     setActiveCategory("all");
@@ -64,7 +103,7 @@ export function Studies() {
   return (
     <Page as="main" className="pb-24 pt-10 sm:pt-12">
       <PageHero title={copy.studiesTitle} lede={copy.studiesLede}>
-        <div className="relative w-full sm:min-w-[20rem] sm:w-[20rem]">
+        <div className="relative w-full sm:w-[20rem] sm:min-w-[20rem]">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" />
           <input
             type="search"
@@ -76,7 +115,7 @@ export function Studies() {
           {searchQuery ? (
             <button
               type="button"
-              onClick={() => handleQueryChange("")}
+              onClick={handleClearQuery}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1 text-fg-subtle transition-colors hover:text-fg"
               aria-label={copy.clearFilters}
             >

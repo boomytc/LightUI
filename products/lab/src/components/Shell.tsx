@@ -12,22 +12,30 @@ const NAV = [
   { href: "/notes", key: "navNotes" as const, match: (p: string) => p.startsWith("/notes") },
 ];
 
+function getShortcutLabel(): string {
+  if (typeof navigator === "undefined") return "⌘K";
+  const platform = navigator.platform || navigator.userAgent || "";
+  return /Mac|iPhone|iPad|iPod/i.test(platform) ? "⌘K" : "Ctrl K";
+}
+
 export function Shell({ children, study = false }: { children: ReactNode; study?: boolean }) {
   const path = usePath();
   const { theme, locale, toggleTheme, toggleLocale } = usePrefs();
   const copy = messages(locale);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const shortcutLabel = getShortcutLabel();
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setPaletteOpen((prev) => !prev);
-      } else if (e.key === "/" && !paletteOpen) {
+      } else if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey && !paletteOpen) {
         const activeEl = document.activeElement;
         const isInput =
           activeEl?.tagName === "INPUT" ||
           activeEl?.tagName === "TEXTAREA" ||
+          activeEl?.tagName === "SELECT" ||
           (activeEl as HTMLElement)?.isContentEditable;
         if (!isInput) {
           e.preventDefault();
@@ -99,7 +107,7 @@ export function Shell({ children, study = false }: { children: ReactNode; study?
               <Search className="size-3.5" />
               <span className="hidden sm:inline">{copy.searchShortcut}</span>
               <kbd className="hidden rounded bg-surface-2 px-1 py-0.5 font-mono text-[10px] text-fg-subtle sm:inline">
-                ⌘K
+                {shortcutLabel}
               </kbd>
             </button>
 
@@ -161,10 +169,10 @@ export function Shell({ children, study = false }: { children: ReactNode; study?
         <footer className="mt-auto border-t border-border/80">
           <div className="page-width flex flex-wrap items-center justify-between gap-3 py-6">
             <p className="text-[12px] text-fg-subtle">{copy.footer}</p>
-            <p className="text-[12px] text-fg-subtle">
+            <p className="hidden text-[12px] text-fg-subtle sm:block">
               {copy.searchShortcut}
               <kbd className="ml-1.5 rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px]">
-                ⌘K
+                {shortcutLabel}
               </kbd>
             </p>
           </div>

@@ -198,13 +198,11 @@ export function StudyPage({ slug }: { slug: string }) {
       skipFocus.current = false;
       return;
     }
-    const chrome = document.getElementById("study-chrome");
+    const main = document.getElementById("lab-main");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (chrome) {
-      const header = window.matchMedia("(min-width: 640px)").matches ? 56 : 48;
-      const top = window.scrollY + chrome.getBoundingClientRect().top - header;
-      window.scrollTo({ top: Math.max(0, top), behavior: reduce ? "instant" : "smooth" });
-    }
+    const header = window.matchMedia("(min-width: 640px)").matches ? 56 : 48;
+    const top = main ? Math.max(0, window.scrollY + main.getBoundingClientRect().top - header) : 0;
+    window.scrollTo({ top, behavior: reduce ? "instant" : "smooth" });
     panelRef.current?.focus({ preventScroll: true });
   }, [tab]);
 
@@ -270,10 +268,10 @@ export function StudyPage({ slug }: { slug: string }) {
           <div className="flex min-w-0 items-center gap-2">
             <BackLink
               fallback="/studies"
-              className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md px-1.5 text-[13px] text-fg-muted no-underline transition-colors duration-150 hover:bg-surface-2 hover:text-fg"
+              className="inline-flex h-8 max-w-[7.5rem] min-w-0 shrink-0 items-center gap-1.5 rounded-md px-1.5 text-[13px] text-fg-muted no-underline transition-colors duration-150 hover:bg-surface-2 hover:text-fg sm:max-w-[12rem]"
             />
             <span className="hidden h-4 w-px shrink-0 bg-border sm:block" aria-hidden="true" />
-            <p className="truncate text-[13px] font-medium text-fg-muted">{title}</p>
+            <p className="min-w-0 truncate text-[13px] font-medium text-fg-muted">{title}</p>
           </div>
           <div className="flex items-center gap-2">
             {isGestureStudy && tab === "stage" ? (
@@ -419,8 +417,8 @@ export function StudyPage({ slug }: { slug: string }) {
             {!ideaLoaded ? (
               <TabLoading compact />
             ) : (
-              <article className="note-prose mx-auto max-w-4xl">
-                <Markdown source={ideaSource} />
+              <article className="note-prose mx-auto max-w-[70ch]">
+                <Markdown source={ideaSource} locale={locale} />
               </article>
             )}
           </div>

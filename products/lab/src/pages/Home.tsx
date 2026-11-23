@@ -149,7 +149,7 @@ function FeaturedLead({ study, locale }: { study: StudyMeta; locale: Locale }) {
         </div>
       ) : null}
 
-      <p className="mt-2 text-[13px] leading-relaxed text-fg-muted break-keep">{studySummary(study, locale)}</p>
+      <p className="mt-2 text-[13px] leading-relaxed text-fg-muted">{studySummary(study, locale)}</p>
     </Link>
   );
 }
@@ -189,7 +189,7 @@ function FeaturedRow({
           </div>
         ) : null}
 
-        <span className="mt-1 block pl-7 text-[13px] leading-relaxed text-fg-muted break-keep line-clamp-2">
+        <span className="mt-1 block line-clamp-2 pl-7 text-[13px] leading-relaxed text-fg-muted">
           {studySummary(study, locale)}
         </span>
       </Link>

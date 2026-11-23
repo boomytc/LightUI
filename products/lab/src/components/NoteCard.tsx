@@ -28,7 +28,9 @@ export function NoteCard({
     <article
       className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-menu"
       onClick={(e) => {
-        if ((e.target as HTMLElement).closest("a")) return;
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        if ((e.target as HTMLElement).closest("a, button")) return;
+        if (window.getSelection()?.toString()) return;
         navigate(href);
       }}
     >

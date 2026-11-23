@@ -25,8 +25,8 @@ export function BackLink({ fallback, className }: { fallback: string; className?
         back(fallback);
       }}
     >
-      <ArrowLeft className="size-3.5" />
-      {label}
+      <ArrowLeft className="size-3.5 shrink-0" />
+      <span className="truncate">{label}</span>
     </a>
   );
 }

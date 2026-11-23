@@ -1,6 +1,7 @@
 import { Component, type ComponentType, type ReactNode, useEffect, useRef, useState } from "react";
 import { ArrowUpRight, HelpCircle } from "lucide-react";
 import { DateStamp } from "./DateStamp";
+import { Link } from "./Link";
 import type { LoadedStudy } from "../lib/catalog";
 import { categoryLabel, getStudyCategory } from "../lib/categories";
 import { messages } from "../lib/i18n";
@@ -112,26 +113,18 @@ export function StudyCard({
   const isStageLoading = stageState.slug === meta.slug && stageState.loading;
 
   return (
-    <a
-      href={href}
-      onClick={(e) => {
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-        e.preventDefault();
-        navigate(href);
-      }}
-      className="lab-card group relative flex h-full flex-col justify-between rounded-2xl border border-border bg-surface p-5 shadow-card motion-safe:hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-2 hover:shadow-menu"
-    >
+    <article className="lab-card group relative flex h-full flex-col justify-between rounded-2xl border border-border bg-surface p-5 shadow-card motion-safe:hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-2 hover:shadow-menu">
       <div>
         <div
           ref={containerRef}
           inert
           aria-hidden="true"
-          className="relative mb-3.5 h-36 w-full overflow-hidden rounded-xl border border-border/60 bg-surface-2/40 pointer-events-none select-none transition-colors duration-150 group-hover:border-border-strong"
+          className="pointer-events-none relative mb-3.5 h-40 w-full select-none overflow-hidden rounded-xl border border-border/60 bg-surface-2/40 transition-colors duration-150 group-hover:border-border-strong"
         >
           {StageView && isInView ? (
             <PreviewErrorBoundary fallback={<StagePlaceholder />}>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-[560px] h-[300px] shrink-0 flex items-center justify-center origin-center scale-[0.52]">
+              <div className="absolute inset-0 flex items-center justify-center p-2">
+                <div className="flex h-[300px] w-[560px] shrink-0 origin-center scale-[0.46] items-center justify-center">
                   <div className="lab-stage-preview">
                     <StageView />
                   </div>
@@ -149,7 +142,12 @@ export function StudyCard({
               {studyEyebrow(meta, locale) || categoryLabel(categoryId, locale)}
             </p>
             <h2 className="mt-1 text-[1.2rem] font-semibold tracking-tight text-fg transition-colors duration-150 group-hover:text-accent">
-              {studyTitle(meta, locale)}
+              <Link
+                href={href}
+                className="no-underline after:absolute after:inset-0 after:content-['']"
+              >
+                {studyTitle(meta, locale)}
+              </Link>
             </h2>
           </div>
           <ArrowUpRight className="size-4 shrink-0 text-fg-subtle transition-colors duration-150 group-hover:text-fg" />
@@ -162,24 +160,22 @@ export function StudyCard({
           </div>
         ) : null}
 
-        <p className="mt-2.5 text-[13px] leading-relaxed text-fg-muted line-clamp-3">
+        <p className="mt-2.5 line-clamp-3 text-[13px] leading-relaxed text-fg-muted">
           {studySummary(meta, locale)}
         </p>
       </div>
 
       <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
-        <div className="flex flex-wrap gap-1">
+        <div className="relative z-10 flex flex-wrap gap-1">
           {meta.tags?.slice(0, 3).map((tag) => (
             <button
               key={tag}
               type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
+              onClick={() => {
                 if (onSelectTag) {
                   onSelectTag(tag);
                 } else {
-                  navigate(`/studies?tag=${tag}`);
+                  navigate(`/studies?tag=${encodeURIComponent(tag)}`);
                 }
               }}
               className={
@@ -212,6 +208,6 @@ export function StudyCard({
           />
         )}
       </div>
-    </a>
+    </article>
   );
 }

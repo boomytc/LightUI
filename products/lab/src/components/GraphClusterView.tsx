@@ -74,35 +74,40 @@ export function GraphClusterView({
                 const isSelected = selectedSlug === meta.slug;
                 const asks = studyAsks(meta, locale);
                 return (
-                  <button
-                    type="button"
+                  <div
                     key={meta.slug}
-                    onClick={() => onSelectSlug(meta.slug)}
                     className={
                       isSelected
-                        ? "group relative flex w-full cursor-pointer flex-col rounded-xl border border-accent bg-accent/10 p-3.5 text-left shadow-xs transition-colors duration-200"
-                        : "group relative flex w-full cursor-pointer flex-col rounded-xl border border-border/70 bg-bg p-3.5 text-left transition-colors duration-200 hover:border-border-strong hover:bg-surface-2"
+                        ? "group relative flex w-full flex-col rounded-xl border border-accent bg-accent/10 p-3.5 text-left shadow-xs transition-colors duration-200"
+                        : "group relative flex w-full flex-col rounded-xl border border-border/70 bg-bg p-3.5 text-left transition-colors duration-200 hover:border-border-strong hover:bg-surface-2"
                     }
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <h4 className="text-[13px] font-semibold text-fg group-hover:text-accent transition-colors">
-                        {studyTitle(meta, locale)}
+                      <h4 className="min-w-0 text-[13px] font-semibold text-fg transition-colors group-hover:text-accent">
+                        <button
+                          type="button"
+                          onClick={() => onSelectSlug(meta.slug)}
+                          aria-pressed={isSelected}
+                          className="cursor-pointer text-left after:absolute after:inset-0 after:content-['']"
+                        >
+                          {studyTitle(meta, locale)}
+                        </button>
                       </h4>
                       <Link
                         href={`/s/${meta.slug}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="inline-flex size-6 shrink-0 items-center justify-center rounded-md text-fg-subtle hover:bg-surface hover:text-fg no-underline"
+                        className="relative z-10 inline-flex size-6 shrink-0 items-center justify-center rounded-md text-fg-subtle no-underline hover:bg-surface hover:text-fg"
                         title={copy.inspectorOpenStudy}
+                        aria-label={`${copy.inspectorOpenStudy}: ${studyTitle(meta, locale)}`}
                       >
                         <ArrowRight className="size-3.5" />
                       </Link>
                     </div>
                     {asks ? (
-                      <p className="mt-1 text-[12px] leading-relaxed text-fg-muted line-clamp-2">
+                      <p className="mt-1 line-clamp-2 text-[12px] leading-relaxed text-fg-muted">
                         {asks}
                       </p>
                     ) : null}
-                  </button>
+                  </div>
                 );
               })}
             </div>

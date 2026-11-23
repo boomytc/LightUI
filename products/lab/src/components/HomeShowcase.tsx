@@ -1,12 +1,33 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Compass, ShieldCheck, Sparkles } from "lucide-react";
 import { Link } from "./Link";
 import type { Locale } from "../lib/prefs";
 
 type DemoKey = "triangle" | "beam" | "weights";
+const DEMO_TABS: readonly DemoKey[] = ["triangle", "beam", "weights"];
 
 export function HomeShowcase({ locale }: { locale: Locale }) {
   const [activeTab, setActiveTab] = useState<DemoKey>("triangle");
+  const tabRefs = useRef<Partial<Record<DemoKey, HTMLButtonElement | null>>>({});
+
+  function tabLabel(id: DemoKey): string {
+    if (id === "triangle") return locale === "en" ? "Triangle" : "安全三角";
+    if (id === "beam") return locale === "en" ? "Beam" : "边光";
+    return locale === "en" ? "Weights" : "按钮重量";
+  }
+
+  function onTabListKeyDown(e: React.KeyboardEvent) {
+    const idx = DEMO_TABS.indexOf(activeTab);
+    let next: DemoKey | undefined;
+    if (e.key === "ArrowRight") next = DEMO_TABS[(idx + 1) % DEMO_TABS.length];
+    else if (e.key === "ArrowLeft") next = DEMO_TABS[(idx - 1 + DEMO_TABS.length) % DEMO_TABS.length];
+    else if (e.key === "Home") next = DEMO_TABS[0];
+    else if (e.key === "End") next = DEMO_TABS[DEMO_TABS.length - 1];
+    if (!next) return;
+    e.preventDefault();
+    setActiveTab(next);
+    requestAnimationFrame(() => tabRefs.current[next]?.focus());
+  }
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-border bg-surface/90 p-5 shadow-card sm:p-6">
@@ -16,45 +37,47 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
           <span>{locale === "en" ? "Interactive Lab Sampler" : "精选交互体验"}</span>
         </div>
 
-        <div className="flex rounded-lg border border-border bg-surface-2 p-0.5">
-          <button
-            type="button"
-            onClick={() => setActiveTab("triangle")}
-            className={
-              activeTab === "triangle"
-                ? "rounded-md bg-fg px-2.5 py-1 text-[11px] font-medium text-surface shadow-xs"
-                : "rounded-md px-2.5 py-1 text-[11px] font-medium text-fg-muted hover:text-fg"
-            }
-          >
-            {locale === "en" ? "Triangle" : "安全三角"}
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("beam")}
-            className={
-              activeTab === "beam"
-                ? "rounded-md bg-fg px-2.5 py-1 text-[11px] font-medium text-surface shadow-xs"
-                : "rounded-md px-2.5 py-1 text-[11px] font-medium text-fg-muted hover:text-fg"
-            }
-          >
-            {locale === "en" ? "Beam" : "边光"}
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("weights")}
-            className={
-              activeTab === "weights"
-                ? "rounded-md bg-fg px-2.5 py-1 text-[11px] font-medium text-surface shadow-xs"
-                : "rounded-md px-2.5 py-1 text-[11px] font-medium text-fg-muted hover:text-fg"
-            }
-          >
-            {locale === "en" ? "Weights" : "按钮重量"}
-          </button>
+        <div
+          role="tablist"
+          aria-label={locale === "en" ? "Interactive Lab Sampler" : "精选交互体验"}
+          onKeyDown={onTabListKeyDown}
+          className="flex rounded-lg border border-border bg-surface-2/80 p-0.5"
+        >
+          {DEMO_TABS.map((id) => {
+            const active = activeTab === id;
+            return (
+              <button
+                key={id}
+                ref={(el) => {
+                  tabRefs.current[id] = el;
+                }}
+                id={`showcase-tab-${id}`}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                aria-controls={`showcase-panel-${id}`}
+                tabIndex={active ? 0 : -1}
+                onClick={() => setActiveTab(id)}
+                className={
+                  active
+                    ? "rounded-md bg-surface px-2.5 py-1 text-[11px] font-semibold text-fg shadow-xs"
+                    : "rounded-md px-2.5 py-1 text-[11px] font-medium text-fg-muted transition-colors hover:text-fg"
+                }
+              >
+                {tabLabel(id)}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Interactive stage area */}
-      <div className="mt-4 flex min-h-[170px] items-center justify-center rounded-2xl border border-border/80 bg-bg p-4">
+      <div
+        id={`showcase-panel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`showcase-tab-${activeTab}`}
+        className="mt-4 flex min-h-[170px] items-center justify-center rounded-2xl border border-border/80 bg-bg p-4"
+      >
         <div key={activeTab} className="lab-fade w-full">
           {activeTab === "triangle" ? <TriangleMiniDemo locale={locale} /> : null}
           {activeTab === "beam" ? <BeamMiniDemo locale={locale} /> : null}
@@ -87,50 +110,180 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
   );
 }
 
+type Pt = { x: number; y: number };
+
+function cross(a: Pt, b: Pt, c: Pt): number {
+  return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+}
+
+function pointInTriangle(p: Pt, a: Pt, b: Pt, c: Pt): boolean {
+  const c1 = cross(a, b, p);
+  const c2 = cross(b, c, p);
+  const c3 = cross(c, a, p);
+  const hasNeg = c1 < 0 || c2 < 0 || c3 < 0;
+  const hasPos = c1 > 0 || c2 > 0 || c3 > 0;
+  return !(hasNeg && hasPos);
+}
+
 function TriangleMiniDemo({ locale }: { locale: Locale }) {
   const [activeItem, setActiveItem] = useState(0);
-  const [subOpen, setSubOpen] = useState(true);
+  const [selectedSub, setSelectedSub] = useState<string | null>(null);
+  const [corridorHolding, setCorridorHolding] = useState(false);
+
+  const subMenuRef = useRef<HTMLDivElement>(null);
+  const anchorPointRef = useRef<Pt | null>(null);
+  const lastPointRef = useRef<Pt | null>(null);
+  const switchTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (switchTimerRef.current !== null) {
+        window.clearTimeout(switchTimerRef.current);
+      }
+    };
+  }, []);
 
   const items = [
-    { id: 0, label: locale === "en" ? "Preferences" : "偏好设置", sub: ["General", "Appearance", "Shortcuts"] },
-    { id: 1, label: locale === "en" ? "Extensions" : "扩展插件", sub: ["Installed", "Market", "Updates"] },
-    { id: 2, label: locale === "en" ? "Profiles" : "账户配置", sub: ["Personal", "Work"] },
+    {
+      id: 0,
+      label: locale === "en" ? "Preferences" : "偏好设置",
+      sub: locale === "en" ? ["General", "Appearance", "Shortcuts"] : ["常规", "外观", "快捷键"],
+    },
+    {
+      id: 1,
+      label: locale === "en" ? "Extensions" : "扩展插件",
+      sub: locale === "en" ? ["Installed", "Market", "Updates"] : ["已安装", "插件市场", "更新"],
+    },
+    {
+      id: 2,
+      label: locale === "en" ? "Profiles" : "账户配置",
+      sub: locale === "en" ? ["Personal", "Work"] : ["个人", "工作"],
+    },
   ];
 
+  function clearPendingSwitch() {
+    if (switchTimerRef.current !== null) {
+      window.clearTimeout(switchTimerRef.current);
+      switchTimerRef.current = null;
+    }
+    setCorridorHolding(false);
+  }
+
+  function isMovingInsideCorridor(curr: Pt): boolean {
+    const anchor = anchorPointRef.current;
+    const subRect = subMenuRef.current?.getBoundingClientRect();
+    if (!anchor || !subRect) return false;
+    if (curr.x <= anchor.x) return false;
+    const topCorner: Pt = { x: subRect.left, y: subRect.top - 12 };
+    const bottomCorner: Pt = { x: subRect.left, y: subRect.bottom + 12 };
+    return pointInTriangle(curr, anchor, topCorner, bottomCorner);
+  }
+
+  function handlePrimaryEnter(itemId: number, e: React.MouseEvent<HTMLButtonElement>) {
+    const curr: Pt = { x: e.clientX, y: e.clientY };
+    if (itemId === activeItem) {
+      clearPendingSwitch();
+      anchorPointRef.current = curr;
+      lastPointRef.current = curr;
+      return;
+    }
+
+    if (isMovingInsideCorridor(curr)) {
+      clearPendingSwitch();
+      setCorridorHolding(true);
+      switchTimerRef.current = window.setTimeout(() => {
+        setActiveItem(itemId);
+        setSelectedSub(null);
+        setCorridorHolding(false);
+        anchorPointRef.current = lastPointRef.current;
+        switchTimerRef.current = null;
+      }, 240);
+      return;
+    }
+
+    clearPendingSwitch();
+    setActiveItem(itemId);
+    setSelectedSub(null);
+    anchorPointRef.current = curr;
+    lastPointRef.current = curr;
+  }
+
+  function handlePrimaryMove(itemId: number, e: React.MouseEvent<HTMLButtonElement>) {
+    const curr: Pt = { x: e.clientX, y: e.clientY };
+    if (itemId === activeItem) {
+      anchorPointRef.current = curr;
+    }
+    lastPointRef.current = curr;
+  }
+
+  function handlePrimarySelect(itemId: number) {
+    clearPendingSwitch();
+    setActiveItem(itemId);
+    setSelectedSub(null);
+  }
+
   return (
-    <div className="flex w-full max-w-sm items-start gap-2 select-none text-[12px]">
-      <div className="flex-1 rounded-xl border border-border bg-surface p-1.5 shadow-sm">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            onMouseEnter={() => {
-              setActiveItem(item.id);
-              setSubOpen(true);
-            }}
-            className={
-              activeItem === item.id && subOpen
-                ? "flex items-center justify-between rounded-lg bg-accent px-2.5 py-1.5 font-medium text-white"
-                : "flex items-center justify-between rounded-lg px-2.5 py-1.5 text-fg-muted hover:bg-surface-2 hover:text-fg"
-            }
-          >
-            <span>{item.label}</span>
-            <span className="text-[10px] opacity-70">›</span>
-          </div>
-        ))}
+    <div
+      className="mx-auto flex w-full max-w-sm select-none items-start gap-2 text-[12px]"
+      onMouseLeave={clearPendingSwitch}
+    >
+      <div className="flex-1 space-y-0.5 rounded-xl border border-border bg-surface p-1.5 shadow-sm">
+        {items.map((item) => {
+          const isActive = activeItem === item.id;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onMouseEnter={(e) => handlePrimaryEnter(item.id, e)}
+              onMouseMove={(e) => handlePrimaryMove(item.id, e)}
+              onClick={() => handlePrimarySelect(item.id)}
+              onFocus={() => handlePrimarySelect(item.id)}
+              aria-expanded={isActive}
+              className={
+                isActive
+                  ? "flex w-full items-center justify-between rounded-lg bg-accent px-2.5 py-1.5 text-left font-medium text-accent-fg"
+                  : "flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg"
+              }
+            >
+              <span>{item.label}</span>
+              <span className="text-[10px] opacity-75" aria-hidden="true">
+                ›
+              </span>
+            </button>
+          );
+        })}
       </div>
 
-      <div className="flex-1 rounded-xl border border-border bg-surface p-1.5 shadow-sm">
-        <div className="px-2 py-1 text-[10px] font-mono text-fg-subtle">
-          {locale === "en" ? "Protected level 2" : "受保护二级项"}
+      <div
+        ref={subMenuRef}
+        onMouseEnter={clearPendingSwitch}
+        className="flex-1 space-y-0.5 rounded-xl border border-border bg-surface p-1.5 shadow-sm"
+      >
+        <div className="flex items-center justify-between px-2 py-1 font-mono text-[10px] text-fg-subtle">
+          <span>{locale === "en" ? "Protected level 2" : "受保护二级项"}</span>
+          {corridorHolding ? (
+            <span className="rounded bg-accent-soft px-1 text-[9px] font-semibold text-accent">
+              {locale === "en" ? "Hold" : "保护中"}
+            </span>
+          ) : null}
         </div>
-        {items[activeItem]?.sub.map((sub, i) => (
-          <div
-            key={i}
-            className="rounded-lg px-2.5 py-1.5 text-fg hover:bg-accent-soft hover:text-accent transition-colors"
-          >
-            {sub}
-          </div>
-        ))}
+        {items[activeItem]?.sub.map((sub) => {
+          const picked = selectedSub === sub;
+          return (
+            <button
+              key={sub}
+              type="button"
+              onClick={() => setSelectedSub(sub)}
+              className={
+                picked
+                  ? "block w-full rounded-lg bg-accent-soft px-2.5 py-1.5 text-left font-medium text-accent transition-colors"
+                  : "block w-full rounded-lg px-2.5 py-1.5 text-left text-fg transition-colors hover:bg-accent-soft hover:text-accent"
+              }
+            >
+              {sub}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

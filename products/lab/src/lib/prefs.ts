@@ -1,4 +1,4 @@
-import { createContext, createElement, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, createElement, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 export type Theme = "light" | "dark";
 export type Locale = "zh" | "en";
@@ -8,14 +8,23 @@ export const LOCALE_KEY = "lightui-locale";
 export const PREFS_EVENT = "lightui:prefs";
 export const GITHUB_URL = "https://github.com/boomytc/LightUI";
 
-export function readTheme(): Theme {
+function storedTheme(): Theme | null {
   try {
     const stored = localStorage.getItem(THEME_KEY);
     if (stored === "light" || stored === "dark") return stored;
   } catch {
     /* ignore */
   }
+  return null;
+}
+
+export function readTheme(): Theme {
+  const stored = storedTheme();
+  if (stored) return stored;
   if (typeof document !== "undefined" && document.documentElement.classList.contains("dark")) {
+    return "dark";
+  }
+  if (typeof window !== "undefined" && window.matchMedia?.("(prefers-color-scheme: dark)").matches) {
     return "dark";
   }
   return "light";
@@ -33,8 +42,12 @@ export function readLocale(): Locale {
   return "zh";
 }
 
-function applyTheme(theme: Theme) {
+function applyThemeDom(theme: Theme) {
   document.documentElement.classList.toggle("dark", theme === "dark");
+}
+
+function applyTheme(theme: Theme) {
+  applyThemeDom(theme);
   try {
     localStorage.setItem(THEME_KEY, theme);
   } catch {
@@ -42,8 +55,12 @@ function applyTheme(theme: Theme) {
   }
 }
 
-function applyLocale(locale: Locale) {
+function applyLocaleDom(locale: Locale) {
   document.documentElement.lang = locale === "en" ? "en" : "zh-CN";
+}
+
+function applyLocale(locale: Locale) {
+  applyLocaleDom(locale);
   try {
     localStorage.setItem(LOCALE_KEY, locale);
   } catch {
@@ -67,6 +84,39 @@ const PrefsContext = createContext<Prefs | null>(null);
 export function PrefsProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(readTheme);
   const [locale, setLocale] = useState<Locale>(readLocale);
+
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-color-scheme: dark)");
+    const onSchemeChange = (e: MediaQueryListEvent) => {
+      if (storedTheme() !== null) return;
+      const next: Theme = e.matches ? "dark" : "light";
+      applyThemeDom(next);
+      setTheme(next);
+      emitPrefs();
+    };
+    mq?.addEventListener("change", onSchemeChange);
+
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === THEME_KEY || e.key === null) {
+        const nextTheme = readTheme();
+        applyThemeDom(nextTheme);
+        setTheme(nextTheme);
+        emitPrefs();
+      }
+      if (e.key === LOCALE_KEY || e.key === null) {
+        const nextLocale = readLocale();
+        applyLocaleDom(nextLocale);
+        setLocale(nextLocale);
+        emitPrefs();
+      }
+    };
+    window.addEventListener("storage", onStorage);
+
+    return () => {
+      mq?.removeEventListener("change", onSchemeChange);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, []);
 
   const value = useMemo<Prefs>(
     () => ({

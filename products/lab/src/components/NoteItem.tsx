@@ -1,7 +1,8 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { DateStamp } from "./DateStamp";
 import { Link } from "./Link";
 import { loadStudy } from "../lib/catalog";
+import { parseDay, stampLabel } from "../lib/dates";
 import { studyTitle } from "../lib/localize";
 import type { Note } from "../lib/notes";
 import type { Locale } from "../lib/prefs";
@@ -37,7 +38,7 @@ export function NoteItem({
         </span>
         <NoteByline note={note} locale={locale} className="mt-1.5" />
         {note.summary ? (
-          <span className="mt-1.5 block text-[13px] leading-relaxed text-fg-muted break-keep line-clamp-2">
+          <span className="mt-1.5 block line-clamp-2 text-[13px] leading-relaxed text-fg-muted">
             {note.summary}
           </span>
         ) : null}
@@ -62,25 +63,57 @@ export function NoteByline({
   className?: string;
 }) {
   const related = relatedMetas(note);
-  return (
-    <span className={className ? `flex flex-wrap items-baseline gap-x-2 text-[12px] ${className}` : "flex flex-wrap items-baseline gap-x-2 text-[12px]"}>
-      {related.map((meta, i) => (
-        <span key={meta.slug} className="contents">
-          {i > 0 ? <span aria-hidden="true">·</span> : null}
-          <span className="font-medium text-fg-muted">{studyTitle(meta, locale)}</span>
-        </span>
-      ))}
-      {related.length > 0 ? <span aria-hidden="true" className="text-fg-subtle">·</span> : null}
-      <DateStamp
-        created={note.date}
-        updated={note.updated}
-        locale={locale}
-        className="font-mono text-fg-subtle"
-      />
-      <span aria-hidden="true" className="text-fg-subtle">·</span>
+  const hasDate = Boolean(
+    stampLabel(note.date, note.updated, locale) && (parseDay(note.updated) ?? parseDay(note.date)),
+  );
+
+  const segments: { key: string; node: ReactNode }[] = [];
+  for (const meta of related) {
+    segments.push({
+      key: `rel-${meta.slug}`,
+      node: <span className="font-medium text-fg-muted">{studyTitle(meta, locale)}</span>,
+    });
+  }
+  if (hasDate) {
+    segments.push({
+      key: "date",
+      node: (
+        <DateStamp
+          created={note.date}
+          updated={note.updated}
+          locale={locale}
+          className="font-mono text-fg-subtle"
+        />
+      ),
+    });
+  }
+  segments.push({
+    key: "reading-time",
+    node: (
       <span className="font-mono text-[11px] text-fg-subtle">
         {estimateReadingTime(note.body, locale)}
       </span>
+    ),
+  });
+
+  return (
+    <span
+      className={
+        className
+          ? `flex flex-wrap items-baseline gap-x-2 text-[12px] ${className}`
+          : "flex flex-wrap items-baseline gap-x-2 text-[12px]"
+      }
+    >
+      {segments.map((segment, i) => (
+        <span key={segment.key} className="contents">
+          {i > 0 ? (
+            <span aria-hidden="true" className="text-fg-subtle">
+              ·
+            </span>
+          ) : null}
+          {segment.node}
+        </span>
+      ))}
     </span>
   );
 }

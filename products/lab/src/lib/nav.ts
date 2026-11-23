@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 
 export type LabHistoryState = { lab: true; from: string };
+export type NavigationKind = "push" | "replace" | "pop";
+
+const scrollPositions = new Map<string, number>();
+let pendingNavKind: NavigationKind | null = null;
 
 function currentHref(): string {
   return `${window.location.pathname}${window.location.search}${window.location.hash}`;
@@ -9,6 +13,30 @@ function currentHref(): string {
 function resolveHref(path: string): string {
   const url = new URL(path, window.location.origin);
   return `${url.pathname}${url.search}${url.hash}`;
+}
+
+function safeDecodeSegment(segment: string): string {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return segment;
+  }
+}
+
+export function saveCurrentScroll() {
+  if (typeof window === "undefined") return;
+  scrollPositions.set(currentHref(), window.scrollY);
+}
+
+export function getSavedScroll(href?: string): number | undefined {
+  if (typeof window === "undefined") return undefined;
+  return scrollPositions.get(href ?? currentHref());
+}
+
+export function consumeNavigationKind(): NavigationKind {
+  const kind = pendingNavKind ?? "pop";
+  pendingNavKind = null;
+  return kind;
 }
 
 export function routePath(href: string): string {
@@ -38,19 +66,31 @@ export function navigate(path: string) {
   const next = resolveHref(path);
   const here = currentHref();
   if (here === next) return;
-  window.history.pushState({ lab: true, from: here } satisfies LabHistoryState, "", next);
+  saveCurrentScroll();
+  pendingNavKind = "push";
+  try {
+    window.history.pushState({ lab: true, from: here } satisfies LabHistoryState, "", next);
+  } catch {
+    /* ignore SecurityError */
+  }
   window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
 export function back(fallback: string) {
   const from = readFrom(window.history.state);
   if (canPopHistory(from, fallback, currentHref())) {
+    pendingNavKind = "pop";
     window.history.back();
     return;
   }
   const next = resolveHref(fallback);
   if (currentHref() === next) return;
-  window.history.replaceState({ lab: true, from: "" } satisfies LabHistoryState, "", next);
+  pendingNavKind = "replace";
+  try {
+    window.history.replaceState({ lab: true, from: "" } satisfies LabHistoryState, "", next);
+  } catch {
+    /* ignore SecurityError */
+  }
   window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
@@ -108,7 +148,9 @@ export function replaceHash(hash: string | null | undefined) {
 }
 
 export function useSearchParams(): URLSearchParams {
-  const [params, setParams] = useState(() => (typeof window === "undefined" ? new URLSearchParams() : new URLSearchParams(window.location.search)));
+  const [params, setParams] = useState(() =>
+    typeof window === "undefined" ? new URLSearchParams() : new URLSearchParams(window.location.search),
+  );
 
   useEffect(() => {
     const sync = () => setParams(new URLSearchParams(window.location.search));
@@ -137,10 +179,15 @@ export function updateSearchParams(
   const here = currentHref();
   if (here === next) return;
 
-  if (options?.replace) {
-    window.history.replaceState(window.history.state, "", next);
-  } else {
-    window.history.pushState({ lab: true, from: here } satisfies LabHistoryState, "", next);
+  pendingNavKind = options?.replace ? "replace" : "push";
+  try {
+    if (options?.replace) {
+      window.history.replaceState(window.history.state, "", next);
+    } else {
+      window.history.pushState({ lab: true, from: here } satisfies LabHistoryState, "", next);
+    }
+  } catch {
+    /* ignore SecurityError when browser throttles history updates */
   }
   window.dispatchEvent(new PopStateEvent("popstate"));
 }
@@ -163,13 +210,13 @@ export function parseRoute(path: string): Route {
   if (clean === "/graph") return { name: "graph" };
 
   const stage = /^\/s\/([^/]+)\/stage$/.exec(clean);
-  if (stage?.[1]) return { name: "stage", slug: stage[1] };
+  if (stage?.[1]) return { name: "stage", slug: safeDecodeSegment(stage[1]) };
 
   const study = /^\/s\/([^/]+)$/.exec(clean);
-  if (study?.[1]) return { name: "study", slug: study[1] };
+  if (study?.[1]) return { name: "study", slug: safeDecodeSegment(study[1]) };
 
   const note = /^\/notes\/([^/]+)$/.exec(clean);
-  if (note?.[1]) return { name: "note", slug: note[1] };
+  if (note?.[1]) return { name: "note", slug: safeDecodeSegment(note[1]) };
 
-  return { name: "missing", path };
+  return { name: "missing", path: safeDecodeSegment(path) };
 }
