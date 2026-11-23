@@ -8,7 +8,7 @@
 <p align="center">
   <a href="https://react.dev"><img src="https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=black&style=flat-square" alt="React 19" /></a>
   <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&style=flat-square" alt="TypeScript" /></a>
-  <a href="https://vitejs.dev"><img src="https://img.shields.io/badge/Vite-8.1-646CFF?logo=vite&logoColor=white&style=flat-square" alt="Vite" /></a>
+  <a href="https://vitejs.dev"><img src="https://img.shields.io/badge/Vite-8.2-646CFF?logo=vite&logoColor=white&style=flat-square" alt="Vite" /></a>
   <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?logo=tailwindcss&logoColor=white&style=flat-square" alt="Tailwind CSS" /></a>
   <!-- catalog:badge -->
   <a href="docs/catalog.md"><img src="https://img.shields.io/badge/Studies-58_(56_Active_%C2%B7_2_Draft)-10B981?style=flat-square" alt="Studies" /></a>
@@ -146,7 +146,7 @@ LightUI 中的课题并非孤立存在，而是通过 **决策关系图谱** 组
 - **`links: after`**：解决当前问题之后，下一步自然引导出的后置问题。
 - **`links: contrast`**：外观形似但交互本质不同的易混淆对比。
 
-在 Lab 站点（`products/lab`）中提供了交互式力导向网络图谱（Network）、聚类分组（Cluster）与对比矩阵（Matrix），帮助开发者系统性梳理交互决策路径。
+在 Lab 站点（`products/lab`）中提供了交互式分层拓扑决策流图谱（Decision Flow）、领域星云（Domain Cluster）与对照矩阵（Contrast Matrix），帮助开发者系统性梳理交互决策路径。
 
 ---
 

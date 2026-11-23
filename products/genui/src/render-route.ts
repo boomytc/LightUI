@@ -145,7 +145,7 @@ const TYPE_CHECK: Readonly<Record<SupportedPropType, (value: unknown) => boolean
 };
 
 const OPENING_JSON_FENCE = /^\s*```(?:json)?(?:[ \t]*\r?\n|[ \t]+(?=\{))/i;
-const PENDING_JSON_FENCE = /^\s*(?:`{1,3}|```(?:j(?:s(?:o(?:n)?)?)?)?[ \t]*)$/i;
+const PENDING_JSON_FENCE = /^\s*(?:`{1,3}|```(?:j(?:s(?:o)?)?|(?:json)?[ \t]*\r?))$/i;
 
 /**
  * Strips a leading BOM and an optional Markdown ``` / ```json code fence.

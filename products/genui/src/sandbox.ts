@@ -276,7 +276,7 @@ export function validateSandboxCallback(name: unknown, args: unknown): SandboxCa
       if (!/^https:\/\/[^/\\]/i.test(raw) || !parsed.hostname) {
         return { ok: false, name: callback.name, code: "invalid_url", reason: "url 不是合法地址" };
       }
-      if (parsed.username || parsed.password || /^https:\/\/[^/?#]*@/i.test(raw)) {
+      if (parsed.username || parsed.password || /^https:\/\/[^/?#\\]*@/i.test(raw)) {
         return {
           ok: false,
           name: callback.name,
