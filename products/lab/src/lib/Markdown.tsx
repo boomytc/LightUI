@@ -4,24 +4,31 @@ import { messages } from "./i18n";
 import { navigate } from "./nav";
 import type { Locale } from "./prefs";
 
+type ListItem = {
+  text: string;
+  children: Block[];
+};
+
 type Block =
   | { type: "h"; level: 1 | 2 | 3; text: string; id?: string }
   | { type: "p"; text: string }
+  | { type: "hr" }
   | { type: "quote"; text: string }
-  | { type: "ul"; items: string[] }
-  | { type: "ol"; items: string[] }
+  | { type: "ul"; items: ListItem[] }
+  | { type: "ol"; start?: number; items: ListItem[] }
   | { type: "pre"; code: string; lang: string }
   | { type: "math"; expr: string }
   | { type: "table"; headers: string[]; rows: string[][] };
 
 const DEF = /^\*\*(.+?)\*\*[：:]\s*(.*)$/;
 
-function asDefs(items: string[]): { name: string; text: string }[] | null {
+function asDefs(items: ListItem[]): { name: string; text: string }[] | null {
+  if (items.length === 0 || items.some((item) => item.children.length > 0)) return null;
   const defs = items.map((item) => {
-    const match = DEF.exec(item);
+    const match = DEF.exec(item.text);
     return match?.[1] != null ? { name: match[1], text: match[2] ?? "" } : null;
   });
-  if (defs.length === 0 || defs.some((d) => !d)) return null;
+  if (defs.some((d) => !d)) return null;
   return defs as { name: string; text: string }[];
 }
 
@@ -743,10 +750,164 @@ function slugifyHeading(text: string): string {
   return slug || "section";
 }
 
-function parse(md: string): Block[] {
-  const lines = md.replace(/\r\n/g, "\n").split("\n");
+const HR_RE = /^\s*(?:-(?:\s*-){2,}|\*(?:\s*\*){2,}|_(?:\s*_){2,})\s*$/;
+const UL_RE = /^([ \t]*)[-*]\s+(.*)$/;
+const OL_RE = /^([ \t]*)(\d+)\.\s+(.*)$/;
+const BLOCK_START_RE = /^(#{1,3}\s+|\s*```|\s*\$\$|\||\s*[-*]\s+|\s*\d+\.\s+|\s*>\s+)/;
+
+function lineIndent(line: string): number {
+  let count = 0;
+  for (let i = 0; i < line.length; i += 1) {
+    if (line[i] === " ") count += 1;
+    else if (line[i] === "\t") count += 2;
+    else break;
+  }
+  return count;
+}
+
+function stripIndent(line: string, columns: number): string {
+  let i = 0;
+  let removed = 0;
+  while (i < line.length && removed < columns) {
+    if (line[i] === " ") {
+      removed += 1;
+      i += 1;
+    } else if (line[i] === "\t") {
+      removed += 2;
+      i += 1;
+    } else {
+      break;
+    }
+  }
+  return line.slice(i);
+}
+
+function dedentLines(lines: string[]): string[] {
+  let minIndent = Infinity;
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const indent = lineIndent(line);
+    if (indent < minIndent) minIndent = indent;
+  }
+  if (!Number.isFinite(minIndent) || minIndent <= 0) return lines;
+  return lines.map((line) => (line.trim() ? stripIndent(line, minIndent) : ""));
+}
+
+function matchListItem(
+  line: string,
+  kind: "ul" | "ol",
+): { indent: number; number?: number; text: string } | null {
+  if (HR_RE.test(line)) return null;
+  if (kind === "ul") {
+    const match = UL_RE.exec(line);
+    if (!match) return null;
+    return { indent: lineIndent(match[1] ?? ""), text: match[2] ?? "" };
+  }
+  const match = OL_RE.exec(line);
+  if (!match) return null;
+  return { indent: lineIndent(match[1] ?? ""), number: Number(match[2]), text: match[3] ?? "" };
+}
+
+function isNestedBlockStart(trimmed: string): boolean {
+  return (
+    HR_RE.test(trimmed) ||
+    trimmed.startsWith("```") ||
+    trimmed.startsWith("$$") ||
+    trimmed.startsWith("> ") ||
+    trimmed.startsWith("|") ||
+    /^[-*]\s+/.test(trimmed) ||
+    /^\d+\.\s+/.test(trimmed)
+  );
+}
+
+function parseList(
+  lines: string[],
+  startIndex: number,
+  kind: "ul" | "ol",
+  baseIndent: number,
+  headingCounts: Map<string, number>,
+): { block: Extract<Block, { type: "ul" | "ol" }>; nextIndex: number } {
+  const items: ListItem[] = [];
+  let startNumber: number | undefined;
+  let i = startIndex;
+
+  while (i < lines.length) {
+    const matched = matchListItem(lines[i] ?? "", kind);
+    if (!matched || matched.indent !== baseIndent) break;
+    if (kind === "ol" && startNumber === undefined) {
+      startNumber = matched.number;
+    }
+
+    const textLines: string[] = [matched.text];
+    const childLines: string[] = [];
+    let hasChildBlocks = false;
+    let inFence = false;
+    let inMath = false;
+    i += 1;
+
+    while (i < lines.length) {
+      const cur = lines[i] ?? "";
+      const curTrimmed = cur.trim();
+
+      if (inFence) {
+        childLines.push(cur);
+        if (curTrimmed.startsWith("```")) inFence = false;
+        i += 1;
+        continue;
+      }
+      if (inMath) {
+        childLines.push(cur);
+        if (curTrimmed.endsWith("$$")) inMath = false;
+        i += 1;
+        continue;
+      }
+
+      if (!curTrimmed) {
+        let look = i + 1;
+        while (look < lines.length && !(lines[look] ?? "").trim()) look += 1;
+        const nextLine = lines[look];
+        if (nextLine !== undefined && lineIndent(nextLine) > baseIndent) {
+          hasChildBlocks = true;
+          childLines.push("");
+          i += 1;
+          continue;
+        }
+        const sibling = nextLine !== undefined ? matchListItem(nextLine, kind) : null;
+        if (sibling && sibling.indent === baseIndent) {
+          i = look;
+        }
+        break;
+      }
+
+      const curIndent = lineIndent(cur);
+      if (curIndent <= baseIndent) break;
+
+      if (!hasChildBlocks && !isNestedBlockStart(curTrimmed)) {
+        textLines.push(curTrimmed);
+      } else {
+        hasChildBlocks = true;
+        childLines.push(cur);
+        if (curTrimmed.startsWith("```")) {
+          inFence = true;
+        } else if (curTrimmed.startsWith("$$") && !(curTrimmed.length > 4 && curTrimmed.endsWith("$$"))) {
+          inMath = true;
+        }
+      }
+      i += 1;
+    }
+
+    const children = childLines.length > 0 ? parseLines(dedentLines(childLines), headingCounts) : [];
+    items.push({ text: textLines.join(" ").trim(), children });
+  }
+
+  if (kind === "ol") {
+    return { block: { type: "ol", start: startNumber, items }, nextIndex: i };
+  }
+  return { block: { type: "ul", items }, nextIndex: i };
+}
+
+function parseLines(lines: string[], headingCounts: Map<string, number>): Block[] {
   const blocks: Block[] = [];
-  const headingCounts = new Map<string, number>();
   let i = 0;
 
   const flushPara = (buf: string[]) => {
@@ -834,23 +995,25 @@ function parse(md: string): Block[] {
       continue;
     }
 
-    if (/^\s*[-*]\s+/.test(line)) {
-      const items: string[] = [];
-      while (i < lines.length && /^\s*[-*]\s+/.test(lines[i] ?? "")) {
-        items.push((lines[i] ?? "").replace(/^\s*[-*]\s+/, ""));
-        i += 1;
-      }
-      blocks.push({ type: "ul", items });
+    if (HR_RE.test(line)) {
+      blocks.push({ type: "hr" });
+      i += 1;
       continue;
     }
 
-    if (/^\s*\d+\.\s+/.test(line)) {
-      const items: string[] = [];
-      while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i] ?? "")) {
-        items.push((lines[i] ?? "").replace(/^\s*\d+\.\s+/, ""));
-        i += 1;
-      }
-      blocks.push({ type: "ol", items });
+    const ulMatch = matchListItem(line, "ul");
+    if (ulMatch) {
+      const parsed = parseList(lines, i, "ul", ulMatch.indent, headingCounts);
+      blocks.push(parsed.block);
+      i = parsed.nextIndex;
+      continue;
+    }
+
+    const olMatch = matchListItem(line, "ol");
+    if (olMatch) {
+      const parsed = parseList(lines, i, "ol", olMatch.indent, headingCounts);
+      blocks.push(parsed.block);
+      i = parsed.nextIndex;
       continue;
     }
 
@@ -864,7 +1027,8 @@ function parse(md: string): Block[] {
     while (
       i < lines.length &&
       (lines[i] ?? "").trim() &&
-      !/^(#{1,3}\s+|\s*```|\s*\$\$|\||\s*[-*]\s+|\s*\d+\.\s+|\s*>\s+)/.test(lines[i] ?? "")
+      !HR_RE.test(lines[i] ?? "") &&
+      !BLOCK_START_RE.test(lines[i] ?? "")
     ) {
       para.push(lines[i] ?? "");
       i += 1;
@@ -875,107 +1039,140 @@ function parse(md: string): Block[] {
   return blocks;
 }
 
+function parse(md: string): Block[] {
+  const lines = md.replace(/\r\n/g, "\n").split("\n");
+  return parseLines(lines, new Map<string, number>());
+}
+
+function renderBlocks(blocks: Block[], locale?: Locale, nested = false): ReactNode {
+  return blocks.map((block, i) => {
+    if (block.type === "h") {
+      const cls =
+        block.level === 1
+          ? "text-[1.7rem] font-semibold tracking-tight text-fg"
+          : block.level === 2
+            ? "pt-6 text-[1.2rem] font-semibold tracking-tight text-fg"
+            : "pt-3 text-[1.05rem] font-semibold tracking-tight text-fg";
+      const Tag = `h${block.level}` as const;
+      return (
+        <Tag key={i} id={block.id} className={cls}>
+          {inline(block.text)}
+        </Tag>
+      );
+    }
+    if (block.type === "p") {
+      return (
+        <p key={i} className="text-[15px] leading-[1.8] text-fg">
+          {inline(block.text)}
+        </p>
+      );
+    }
+    if (block.type === "hr") {
+      return <hr key={i} className="my-2 border-0 border-t border-border" />;
+    }
+    if (block.type === "math") {
+      return <MathExpr key={i} expr={block.expr} block />;
+    }
+    if (block.type === "quote") {
+      return (
+        <blockquote
+          key={i}
+          className="rounded-r-xl border-l-[3px] border-accent bg-accent-soft/30 px-4 py-3 text-[14px] leading-relaxed italic text-fg-muted"
+        >
+          {inline(block.text)}
+        </blockquote>
+      );
+    }
+    if (block.type === "ul") {
+      const defs = !nested ? asDefs(block.items) : null;
+      if (defs) {
+        return (
+          <dl key={i} className="grid grid-cols-[auto_1fr] items-baseline gap-x-3 gap-y-1.5 text-[15px] leading-[1.8] text-fg">
+            {defs.map((def, idx) => (
+              <div key={`${def.name}-${idx}`} className="contents">
+                <dt className="font-semibold text-fg">{inline(def.name)}</dt>
+                <dd className="min-w-0 text-fg-muted">{inline(def.text)}</dd>
+              </div>
+            ))}
+          </dl>
+        );
+      }
+      return (
+        <ul
+          key={i}
+          className={
+            nested
+              ? "list-[circle] space-y-1.5 pl-5 text-[14.5px] leading-[1.75] text-fg-muted"
+              : "list-disc space-y-1.5 pl-5 text-[15px] leading-[1.8] text-fg"
+          }
+        >
+          {block.items.map((item, j) => (
+            <li key={j}>
+              {inline(item.text)}
+              {item.children.length > 0 ? (
+                <div className="mt-2 space-y-2">{renderBlocks(item.children, locale, true)}</div>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+    if (block.type === "ol") {
+      return (
+        <ol
+          key={i}
+          start={block.start && block.start !== 1 ? block.start : undefined}
+          className={
+            nested
+              ? "list-decimal space-y-1.5 pl-5 text-[14.5px] leading-[1.75] text-fg-muted"
+              : "list-decimal space-y-2 pl-5 text-[15px] leading-[1.8] text-fg"
+          }
+        >
+          {block.items.map((item, j) => (
+            <li key={j}>
+              {inline(item.text)}
+              {item.children.length > 0 ? (
+                <div className="mt-2 space-y-2">{renderBlocks(item.children, locale, true)}</div>
+              ) : null}
+            </li>
+          ))}
+        </ol>
+      );
+    }
+    if (block.type === "pre") {
+      return <CodeBlock key={i} code={block.code} lang={block.lang} locale={locale} />;
+    }
+    return (
+      <div key={i} className="overflow-x-auto rounded-xl border border-border bg-surface shadow-xs">
+        <table className="w-full min-w-md border-collapse text-left text-[13px]">
+          <thead>
+            <tr className="border-b border-border bg-surface-2/60">
+              {block.headers.map((h, hi) => (
+                <th key={hi} className="px-4 py-2.5 font-semibold text-fg">
+                  {inline(h)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border/60">
+            {block.rows.map((row, ri) => (
+              <tr key={ri} className="transition-colors hover:bg-surface-2/40">
+                {row.map((cell, ci) => (
+                  <td key={ci} className="px-4 py-2.5 text-fg-muted">
+                    {inline(cell)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  });
+}
+
 export function Markdown({ source, locale }: { source: string; locale?: Locale }) {
   const blocks = parse(source);
 
-  return (
-    <div className="space-y-6 [&>:first-child]:pt-0">
-      {blocks.map((block, i) => {
-        if (block.type === "h") {
-          const cls =
-            block.level === 1
-              ? "text-[1.7rem] font-semibold tracking-tight text-fg"
-              : block.level === 2
-                ? "pt-6 text-[1.2rem] font-semibold tracking-tight text-fg"
-                : "pt-3 text-[1.05rem] font-semibold tracking-tight text-fg";
-          const Tag = `h${block.level}` as const;
-          return (
-            <Tag key={i} id={block.id} className={cls}>
-              {inline(block.text)}
-            </Tag>
-          );
-        }
-        if (block.type === "p") {
-          return (
-            <p key={i} className="text-[15px] leading-[1.8] text-fg">
-              {inline(block.text)}
-            </p>
-          );
-        }
-        if (block.type === "math") {
-          return <MathExpr key={i} expr={block.expr} block />;
-        }
-        if (block.type === "quote") {
-          return (
-            <blockquote
-              key={i}
-              className="rounded-r-xl border-l-[3px] border-accent bg-accent-soft/30 px-4 py-3 text-[14px] leading-relaxed italic text-fg-muted"
-            >
-              {inline(block.text)}
-            </blockquote>
-          );
-        }
-        if (block.type === "ul") {
-          const defs = asDefs(block.items);
-          if (defs) {
-            return (
-              <dl key={i} className="grid grid-cols-[auto_1fr] items-baseline gap-x-3 gap-y-1.5 text-[15px] leading-[1.8] text-fg">
-                {defs.map((def, idx) => (
-                  <div key={`${def.name}-${idx}`} className="contents">
-                    <dt className="font-semibold text-fg">{inline(def.name)}</dt>
-                    <dd className="min-w-0 text-fg-muted">{inline(def.text)}</dd>
-                  </div>
-                ))}
-              </dl>
-            );
-          }
-          return (
-            <ul key={i} className="list-disc space-y-1.5 pl-5 text-[15px] leading-[1.8] text-fg">
-              {block.items.map((item, j) => (
-                <li key={j}>{inline(item)}</li>
-              ))}
-            </ul>
-          );
-        }
-        if (block.type === "ol") {
-          return (
-            <ol key={i} className="list-decimal space-y-1.5 pl-5 text-[15px] leading-[1.8] text-fg">
-              {block.items.map((item, j) => (
-                <li key={j}>{inline(item)}</li>
-              ))}
-            </ol>
-          );
-        }
-        if (block.type === "pre") {
-          return <CodeBlock key={i} code={block.code} lang={block.lang} locale={locale} />;
-        }
-        return (
-          <div key={i} className="overflow-x-auto rounded-xl border border-border bg-surface shadow-xs">
-            <table className="w-full min-w-md border-collapse text-left text-[13px]">
-              <thead>
-                <tr className="border-b border-border bg-surface-2/60">
-                  {block.headers.map((h, hi) => (
-                    <th key={hi} className="px-4 py-2.5 font-semibold text-fg">
-                      {inline(h)}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/60">
-                {block.rows.map((row, ri) => (
-                  <tr key={ri} className="transition-colors hover:bg-surface-2/40">
-                    {row.map((cell, ci) => (
-                      <td key={ci} className="px-4 py-2.5 text-fg-muted">
-                        {inline(cell)}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        );
-      })}
-    </div>
-  );
+  return <div className="space-y-6 [&>:first-child]:pt-0">{renderBlocks(blocks, locale)}</div>;
 }
