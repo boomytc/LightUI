@@ -53,7 +53,7 @@ export const COMPARE_SAMPLES: readonly CompareSample[] = [
   },
 ];
 
-export type DegradeId = "unknown" | "props" | "partial";
+export type DegradeId = "unknown" | "props" | "partial" | "malformed";
 
 export type DegradeCase = {
   id: DegradeId;
@@ -121,6 +121,15 @@ export const DEGRADE_CASES: readonly DegradeCase[] = [
       "Nothing commits until the JSON closes. native and Text can already be visible in the fragment.",
     ),
     buffer: PARTIAL_STEPS[1] ?? "",
+  },
+  {
+    id: "malformed",
+    title: loc("语法损坏", "Malformed JSON"),
+    detail: loc(
+      "括号已经平衡但 JSON 解析失败。协议直接判为 malformed，不再永久卡在 pending。",
+      "The braces are balanced, but JSON.parse fails. The parser stops at malformed instead of hanging in pending forever.",
+    ),
+    buffer: '```json\n{surface: "native", component: "Text", props: {content: "周三站会 10:30"}}\n```',
   },
 ];
 

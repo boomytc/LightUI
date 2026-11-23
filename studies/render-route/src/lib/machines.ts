@@ -9,12 +9,13 @@ export type Surface = (typeof SURFACES)[number];
 
 export type Degradation =
   | "partial-stream"
+  | "malformed-json"
   | "unknown-component"
   | "invalid-props"
   | "invalid-document"
   | "invalid-surface";
 
-export type Paint = Surface | "none" | "error";
+export type Paint = Surface | "none" | "error" | "malformed";
 
 export type PropField = {
   type: string;
@@ -52,7 +53,7 @@ export type RouteDraft = {
 export type SchemaError = RouteSchemaError;
 
 export type RouteResult = {
-  status: "pending" | "committed" | "degraded" | "error";
+  status: "pending" | "malformed" | "committed" | "degraded" | "error";
   surface: Surface | null;
   requested: Surface | null;
   text: string;
@@ -62,6 +63,7 @@ export type RouteResult = {
   document: string | null;
   degradation: Degradation | null;
   errorCode: RouteErrorCode | null;
+  parseError: string | null;
   errors: SchemaError[];
   requestedComponent: string | null;
   buffer: string;
@@ -152,11 +154,13 @@ export function routeTurn(draft: RouteDraft, catalog: Catalog): RouteResult {
 export function routeBuffer(buffer: string, catalog: Catalog): RouteResult {
   const closed = readClosedJsonObject(buffer);
   if (closed.status === "pending") return pending(buffer);
+  if (closed.status === "malformed") return malformed(buffer, closed.reason);
   return routeTurn(closed.value, catalog);
 }
 
 export function paintSurface(result: RouteResult): Paint {
   if (result.status === "pending") return "none";
+  if (result.status === "malformed") return "malformed";
   if (result.status === "error") return "error";
   if (result.status === "committed" && result.surface === "native") return "native";
   if (result.status === "committed" && result.surface === "iframe") return "iframe";
@@ -194,16 +198,12 @@ export function buildRoutePrompt(catalog: Catalog, request: string): { system: s
 }
 
 export function extractRouteJson(raw: string):
-  | { ok: true; value: unknown }
+  | { ok: true; value: Record<string, unknown> }
   | { ok: false; error: string } {
-  const trimmed = raw.trim();
-  const fenced = /^```(?:json)?\s*([\s\S]*?)\s*```$/i.exec(trimmed);
-  const body = fenced?.[1]?.trim() ?? trimmed;
-  try {
-    return { ok: true, value: JSON.parse(body) };
-  } catch {
-    return { ok: false, error: "model content is not JSON" };
-  }
+  const closed = readClosedJsonObject(raw);
+  if (closed.status === "closed") return { ok: true, value: closed.value };
+  if (closed.status === "malformed") return { ok: false, error: closed.reason };
+  return { ok: false, error: "model content is not a closed JSON object" };
 }
 
 function stringOrEmpty(value: unknown): string {
@@ -222,6 +222,7 @@ function blank(): RouteResult {
     document: null,
     degradation: null,
     errorCode: null,
+    parseError: null,
     errors: [],
     requestedComponent: null,
     buffer: "",
@@ -230,6 +231,10 @@ function blank(): RouteResult {
 
 function pending(buffer: string): RouteResult {
   return { ...blank(), status: "pending", degradation: "partial-stream", buffer };
+}
+
+function malformed(buffer: string, parseError: string): RouteResult {
+  return { ...blank(), status: "malformed", degradation: "malformed-json", parseError, buffer };
 }
 
 function commit(input: {
@@ -281,7 +286,7 @@ function fail(
 }
 
 function degrade(
-  degradation: Exclude<Degradation, "partial-stream">,
+  degradation: Exclude<Degradation, "partial-stream" | "malformed-json">,
   input: {
     requested: Surface | null;
     requestedComponent: string | null;

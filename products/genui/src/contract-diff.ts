@@ -1,8 +1,12 @@
+import { SUPPORTED_PROP_TYPES } from "./render-route";
+
 export type NamedComponent = {
   name: string;
   description: string;
   props: unknown;
 };
+
+const SUPPORTED_TYPE_SET = new Set<string>(SUPPORTED_PROP_TYPES);
 
 export function diffComponents(
   registryEntries: readonly NamedComponent[],
@@ -66,13 +70,51 @@ function schemaErrors(label: string, props: unknown): string[] {
     errors.push(`${label} props.properties must be an object`);
     return errors;
   }
+  for (const [key, field] of Object.entries(props.properties)) {
+    errors.push(...fieldSchemaErrors(`${label} props.properties.${key}`, field));
+  }
   if (!Array.isArray(props.required) || !props.required.every((item) => typeof item === "string")) {
     errors.push(`${label} props.required must be a string array`);
     return errors;
   }
   for (const key of props.required) {
-    if (!(key in props.properties)) {
+    if (!Object.hasOwn(props.properties, key)) {
       errors.push(`${label} required prop ${key} is missing from properties`);
+    }
+  }
+  return errors;
+}
+
+function fieldSchemaErrors(label: string, field: unknown): string[] {
+  if (!isRecord(field)) return [`${label} must be an object`];
+  const errors: string[] = [];
+  if (typeof field.type !== "string" || !SUPPORTED_TYPE_SET.has(field.type)) {
+    errors.push(
+      `${label}.type must be one of ${SUPPORTED_PROP_TYPES.join(", ")} (got ${JSON.stringify(field.type)})`,
+    );
+    return errors;
+  }
+  if (field.type === "array" && field.items !== undefined) {
+    errors.push(...fieldSchemaErrors(`${label}.items`, field.items));
+  }
+  if (field.type === "object" && field.properties !== undefined) {
+    if (!isRecord(field.properties)) {
+      errors.push(`${label}.properties must be an object`);
+    } else {
+      for (const [childKey, childField] of Object.entries(field.properties)) {
+        errors.push(...fieldSchemaErrors(`${label}.properties.${childKey}`, childField));
+      }
+      if (field.required !== undefined) {
+        if (!Array.isArray(field.required) || !field.required.every((item) => typeof item === "string")) {
+          errors.push(`${label}.required must be a string array`);
+        } else {
+          for (const key of field.required) {
+            if (!Object.hasOwn(field.properties, key)) {
+              errors.push(`${label} required prop ${key} is missing from properties`);
+            }
+          }
+        }
+      }
     }
   }
   return errors;

@@ -4,10 +4,14 @@ import {
   SANDBOX_HEIGHT,
   SANDBOX_PROMPT_MAX_LENGTH,
   interpretSandboxHeight,
+  isPendingJsonFence,
   sandboxFieldOrderViolations,
+  stripJsonCodeFence,
   validateSandboxCallback,
 } from "@lightui/genui";
-import type { SandboxCallDecision, SandboxFieldName } from "@lightui/genui";
+import type { SandboxCallDecision, SandboxCallErrorCode, SandboxFieldName } from "@lightui/genui";
+
+export type { SandboxCallErrorCode };
 
 export const FIELD_ORDER = SANDBOX_FIELD_ORDER;
 export type FieldName = SandboxFieldName;
@@ -243,10 +247,7 @@ export function emptyStream(generating: boolean): StreamState {
 }
 
 export function normalizeSource(source: string): string {
-  const withoutBom = source.replace(/^\uFEFF/, "");
-  const fence = withoutBom.match(/^\s*```(?:json)?\s*\n/);
-  if (!fence) return withoutBom;
-  return withoutBom.slice(fence[0].length);
+  return stripJsonCodeFence(source);
 }
 
 export function parseStream(source: string, generating = false): StreamState {
@@ -262,7 +263,7 @@ export function parseStream(source: string, generating = false): StreamState {
   skip();
   if (eof()) return state;
   if (peek() !== "{") {
-    if (src.trimStart().startsWith("`")) return state;
+    if (isPendingJsonFence(src)) return state;
     state.error = "流应以 { 开始";
     return state;
   }

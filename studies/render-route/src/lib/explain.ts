@@ -24,6 +24,12 @@ export function hostExplanation(
       ? "The JSON has not closed, so this turn commits nothing."
       : "JSON 还没闭合，这一轮还没提交。";
   }
+  if (result.degradation === "malformed-json") {
+    const detail = result.parseError ? ` (${result.parseError})` : "";
+    return locale === "en"
+      ? `The braces closed, but JSON parsing failed${detail}. The turn stops as malformed instead of waiting forever.`
+      : `括号已经闭合，但 JSON 解析失败${detail}。本轮立即判为语法损坏，不再永久等待。`;
+  }
   if (result.degradation === "invalid-document") {
     return locale === "en"
       ? "The sandbox document is empty, so the host commits text."
@@ -68,12 +74,13 @@ function schemaError(error: SchemaError, locale: Locale): string {
 }
 
 export function surfaceLabel(
-  surface: "text" | "native" | "iframe" | "none" | "error",
+  surface: "text" | "native" | "iframe" | "none" | "error" | "malformed",
   locale: Locale,
 ): string {
   if (surface === "text") return locale === "en" ? "Plain text" : "纯文本";
   if (surface === "native") return locale === "en" ? "Native component" : "原生组件";
   if (surface === "iframe") return locale === "en" ? "iframe sandbox" : "iframe 沙盒";
   if (surface === "error") return locale === "en" ? "Error" : "错误";
+  if (surface === "malformed") return locale === "en" ? "Malformed JSON" : "JSON 语法损坏";
   return locale === "en" ? "Not committed" : "尚未提交";
 }

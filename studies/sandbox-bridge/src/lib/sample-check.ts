@@ -396,7 +396,9 @@ function acceptedCall(name: "sendPrompt" | "openLink", args: unknown): CallDecis
     sourceIsFrame: true,
     data: { channel: SANDBOX_CHANNEL, kind: "call", id: "recorded", name, args },
   });
-  if (decision.type !== "call") return { ok: false, name, reason: "消息没有进入调用校验" };
+  if (decision.type !== "call") {
+    return { ok: false, name, code: "unknown_callback", reason: "消息没有进入调用校验" };
+  }
   return decision.decision;
 }
 

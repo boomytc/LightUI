@@ -4,9 +4,12 @@ import { diffComponents, type NamedComponent } from "./contract-diff";
 import {
   PROTOCOL_VERSION,
   RENDER_ROUTE_ERRORS,
+  ROUTE_CODE_FENCE,
+  ROUTE_ENVELOPE,
   ROUTE_ENVELOPE_IS_COMPONENT,
   ROUTE_PARTIAL_JSON_ACTION,
   ROUTE_PARTIAL_JSON_IS_ERROR,
+  ROUTE_SURFACES,
   SANDBOX_CALLBACKS,
   SANDBOX_FIELD_ORDER,
   SANDBOX_FIELDS,
@@ -34,6 +37,9 @@ for (const entry of registry) {
 compare("render-route.json", readContract("render-route.json"), {
   ...metadata,
   envelopeIsComponent: ROUTE_ENVELOPE_IS_COMPONENT,
+  surfaces: ROUTE_SURFACES,
+  codeFence: ROUTE_CODE_FENCE,
+  envelope: ROUTE_ENVELOPE,
   partialJson: { isError: ROUTE_PARTIAL_JSON_IS_ERROR, action: ROUTE_PARTIAL_JSON_ACTION },
   errors: RENDER_ROUTE_ERRORS,
 });
@@ -56,7 +62,9 @@ for (const file of sources.filter((file) => file.path.startsWith("products/genui
     errors.push(`${file.path}: use design/tokens.css instead of a local theme`);
   }
   if (!file.path.startsWith("products/genui/src/components/") || !file.path.endsWith(".tsx")) continue;
-  const used = [...file.source.matchAll(/var\((--[a-z0-9-]+)\)/g)].map((match) => match[1]);
+  const used = [...file.source.matchAll(/var\(\s*(--[a-z0-9-]+)\s*(?:,[^)]+)?\)/g)].map(
+    (match) => match[1],
+  );
   if (used.length === 0) errors.push(`${file.path}: reference design/tokens.css variables`);
   for (const variable of used) {
     if (!tokenNames.has(variable)) errors.push(`${file.path}: unknown design token ${variable}`);

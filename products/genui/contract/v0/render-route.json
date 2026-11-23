@@ -2,6 +2,45 @@
   "protocol": "lightui.genui",
   "version": "v0",
   "envelopeIsComponent": false,
+  "surfaces": ["text", "native", "iframe"],
+  "codeFence": {
+    "optional": true,
+    "strip": true,
+    "languages": ["", "json"]
+  },
+  "envelope": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "surface": {
+        "type": "string",
+        "enum": ["text", "native", "iframe"],
+        "description": "Target surface for this turn: text, native, or iframe."
+      },
+      "reason": {
+        "type": "string",
+        "description": "One-sentence rationale for choosing this surface."
+      },
+      "text": {
+        "type": "string",
+        "description": "Plain-text response or fallback summary."
+      },
+      "component": {
+        "type": "string",
+        "description": "Native component name from components.json when surface is native."
+      },
+      "props": {
+        "type": "object",
+        "description": "Props object validated against the named component schema when surface is native."
+      },
+      "document": {
+        "type": "string",
+        "description": "Self-contained HTML document when surface is iframe."
+      }
+    },
+    "required": ["surface"]
+  },
   "partialJson": {
     "isError": false,
     "action": "wait-until-closed"

@@ -130,14 +130,26 @@ export type SandboxPayloadIssue = {
   code: "not-object" | "unexpected" | "missing" | "type" | "order";
 };
 
+export type SandboxCallErrorCode =
+  | "unknown_callback"
+  | "invalid_args"
+  | "extra_fields"
+  | "invalid_text_type"
+  | "empty_text"
+  | "text_too_long"
+  | "invalid_url_type"
+  | "invalid_url"
+  | "disallowed_protocol"
+  | "credentials_not_allowed";
+
 export type SandboxCallDecision =
   | { ok: true; name: "sendPrompt"; text: string }
   | { ok: true; name: "openLink"; url: string }
-  | { ok: false; name: string; reason: string };
+  | { ok: false; name: string; code: SandboxCallErrorCode; reason: string };
 
 export type SandboxHeightDecision =
   | { ok: true; height: number; raw: number; clamped: boolean }
-  | { ok: false; reason: string };
+  | { ok: false; code: "non_finite"; reason: string };
 
 export type SandboxNonce = {
   expected: string;
@@ -150,8 +162,9 @@ export function sandboxFieldOrderViolations<T extends string>(keyOrder: readonly
   const order: readonly string[] = SANDBOX_FIELD_ORDER;
   for (const key of keyOrder) {
     const index = order.indexOf(key);
-    if (index < last) problems.push(key);
-    last = Math.max(last, index);
+    if (index === -1) continue;
+    if (index <= last) problems.push(key);
+    else last = index;
   }
   return problems;
 }
@@ -168,7 +181,7 @@ export function validateSandboxPayload(
     }
   }
   for (const field of SANDBOX_FIELD_ORDER) {
-    if (!(field in value)) {
+    if (!Object.hasOwn(value, field)) {
       issues.push({ field, code: "missing" });
       continue;
     }
@@ -177,21 +190,19 @@ export function validateSandboxPayload(
   const known = keys.filter((key): key is SandboxFieldName =>
     (SANDBOX_FIELD_ORDER as readonly string[]).includes(key),
   );
-  const outOfOrder = sandboxFieldOrderViolations(known).length > 0;
-  const incomplete = known.join(",") !== SANDBOX_FIELD_ORDER.join(",");
-  if (outOfOrder || (incomplete && !issues.some((issue) => issue.code === "missing"))) {
-    issues.push({ field: "", code: "order" });
+  for (const field of sandboxFieldOrderViolations(known)) {
+    issues.push({ field, code: "order" });
   }
   if (issues.length > 0) return { ok: false, issues };
   return {
     ok: true,
     payload: {
       initialHeight: value.initialHeight as number,
-      placeholderMessages: value.placeholderMessages as string[],
+      placeholderMessages: [...(value.placeholderMessages as string[])],
       css: value.css as string,
-      html: value.html as string[],
+      html: [...(value.html as string[])],
       jsFunctions: value.jsFunctions as string,
-      jsExpressions: value.jsExpressions as string[],
+      jsExpressions: [...(value.jsExpressions as string[])],
     },
   };
 }
@@ -199,48 +210,95 @@ export function validateSandboxPayload(
 export function validateSandboxCallback(name: unknown, args: unknown): SandboxCallDecision {
   const label = typeof name === "string" ? name : "";
   const callback = SANDBOX_CALLBACKS.find((item) => item.name === name);
-  if (!callback) return { ok: false, name: label || "（空）", reason: "未知函数" };
-  if (!isPlainObject(args)) return { ok: false, name: callback.name, reason: "参数必须是对象" };
+  if (!callback) {
+    return { ok: false, name: label || "（空）", code: "unknown_callback", reason: "未知函数" };
+  }
+  if (!isPlainObject(args)) {
+    return { ok: false, name: callback.name, code: "invalid_args", reason: "参数必须是对象" };
+  }
   if (callback.props.additionalProperties === false) {
     const allowed = new Set(Object.keys(callback.props.properties));
     if (Object.keys(args).some((key) => !allowed.has(key))) {
-      return { ok: false, name: callback.name, reason: "出现了未声明的参数" };
+      return { ok: false, name: callback.name, code: "extra_fields", reason: "出现了未声明的参数" };
     }
   }
-  if (callback.name === "sendPrompt") {
-    const text = args.text;
-    if (typeof text !== "string") return { ok: false, name: callback.name, reason: "text 必须是字符串" };
-    const trimmed = callback.text.trim ? text.trim() : text;
-    if (trimmed.length < callback.text.minLength) {
-      return { ok: false, name: callback.name, reason: "text 不能为空" };
+  switch (callback.name) {
+    case "sendPrompt": {
+      const text = Object.hasOwn(args, "text") ? args.text : undefined;
+      if (typeof text !== "string") {
+        return {
+          ok: false,
+          name: callback.name,
+          code: "invalid_text_type",
+          reason: "text 必须是字符串",
+        };
+      }
+      const trimmed = callback.text.trim ? text.trim() : text;
+      if (trimmed.length < callback.text.minLength) {
+        return { ok: false, name: callback.name, code: "empty_text", reason: "text 不能为空" };
+      }
+      if (trimmed.length > callback.text.maxLength) {
+        return {
+          ok: false,
+          name: callback.name,
+          code: "text_too_long",
+          reason: `text 超过 ${callback.text.maxLength} 字`,
+        };
+      }
+      return { ok: true, name: callback.name, text: trimmed };
     }
-    if (trimmed.length > callback.text.maxLength) {
-      return { ok: false, name: callback.name, reason: "text 超过 4000 字" };
+    case "openLink": {
+      const url = Object.hasOwn(args, "url") ? args.url : undefined;
+      if (typeof url !== "string") {
+        return {
+          ok: false,
+          name: callback.name,
+          code: "invalid_url_type",
+          reason: "url 必须是字符串",
+        };
+      }
+      const raw = callback.url.trim ? url.trim() : url;
+      let parsed: URL;
+      try {
+        parsed = new URL(raw);
+      } catch {
+        return { ok: false, name: callback.name, code: "invalid_url", reason: "url 不是合法地址" };
+      }
+      if (parsed.protocol !== callback.url.protocol) {
+        return {
+          ok: false,
+          name: callback.name,
+          code: "disallowed_protocol",
+          reason: "url 必须是 https",
+        };
+      }
+      if (!/^https:\/\/[^/\\]/i.test(raw) || !parsed.hostname) {
+        return { ok: false, name: callback.name, code: "invalid_url", reason: "url 不是合法地址" };
+      }
+      if (parsed.username || parsed.password || /^https:\/\/[^/?#]*@/i.test(raw)) {
+        return {
+          ok: false,
+          name: callback.name,
+          code: "credentials_not_allowed",
+          reason: "url 不能包含凭据",
+        };
+      }
+      return { ok: true, name: callback.name, url: parsed.toString() };
     }
-    return { ok: true, name: callback.name, text: trimmed };
+    default: {
+      const exhaustive: never = callback;
+      return exhaustive;
+    }
   }
-  const url = args.url;
-  if (typeof url !== "string") return { ok: false, name: callback.name, reason: "url 必须是字符串" };
-  const raw = callback.url.trim ? url.trim() : url;
-  let parsed: URL;
-  try {
-    parsed = new URL(raw);
-  } catch {
-    return { ok: false, name: callback.name, reason: "url 不是合法地址" };
-  }
-  if (parsed.protocol !== callback.url.protocol) {
-    return { ok: false, name: callback.name, reason: "url 必须是 https" };
-  }
-  return { ok: true, name: callback.name, url: parsed.toString() };
 }
 
 export function interpretSandboxHeight(height: unknown): SandboxHeightDecision {
   if (typeof height !== "number" || !Number.isFinite(height)) {
-    return { ok: false, reason: "高度不是有限数字" };
+    return { ok: false, code: "non_finite", reason: "高度不是有限数字" };
   }
   const ceiled = SANDBOX_HEIGHT.ceil ? Math.ceil(height) : height;
   const next = Math.max(SANDBOX_HEIGHT.min, Math.min(ceiled, SANDBOX_HEIGHT.max));
-  return { ok: true, height: next, raw: height, clamped: next !== height };
+  return { ok: true, height: next, raw: height, clamped: next !== ceiled };
 }
 
 /**

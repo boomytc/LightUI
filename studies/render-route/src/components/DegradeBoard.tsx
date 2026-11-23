@@ -97,26 +97,34 @@ export function DegradeBoard({ locale, lock }: { locale: Locale; lock?: string }
             locale={locale}
             title={locale === "en" ? "Host commit" : "宿主提交"}
             chosen={result.status === "committed"}
-            notice={result.status === "error" ? hostExplanation(result, names, locale) : undefined}
+            notice={
+              result.status === "error" || result.status === "malformed"
+                ? hostExplanation(result, names, locale)
+                : undefined
+            }
             badge={
               result.status === "pending"
                 ? locale === "en"
                   ? "Held"
                   : "先不挂"
-                : result.status === "error"
+                : result.status === "malformed"
                   ? locale === "en"
-                    ? "Error"
-                    : "错误"
-                  : result.status === "degraded"
+                    ? "Malformed"
+                    : "语法损坏"
+                  : result.status === "error"
                     ? locale === "en"
-                      ? "Degraded"
-                      : "已降级"
-                    : locale === "en"
-                      ? "Committed"
-                      : "本轮提交"
+                      ? "Error"
+                      : "错误"
+                    : result.status === "degraded"
+                      ? locale === "en"
+                        ? "Degraded"
+                        : "已降级"
+                      : locale === "en"
+                        ? "Committed"
+                        : "本轮提交"
             }
           />
-          {result.status === "error" ? null : (
+          {result.status === "error" || result.status === "malformed" ? null : (
             <p className="mt-3 text-[13px] leading-relaxed text-fg">
               {hostExplanation(result, names, locale)}
             </p>
@@ -128,5 +136,5 @@ export function DegradeBoard({ locale, lock }: { locale: Locale; lock?: string }
 }
 
 function isDegradeId(value: string | undefined): value is DegradeId {
-  return value === "unknown" || value === "props" || value === "partial";
+  return value === "unknown" || value === "props" || value === "partial" || value === "malformed";
 }

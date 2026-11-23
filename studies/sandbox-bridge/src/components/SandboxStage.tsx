@@ -5,6 +5,7 @@ import {
   FIELD_ORDER,
   HOST_CHANNEL,
   IFRAME_SANDBOX,
+  MAX_PROMPT,
   PROBES,
   SANDBOX_CHANNEL,
   decideSandboxMessage,
@@ -13,8 +14,10 @@ import {
   paintOf,
   type Paint,
   type Probe,
+  type SandboxCallErrorCode,
   type Step,
 } from "../lib/machines";
+import { type Locale } from "../lib/site-locale";
 
 type LogTone = "ok" | "bad" | "warn";
 
@@ -26,23 +29,79 @@ export type LogLine = {
 };
 
 const DOC = frameDocument();
+const EMPTY_SCRIPTED: LogLine[] = [];
+
+const PROBE_GROUP_EN: Record<string, string> = {
+  放行: "Allowed",
+  参数: "Arguments",
+  白名单: "Whitelist",
+  来源: "Source",
+  高度: "Height",
+};
+
+const PROBE_LABEL_EN: Record<string, string> = {
+  "send-ok": "sendPrompt",
+  "link-ok": "openLink https",
+  empty: "Empty text",
+  long: "Overlong text",
+  extra: "Extra field",
+  http: "http link",
+  "js-url": "javascript link",
+  unknown: "Unknown fetch",
+  foreign: "Spoofed host",
+  nan: "NaN",
+  inf: "Infinity",
+  "text-height": "String height",
+  huge: "9000 -> 4000",
+  tiny: "Negative -> 50",
+};
+
+export function callErrorReason(code: SandboxCallErrorCode, fallback: string, locale: Locale): string {
+  if (locale !== "en") return fallback;
+  switch (code) {
+    case "unknown_callback":
+      return "Unknown callback";
+    case "invalid_args":
+      return "Arguments must be an object";
+    case "extra_fields":
+      return "Undeclared argument field";
+    case "invalid_text_type":
+      return "text must be a string";
+    case "empty_text":
+      return "text cannot be empty";
+    case "text_too_long":
+      return `text exceeds ${MAX_PROMPT} chars`;
+    case "invalid_url_type":
+      return "url must be a string";
+    case "invalid_url":
+      return "url is not a valid address";
+    case "disallowed_protocol":
+      return "url must use https";
+    case "credentials_not_allowed":
+      return "url must not contain credentials";
+  }
+}
 
 export function SandboxStage({
   step,
   interactive,
-  scripted = [],
+  scripted = EMPTY_SCRIPTED,
+  locale = "zh",
 }: {
   step: Step;
   interactive: boolean;
   scripted?: LogLine[];
+  locale?: Locale;
 }) {
   const paint = useMemo(() => paintOf(step.state), [step]);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const paintRef = useRef(paint);
+  const localeRef = useRef(locale);
   const jsStarted = useRef(false);
   const sentExpr = useRef(0);
   const logId = useRef(0);
   paintRef.current = paint;
+  localeRef.current = locale;
 
   const [frameReady, setFrameReady] = useState(false);
   const [loadEpoch, setLoadEpoch] = useState(0);
@@ -50,6 +109,10 @@ export function SandboxStage({
   const [reported, setReported] = useState<number | null>(null);
   const [lines, setLines] = useState<LogLine[]>(scripted);
   const [phrase, setPhrase] = useState(0);
+
+  useEffect(() => {
+    setLines(scripted);
+  }, [scripted]);
 
   useEffect(() => {
     if (paint.phase !== "placeholder" || paint.messages.length < 2) return;
@@ -61,6 +124,7 @@ export function SandboxStage({
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
+      const currentLocale = localeRef.current;
       const iframe = iframeRef.current;
       const sourceIsFrame = sandboxEventTrusted(event.source, iframe?.contentWindow ?? null);
       const decision = decideSandboxMessage({ sourceIsFrame, data: event.data });
@@ -72,8 +136,11 @@ export function SandboxStage({
         if (decision.clamped) {
           push(setLines, logId, {
             tone: "warn",
-            title: "高度被钳制",
-            detail: `报告 ${formatRaw(decision.raw)}，采用 ${decision.height}`,
+            title: currentLocale === "en" ? "Height clamped" : "高度被钳制",
+            detail:
+              currentLocale === "en"
+                ? `Reported ${formatRaw(decision.raw)}, applied ${decision.height}`
+                : `报告 ${formatRaw(decision.raw)}，采用 ${decision.height}`,
           });
         }
         return;
@@ -81,29 +148,48 @@ export function SandboxStage({
       if (decision.type === "resize-rejected") {
         push(setLines, logId, {
           tone: "bad",
-          title: "高度被拒绝",
-          detail: decision.reason,
+          title: currentLocale === "en" ? "Height rejected" : "高度被拒绝",
+          detail: currentLocale === "en" ? "Height must be a finite number" : decision.reason,
         });
         return;
       }
       if (decision.type === "foreign" || decision.type === "rejected") {
         push(setLines, logId, {
           tone: "bad",
-          title: decision.type === "foreign" ? "伪造来源已丢弃" : "消息被拒绝",
-          detail: decision.reason,
+          title:
+            decision.type === "foreign"
+              ? currentLocale === "en"
+                ? "Foreign source dropped"
+                : "伪造来源已丢弃"
+              : currentLocale === "en"
+                ? "Message rejected"
+                : "消息被拒绝",
+          detail:
+            currentLocale === "en"
+              ? decision.type === "foreign"
+                ? "event.source is not this sandbox frame"
+                : "Unrecognized message"
+              : decision.reason,
         });
         return;
       }
       if (decision.type === "call") {
         const call = decision.decision;
+        const detail = call.ok
+          ? call.name === "sendPrompt"
+            ? call.text
+            : call.url
+          : callErrorReason(call.code, call.reason, currentLocale);
         push(setLines, logId, {
           tone: call.ok ? "ok" : "bad",
-          title: call.ok ? `${call.name} 已收下` : `${call.name} 被拒绝`,
-          detail: call.ok
-            ? call.name === "sendPrompt"
-              ? call.text
-              : call.url
-            : call.reason,
+          title: call.ok
+            ? currentLocale === "en"
+              ? `${call.name} accepted`
+              : `${call.name} 已收下`
+            : currentLocale === "en"
+              ? `${call.name} rejected`
+              : `${call.name} 被拒绝`,
+          detail,
         });
         if (sourceIsFrame && iframe?.contentWindow) {
           iframe.contentWindow.postMessage(
@@ -113,7 +199,7 @@ export function SandboxStage({
               id: decision.id,
               ok: call.ok,
               value: call.ok ? { ok: true } : undefined,
-              error: call.ok ? undefined : call.reason,
+              error: call.ok ? undefined : detail,
             },
             "*",
           );
@@ -132,7 +218,10 @@ export function SandboxStage({
   }, [frameReady, loadEpoch, paint, paint.phase]);
 
   const shown = applied ?? paint.height;
-  const message = paint.messages[phrase] ?? paint.messages[0] ?? "等待占位句";
+  const message =
+    paint.messages[phrase] ??
+    paint.messages[0] ??
+    (locale === "en" ? "Waiting for placeholder copy" : "等待占位句");
 
   return (
     <div className="grid gap-4" data-sandbox-root="true">
@@ -142,14 +231,23 @@ export function SandboxStage({
             sandbox="{IFRAME_SANDBOX}"
           </p>
           <p className="mt-1 text-[13px] text-fg-muted">
-            校验 <span className="font-mono text-[12px]">event.source === iframe.contentWindow</span>
-            。origin 会是 "null"，不能拿来放行。
+            {locale === "en" ? (
+              <>
+                Checks <span className="font-mono text-[12px]">event.source === iframe.contentWindow</span>.
+                Origin is &quot;null&quot;, so it cannot be used to trust a message.
+              </>
+            ) : (
+              <>
+                校验 <span className="font-mono text-[12px]">event.source === iframe.contentWindow</span>
+                。origin 会是 &quot;null&quot;，不能拿来放行。
+              </>
+            )}
           </p>
         </div>
         <dl className="grid grid-cols-3 gap-3 text-[12px]">
-          <Meter label="初始" value={String(paint.height)} />
-          <Meter label="报告" value={reported === null ? "—" : String(reported)} />
-          <Meter label="采用" value={String(shown)} />
+          <Meter label={locale === "en" ? "Initial" : "初始"} value={String(paint.height)} />
+          <Meter label={locale === "en" ? "Reported" : "报告"} value={reported === null ? "—" : String(reported)} />
+          <Meter label={locale === "en" ? "Applied" : "采用"} value={String(shown)} />
         </dl>
       </div>
 
@@ -161,7 +259,9 @@ export function SandboxStage({
       >
         {paint.phase === "placeholder" ? (
           <div className="flex h-full flex-col justify-between px-4 py-3">
-            <p className="text-[12px] text-fg-subtle">样式完成前不挂文档</p>
+            <p className="text-[12px] text-fg-subtle">
+              {locale === "en" ? "Document stays unmounted until CSS finishes" : "样式完成前不挂文档"}
+            </p>
             <p className="text-[15px] text-fg">{message}</p>
             <div className="h-1 overflow-hidden rounded-full bg-surface-2">
               <div className="h-full w-1/3 animate-pulse rounded-full bg-accent" />
@@ -170,7 +270,7 @@ export function SandboxStage({
         ) : (
           <iframe
             ref={iframeRef}
-            title="沙盒"
+            title={locale === "en" ? "Sandbox" : "沙盒"}
             sandbox={IFRAME_SANDBOX}
             srcDoc={DOC}
             referrerPolicy="no-referrer"
@@ -186,7 +286,7 @@ export function SandboxStage({
       </div>
 
       <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <ol className="grid gap-1.5" aria-label="字段顺序">
+        <ol className="grid gap-1.5" aria-label={locale === "en" ? "Field order" : "字段顺序"}>
           {FIELD_ORDER.map((field, index) => {
             const status = fieldStatus(step.state, field);
             return (
@@ -200,18 +300,20 @@ export function SandboxStage({
                 <span className="truncate font-mono text-[12px] text-fg" title={fieldPreview(step.state, field)}>
                   {field}
                 </span>
-                <span className={statusClass(status)}>{statusLabel(status)}</span>
+                <span className={statusClass(status)}>{statusLabel(status, locale)}</span>
               </li>
             );
           })}
         </ol>
 
         <div>
-          <p className="mb-1.5 text-[12px] text-fg-subtle">回传</p>
+          <p className="mb-1.5 text-[12px] text-fg-subtle">{locale === "en" ? "Callbacks" : "回传"}</p>
           <ul className="grid max-h-52 gap-1.5 overflow-auto" aria-live="polite">
             {lines.length === 0 ? (
               <li className="rounded-lg border border-dashed border-border px-2.5 py-2 text-[12px] text-fg-subtle">
-                还没有回传。点沙盒里的按钮，或用下面的探针。
+                {locale === "en"
+                  ? "No callbacks yet. Click inside the sandbox or trigger a probe below."
+                  : "还没有回传。点沙盒里的按钮，或用下面的探针。"}
               </li>
             ) : (
               lines.map((line) => (
@@ -233,7 +335,9 @@ export function SandboxStage({
         <div className="grid gap-3">
           {groups().map(([group, probes]) => (
             <div key={group}>
-              <p className="mb-1.5 text-[12px] text-fg-subtle">{group}</p>
+              <p className="mb-1.5 text-[12px] text-fg-subtle">
+                {locale === "en" ? (PROBE_GROUP_EN[group] ?? group) : group}
+              </p>
               <div className="flex flex-wrap gap-1.5">
                 {probes.map((probe) => (
                   <button
@@ -243,7 +347,7 @@ export function SandboxStage({
                     disabled={probe.kind !== "foreign" && !frameReady}
                     onClick={() => sendProbe(probe, iframeRef.current)}
                   >
-                    {probe.label}
+                    {locale === "en" ? (PROBE_LABEL_EN[probe.id] ?? probe.label) : probe.label}
                   </button>
                 ))}
               </div>
@@ -345,10 +449,10 @@ function formatRaw(value: number): string {
   return String(value);
 }
 
-function statusLabel(status: string): string {
-  if (status === "complete") return "完成";
-  if (status === "streaming") return "正在写入";
-  return "未到";
+function statusLabel(status: string, locale: Locale): string {
+  if (status === "complete") return locale === "en" ? "Done" : "完成";
+  if (status === "streaming") return locale === "en" ? "Streaming" : "正在写入";
+  return locale === "en" ? "Waiting" : "未到";
 }
 
 function statusClass(status: string): string {

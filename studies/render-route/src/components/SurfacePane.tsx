@@ -34,7 +34,9 @@ export function SurfacePane({
         {badge ? (
           <span
             className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
-              result.status === "error" ? "bg-wrong-soft text-wrong" : "bg-accent-soft text-accent"
+              result.status === "error" || result.status === "malformed"
+                ? "bg-wrong-soft text-wrong"
+                : "bg-accent-soft text-accent"
             }`}
           >
             {badge}
@@ -44,6 +46,13 @@ export function SurfacePane({
       <div className="min-w-0 flex-1">
         {paint === "none" ? (
           <p className="text-[13px] leading-relaxed text-fg-muted">{surfaceLabel("none", locale)}</p>
+        ) : null}
+        {paint === "malformed" ? (
+          <div className="route-error" role="alert" data-parse-status="malformed">
+            <p className="route-error-label">{surfaceLabel("malformed", locale)}</p>
+            <p className="route-error-code">malformed</p>
+            {notice ? <p className="text-[13px] leading-relaxed text-fg">{notice}</p> : null}
+          </div>
         ) : null}
         {paint === "error" && result.errorCode ? (
           <div className="route-error" role="alert" data-error-code={result.errorCode}>

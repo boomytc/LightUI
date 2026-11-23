@@ -14,9 +14,14 @@ sandbox payload are not components.
 
 File: `products/genui/contract/v0/render-route.json`.
 
-One turn is one route object (`surface`, `reason`, `text`, `component`,
-`props`, `document`). That object is an envelope. It is not registered as a
-native component, and it is not mounted.
+One turn is one route envelope object (`surface`, `reason`, `text`,
+`component`, `props`, `document`) whose JSON Schema lives under `envelope`
+in `render-route.json` (`required: ["surface"]`, `additionalProperties: false`).
+Valid `surface` values are `text`, `native`, and `iframe`. That object is an
+envelope. It is not registered as a native component, and it is not mounted.
+
+An optional leading Markdown code fence (` ``` ` or ` ```json `) around the
+JSON object is stripped at the protocol layer before reading the object.
 
 After the JSON has closed, a native surface is checked against the catalog:
 
@@ -28,9 +33,12 @@ After the JSON has closed, a native surface is checked against the catalog:
 Both results stay on the error. The host does not fall back to another
 route and does not degrade the turn to plain text.
 
-A partial JSON packet is not an error. The host waits until the value
-closes, then validates. A fragment that already contains `native`, `Text`,
-or a component name does not mount anything.
+A partial JSON packet is not an error (`pending`). The host waits until the
+first balanced object closes, then parses and validates. A fragment that
+already contains `native`, `Text`, or a component name does not mount
+anything. Once the first top-level object is brace-balanced (or non-object
+content appears), a syntax failure resolves immediately as `malformed`
+instead of staying `pending` forever.
 
 ## Sandbox activity
 
@@ -60,7 +68,7 @@ also `additionalProperties: false`:
 | Function | Arguments | Accept | Reject |
 | --- | --- | --- | --- |
 | `sendPrompt` | `{ text }` only | `text` is a string whose trimmed length is 1–4000 | Empty, too long, non-string, or any other field |
-| `openLink` | `{ url }` only | `url` trims to an absolute URL with protocol `https:` | Any other protocol, unparseable URL, or any other field |
+| `openLink` | `{ url }` only | `url` trims to an absolute `https://` URL without credentials | Any other protocol, credentials (`user:pass@`), malformed authority, unparseable URL, or any other field |
 
 A call whose name is not in that table is rejected. Unknown fields on a
 callback message are rejected. The host does not treat the rejection as a
@@ -68,7 +76,8 @@ successful call.
 
 Height reports are not measurements the host takes from the sandbox DOM.
 A report that is not a finite number is discarded. Any other finite number
-is ceiled, then clamped to 50–4000.
+is ceiled, then clamped to 50–4000 (`clamped` reflects whether the ceiled
+integer was outside 50–4000).
 
 A sandbox message is trusted when `event.source` is that iframe's
 `contentWindow`. `event.origin` is not the check (`allow-scripts` without

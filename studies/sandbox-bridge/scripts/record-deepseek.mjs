@@ -1,6 +1,7 @@
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { stripJsonCodeFence } from "@lightui/genui";
 import { checkRecordedSource, formatSampleCheck } from "../src/lib/sample-check.ts";
 
 const key = process.env.DEEPSEEK_API_KEY;
@@ -70,7 +71,7 @@ for await (const chunk of response.body) {
   }
 }
 
-const source = stripFence(raw).trim();
+const source = stripJsonCodeFence(raw).trim();
 const checks = checkRecordedSource(source);
 let failed = false;
 for (const check of checks) {
@@ -104,9 +105,3 @@ await writeFile(out, file);
 console.log(
   `Wrote ${path.relative(process.cwd(), out)} (requested ${requestedModel}, response ${responseModel}, ${source.length} chars)`,
 );
-
-function stripFence(text) {
-  const fence = text.match(/^\s*```(?:json)?\s*\n/);
-  if (!fence) return text;
-  return text.slice(fence[0].length).replace(/\n?```\s*$/, "");
-}

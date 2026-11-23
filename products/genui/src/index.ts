@@ -1,9 +1,11 @@
 export { Text } from "./components/Text";
 export type { TextProps } from "./components/Text";
-export { PROTOCOL_VERSION, registry } from "./registry";
+export { PROTOCOL_VERSION, defineComponent, registry } from "./registry";
 export type { PropsSchema, RegisteredComponent } from "./registry";
 export {
   RENDER_ROUTE_ERRORS,
+  ROUTE_CODE_FENCE,
+  ROUTE_ENVELOPE,
   ROUTE_ENVELOPE_IS_COMPONENT,
   ROUTE_ERROR_CODES,
   ROUTE_ERROR_INVALID_PROPS,
@@ -11,18 +13,25 @@ export {
   ROUTE_HOST_DISPLAY,
   ROUTE_PARTIAL_JSON_ACTION,
   ROUTE_PARTIAL_JSON_IS_ERROR,
+  ROUTE_SURFACES,
+  SUPPORTED_PROP_TYPES,
   classifyNativeRoute,
+  isPendingJsonFence,
   readClosedJsonObject,
+  stripJsonCodeFence,
   validateComponentProps,
 } from "./render-route";
 export type {
   ClosedJsonObject,
   ComponentPropsSchema,
   NativeRouteCommit,
+  PropFieldSchema,
   RouteComponentSchema,
   RouteErrorCode,
   RouteHostError,
   RouteSchemaError,
+  RouteSurface,
+  SupportedPropType,
 } from "./render-route";
 export {
   SANDBOX_CALLBACKS,
@@ -43,6 +52,7 @@ export {
 } from "./sandbox";
 export type {
   SandboxCallDecision,
+  SandboxCallErrorCode,
   SandboxFieldName,
   SandboxHeightDecision,
   SandboxNonce,

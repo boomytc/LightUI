@@ -3,27 +3,34 @@ import { SandboxStage } from "./components/SandboxStage";
 import { playbackSteps, type Step } from "./lib/machines";
 import { recordedSample } from "./lib/recorded-sample";
 import { TEACHING_SOURCE } from "./lib/samples";
+import { loc, pick, useLocale, type Localized } from "./lib/site-locale";
 
 type SourceChoice = {
   id: string;
-  label: string;
-  note: string;
+  label: Localized;
+  note: Localized;
   source: string;
 };
 
 const SOURCES: SourceChoice[] = [
   {
     id: "teaching",
-    label: "离线教学流",
-    note: "手写样例，按字段顺序回放。页面不调用模型。",
+    label: loc("离线教学流", "Offline fixture"),
+    note: loc(
+      "手写样例，按字段顺序回放。页面不调用模型。",
+      "Hand-written fixture replayed in field order. This page does not call a model.",
+    ),
     source: TEACHING_SOURCE,
   },
   ...(recordedSample
     ? [
         {
           id: "recorded",
-          label: "DeepSeek 录制",
-          note: `请求 ${recordedSample.requestedModel}，响应 ${recordedSample.model} · ${recordedSample.recordedOn}`,
+          label: loc("DeepSeek 录制", "DeepSeek recording"),
+          note: loc(
+            `请求 ${recordedSample.requestedModel}，响应 ${recordedSample.model} · ${recordedSample.recordedOn}`,
+            `Requested ${recordedSample.requestedModel}, response ${recordedSample.model} · ${recordedSample.recordedOn}`,
+          ),
           source: recordedSample.source,
         },
       ]
@@ -31,6 +38,7 @@ const SOURCES: SourceChoice[] = [
 ];
 
 export function StudyView() {
+  const locale = useLocale();
   const [sourceId, setSourceId] = useState(SOURCES[0]!.id);
   const choice = SOURCES.find((item) => item.id === sourceId) ?? SOURCES[0]!;
   const steps = useMemo(() => playbackSteps(choice.source), [choice.source]);
@@ -67,9 +75,13 @@ export function StudyView() {
     <div className="page-width min-w-0 pb-16 pt-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="max-w-xl">
-          <p className="text-[13px] leading-relaxed text-fg-muted">{choice.note}</p>
+          <p className="text-[13px] leading-relaxed text-fg-muted">{pick(choice.note, locale)}</p>
           {recordedSample ? null : (
-            <p className="mt-1 text-[12px] text-fg-subtle">当前回放的是手写离线流，不是一次模型生成。</p>
+            <p className="mt-1 text-[12px] text-fg-subtle">
+              {locale === "en"
+                ? "Replaying a hand-written offline stream, not a live model run."
+                : "当前回放的是手写离线流，不是一次模型生成。"}
+            </p>
           )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -84,7 +96,7 @@ export function StudyView() {
                   }`}
                   onClick={() => setSourceId(item.id)}
                 >
-                  {item.label}
+                  {pick(item.label, locale)}
                 </button>
               ))}
             </div>
@@ -94,14 +106,20 @@ export function StudyView() {
             className="rounded-lg border border-border bg-surface px-3 py-1.5 text-[13px] text-fg"
             onClick={() => setPlaying((value) => !value)}
           >
-            {playing ? "暂停" : "播放"}
+            {playing
+              ? locale === "en"
+                ? "Pause"
+                : "暂停"
+              : locale === "en"
+                ? "Play"
+                : "播放"}
           </button>
           <button
             type="button"
             className="rounded-lg border border-border bg-surface px-3 py-1.5 text-[13px] text-fg"
             onClick={() => jump(index, nextBoundary(steps, index), setIndex, setResetKey)}
           >
-            下一字段
+            {locale === "en" ? "Next field" : "下一字段"}
           </button>
           <button
             type="button"
@@ -112,13 +130,13 @@ export function StudyView() {
               setResetKey((value) => value + 1);
             }}
           >
-            重头
+            {locale === "en" ? "Restart" : "重头"}
           </button>
         </div>
       </div>
 
       <label className="mt-4 block text-[12px] text-fg-subtle">
-        流进度 {index + 1} / {steps.length}
+        {locale === "en" ? "Stream step" : "流进度"} {index + 1} / {steps.length}
         <span className="ml-2 font-mono">{step.state.generating ? "generating" : "generating = false"}</span>
         <input
           className="mt-1 block w-full accent-[var(--color-accent)]"
@@ -135,7 +153,7 @@ export function StudyView() {
       </label>
 
       <div className="mt-4">
-        <SandboxStage key={resetKey} step={step} interactive />
+        <SandboxStage key={resetKey} step={step} interactive locale={locale} />
       </div>
 
       <pre className="mt-4 max-h-40 overflow-auto rounded-xl border border-border bg-surface-2 p-3 font-mono text-[11px] leading-relaxed text-fg-muted">
