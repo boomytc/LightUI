@@ -14,6 +14,7 @@ import {
 } from "./lib/machines";
 import { INITIAL_MESSAGES, SWIPE_FORMULAS, type MessageItem } from "./lib/kinds";
 import { cn } from "./lib/utils";
+import "./swipe-action.css";
 
 const SETTLE_MS = 320;
 const EXIT_MS = 260;

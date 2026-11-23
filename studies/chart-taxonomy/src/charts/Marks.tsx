@@ -96,7 +96,7 @@ function ChartTip({
 }) {
   return (
     <div
-      className={cn("chart-tip", on && "is-on")}
+      className={cn("ctax-tip", on && "is-on")}
       style={{
         left: `${(x / width) * 100}%`,
         top: `${(y / height) * 100}%`,
@@ -131,12 +131,12 @@ function ChartSvg({
   children: ReactNode;
 }) {
   return (
-    <div ref={boxRef} className="chart-frame">
+    <div ref={boxRef} className="ctax-frame">
       <svg
         viewBox={`0 0 ${width} ${height}`}
         role="img"
         aria-label={label}
-        className={cn("chart-svg", live && "is-live")}
+        className={cn("ctax-svg", live && "is-live")}
         preserveAspectRatio="xMidYMid meet"
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
@@ -194,7 +194,7 @@ function SeriesLine({
 }) {
   const [boxRef, box] = useChartBox(0.55);
   const [hot, setHot] = useState<number | null>(null);
-  const pad = { l: 8, r: 12, t: 14, b: 28 };
+  const pad = { l: 16, r: 16, t: 14, b: 28 };
   const W = box.width;
   const H = box.height;
   const innerW = W - pad.l - pad.r;
@@ -205,6 +205,7 @@ function SeriesLine({
   const line = xs.map((x, i) => `${i === 0 ? "M" : "L"} ${x} ${ys[i]}`).join(" ");
   const area = `${line} L ${xs[xs.length - 1]} ${pad.t + innerH} L ${xs[0]} ${pad.t + innerH} Z`;
   const tip = hot !== null ? data[hot] : null;
+  const tickStep = Math.max(1, Math.ceil((data.length * 36) / Math.max(innerW, 1)));
 
   return (
     <ChartSvg
@@ -228,7 +229,7 @@ function SeriesLine({
       }
     >
       {hGrid(pad.l, W - pad.r, pad.t, pad.t + innerH)}
-      {fill ? <path className="chart-area-in" d={area} fill={ACCENT} fillOpacity={0.22} /> : null}
+      {fill ? <path className="ctax-area-in" d={area} fill={ACCENT} fillOpacity={0.22} /> : null}
       <path
         d={line}
         fill="none"
@@ -236,12 +237,12 @@ function SeriesLine({
         strokeWidth={2}
         strokeLinejoin="round"
         pathLength={1}
-        className="chart-line-draw"
+        className="ctax-line-draw"
       />
       {xs.map((x, i) => (
         <circle
           key={data[i]!.name.zh}
-          className="chart-dot"
+          className="ctax-dot"
           cx={x}
           cy={ys[i]}
           r={hot === i ? 5 : 3}
@@ -250,9 +251,7 @@ function SeriesLine({
         />
       ))}
       {data.map((d, i) => {
-        const last = i === data.length - 1;
-        const show = i === 0 || last || (i % 2 === 0 && i < data.length - 2);
-        if (!show) return null;
+        if (i % tickStep !== 0) return null;
         return (
           <text
             key={`t-${d.name.zh}`}
@@ -316,7 +315,7 @@ function ColumnMark({ locale }: { locale: Locale }) {
             <path
               d={roundTop(x, y, barW, h, 4)}
               fill={CHART_COLORS[i % CHART_COLORS.length]}
-              className={cn("chart-grow chart-mark", hot !== null && (hot === i ? "is-hot" : "is-dim"))}
+              className={cn("ctax-grow ctax-mark", hot !== null && (hot === i ? "is-hot" : "is-dim"))}
               style={{ animationDelay: `${i * 40}ms` }}
             />
             <text x={x + barW / 2} y={H - 8} textAnchor="middle" fill={MUTED} fontSize={11}>
@@ -384,7 +383,7 @@ function BarMark({ locale }: { locale: Locale }) {
             <path
               d={roundRight(pad.l, y, w, barH, 5)}
               fill={CHART_COLORS[i % CHART_COLORS.length]}
-              className={cn("chart-grow-x chart-mark", hot !== null && (hot === i ? "is-hot" : "is-dim"))}
+              className={cn("ctax-grow-x ctax-mark", hot !== null && (hot === i ? "is-hot" : "is-dim"))}
               style={{ animationDelay: `${i * 40}ms` }}
             />
             <text x={pad.l + w + 6} y={y + barH / 2 + 4} fill={MUTED} fontSize={10}>
@@ -454,13 +453,13 @@ function PieMark({ locale }: { locale: Locale }) {
   });
 
   return (
-    <div className="chart-pie-layout">
-      <div ref={ref} className="chart-pie">
+    <div className="ctax-pie-layout">
+      <div ref={ref} className="ctax-pie">
         <svg
           viewBox={`0 0 ${size} ${size}`}
           role="img"
           aria-label={locale === "en" ? "Budget mix" : "预算构成"}
-          className="chart-svg is-live"
+          className="ctax-svg is-live"
           onPointerLeave={() => setHot(null)}
         >
           {slices.map((s) => (
@@ -468,7 +467,7 @@ function PieMark({ locale }: { locale: Locale }) {
               key={s.d.name.zh}
               d={donutSlice(cx, cy, rIn, hot === s.i ? rOut + 4 : rOut, s.a0, s.a1)}
               fill={CHART_COLORS[s.i % CHART_COLORS.length]}
-              className={cn("chart-mark", hot !== null && (hot === s.i ? "is-hot" : "is-dim"))}
+              className={cn("ctax-mark", hot !== null && (hot === s.i ? "is-hot" : "is-dim"))}
               onPointerEnter={() => setHot(s.i)}
             />
           ))}
@@ -480,7 +479,7 @@ function PieMark({ locale }: { locale: Locale }) {
           </text>
         </svg>
       </div>
-      <ul className="chart-legend">
+      <ul className="ctax-legend">
         {PIE_DATA.map((d, i) => (
           <li
             key={d.name.zh}
@@ -489,7 +488,7 @@ function PieMark({ locale }: { locale: Locale }) {
             onPointerLeave={() => setHot(null)}
           >
             <span
-              className="chart-swatch shrink-0 rounded-sm"
+              className="ctax-swatch shrink-0 rounded-sm"
               style={{ background: CHART_COLORS[i % CHART_COLORS.length] }}
             />
             <span className="min-w-0 flex-1 truncate text-fg">{pick(d.name, locale)}</span>
@@ -543,7 +542,7 @@ function ScatterMark({ locale }: { locale: Locale }) {
       {SCATTER_DATA.map((d, i) => (
         <circle
           key={`${d.x}-${d.y}`}
-          className="chart-dot"
+          className="ctax-dot"
           cx={px(d.x)}
           cy={py(d.y)}
           r={hot === i ? 6.5 : 4.5}
@@ -628,7 +627,7 @@ function StackedMark({ locale }: { locale: Locale }) {
                 height={Math.max(0, layer.h)}
                 fill={layer.color}
                 className={cn(
-                  "chart-grow chart-mark",
+                  "ctax-grow ctax-mark",
                   hot !== null && (hot.col === i && hot.key === layer.key ? "is-hot" : "is-dim"),
                 )}
                 onPointerEnter={() => setHot({ col: i, key: layer.key })}
@@ -721,7 +720,7 @@ function HeatmapMark({ locale }: { locale: Locale }) {
             return (
               <rect
                 key={`${day.zh}-${slot.zh}`}
-                className={cn("chart-heat", on && "is-hot", hot !== null && !on && "is-dim")}
+                className={cn("ctax-heat", on && "is-hot", hot !== null && !on && "is-dim")}
                 x={pad.l + c * cw + 1.5}
                 y={pad.t + r * ch + 1.5}
                 width={Math.max(0, cw - 3)}
@@ -742,7 +741,7 @@ function FunnelMark({ locale }: { locale: Locale }) {
   const [hot, setHot] = useState<number | null>(null);
 
   return (
-    <div className="chart-funnel">
+    <div className="ctax-funnel">
       {FUNNEL_DATA.map((d, i) => {
         const prev = i === 0 ? d.value : FUNNEL_DATA[i - 1]!.value;
         const rate = i === 0 ? 100 : Math.round((d.value / prev) * 100);
@@ -751,16 +750,16 @@ function FunnelMark({ locale }: { locale: Locale }) {
           <div
             key={d.name.zh}
             className={cn(
-              "chart-funnel-row",
+              "ctax-funnel-row",
               hot === i && "is-hot",
               hot !== null && hot !== i && "is-dim",
             )}
             onPointerEnter={() => setHot(i)}
             onPointerLeave={() => setHot(null)}
           >
-            <div className="chart-funnel-track">
+            <div className="ctax-funnel-track">
               <div
-                className="chart-funnel-band"
+                className="ctax-funnel-band"
                 style={{
                   width: `${width}%`,
                   background: CHART_COLORS[i % CHART_COLORS.length],
@@ -768,7 +767,7 @@ function FunnelMark({ locale }: { locale: Locale }) {
                 }}
               />
             </div>
-            <div className="chart-funnel-meta">
+            <div className="ctax-funnel-meta">
               <p className="truncate text-[11px] text-fg">{pick(d.name, locale)}</p>
               <p className="text-[11px] tabular-nums text-fg-subtle">
                 {d.value.toLocaleString()}
@@ -836,7 +835,7 @@ function RadarMark({ locale }: { locale: Locale }) {
         return <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke={GRID} strokeWidth={1} />;
       })}
       <path
-        className="chart-area-in"
+        className="ctax-area-in"
         d={valuePath}
         fill={ACCENT}
         fillOpacity={0.22}
@@ -850,7 +849,7 @@ function RadarMark({ locale }: { locale: Locale }) {
         return (
           <g key={d.name.zh} onPointerEnter={() => setHot(i)}>
             <circle
-              className="chart-dot"
+              className="ctax-dot"
               cx={v.x}
               cy={v.y}
               r={hot === i ? 5 : 3}

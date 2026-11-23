@@ -36,14 +36,14 @@ export function Playground() {
   }, []);
 
   return (
-    <div data-playground="chart-taxonomy" className="chart-playground">
+    <div data-playground="chart-taxonomy" className="ctax-playground">
       <p className="mb-3 text-[12px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
         {locale === "en" ? "Name the intent, then the mark" : "先定要看什么，再选痕迹"}
       </p>
       <nav
         aria-label={locale === "en" ? "Chart intents" : "图表意图"}
         data-intent-row=""
-        className="chart-intent-row"
+        className="ctax-intent-row"
       >
         {KINDS.map((kind) => {
           const on = kind.id === active;
@@ -55,7 +55,7 @@ export function Playground() {
               data-kind={kind.id}
               aria-pressed={on}
               onClick={() => setActive(kind.id)}
-              className={cn("chart-intent", on && "is-on")}
+              className={cn("ctax-intent", on && "is-on")}
             >
               <span
                 className={cn(
@@ -82,8 +82,8 @@ export function Playground() {
         {meta.note ? <p className="mt-2 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
       </div>
 
-      <div className="chart-work mt-4">
-        <div className="chart-work-pane">
+      <div className="ctax-work mt-4">
+        <div className="ctax-work-pane">
           <KindDemo key={meta.id} id={meta.id} />
         </div>
         <SpecCaption text={pick(meta.spec, locale)} scenes={meta} locale={locale} />
@@ -106,7 +106,7 @@ export function Playground() {
 function IntentGlyph({ mark }: { mark: Mark }) {
   const stroke = "currentColor";
   return (
-    <svg viewBox="0 0 48 22" className="chart-intent-glyph" aria-hidden="true">
+    <svg viewBox="0 0 48 22" className="ctax-intent-glyph" aria-hidden="true">
       {mark === "line" || mark === "area" ? (
         <path
           d="M2 16 10 12 18 14 26 7 34 9 46 3"
@@ -193,7 +193,7 @@ function SpecCaption({
   }
 
   return (
-    <aside className="chart-spec" data-spec="">
+    <aside className="ctax-spec" data-spec="">
       <div className="flex items-start justify-between gap-3">
         <p className="text-[11px] font-medium tracking-wide text-fg-subtle">
           {locale === "en" ? "Say it this way" : "说清楚"}
@@ -244,8 +244,8 @@ export function KindDemo({ id, state }: { id: KindId; state?: string }) {
         <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-fg-subtle">{mark}</p>
         <h3 className="mt-1 text-[1.15rem] font-semibold tracking-tight">{scene.headline}</h3>
         <p className="mt-1 text-[13px] text-fg-muted">{scene.sub}</p>
-        <div className="chart-pane mt-4" data-chart-pane="">
-          <div key={mark} className="chart-enter">
+        <div className="ctax-pane mt-4" data-chart-pane="">
+          <div key={mark} className="ctax-enter">
             <ChartMark mark={mark} locale={locale} />
           </div>
         </div>

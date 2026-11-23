@@ -22,6 +22,7 @@ import {
 import { VoiceprintDrawer } from "./components/VoiceprintDrawer";
 import { LiveStage } from "./components/LiveStage";
 import { MinutesBoard } from "./components/MinutesBoard";
+import "./transcript.css";
 
 export function StudyView() {
   const [activePhase, setActivePhase] = useState<PhaseId>("live");
@@ -153,7 +154,7 @@ export function StudyView() {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6 pb-12">
+    <div className="ts-study-root w-full max-w-6xl mx-auto space-y-6 pb-12">
       {/* 1. Top Mode & Phase Navigation */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-surface border border-border shadow-xs">
         {/* Scenario Switcher: Testing different interaction edge cases */}

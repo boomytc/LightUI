@@ -1,6 +1,7 @@
 import { FORMULA } from "./lib/kinds";
 import { pick, useLocale } from "./lib/site-locale";
 import { Playground } from "./tabs/Playground";
+import "./tabs.css";
 
 export function StudyView() {
   const locale = useLocale();

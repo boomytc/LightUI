@@ -1,6 +1,7 @@
 import { KINDS, type KindId } from "./lib/kinds";
 import { readStageQuery } from "./lib/stage-query";
 import { KindDemo } from "./tabs/Playground";
+import "./tabs.css";
 
 const IDS = new Set<string>(KINDS.map((k) => k.id));
 

@@ -4,6 +4,7 @@ import { LiveStage } from "./components/LiveStage";
 import { VoiceprintDrawer } from "./components/VoiceprintDrawer";
 import { MinutesBoard } from "./components/MinutesBoard";
 import { FINAL_MINUTES } from "./lib/mock-data";
+import "./transcript.css";
 
 const IDS = new Set<string>(KIND_IDS);
 
@@ -15,7 +16,7 @@ export function StageView() {
   return (
     <div
       data-stage="root"
-      className="grid min-h-dvh place-items-center overflow-x-hidden bg-bg px-4 py-8 sm:px-8"
+      className="ts-study-root grid min-h-dvh place-items-center overflow-x-hidden bg-bg px-4 py-8 sm:px-8"
     >
       <div
         data-stage="fixture"

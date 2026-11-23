@@ -33,7 +33,7 @@ export function Playground() {
       <p className="mb-3 text-[12px] font-medium tracking-[0.12em] text-fg-subtle uppercase">
         {locale === "en" ? "Name the class, then the gesture" : "先定这一手是哪一类"}
       </p>
-      <nav aria-label={locale === "en" ? "Chart gestures" : "读图手势"} className="chart-class-rail">
+      <nav aria-label={locale === "en" ? "Chart gestures" : "读图手势"} className="cread-class-rail">
         {CLASS_ORDER.map((klass) => (
           <ClassGroup
             key={klass}
@@ -70,7 +70,7 @@ export function Playground() {
 
         {meta.note ? <p className="mb-4 text-[13px] text-accent">{pick(meta.note, locale)}</p> : null}
 
-        <div key={meta.id} className="chart-enter">
+        <div key={meta.id} className="cread-enter">
           <KindDemo id={meta.id} />
         </div>
 
@@ -107,15 +107,15 @@ function ClassGroup({
   const meta = CLASS_META[klass];
 
   return (
-    <div className={cn("chart-class-group", on && "is-on")} data-class={klass}>
-      <div className="chart-class-kicker">
+    <div className={cn("cread-class-group", on && "is-on")} data-class={klass}>
+      <div className="cread-class-kicker">
         <p className={cn("text-[11px] font-medium tracking-[0.12em] uppercase", on ? "text-accent" : "text-fg-subtle")}>
           {pick(meta.label, locale)}
         </p>
         <span className="font-mono text-[10px] text-fg-subtle">{klass}</span>
       </div>
       <p className="mb-2 text-[11px] leading-snug text-fg-muted">{pick(meta.ask, locale)}</p>
-      <div className="chart-class-chips">
+      <div className="cread-class-chips">
         {kinds.map((kind) => {
           const selected = kind.id === active;
           return (

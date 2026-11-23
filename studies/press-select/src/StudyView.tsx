@@ -13,6 +13,7 @@ import {
 import { pick, useLocale } from "./lib/site-locale";
 import { cn, SAMPLE_FILES } from "./lib/utils";
 import { FilesPhone } from "./press/FilesPhone";
+import "./press.css";
 
 type ArmedKind = "hold" | "tap";
 

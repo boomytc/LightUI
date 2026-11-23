@@ -38,6 +38,29 @@
     background-color 180ms ease;
 }
 
+.form-shake {
+  animation: form-shake 0.4s ease;
+}
+
+@keyframes form-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
 @keyframes form-rise {
   from {
     opacity: 0;
@@ -75,6 +98,7 @@
   .form-enter,
   .form-err,
   .form-pop,
+  .form-shake,
   .form-success,
   .form-success-item,
   .form-success-item:nth-child(n) {

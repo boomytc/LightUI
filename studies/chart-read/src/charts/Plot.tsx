@@ -317,7 +317,7 @@ export function GestureChart({
             type="button"
             disabled={locked}
             onClick={() => setPath((p) => drillPop(p, 0))}
-            className="chart-crumb rounded-md px-1.5 py-0.5 text-fg-muted hover:bg-surface-2 hover:text-fg disabled:pointer-events-none"
+            className="cread-crumb rounded-md px-1.5 py-0.5 text-fg-muted hover:bg-surface-2 hover:text-fg disabled:pointer-events-none"
           >
             {locale === "en" ? "Channel" : "渠道"}
           </button>
@@ -328,7 +328,7 @@ export function GestureChart({
                 type="button"
                 disabled={locked}
                 onClick={() => setPath((p) => drillPop(p, i + 1))}
-                className="chart-crumb rounded-md px-1.5 py-0.5 text-fg-muted hover:bg-surface-2 hover:text-fg disabled:pointer-events-none"
+                className="cread-crumb rounded-md px-1.5 py-0.5 text-fg-muted hover:bg-surface-2 hover:text-fg disabled:pointer-events-none"
               >
                 {c.name}
               </button>
@@ -338,7 +338,7 @@ export function GestureChart({
         </div>
       ) : null}
 
-      <div className="chart-plot-lock">
+      <div className="cread-plot-lock">
         {kind === "drill" ? (
           <BarPlot
             locale={locale}
@@ -376,7 +376,7 @@ export function GestureChart({
       </div>
 
       {kind === "legend" ? (
-        <div className="chart-legend mt-3">
+        <div className="cread-legend mt-3">
           {SERIES.map((s) => {
             const on = !hidden.has(s.id);
             return (
@@ -397,7 +397,7 @@ export function GestureChart({
       ) : null}
 
       {hint ? (
-        <p className="chart-hint mt-2 text-[12px] text-accent">
+        <p className="cread-hint mt-2 text-[12px] text-accent">
           {locale === "en" ? "The last visible series stays." : "最后一条可见系列留着。"}
         </p>
       ) : null}
@@ -524,13 +524,13 @@ function LinePlot({
         : "日访问";
 
   return (
-    <div className="chart-frame">
+    <div className="cread-frame">
       <svg
         ref={svgRef}
         viewBox={`0 0 ${PLOT.w} ${PLOT.h}`}
         role="img"
         aria-label={label}
-        className={cn("chart-svg", kind !== "highlight" && "is-live")}
+        className={cn("cread-svg", kind !== "highlight" && "is-live")}
         preserveAspectRatio="xMidYMid meet"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -543,7 +543,7 @@ function LinePlot({
 
         {brushLocal ? (
           <rect
-            className="chart-brush-band"
+            className="cread-brush-band"
             x={xAt(brushLocal.start, count, PLOT.x0, PLOT.x1)}
             y={PLOT.y0}
             width={Math.max(
@@ -578,7 +578,7 @@ function LinePlot({
               strokeLinejoin="round"
               strokeLinecap="round"
               pathLength={1}
-              className="chart-line chart-line-draw"
+              className="cread-line cread-line-draw"
               opacity={gone ? 0 : faded ? 0.28 : 1}
             />
           );
@@ -595,7 +595,7 @@ function LinePlot({
               return (
                 <circle
                   key={abs}
-                  className="chart-dot"
+                  className="cread-dot"
                   data-hi={onHi ? "true" : undefined}
                   cx={x}
                   cy={y}
@@ -608,7 +608,7 @@ function LinePlot({
           : null}
 
         {kind === "crosshair" ? (
-          <g className={cn("chart-hair", hairLocal !== null && "is-on")}>
+          <g className={cn("cread-hair", hairLocal !== null && "is-on")}>
             <line
               x1={hairX}
               x2={hairX}
@@ -664,7 +664,7 @@ function LinePlot({
 
       {kind === "tooltip" ? (
         <div
-          className={cn("chart-card", layerOn && tipLocal !== null && "is-on")}
+          className={cn("cread-card", layerOn && tipLocal !== null && "is-on")}
           style={{
             left: `${(tipX / PLOT.w) * 100}%`,
             top: `${(tipY / PLOT.h) * 100}%`,
@@ -678,7 +678,7 @@ function LinePlot({
 
       {brushLocal && stats && stats.count > 0 && brush?.frozen ? (
         <div
-          className="chart-card is-on"
+          className="cread-card is-on"
           style={{
             left: `${(xAt(brushLocal.start, count, PLOT.x0, PLOT.x1) / PLOT.w) * 100}%`,
             top: "8px",
@@ -715,12 +715,12 @@ function BarPlot({
   const [hot, setHot] = useState<string | null>(null);
 
   return (
-    <div className="chart-frame">
+    <div className="cread-frame">
       <svg
         viewBox={`0 0 ${PLOT.w} ${PLOT.h}`}
         role="img"
         aria-label={locale === "en" ? "Source bars" : "来源柱"}
-        className={cn("chart-svg", !locked && "is-live")}
+        className={cn("cread-svg", !locked && "is-live")}
         preserveAspectRatio="xMidYMid meet"
         onPointerLeave={() => setHot(null)}
       >
@@ -741,7 +741,7 @@ function BarPlot({
                 fill={ACCENT}
                 fillOpacity={item.hasChildren ? 1 : 0.7}
                 className={cn(
-                  "chart-bar",
+                  "cread-bar",
                   locked ? "cursor-default" : "cursor-pointer",
                   on && "is-hot",
                   dim && "is-dim",

@@ -3,6 +3,7 @@ import { readStageQuery } from "./lib/stage-query";
 import { DEFAULT_ACTIONS_WIDTH, DEFAULT_COMMIT_THRESHOLD } from "./lib/machines";
 import { INITIAL_MESSAGES } from "./lib/kinds";
 import { cn } from "./lib/utils";
+import "./swipe-action.css";
 
 export function StageView() {
   const { openRowId, overswipe } = readStageQuery();

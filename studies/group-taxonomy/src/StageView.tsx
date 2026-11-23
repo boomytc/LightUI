@@ -5,6 +5,7 @@ import { ActivityListDemo } from "./components/demos/ActivityListDemo.js";
 import { ColorBandsDemo } from "./components/demos/ColorBandsDemo.js";
 import { PriceCompareDemo } from "./components/demos/PriceCompareDemo.js";
 import { readStageQuery } from "./lib/stage-query.js";
+import "./group.css";
 
 export function StageView() {
   const { kind, mode } = readStageQuery();

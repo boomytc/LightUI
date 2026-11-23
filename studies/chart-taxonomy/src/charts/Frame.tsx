@@ -10,7 +10,7 @@ export function Window({
   children: ReactNode;
 }) {
   return (
-    <div className="chart-window overflow-hidden rounded-2xl border border-border bg-surface shadow-card">
+    <div className="ctax-window overflow-hidden rounded-2xl border border-border bg-surface shadow-card">
       <div className="flex min-w-0 items-center justify-between gap-3 border-b border-border px-4 py-2.5">
         <div className="flex min-w-0 items-center gap-3">
           <span className="flex shrink-0 gap-1" aria-hidden="true">

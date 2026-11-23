@@ -2,6 +2,7 @@ import { Copy, CornerUpLeft, Forward, ChevronLeft, MoreHorizontal, Smile, Send }
 import { readStageQuery } from "./lib/stage-query";
 import { INITIAL_CHAT } from "./lib/kinds";
 import { cn } from "./lib/utils";
+import "./touch-context.css";
 
 export function StageView() {
   const { activeBubbleId } = readStageQuery();

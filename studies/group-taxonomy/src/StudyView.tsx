@@ -9,6 +9,7 @@ import {
 import { Overview } from "./components/Overview.js";
 import { PatternStage } from "./components/PatternStage.js";
 import { TaxonomyRail } from "./components/TaxonomyRail.js";
+import "./group.css";
 
 export function StudyView() {
   const [p, setP] = useState<PatternId>("overview");

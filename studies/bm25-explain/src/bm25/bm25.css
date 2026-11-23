@@ -1,10 +1,10 @@
-:root {
+.bm25-scope {
   --color-bm25: #b33a2c;
   --color-vector: #0d9488;
 }
 
-.dark,
-[data-theme="dark"] {
+.dark .bm25-scope,
+[data-theme="dark"] .bm25-scope {
   --color-bm25: #f87171;
   --color-vector: #2dd4bf;
 }

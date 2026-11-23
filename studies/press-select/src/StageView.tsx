@@ -1,6 +1,7 @@
 import { readStageQuery } from "./lib/stage-query";
 import { SAMPLE_FILES } from "./lib/utils";
 import { FilesPhone } from "./press/FilesPhone";
+import "./press.css";
 
 export function StageView() {
   const { mode, count } = readStageQuery();

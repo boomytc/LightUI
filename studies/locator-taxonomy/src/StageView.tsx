@@ -8,6 +8,7 @@ import { StatusFilterDemo } from "./components/demos/status-filter";
 import { StepperDemo } from "./components/demos/stepper";
 import { PATTERNS, patternBySlug } from "./lib/kinds";
 import { readStageQuery } from "./lib/stage-query";
+import "./locator.css";
 
 function renderDemo(kind: string) {
   switch (kind) {

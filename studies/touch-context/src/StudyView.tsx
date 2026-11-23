@@ -18,6 +18,7 @@ import {
 } from "./lib/machines";
 import { CONTEXT_ACTIONS, FORMULA_CARDS, PLAY_CHAT, type ChatMessage } from "./lib/kinds";
 import { cn } from "./lib/utils";
+import "./touch-context.css";
 
 type Verdict = "idle" | "holding" | "opened" | "cancelled" | "short";
 
