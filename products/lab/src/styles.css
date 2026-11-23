@@ -176,6 +176,7 @@ html {
 }
 
 .study-play {
+  --study-sticky-top: 7.25rem;
   min-width: 0;
   overflow-x: clip;
 }

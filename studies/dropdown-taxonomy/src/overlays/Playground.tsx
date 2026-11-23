@@ -145,7 +145,7 @@ function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   }
 
   return (
-    <aside className="min-w-0 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface lg:sticky lg:top-24">
+    <aside className="min-w-0 rounded-2xl border border-fg bg-fg px-4 py-3.5 text-surface lg:sticky lg:top-[var(--study-sticky-top,1.5rem)]">
       <div className="flex items-start justify-between gap-3">
         <p className="text-[11px] font-medium tracking-wide text-surface/45">
           {locale === "en" ? "Say it this way" : "说清楚"}

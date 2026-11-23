@@ -84,7 +84,7 @@
 @media (min-width: 1024px) {
   .ctax-spec {
     position: sticky;
-    top: 1rem;
+    top: var(--study-sticky-top, 1rem);
   }
 }
 
