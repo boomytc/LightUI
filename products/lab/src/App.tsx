@@ -62,7 +62,6 @@ export function App() {
       return;
     }
     const navKind = consumeNavigationKind();
-    if (navKind === "replace") return;
     if (navKind === "pop") {
       const saved = getSavedScroll();
       if (typeof saved === "number") {
