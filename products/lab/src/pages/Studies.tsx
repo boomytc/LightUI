@@ -166,8 +166,7 @@ export function Studies() {
               style={{ animationDelay: `${40 + Math.min(i, 11) * 40}ms` }}
             >
               <StudyCard
-                meta={s.meta}
-                StageView={s.StageView}
+                study={s}
                 locale={locale}
                 selectedTag={selectedTag}
                 onSelectTag={(tag) => handleSelectTag(tag)}

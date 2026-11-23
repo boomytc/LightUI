@@ -1,12 +1,12 @@
 import { Component, type ComponentType, type ReactNode, useEffect, useRef, useState } from "react";
 import { ArrowUpRight, HelpCircle } from "lucide-react";
 import { DateStamp } from "./DateStamp";
+import type { LoadedStudy } from "../lib/catalog";
 import { categoryLabel, getStudyCategory } from "../lib/categories";
 import { messages } from "../lib/i18n";
 import { studyAsks, studyEyebrow, studySummary, studyTitle } from "../lib/localize";
 import { navigate } from "../lib/nav";
 import type { Locale } from "../lib/prefs";
-import type { StudyMeta } from "../lib/study";
 
 class PreviewErrorBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
@@ -21,27 +21,30 @@ class PreviewErrorBoundary extends Component<{ fallback: ReactNode; children: Re
   }
 }
 
-function StagePlaceholder() {
+function StagePlaceholder({ loading = false }: { loading?: boolean }) {
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-surface-2/30">
-      <div className="size-8 rounded-full border border-border/80 border-t-accent/60 animate-spin opacity-20" />
+      {loading ? (
+        <div className="size-7 animate-spin rounded-full border-2 border-border/80 border-t-accent/60 opacity-40" />
+      ) : (
+        <div className="size-7 rounded-full border border-border/60 opacity-25" />
+      )}
     </div>
   );
 }
 
 export function StudyCard({
-  meta,
+  study,
   locale,
-  StageView,
   onSelectTag,
   selectedTag,
 }: {
-  meta: StudyMeta;
+  study: LoadedStudy;
   locale: Locale;
-  StageView?: ComponentType;
   onSelectTag?: (tag: string) => void;
   selectedTag?: string;
 }) {
+  const { meta } = study;
   const href = `/s/${meta.slug}`;
   const copy = messages(locale);
   const asks = studyAsks(meta, locale);
@@ -49,6 +52,15 @@ export function StudyCard({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
+  const [stageState, setStageState] = useState<{
+    slug: string;
+    Component: ComponentType | undefined;
+    loading: boolean;
+  }>(() => ({
+    slug: meta.slug,
+    Component: study.getCachedStageView(),
+    loading: false,
+  }));
 
   useEffect(() => {
     const el = containerRef.current;
@@ -58,10 +70,10 @@ export function StudyCard({
       return;
     }
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          observer.disconnect();
+      (entries) => {
+        const entry = entries[entries.length - 1];
+        if (entry) {
+          setIsInView(entry.isIntersecting);
         }
       },
       { rootMargin: "160px" },
@@ -69,6 +81,35 @@ export function StudyCard({
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!isInView || !study.hasStageView) return;
+    const cached = study.getCachedStageView();
+    if (cached) {
+      setStageState({ slug: meta.slug, Component: cached, loading: false });
+      return;
+    }
+    let cancelled = false;
+    setStageState({ slug: meta.slug, Component: undefined, loading: true });
+    study
+      .loadStageView()
+      .then((Component) => {
+        if (!cancelled) {
+          setStageState({ slug: meta.slug, Component, loading: false });
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setStageState({ slug: meta.slug, Component: undefined, loading: false });
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isInView, meta.slug, study]);
+
+  const StageView = stageState.slug === meta.slug ? stageState.Component : study.getCachedStageView();
+  const isStageLoading = stageState.slug === meta.slug && stageState.loading;
 
   return (
     <a
@@ -98,7 +139,7 @@ export function StudyCard({
               </div>
             </PreviewErrorBoundary>
           ) : (
-            <StagePlaceholder />
+            <StagePlaceholder loading={isInView && isStageLoading} />
           )}
         </div>
 

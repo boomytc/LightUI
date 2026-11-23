@@ -1,4 +1,5 @@
 import { type CategoryId, getStudyCategory } from "./categories";
+import { loadStudy } from "./catalog";
 import { compareDayDesc, parseDay } from "./dates";
 import { parseFrontmatter } from "./frontmatter";
 import type { Locale } from "./prefs";
@@ -12,16 +13,6 @@ export type Note = {
   related: string[];
   body: string;
 };
-
-const studyMetaModules = import.meta.glob("../../../../studies/*/study.json", {
-  eager: true,
-  import: "default",
-}) as Record<string, { slug?: string; category?: string }>;
-
-const categoryBySlug = new Map<string, string | undefined>();
-for (const meta of Object.values(studyMetaModules)) {
-  if (meta?.slug) categoryBySlug.set(meta.slug, meta.category);
-}
 
 const noteModules = import.meta.glob("../../../../writing/notes/*.md", {
   eager: true,
@@ -53,20 +44,21 @@ function toNote(path: string, raw: string): Note & { locale: Locale } {
   };
 }
 
-const parsed = Object.entries(noteModules).map(([path, raw]) => toNote(path, raw));
-
-export function loadNotes(locale: Locale): Note[] {
-  const zh = parsed.filter((n) => n.locale === "zh");
-  if (locale !== "en") {
-    return [...zh].sort(compareNotes);
-  }
-  return zh
-    .map((note) => parsed.find((n) => n.locale === "en" && n.slug === note.slug) ?? note)
-    .sort(compareNotes);
-}
-
 function compareNotes(a: Note, b: Note): number {
   return compareDayDesc(a.updated, b.updated) || a.slug.localeCompare(b.slug);
+}
+
+const parsed = Object.entries(noteModules).map(([path, raw]) => toNote(path, raw));
+const zhNotes: Note[] = parsed.filter((n) => n.locale === "zh").sort(compareNotes);
+const enNotesBySlug = new Map<string, Note>(
+  parsed.filter((n) => n.locale === "en").map((n) => [n.slug, n]),
+);
+const enNotes: Note[] = zhNotes
+  .map((note) => enNotesBySlug.get(note.slug) ?? note)
+  .sort(compareNotes);
+
+export function loadNotes(locale: Locale): Note[] {
+  return locale === "en" ? enNotes : zhNotes;
 }
 
 export function loadNote(slug: string, locale: Locale): Note | undefined {
@@ -76,7 +68,7 @@ export function loadNote(slug: string, locale: Locale): Note | undefined {
 export function getNoteCategory(note: Note): CategoryId {
   const related = note.related[0];
   if (!related) return "craft";
-  return getStudyCategory({ category: categoryBySlug.get(related) });
+  return getStudyCategory(loadStudy(related)?.meta);
 }
 
 export function filterNotes(
@@ -87,8 +79,12 @@ export function filterNotes(
   const q = query.trim().toLowerCase();
 
   return notes.filter((note) => {
-    if (categoryId !== "all" && getNoteCategory(note) !== categoryId) {
-      return false;
+    if (categoryId !== "all") {
+      const matchesCategory =
+        note.related.length > 0
+          ? note.related.some((slug) => getStudyCategory(loadStudy(slug)?.meta) === categoryId)
+          : getNoteCategory(note) === categoryId;
+      if (!matchesCategory) return false;
     }
 
     if (!q) return true;
@@ -98,12 +94,25 @@ export function filterNotes(
     const slug = note.slug.toLowerCase();
     const related = note.related.join(" ").toLowerCase();
 
-    return (
+    if (
       title.includes(q) ||
       summary.includes(q) ||
       slug.includes(q) ||
       related.includes(q)
-    );
+    ) {
+      return true;
+    }
+
+    return note.related.some((relSlug) => {
+      const meta = loadStudy(relSlug)?.meta;
+      if (!meta) return false;
+      return (
+        (meta.title ?? "").toLowerCase().includes(q) ||
+        (meta.titleEn ?? "").toLowerCase().includes(q) ||
+        (meta.asks ?? "").toLowerCase().includes(q) ||
+        (meta.asksEn ?? "").toLowerCase().includes(q)
+      );
+    });
   });
 }
 

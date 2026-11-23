@@ -66,11 +66,23 @@ export function usePath(): string {
   return path;
 }
 
+function safeDecodeHash(raw: string): string {
+  const stripped = raw.replace(/^#/, "");
+  if (!stripped) return "";
+  try {
+    return decodeURIComponent(stripped);
+  } catch {
+    return stripped;
+  }
+}
+
 export function useHash(): string {
-  const [hash, setHash] = useState(() => (typeof window === "undefined" ? "" : window.location.hash.replace(/^#/, "")));
+  const [hash, setHash] = useState(() =>
+    typeof window === "undefined" ? "" : safeDecodeHash(window.location.hash),
+  );
 
   useEffect(() => {
-    const sync = () => setHash(window.location.hash.replace(/^#/, ""));
+    const sync = () => setHash(safeDecodeHash(window.location.hash));
     window.addEventListener("hashchange", sync);
     window.addEventListener("popstate", sync);
     return () => {
@@ -80,6 +92,19 @@ export function useHash(): string {
   }, []);
 
   return hash;
+}
+
+export function replaceHash(hash: string | null | undefined) {
+  if (typeof window === "undefined") return;
+  const normalized = hash ? `#${encodeURIComponent(hash)}` : "";
+  const next = `${window.location.pathname}${window.location.search}${normalized}`;
+  if (currentHref() === next) return;
+  try {
+    window.history.replaceState(window.history.state, "", next);
+  } catch {
+    /* ignore SecurityError under rapid updates */
+  }
+  window.dispatchEvent(new Event("hashchange"));
 }
 
 export function useSearchParams(): URLSearchParams {

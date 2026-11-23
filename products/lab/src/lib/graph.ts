@@ -185,6 +185,8 @@ export type Lineage = {
   self: string;
   ancestors: Set<string>;
   descendants: Set<string>;
+  ancestorLayers: string[][];
+  descendantLayers: string[][];
   directBefore: string[];
   directAfter: string[];
   contrasts: string[];
@@ -192,8 +194,28 @@ export type Lineage = {
   allActiveEdges: Set<string>;
 };
 
+function groupByLayer(slugs: Iterable<string>, levelOf: Map<string, number>): string[][] {
+  const buckets = new Map<number, string[]>();
+  for (const slug of slugs) {
+    const level = levelOf.get(slug) ?? 0;
+    const list = buckets.get(level);
+    if (list) list.push(slug);
+    else buckets.set(level, [slug]);
+  }
+  return [...buckets.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([, list]) => list.sort((a, b) => a.localeCompare(b)));
+}
+
 export function lineageOf(slug: string, studies: readonly StudyMeta[]): Lineage {
   const edges = afterEdges(studies);
+  const { layers, leftover } = afterKahn(studies);
+  const levelOf = new Map<string, number>();
+  layers.forEach((layer, idx) => {
+    for (const item of layer) levelOf.set(item, idx);
+  });
+  for (const item of leftover) levelOf.set(item, layers.length);
+
   const contrasts = contrastPairs(studies)
     .filter((p) => p.a === slug || p.b === slug)
     .map((p) => (p.a === slug ? p.b : p.a));
@@ -206,46 +228,51 @@ export function lineageOf(slug: string, studies: readonly StudyMeta[]): Lineage 
     if (e.from === slug) directAfter.push(e.to);
   }
 
-  // BFS / DFS ancestors
-  const ancestors = new Set<string>();
+  // BFS ancestors
+  const rawAncestors = new Set<string>();
   const ancestorQueue = [...directBefore];
   while (ancestorQueue.length > 0) {
     const curr = ancestorQueue.shift()!;
-    if (!ancestors.has(curr)) {
-      ancestors.add(curr);
+    if (!rawAncestors.has(curr)) {
+      rawAncestors.add(curr);
       for (const e of edges) {
-        if (e.to === curr && !ancestors.has(e.from)) {
+        if (e.to === curr && !rawAncestors.has(e.from)) {
           ancestorQueue.push(e.from);
         }
       }
     }
   }
 
-  // BFS / DFS descendants
-  const descendants = new Set<string>();
+  // BFS descendants
+  const rawDescendants = new Set<string>();
   const descendantQueue = [...directAfter];
   while (descendantQueue.length > 0) {
     const curr = descendantQueue.shift()!;
-    if (!descendants.has(curr)) {
-      descendants.add(curr);
+    if (!rawDescendants.has(curr)) {
+      rawDescendants.add(curr);
       for (const e of edges) {
-        if (e.from === curr && !descendants.has(e.to)) {
+        if (e.from === curr && !rawDescendants.has(e.to)) {
           descendantQueue.push(e.to);
         }
       }
     }
   }
 
+  // Topologically ordered from root to leaf
+  const ancestorLayers = groupByLayer(rawAncestors, levelOf);
+  const descendantLayers = groupByLayer(rawDescendants, levelOf);
+  const ancestors = new Set<string>(ancestorLayers.flat());
+  const descendants = new Set<string>(descendantLayers.flat());
+
+  const causalNodes = new Set<string>([slug, ...ancestors, ...descendants]);
   const allActiveNodes = new Set<string>([
-    slug,
-    ...ancestors,
-    ...descendants,
+    ...causalNodes,
     ...contrasts,
   ]);
 
   const allActiveEdges = new Set<string>();
   for (const e of edges) {
-    if (allActiveNodes.has(e.from) && allActiveNodes.has(e.to)) {
+    if (causalNodes.has(e.from) && causalNodes.has(e.to)) {
       allActiveEdges.add(`after:${e.from}>${e.to}`);
     }
   }
@@ -258,6 +285,8 @@ export function lineageOf(slug: string, studies: readonly StudyMeta[]): Lineage 
     self: slug,
     ancestors,
     descendants,
+    ancestorLayers,
+    descendantLayers,
     directBefore,
     directAfter,
     contrasts,

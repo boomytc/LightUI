@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ComponentType } from "react";
 import { ArrowUpRight, Monitor, Smartphone } from "lucide-react";
 import { BackLink } from "../components/BackLink";
 import { DeviceFrame } from "../components/DeviceFrame";
@@ -6,7 +6,7 @@ import { Page } from "../components/Page";
 import { RelatedDecisions } from "../components/RelatedDecisions";
 import { StudyPagination } from "../components/StudyPagination";
 import { CodeBlock, Markdown } from "../lib/Markdown";
-import { loadStudy, studyIdea } from "../lib/catalog";
+import { loadStudy } from "../lib/catalog";
 import { messages } from "../lib/i18n";
 import { studyTitle } from "../lib/localize";
 import { usePrefs } from "../lib/prefs";
@@ -37,12 +37,161 @@ export function StudyPage({ slug }: { slug: string }) {
   const tabRefs = useRef<Partial<Record<StudyTab, HTMLButtonElement | null>>>({});
   const skipFocus = useRef(true);
 
+  const [studyViewState, setStudyViewState] = useState<{
+    slug: string;
+    Component: ComponentType | undefined;
+    loaded: boolean;
+  }>(() => ({
+    slug,
+    Component: study?.getCachedStudyView(),
+    loaded: !study?.hasStudyView || Boolean(study?.getCachedStudyView()),
+  }));
+
+  const [stageViewState, setStageViewState] = useState<{
+    slug: string;
+    Component: ComponentType | undefined;
+    loaded: boolean;
+  }>(() => ({
+    slug,
+    Component: study?.getCachedStageView(),
+    loaded: !study?.hasStageView || Boolean(study?.getCachedStageView()),
+  }));
+
+  const [codeState, setCodeState] = useState<{
+    slug: string;
+    stageCode: string;
+    machinesCode: string | undefined;
+    loaded: boolean;
+  }>(() => ({
+    slug,
+    stageCode: study?.getCachedStageCode() ?? "",
+    machinesCode: study?.getCachedMachinesCode(),
+    loaded:
+      study?.getCachedStageCode() !== undefined &&
+      (!study?.hasMachinesCode || study?.getCachedMachinesCode() !== undefined),
+  }));
+
+  const [ideaState, setIdeaState] = useState<{
+    key: string;
+    source: string;
+    loaded: boolean;
+  }>(() => {
+    const cached = study?.getCachedIdea(locale);
+    return {
+      key: `${slug}:${locale}`,
+      source: cached ?? "",
+      loaded: cached !== undefined,
+    };
+  });
+
   useEffect(() => {
     setTab("play");
     setActiveCodeFile("stage");
     setUseDeviceFrame(GESTURE_STUDIES.has(slug));
     skipFocus.current = true;
   }, [slug]);
+
+  useEffect(() => {
+    if (!study || tab !== "play") return;
+    if (!study.hasStudyView) {
+      setStudyViewState({ slug, Component: undefined, loaded: true });
+      return;
+    }
+    const cached = study.getCachedStudyView();
+    if (cached) {
+      setStudyViewState({ slug, Component: cached, loaded: true });
+      return;
+    }
+    let cancelled = false;
+    setStudyViewState({ slug, Component: undefined, loaded: false });
+    study
+      .loadStudyView()
+      .then((Component) => {
+        if (!cancelled) setStudyViewState({ slug, Component, loaded: true });
+      })
+      .catch(() => {
+        if (!cancelled) setStudyViewState({ slug, Component: undefined, loaded: true });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, study, tab]);
+
+  useEffect(() => {
+    if (!study || tab !== "stage") return;
+    if (!study.hasStageView) {
+      setStageViewState({ slug, Component: undefined, loaded: true });
+      return;
+    }
+    const cached = study.getCachedStageView();
+    if (cached) {
+      setStageViewState({ slug, Component: cached, loaded: true });
+      return;
+    }
+    let cancelled = false;
+    setStageViewState({ slug, Component: undefined, loaded: false });
+    study
+      .loadStageView()
+      .then((Component) => {
+        if (!cancelled) setStageViewState({ slug, Component, loaded: true });
+      })
+      .catch(() => {
+        if (!cancelled) setStageViewState({ slug, Component: undefined, loaded: true });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, study, tab]);
+
+  useEffect(() => {
+    if (!study || tab !== "code") return;
+    const cachedStage = study.getCachedStageCode();
+    const cachedMachines = study.getCachedMachinesCode();
+    if (cachedStage !== undefined && (!study.hasMachinesCode || cachedMachines !== undefined)) {
+      setCodeState({
+        slug,
+        stageCode: cachedStage,
+        machinesCode: cachedMachines,
+        loaded: true,
+      });
+      return;
+    }
+    let cancelled = false;
+    setCodeState({ slug, stageCode: "", machinesCode: undefined, loaded: false });
+    Promise.all([study.loadStageCode(), study.loadMachinesCode()])
+      .then(([stageCode, machinesCode]) => {
+        if (!cancelled) setCodeState({ slug, stageCode, machinesCode, loaded: true });
+      })
+      .catch(() => {
+        if (!cancelled) setCodeState({ slug, stageCode: "", machinesCode: undefined, loaded: true });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, study, tab]);
+
+  useEffect(() => {
+    if (!study || tab !== "idea") return;
+    const key = `${slug}:${locale}`;
+    const cached = study.getCachedIdea(locale);
+    if (cached !== undefined) {
+      setIdeaState({ key, source: cached, loaded: true });
+      return;
+    }
+    let cancelled = false;
+    setIdeaState({ key, source: "", loaded: false });
+    study
+      .loadIdea(locale)
+      .then((source) => {
+        if (!cancelled) setIdeaState({ key, source, loaded: true });
+      })
+      .catch(() => {
+        if (!cancelled) setIdeaState({ key, source: "", loaded: true });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, study, tab, locale]);
 
   useEffect(() => {
     if (skipFocus.current) {
@@ -68,7 +217,21 @@ export function StudyPage({ slug }: { slug: string }) {
     );
   }
 
-  const { meta, StudyView, StageView, stageCode = "", machinesCode } = study;
+  const { meta } = study;
+  const StudyView = studyViewState.slug === slug ? studyViewState.Component : study.getCachedStudyView();
+  const studyViewLoaded = studyViewState.slug === slug ? studyViewState.loaded : Boolean(StudyView);
+  const StageView = stageViewState.slug === slug ? stageViewState.Component : study.getCachedStageView();
+  const stageViewLoaded = stageViewState.slug === slug ? stageViewState.loaded : Boolean(StageView);
+  const stageCode = codeState.slug === slug ? codeState.stageCode : (study.getCachedStageCode() ?? "");
+  const machinesCode = codeState.slug === slug ? codeState.machinesCode : study.getCachedMachinesCode();
+  const codeLoaded =
+    codeState.slug === slug
+      ? codeState.loaded
+      : study.getCachedStageCode() !== undefined &&
+        (!study.hasMachinesCode || study.getCachedMachinesCode() !== undefined);
+  const ideaKey = `${slug}:${locale}`;
+  const ideaSource = ideaState.key === ideaKey ? ideaState.source : (study.getCachedIdea(locale) ?? "");
+  const ideaLoaded = ideaState.key === ideaKey ? ideaState.loaded : study.getCachedIdea(locale) !== undefined;
   const title = studyTitle(meta, locale);
   const currentCode = activeCodeFile === "machines" && machinesCode ? machinesCode : stageCode;
   const currentFilename = activeCodeFile === "machines" ? "machines.ts" : "StageView.tsx";
@@ -162,13 +325,17 @@ export function StudyPage({ slug }: { slug: string }) {
         className="study-panel min-w-0"
       >
         {tab === "play" ? (
-          StudyView ? (
+          !studyViewLoaded ? (
+            <TabLoading />
+          ) : StudyView ? (
             <div className="study-play">{<StudyView />}</div>
           ) : (
             <p className="page-width py-12 text-[14px] text-fg-muted">{copy.noStudyView}</p>
           )
         ) : tab === "stage" ? (
-          StageView ? (
+          !stageViewLoaded ? (
+            <TabLoading />
+          ) : StageView ? (
             <div className="page-width py-10">
               <div className="mx-auto flex max-w-4xl flex-col items-center">
                 <div className="mb-6 flex w-full flex-wrap items-center justify-between gap-3">
@@ -208,7 +375,7 @@ export function StudyPage({ slug }: { slug: string }) {
                   <h2 className="text-[15px] font-semibold text-fg">{copy.codeHeading}</h2>
                   <p className="mt-0.5 text-[13px] text-fg-muted">{copy.codeDesc}</p>
                 </div>
-                {machinesCode ? (
+                {study.hasMachinesCode ? (
                   <div className="flex rounded-lg border border-border bg-surface-2 p-0.5 text-[12px]">
                     <button
                       type="button"
@@ -235,19 +402,27 @@ export function StudyPage({ slug }: { slug: string }) {
                   </div>
                 ) : null}
               </div>
-              <CodeBlock
-                code={currentCode}
-                filename={currentFilename}
-                copyLabel={copy.copyCode}
-                copiedLabel={copy.copiedCode}
-              />
+              {!codeLoaded ? (
+                <TabLoading compact />
+              ) : (
+                <CodeBlock
+                  code={currentCode}
+                  filename={currentFilename}
+                  copyLabel={copy.copyCode}
+                  copiedLabel={copy.copiedCode}
+                />
+              )}
             </div>
           </div>
         ) : (
           <div className="page-width py-12">
-            <article className="note-prose mx-auto max-w-4xl">
-              <Markdown source={studyIdea(study, locale)} />
-            </article>
+            {!ideaLoaded ? (
+              <TabLoading compact />
+            ) : (
+              <article className="note-prose mx-auto max-w-4xl">
+                <Markdown source={ideaSource} />
+              </article>
+            )}
           </div>
         )}
       </div>
@@ -257,6 +432,17 @@ export function StudyPage({ slug }: { slug: string }) {
         <StudyPagination slug={slug} locale={locale} />
       </div>
     </main>
+  );
+}
+
+function TabLoading({ compact = false }: { compact?: boolean }) {
+  return (
+    <div
+      className={compact ? "flex min-h-48 items-center justify-center" : "page-width flex min-h-72 items-center justify-center"}
+      aria-busy="true"
+    >
+      <div className="size-7 animate-spin rounded-full border-2 border-border border-t-accent" />
+    </div>
   );
 }
 
