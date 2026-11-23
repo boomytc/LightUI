@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { calculateHoldProgress, isHoldComplete } from "../../lib/machines";
 import { cn } from "../../lib/utils";
 import { MacWindow } from "../mac-window";
@@ -18,6 +18,12 @@ function HoldInner({ onReset }: { onReset: () => void }) {
   const start = useRef(0);
   const done = useRef(false);
 
+  useEffect(() => {
+    return () => {
+      cancelAnimationFrame(raf.current);
+    };
+  }, []);
+
   const stop = () => {
     cancelAnimationFrame(raf.current);
     setHolding(false);
@@ -27,6 +33,7 @@ function HoldInner({ onReset }: { onReset: () => void }) {
   const begin = (event: PointerEvent<HTMLButtonElement>) => {
     if (deleted || done.current) return;
     event.preventDefault();
+    cancelAnimationFrame(raf.current);
     try {
       event.currentTarget.setPointerCapture(event.pointerId);
     } catch {

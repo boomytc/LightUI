@@ -177,8 +177,7 @@ html {
 
 .study-play {
   min-width: 0;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
+  overflow-x: clip;
 }
 
 .study-panel:focus {

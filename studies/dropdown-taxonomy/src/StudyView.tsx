@@ -6,7 +6,7 @@ export function StudyView() {
   const locale = useLocale();
 
   return (
-    <div className="page-width min-w-0 overflow-x-hidden pb-20">
+    <div className="page-width min-w-0 overflow-x-clip pb-20">
       <section className="grid gap-8 pt-4 pb-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pt-8 lg:pb-12">
         <div className="min-w-0">
           <p className="mb-3 font-mono text-[11px] tracking-[0.18em] text-accent uppercase">
