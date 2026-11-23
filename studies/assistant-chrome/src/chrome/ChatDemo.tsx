@@ -33,10 +33,11 @@ export function ChatDemo() {
   const [messages, setMessages] = useState<Msg[]>(() => seedMessages(readLocale()));
   const [draft, setDraft] = useState("");
   const composing = useRef(false);
-  const endRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ block: "end" });
+    const list = listRef.current;
+    if (list) list.scrollTop = list.scrollHeight;
   }, [messages]);
 
   function send(text: string) {
@@ -76,7 +77,10 @@ export function ChatDemo() {
           </div>
         </div>
 
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden px-3 py-3">
+        <div
+          ref={listRef}
+          className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden px-3 py-3"
+        >
           {messages.map((m) => (
             <div
               key={m.id}
@@ -90,7 +94,6 @@ export function ChatDemo() {
               {m.content}
             </div>
           ))}
-          <div ref={endRef} />
         </div>
 
         <form className="flex items-end gap-2 border-t border-border p-2.5" onSubmit={onSubmit}>
