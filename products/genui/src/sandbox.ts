@@ -93,7 +93,8 @@ export const SANDBOX_CALLBACKS = [
       properties: {
         url: {
           type: "string",
-          description: "Absolute URL. Trimmed, then accepted only when the protocol is https.",
+          description:
+            "Absolute https:// URL without credentials. Trimmed, then accepted only when the protocol is https.",
         },
       },
       required: ["url"],
