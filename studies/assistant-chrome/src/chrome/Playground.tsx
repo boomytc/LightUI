@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { Check, Copy } from "lucide-react";
 import { CONTRASTS, KINDS, type KindId } from "../lib/kinds";
 import { chromeVisible, needsSelection, occupiesPage } from "../lib/machines";
@@ -50,6 +50,7 @@ export function Playground({
   onActive: (id: KindId) => void;
 }) {
   const locale = useLocale();
+  const navRef = useRef<HTMLElement>(null);
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0]!;
   const contrast = CONTRASTS.find((row) => row.id === active) ?? CONTRASTS[0]!;
 
@@ -61,21 +62,31 @@ export function Playground({
       if (n >= 1 && n <= KINDS.length) {
         e.preventDefault();
         onActive(KINDS[n - 1]!.id);
-        return;
-      }
-      const i = KINDS.findIndex((k) => k.id === active);
-      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-        e.preventDefault();
-        onActive(KINDS[(i + 1) % KINDS.length]!.id);
-      }
-      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-        e.preventDefault();
-        onActive(KINDS[(i - 1 + KINDS.length) % KINDS.length]!.id);
       }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active, onActive]);
+  }, [onActive]);
+
+  function onNavKeyDown(e: ReactKeyboardEvent<HTMLElement>) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const i = KINDS.findIndex((k) => k.id === active);
+    let nextIdx = -1;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      nextIdx = (i + 1) % KINDS.length;
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      nextIdx = (i - 1 + KINDS.length) % KINDS.length;
+    } else if (e.key === "Home") {
+      nextIdx = 0;
+    } else if (e.key === "End") {
+      nextIdx = KINDS.length - 1;
+    }
+    if (nextIdx === -1) return;
+    e.preventDefault();
+    const nextId = KINDS[nextIdx]!.id;
+    onActive(nextId);
+    navRef.current?.querySelector<HTMLButtonElement>(`[data-kind="${nextId}"]`)?.focus();
+  }
 
   return (
     <div className="min-w-0">
@@ -87,8 +98,10 @@ export function Playground({
       </div>
 
       <nav
+        ref={navRef}
         data-kind-nav
         aria-label={locale === "en" ? "Where the assistant lives" : "助手住哪"}
+        onKeyDown={onNavKeyDown}
         className="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-6"
       >
         {KINDS.map((kind) => {
@@ -247,12 +260,23 @@ function KindStage({ id }: { id: KindId }) {
 
 function SpecCard({ text, locale }: { text: string; locale: Locale }) {
   const [copied, setCopied] = useState(false);
+  const timerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+    };
+  }, []);
 
   async function copy() {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => {
+        timerRef.current = null;
+        setCopied(false);
+      }, 1600);
     } catch {
       setCopied(false);
     }

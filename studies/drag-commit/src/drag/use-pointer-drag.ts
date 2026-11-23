@@ -90,6 +90,7 @@ export function usePointerDrag(options: {
       onPointerDown: (e: ReactPointerEvent<HTMLElement>) => {
         if (optsRef.current.disabled) return;
         if (e.button !== 0) return;
+        if (!e.isPrimary || pendingRef.current || liveRef.current) return;
         e.preventDefault();
         const el = e.currentTarget;
         const rect = el.getBoundingClientRect();
@@ -152,13 +153,23 @@ export function usePointerDrag(options: {
           finish("drop");
         };
 
+        const onCancel = (ev: PointerEvent) => {
+          if (ev.pointerId !== session.pointerId) return;
+          session.x = ev.clientX;
+          session.y = ev.clientY;
+          const snapshot = { ...session, path: session.path.slice() };
+          liveRef.current = snapshot;
+          pendingRef.current = snapshot;
+          finish("cancel");
+        };
+
         window.addEventListener("pointermove", onMove);
         window.addEventListener("pointerup", onUp);
-        window.addEventListener("pointercancel", onUp);
+        window.addEventListener("pointercancel", onCancel);
         clearListeners.current = () => {
           window.removeEventListener("pointermove", onMove);
           window.removeEventListener("pointerup", onUp);
-          window.removeEventListener("pointercancel", onUp);
+          window.removeEventListener("pointercancel", onCancel);
         };
       },
     }),

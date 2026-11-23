@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { CANVAS_GROW, CANVAS_SEED } from "../lib/fixtures";
 import { KINDS } from "../lib/kinds";
-import { pick, useLocale } from "../lib/site-locale";
+import { pick, useLocale, type Localized } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import { Btn, Window } from "./Frame";
 
@@ -9,8 +9,8 @@ type Tone = "note" | "note-3" | "chip";
 
 type Card = {
   id: string;
-  title: string;
-  body: string;
+  title: Localized;
+  body: Localized;
   x: number;
   y: number;
   tone: Tone;
@@ -24,8 +24,8 @@ export function CanvasDemo() {
   const [cards, setCards] = useState<Card[]>(() =>
     CANVAS_SEED.map((c) => ({
       id: c.id,
-      title: pick(c.title, locale),
-      body: pick(c.body, locale),
+      title: c.title,
+      body: c.body,
       x: c.x,
       y: c.y,
       tone: c.tone,
@@ -34,8 +34,8 @@ export function CanvasDemo() {
   const [selected, setSelected] = useState("b");
   const [pan, setPan] = useState({ x: 8, y: 6 });
   const [scale, setScale] = useState(1);
-  const panDrag = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
-  const cardDrag = useRef<{ id: string; dx: number; dy: number } | null>(null);
+  const panDrag = useRef<{ pointerId: number; x: number; y: number; px: number; py: number } | null>(null);
+  const cardDrag = useRef<{ id: string; pointerId: number; dx: number; dy: number } | null>(null);
   const panRef = useRef(pan);
   const scaleRef = useRef(scale);
   panRef.current = pan;
@@ -57,15 +57,37 @@ export function CanvasDemo() {
   function clientToWorld(cx: number, cy: number) {
     const rect = vpRef.current!.getBoundingClientRect();
     return {
-      x: (cx - rect.left - pan.x) / scale,
-      y: (cy - rect.top - pan.y) / scale,
+      x: (cx - rect.left - panRef.current.x) / scaleRef.current,
+      y: (cy - rect.top - panRef.current.y) / scaleRef.current,
     };
+  }
+
+  function endDrag(e?: ReactPointerEvent<HTMLDivElement>) {
+    if (e) {
+      if (panDrag.current && panDrag.current.pointerId === e.pointerId) {
+        panDrag.current = null;
+      }
+      if (cardDrag.current && cardDrag.current.pointerId === e.pointerId) {
+        cardDrag.current = null;
+      }
+      try {
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+          e.currentTarget.releasePointerCapture(e.pointerId);
+        }
+      } catch {
+        /* capture already released */
+      }
+      return;
+    }
+    panDrag.current = null;
+    cardDrag.current = null;
   }
 
   useEffect(() => {
     const el = vpRef.current;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
       const rect = el.getBoundingClientRect();
       const s = scaleRef.current;
@@ -87,8 +109,8 @@ export function CanvasDemo() {
     if (!selectedCard) return;
     const born: Card[] = CANVAS_GROW.map((item, i) => ({
       id: `g-${selectedCard.id}-${i}`,
-      title: pick(item.title, locale),
-      body: pick(item.body, locale),
+      title: item.title,
+      body: item.body,
       x: selectedCard.x + 148,
       y: selectedCard.y + (i - 0.5) * 88,
       tone: i === 0 ? "note" : "note-3",
@@ -111,27 +133,31 @@ export function CanvasDemo() {
         data-canvas
         className="relative h-full min-w-0 cursor-grab overflow-hidden touch-none active:cursor-grabbing"
         onPointerDown={(e) => {
+          if (!e.isPrimary || e.button !== 0) return;
           if ((e.target as HTMLElement).closest("[data-card]")) return;
-          panDrag.current = { x: pan.x, y: pan.y, px: e.clientX, py: e.clientY };
-          (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+          panDrag.current = { pointerId: e.pointerId, x: pan.x, y: pan.y, px: e.clientX, py: e.clientY };
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+          } catch {
+            /* pointer cannot be captured */
+          }
         }}
         onPointerMove={(e) => {
-          if (cardDrag.current) {
+          if (cardDrag.current && cardDrag.current.pointerId === e.pointerId) {
             const w = clientToWorld(e.clientX, e.clientY);
             const { id, dx, dy } = cardDrag.current;
             setCards((prev) => prev.map((c) => (c.id === id ? { ...c, x: w.x - dx, y: w.y - dy } : c)));
             return;
           }
-          if (!panDrag.current) return;
+          if (!panDrag.current || panDrag.current.pointerId !== e.pointerId) return;
           setPan({
             x: panDrag.current.x + (e.clientX - panDrag.current.px),
             y: panDrag.current.y + (e.clientY - panDrag.current.py),
           });
         }}
-        onPointerUp={() => {
-          panDrag.current = null;
-          cardDrag.current = null;
-        }}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onLostPointerCapture={() => endDrag()}
       >
         <div
           className="chrome-canvas absolute inset-0 origin-top-left"
@@ -163,10 +189,16 @@ export function CanvasDemo() {
               type="button"
               key={card.id}
               onPointerDown={(e) => {
+                if (!e.isPrimary || e.button !== 0) return;
                 e.stopPropagation();
                 setSelected(card.id);
                 const w = clientToWorld(e.clientX, e.clientY);
-                cardDrag.current = { id: card.id, dx: w.x - card.x, dy: w.y - card.y };
+                cardDrag.current = { id: card.id, pointerId: e.pointerId, dx: w.x - card.x, dy: w.y - card.y };
+                try {
+                  vpRef.current?.setPointerCapture(e.pointerId);
+                } catch {
+                  /* pointer cannot be captured */
+                }
               }}
               className={cn(
                 "absolute w-28 rounded-xl p-2.5 text-left shadow-card",
@@ -177,13 +209,15 @@ export function CanvasDemo() {
               )}
               style={{ left: card.x, top: card.y }}
             >
-              <p className="text-[12px] font-medium leading-snug">{card.title}</p>
-              <p className="mt-1 text-[10px] text-fg-muted">{card.body}</p>
+              <p className="text-[12px] font-medium leading-snug">{pick(card.title, locale)}</p>
+              <p className="mt-1 text-[10px] text-fg-muted">{pick(card.body, locale)}</p>
             </button>
           ))}
         </div>
         <p className="pointer-events-none absolute bottom-2 left-3 text-[10px] text-fg-subtle">
-          {locale === "en" ? "Drag to pan · cards are nodes" : "拖动画布平移 · 点子是卡片"}
+          {locale === "en"
+            ? "Drag to pan · Ctrl/⌘ + scroll to zoom · cards are nodes"
+            : "拖动画布平移 · Ctrl/⌘ + 滚轮缩放 · 点子是卡片"}
         </p>
       </div>
     </Window>

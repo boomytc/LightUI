@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { SLIDES } from "../lib/fixtures";
 import {
   accordionWeights,
@@ -123,8 +123,19 @@ export function StackMotion({ index, next, prev, jump, locale }: MotionProps) {
   const [fly, setFly] = useState<number | null>(null);
   const origin = useRef({ x: 0, y: 0 });
   const lock = useRef(false);
+  const timerRef = useRef<number | null>(null);
   const count = SLIDES.length;
   const visible = [0, 1, 2].map((depth) => wrapIndex(index + depth, count));
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== null) {
+        window.clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+      lock.current = false;
+    };
+  }, []);
 
   function peel(dir: 1 | -1) {
     if (lock.current) return;
@@ -135,7 +146,9 @@ export function StackMotion({ index, next, prev, jump, locale }: MotionProps) {
     }
     lock.current = true;
     setFly(dir * 420);
-    window.setTimeout(() => {
+    if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => {
+      timerRef.current = null;
       if (dir > 0) next();
       else prev();
       setFly(null);
@@ -233,10 +246,31 @@ export function FlipMotion({ index, next, prev, jump, locale }: MotionProps) {
   const [phase, setPhase] = useState<"idle" | "next" | "prev">("idle");
   const [flipped, setFlipped] = useState(false);
   const lock = useRef(false);
+  const raf1Ref = useRef<number | null>(null);
+  const raf2Ref = useRef<number | null>(null);
+  const timerRef = useRef<number | null>(null);
   const count = SLIDES.length;
   const current = SLIDES[index];
   const upcoming = SLIDES[wrapIndex(index + 1, count)];
   const previous = SLIDES[wrapIndex(index - 1, count)];
+
+  useEffect(() => {
+    return () => {
+      if (raf1Ref.current !== null) {
+        cancelAnimationFrame(raf1Ref.current);
+        raf1Ref.current = null;
+      }
+      if (raf2Ref.current !== null) {
+        cancelAnimationFrame(raf2Ref.current);
+        raf2Ref.current = null;
+      }
+      if (timerRef.current !== null) {
+        window.clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+      lock.current = false;
+    };
+  }, []);
 
   function turn(dir: "next" | "prev") {
     if (lock.current) return;
@@ -248,10 +282,18 @@ export function FlipMotion({ index, next, prev, jump, locale }: MotionProps) {
     lock.current = true;
     setFlipped(false);
     setPhase(dir);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => setFlipped(true));
+    if (raf1Ref.current !== null) cancelAnimationFrame(raf1Ref.current);
+    if (raf2Ref.current !== null) cancelAnimationFrame(raf2Ref.current);
+    if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+    raf1Ref.current = requestAnimationFrame(() => {
+      raf1Ref.current = null;
+      raf2Ref.current = requestAnimationFrame(() => {
+        raf2Ref.current = null;
+        setFlipped(true);
+      });
     });
-    window.setTimeout(() => {
+    timerRef.current = window.setTimeout(() => {
+      timerRef.current = null;
       if (dir === "next") next();
       else prev();
       setPhase("idle");

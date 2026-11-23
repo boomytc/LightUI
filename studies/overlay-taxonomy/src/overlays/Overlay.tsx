@@ -5,6 +5,7 @@ import {
   type ReactNode,
   type RefObject,
 } from "react";
+import { useLocale } from "../lib/site-locale";
 import { cn } from "../lib/utils";
 import "./overlay.css";
 import { usePresence } from "./use-presence";
@@ -22,22 +23,36 @@ function useEsc(active: boolean, onClose: () => void) {
   }, [active, onClose]);
 }
 
+const FOCUSABLE_SELECTOR =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+function getFocusable(root: HTMLElement): HTMLElement[] {
+  return Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+    (node) => !node.hasAttribute("disabled") && node.getAttribute("aria-hidden") !== "true",
+  );
+}
+
 function useFocusTrap(active: boolean, ref: RefObject<HTMLElement | null>) {
   useEffect(() => {
     if (!active || !ref.current) return;
     const root = ref.current;
     const prev = document.activeElement as HTMLElement | null;
-    const nodes = root.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-    );
-    nodes[0]?.focus();
+    const initial = getFocusable(root);
+    initial[0]?.focus();
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key !== "Tab" || nodes.length === 0) return;
-      const list = Array.from(nodes).filter((n) => !n.hasAttribute("disabled"));
+      if (event.key !== "Tab") return;
+      const list = getFocusable(root);
+      if (list.length === 0) {
+        event.preventDefault();
+        return;
+      }
       const first = list[0];
       const last = list[list.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
+      if (!root.contains(document.activeElement)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first)?.focus();
+      } else if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
         last?.focus();
       } else if (!event.shiftKey && document.activeElement === last) {
@@ -48,7 +63,7 @@ function useFocusTrap(active: boolean, ref: RefObject<HTMLElement | null>) {
     root.addEventListener("keydown", onKey);
     return () => {
       root.removeEventListener("keydown", onKey);
-      prev?.focus();
+      if (prev?.isConnected) prev.focus();
     };
   }, [active, ref]);
 }
@@ -70,6 +85,7 @@ function Scrim({
   tone: "strong" | "light";
   onClick?: () => void;
 }) {
+  const locale = useLocale();
   const className = cn(
     "absolute inset-0 z-40",
     tone === "strong" ? "bg-fg/45 backdrop-blur-[3px]" : "bg-fg/18",
@@ -79,7 +95,7 @@ function Scrim({
     return (
       <button
         type="button"
-        aria-label="关闭遮罩"
+        aria-label={locale === "en" ? "Close backdrop" : "关闭遮罩"}
         className={cn(className, "cursor-default")}
         onClick={onClick}
       />
@@ -157,6 +173,7 @@ export function Drawer({
   children: ReactNode;
   footer?: ReactNode;
 }) {
+  const locale = useLocale();
   const { mounted, closing } = usePresence(open, OUT.drawer);
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
@@ -189,7 +206,7 @@ export function Drawer({
             type="button"
             onClick={onClose}
             className="grid size-9 shrink-0 place-items-center rounded-md text-fg-muted hover:bg-surface-2 hover:text-fg"
-            aria-label="关闭"
+            aria-label={locale === "en" ? "Close" : "关闭"}
           >
             <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M6 6l12 12M18 6L6 18" />
@@ -300,10 +317,12 @@ export function Sheet({
   title: string;
   children: ReactNode;
 }) {
+  const locale = useLocale();
   const { mounted, closing } = usePresence(open, OUT.sheet);
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   useEsc(open, onClose);
+  useFocusTrap(open && mounted && !closing, panelRef);
 
   if (!mounted) return null;
 
@@ -331,7 +350,7 @@ export function Sheet({
             type="button"
             onClick={onClose}
             className="grid size-9 shrink-0 place-items-center rounded-md text-fg-muted hover:bg-surface-2 hover:text-fg"
-            aria-label="关闭"
+            aria-label={locale === "en" ? "Close" : "关闭"}
           >
             <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M6 6l12 12M18 6L6 18" />

@@ -49,29 +49,29 @@
 }
 
 .chrome-mark.is-on .chrome-mark-page {
-  fill: rgb(255 255 255 / 0.08);
-  stroke: rgb(255 255 255 / 0.22);
+  fill: color-mix(in oklab, var(--color-surface) 8%, transparent);
+  stroke: color-mix(in oklab, var(--color-surface) 24%, transparent);
 }
 
 .chrome-mark.is-on .chrome-mark-host {
-  fill: rgb(255 255 255 / 0.12);
+  fill: color-mix(in oklab, var(--color-surface) 14%, transparent);
 }
 
 .chrome-mark.is-on .chrome-mark-mass {
-  fill: #fff;
+  fill: var(--color-surface);
 }
 
 .chrome-mark.is-on .chrome-mark-line {
-  stroke: rgb(255 255 255 / 0.38);
+  stroke: color-mix(in oklab, var(--color-surface) 40%, transparent);
 }
 
 .chrome-mark.is-on .chrome-mark-link {
-  stroke: #fff;
+  stroke: var(--color-surface);
   stroke-opacity: 0.45;
 }
 
 .chrome-mark.is-on .chrome-mark-ghost {
-  stroke: rgb(255 255 255 / 0.4);
+  stroke: color-mix(in oklab, var(--color-surface) 42%, transparent);
 }
 
 .chrome-stage {

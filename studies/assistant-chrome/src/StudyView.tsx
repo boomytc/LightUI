@@ -22,10 +22,14 @@ export function StudyView() {
     <div className="page-width min-w-0 overflow-x-hidden pb-20">
       <section className="grid gap-8 pb-10 pt-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:gap-16 lg:pb-12 lg:pt-8">
         <div className="min-w-0">
-          <h1 className="text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
-            {locale === "en"
-              ? "They are all assistants. They do not live in the same place."
-              : "看起来都是助手，住的地方却完全不同。"}
+          <h1 className="text-balance text-[2rem] font-semibold leading-[1.15] tracking-tight text-fg sm:text-[2.6rem]">
+            {locale === "en" ? (
+              "They are all assistants. They do not live in the same place."
+            ) : (
+              <>
+                看起来都是助手，<span className="whitespace-nowrap">住的地方</span>却完全不同。
+              </>
+            )}
           </h1>
           <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-fg-muted">
             {locale === "en"

@@ -1,5 +1,5 @@
 import { CropLab } from "./CropLab";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { Check, Copy } from "lucide-react";
 import "../align.css";
 import { KINDS, kindMeta, type KindId } from "../lib/kinds";
@@ -20,6 +20,7 @@ const TARGETS: { id: AlignTarget; zh: string; en: string }[] = [
 
 export function Playground() {
   const locale = useLocale();
+  const navRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState<KindId>("baseline");
   const meta = KINDS.find((k) => k.id === active) ?? KINDS[0]!;
   const target = aligns(meta.id);
@@ -32,7 +33,7 @@ export function Playground() {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const el = e.target as HTMLElement | null;
-      if (el && ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName)) return;
+      if (el && (["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName) || el.isContentEditable)) return;
       if (e.key >= "1" && e.key <= "9") {
         const n = Number(e.key);
         if (n <= KINDS.length) {
@@ -48,27 +49,31 @@ export function Playground() {
       ) {
         e.preventDefault();
         select(KINDS[10]!.id);
-      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-        e.preventDefault();
-        const cur = KINDS.findIndex((k) => k.id === active);
-        const next = (cur + 1) % KINDS.length;
-        select(KINDS[next]!.id);
-      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-        e.preventDefault();
-        const cur = KINDS.findIndex((k) => k.id === active);
-        const prev = (cur - 1 + KINDS.length) % KINDS.length;
-        select(KINDS[prev]!.id);
-      } else if (e.key === "Home") {
-        e.preventDefault();
-        select(KINDS[0]!.id);
-      } else if (e.key === "End") {
-        e.preventDefault();
-        select(KINDS[KINDS.length - 1]!.id);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active]);
+  }, []);
+
+  function onNavKeyDown(e: ReactKeyboardEvent<HTMLElement>) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const cur = KINDS.findIndex((k) => k.id === active);
+    let nextIdx = -1;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      nextIdx = (cur + 1) % KINDS.length;
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      nextIdx = (cur - 1 + KINDS.length) % KINDS.length;
+    } else if (e.key === "Home") {
+      nextIdx = 0;
+    } else if (e.key === "End") {
+      nextIdx = KINDS.length - 1;
+    }
+    if (nextIdx === -1) return;
+    e.preventDefault();
+    const nextId = KINDS[nextIdx]!.id;
+    select(nextId);
+    navRef.current?.querySelector<HTMLButtonElement>(`[data-kind="${nextId}"]`)?.focus();
+  }
 
   return (
     <div className="grid min-w-0 gap-5">
@@ -93,7 +98,9 @@ export function Playground() {
       </div>
 
       <nav
+        ref={navRef}
         aria-label={locale === "en" ? "Alignment spells" : "对齐咒语"}
+        onKeyDown={onNavKeyDown}
         className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
       >
         {KINDS.map((kind, idx) => {

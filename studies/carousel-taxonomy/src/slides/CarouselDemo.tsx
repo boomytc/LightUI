@@ -92,6 +92,7 @@ function FrameCarousel({
           <button
             type="button"
             disabled={reduced}
+            aria-pressed={!reduced && playing}
             onClick={() => setPlaying((on) => !on)}
             className="shrink-0 rounded-md px-1.5 py-0.5 text-[11px] text-fg-subtle hover:text-fg disabled:hover:text-fg-subtle"
           >

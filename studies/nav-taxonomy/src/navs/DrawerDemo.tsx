@@ -61,7 +61,11 @@ export function DrawerDemo({ defaultOpen = false }: { defaultOpen?: boolean } = 
           <FakeLines />
         </div>
 
-        <div
+        <button
+          type="button"
+          tabIndex={open ? 0 : -1}
+          aria-hidden={!open}
+          aria-label={locale === "en" ? "Close menu backdrop" : "关闭菜单遮罩"}
           className={cn(
             "nav-veil absolute inset-0 z-30 bg-fg/35 backdrop-blur-[2px]",
             open ? "opacity-100" : "pointer-events-none opacity-0",
@@ -80,6 +84,7 @@ export function DrawerDemo({ defaultOpen = false }: { defaultOpen?: boolean } = 
             <span className="text-[13px] font-medium">{locale === "en" ? "Menu" : "菜单"}</span>
             <button
               type="button"
+              tabIndex={open ? 0 : -1}
               aria-label={locale === "en" ? "Close menu" : "关闭菜单"}
               onClick={close}
               className="grid size-9 place-items-center rounded-md hover:bg-surface-2"
@@ -92,6 +97,7 @@ export function DrawerDemo({ defaultOpen = false }: { defaultOpen?: boolean } = 
               <button
                 key={item.id}
                 type="button"
+                tabIndex={open ? 0 : -1}
                 onClick={close}
                 className="rounded-md px-3 py-2.5 text-left text-[14px] text-fg-muted hover:bg-surface-2 hover:text-fg"
               >

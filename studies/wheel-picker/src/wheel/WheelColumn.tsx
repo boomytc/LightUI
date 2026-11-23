@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import {
   calcCylinderVisual,
   calcItemOffset,
@@ -25,10 +25,18 @@ export function WheelColumn({
   onVisualFrame?: (frame: WheelVisualFrame) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [scrollTop, setScrollTop] = useState(0);
   const isInternalScroll = useRef(false);
   const rafRef = useRef(0);
+  const settleTimerRef = useRef<number | null>(null);
+  const programmaticTargetRef = useRef<number | null>(null);
+  const programmaticTimerRef = useRef<number | null>(null);
   const reduceMotion = useRef(false);
+  const valueRef = useRef(value);
+  const onChangeRef = useRef(onChange);
+  valueRef.current = value;
+  onChangeRef.current = onChange;
 
   function emitFrame(top: number) {
     const { index } = resolveScrollIndex(top, itemHeight, items.length);
@@ -39,8 +47,61 @@ export function WheelColumn({
     });
   }
 
+  function clearProgrammaticLock() {
+    programmaticTargetRef.current = null;
+    if (programmaticTimerRef.current !== null) {
+      window.clearTimeout(programmaticTimerRef.current);
+      programmaticTimerRef.current = null;
+    }
+  }
+
+  function settle() {
+    if (settleTimerRef.current !== null) {
+      window.clearTimeout(settleTimerRef.current);
+      settleTimerRef.current = null;
+    }
+    const target = containerRef.current;
+    if (!target) return;
+    clearProgrammaticLock();
+    const { index, snapScrollTop } = resolveScrollIndex(target.scrollTop, itemHeight, items.length);
+    const nextVal = items[index];
+    if (nextVal !== undefined && nextVal !== valueRef.current) {
+      isInternalScroll.current = true;
+      onChangeRef.current(nextVal);
+    }
+    if (Math.abs(target.scrollTop - snapScrollTop) < 0.5) return;
+    isInternalScroll.current = true;
+    target.scrollTo({
+      top: snapScrollTop,
+      behavior: reduceMotion.current ? "auto" : "smooth",
+    });
+  }
+
   useEffect(() => {
-    reduceMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => {
+      reduceMotion.current = mq.matches;
+    };
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = 0;
+      }
+      if (settleTimerRef.current !== null) {
+        window.clearTimeout(settleTimerRef.current);
+        settleTimerRef.current = null;
+      }
+      if (programmaticTimerRef.current !== null) {
+        window.clearTimeout(programmaticTimerRef.current);
+        programmaticTimerRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -49,6 +110,7 @@ export function WheelColumn({
       isInternalScroll.current = false;
       return;
     }
+    clearProgrammaticLock();
     const idx = items.indexOf(value);
     if (idx !== -1) {
       const top = idx * itemHeight;
@@ -61,49 +123,98 @@ export function WheelColumn({
   useEffect(() => {
     const column = containerRef.current;
     if (!column) return;
-    function settle() {
-      const target = containerRef.current;
-      if (!target) return;
-      const { snapScrollTop } = resolveScrollIndex(target.scrollTop, itemHeight, items.length);
-      if (Math.abs(target.scrollTop - snapScrollTop) < 0.5) return;
-      isInternalScroll.current = true;
-      target.scrollTo({
-        top: snapScrollTop,
-        behavior: reduceMotion.current ? "auto" : "smooth",
-      });
-    }
-    column.addEventListener("scrollend", settle);
-    return () => column.removeEventListener("scrollend", settle);
-  }, [itemHeight, items.length]);
+    const onScrollEnd = () => settle();
+    column.addEventListener("scrollend", onScrollEnd);
+    return () => column.removeEventListener("scrollend", onScrollEnd);
+  }, [itemHeight, items]);
 
-  function handleClickItem(val: number) {
-    const idx = items.indexOf(val);
-    if (idx === -1) return;
+  function selectIndex(idx: number, focusOption = false) {
+    const clamped = Math.max(0, Math.min(items.length - 1, idx));
+    const val = items[clamped];
+    if (val === undefined) return;
+    const targetTop = clamped * itemHeight;
+    const el = containerRef.current;
+
+    if (focusOption) {
+      optionRefs.current[clamped]?.focus({ preventScroll: true });
+    }
+
     isInternalScroll.current = true;
     onChange(val);
-    containerRef.current?.scrollTo({
-      top: idx * itemHeight,
-      behavior: reduceMotion.current ? "auto" : "smooth",
+
+    if (!el) return;
+    if (reduceMotion.current || Math.abs(el.scrollTop - targetTop) < 0.5) {
+      clearProgrammaticLock();
+      el.scrollTop = targetTop;
+      setScrollTop(targetTop);
+      emitFrame(targetTop);
+      return;
+    }
+
+    clearProgrammaticLock();
+    programmaticTargetRef.current = targetTop;
+    programmaticTimerRef.current = window.setTimeout(() => {
+      programmaticTargetRef.current = null;
+      programmaticTimerRef.current = null;
+    }, 650);
+    el.scrollTo({
+      top: targetTop,
+      behavior: "smooth",
     });
+  }
+
+  function handleKeyDown(e: ReactKeyboardEvent<HTMLDivElement>) {
+    const currentIdx = Math.max(0, items.indexOf(value));
+    let nextIdx = -1;
+    if (e.key === "ArrowDown") {
+      nextIdx = Math.min(items.length - 1, currentIdx + 1);
+    } else if (e.key === "ArrowUp") {
+      nextIdx = Math.max(0, currentIdx - 1);
+    } else if (e.key === "PageDown") {
+      nextIdx = Math.min(items.length - 1, currentIdx + 5);
+    } else if (e.key === "PageUp") {
+      nextIdx = Math.max(0, currentIdx - 5);
+    } else if (e.key === "Home") {
+      nextIdx = 0;
+    } else if (e.key === "End") {
+      nextIdx = items.length - 1;
+    }
+    if (nextIdx === -1) return;
+    e.preventDefault();
+    selectIndex(nextIdx, true);
   }
 
   const stageHeight = 200;
   const paddingY = Math.max(0, (stageHeight - itemHeight) / 2);
   const activeIndex = itemHeight > 0 ? scrollTop / itemHeight : 0;
+  const selectedIndex = Math.max(0, items.indexOf(value));
 
   return (
     <div
       ref={containerRef}
       role="listbox"
       aria-label={label}
+      onKeyDown={handleKeyDown}
+      onPointerDown={clearProgrammaticLock}
+      onWheel={clearProgrammaticLock}
       onScroll={(e) => {
         const top = e.currentTarget.scrollTop;
-        const { index } = resolveScrollIndex(top, itemHeight, items.length);
-        const nextVal = items[index];
-        if (nextVal !== undefined && nextVal !== value) {
-          isInternalScroll.current = true;
-          onChange(nextVal);
+        if (programmaticTargetRef.current !== null) {
+          if (Math.abs(top - programmaticTargetRef.current) < 1) {
+            clearProgrammaticLock();
+          }
+        } else {
+          const { index } = resolveScrollIndex(top, itemHeight, items.length);
+          const nextVal = items[index];
+          if (nextVal !== undefined && nextVal !== valueRef.current) {
+            isInternalScroll.current = true;
+            onChangeRef.current(nextVal);
+          }
         }
+        if (settleTimerRef.current !== null) {
+          window.clearTimeout(settleTimerRef.current);
+        }
+        settleTimerRef.current = window.setTimeout(settle, 160);
         if (rafRef.current) return;
         rafRef.current = requestAnimationFrame(() => {
           rafRef.current = 0;
@@ -126,10 +237,14 @@ export function WheelColumn({
         return (
           <button
             key={n}
+            ref={(node) => {
+              optionRefs.current[idx] = node;
+            }}
             type="button"
             role="option"
+            tabIndex={idx === selectedIndex ? 0 : -1}
             aria-selected={emphasized}
-            onClick={() => handleClickItem(n)}
+            onClick={() => selectIndex(idx)}
             className="wheel-glyph"
             style={cylinderAppearance(visual, enableDepth, emphasized)}
           >

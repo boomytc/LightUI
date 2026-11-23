@@ -15,10 +15,20 @@ export function ScrollspyDemo() {
   const locale = useLocale();
   const rootRef = useRef<HTMLDivElement>(null);
   const lock = useRef(false);
+  const lockTimerRef = useRef<number | null>(null);
   const [active, setActive] = useState(SECTIONS[0].id);
   const activeRef = useRef(active);
   const seen = useRef<Record<string, { id: string; intersecting: boolean; ratio: number }>>({});
   activeRef.current = active;
+
+  useEffect(() => {
+    return () => {
+      if (lockTimerRef.current !== null) {
+        window.clearTimeout(lockTimerRef.current);
+        lockTimerRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -50,10 +60,19 @@ export function ScrollspyDemo() {
     const next = beginJump(id);
     lock.current = next.locked;
     setActive(next.active);
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-    window.setTimeout(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const top = Math.max(
+      0,
+      root.scrollTop + (el.getBoundingClientRect().top - root.getBoundingClientRect().top) - 12,
+    );
+    root.scrollTo({ top, behavior: reduced ? "auto" : "smooth" });
+    if (lockTimerRef.current !== null) {
+      window.clearTimeout(lockTimerRef.current);
+    }
+    lockTimerRef.current = window.setTimeout(() => {
+      lockTimerRef.current = null;
       lock.current = false;
-    }, 450);
+    }, reduced ? 100 : 450);
   }
 
   return (
@@ -64,6 +83,7 @@ export function ScrollspyDemo() {
             <button
               key={item.id}
               type="button"
+              aria-current={active === item.id ? "location" : undefined}
               onClick={() => jump(item.id)}
               className={cn(
                 "rounded-md px-2 py-1.5 text-left text-[12px] transition-colors duration-300",

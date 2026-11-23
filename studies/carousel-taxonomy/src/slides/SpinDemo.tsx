@@ -25,12 +25,20 @@ export function SpinDemo({
     null,
   );
   const [dragging, setDragging] = useState(false);
+  const [scrubbing, setScrubbing] = useState(false);
   const [playing, setPlaying] = useState(autoplay);
   const [hovering, setHovering] = useState(false);
   const [focused, setFocused] = useState(false);
   const change = (next: number) => {
     current.current = next;
     setAngle(next);
+  };
+  const changeFromSlider = (next: number) => {
+    const base = Math.floor(current.current / 360) * 360;
+    let target = base + next;
+    if (target - current.current > 360) target -= 360;
+    else if (current.current - target > 360) target += 360;
+    change(target);
   };
   useEffect(() => {
     current.current = spinAngle(index);
@@ -66,6 +74,7 @@ export function SpinDemo({
         <button
           type="button"
           disabled={reduced}
+          aria-pressed={!reduced && playing}
           className="text-xs text-fg-subtle"
           onClick={() => setPlaying((on) => !on)}
         >
@@ -130,7 +139,7 @@ export function SpinDemo({
             }}
           >
             <div
-              className={`cube absolute top-6 left-1/2 ${reduced ? "is-jump" : dragging || playing ? "" : "is-ease"}`}
+              className={`cube absolute top-6 left-1/2 ${reduced ? "is-jump" : dragging || scrubbing || playing ? "" : "is-ease"}`}
               style={{ transform: `rotateX(-16deg) rotateY(${angle}deg)` }}
             >
               {SPIN_FACES.map((name, i) => (
@@ -153,7 +162,11 @@ export function SpinDemo({
             min="0"
             max="360"
             value={shown}
-            onChange={(event) => change(Number(event.target.value))}
+            onPointerDown={() => setScrubbing(true)}
+            onPointerUp={() => setScrubbing(false)}
+            onPointerCancel={() => setScrubbing(false)}
+            onBlur={() => setScrubbing(false)}
+            onChange={(event) => changeFromSlider(Number(event.target.value))}
             className="mt-2 w-full accent-[var(--color-accent)]"
           />
         </label>
