@@ -8,10 +8,6 @@
 
 :root {
   --lab-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --lab-dur: 200ms;
-  /* 严格三档正文字阶：标题 1.125rem / 正文 0.9375rem / 辅助 0.8125rem */
-  --lab-text-heading: 1.125rem;
-  --lab-text-body: 0.9375rem;
   --lab-text-sm: 0.8125rem;
   --lab-sticky-offset: 4rem;
 }

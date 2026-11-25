@@ -347,7 +347,7 @@ function MathExpr({ expr, block = false }: { expr: string; block?: boolean }) {
   const rendered = renderMathNodes(expr.trim());
   if (block) {
     return (
-      <div className="lab-math-block overflow-x-auto rounded-xl border border-border/70 bg-surface-2/50 px-5 py-3.5 text-center text-[15px] text-fg">
+      <div className="lab-math-block overflow-x-auto rounded-xl border border-border/70 bg-surface-2/50 px-5 py-3.5 text-center text-[0.9375rem] text-fg">
         <span className="lab-math inline-flex items-center">{rendered}</span>
       </div>
     );

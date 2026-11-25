@@ -315,7 +315,7 @@ export function GraphCanvas({
       ro.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, [studies, allAfterEdges, allContrastPairs, wide, activeSlug, lineage]);
+  }, [studies, allAfterEdges, allContrastPairs, wide, activeSlug, lineage, locale]);
 
   if (levels.length === 0) {
     return <p className="text-[0.9375rem] text-fg-subtle">{copy.graphEmpty}</p>;
@@ -493,9 +493,13 @@ export function GraphCanvas({
               })}
             </svg>
 
-            {activeSlug
+            {/* 仅在悬停节点时展示其直接相连的边理由，选中态由右侧推演面板清晰列出避免遮挡节点 */}
+            {hoverSlug
               ? edges
-                  .filter((edge) => edge.hot)
+                  .filter(
+                    (edge) =>
+                      edge.hot && (edge.from === hoverSlug || edge.to === hoverSlug),
+                  )
                   .map((edge) => {
                     const label = linkWhen(edge.when, edge.whenEn, locale);
                     if (!label) return null;

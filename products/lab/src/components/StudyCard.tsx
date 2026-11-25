@@ -257,7 +257,7 @@ export function StudyCard({
       </div>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 border-t border-border pt-3 text-[0.8125rem] text-fg-subtle">
-        <div className="relative z-10 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
           <span className="shrink-0 text-fg-muted">{categoryLabel(categoryId, locale)}</span>
           {meta.tags?.slice(0, 2).map((tag) => (
             <button
@@ -272,8 +272,8 @@ export function StudyCard({
               }}
               className={
                 selectedTag === tag
-                  ? "shrink-0 font-medium text-accent transition-colors duration-150"
-                  : "shrink-0 text-fg-subtle transition-colors duration-150 hover:text-fg"
+                  ? "relative z-10 shrink-0 font-medium text-accent transition-colors duration-150"
+                  : "relative z-10 shrink-0 text-fg-subtle transition-colors duration-150 hover:text-fg"
               }
             >
               #{tag}

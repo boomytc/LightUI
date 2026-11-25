@@ -4,11 +4,45 @@ import { Link } from "./Link";
 import type { Locale } from "../lib/prefs";
 
 type DemoKey = "triangle" | "beam" | "weights";
+type BeamPace = "slow" | "normal" | "paused";
+type WeightKind = "solid" | "outline" | "text";
+
+type TriangleStatus =
+  | { kind: "idle" }
+  | { kind: "holding" }
+  | { kind: "selected"; itemId: number; subIndex: number };
+
 const DEMO_TABS: readonly DemoKey[] = ["triangle", "beam", "weights"];
+
+const TRIANGLE_ITEMS = [
+  {
+    id: 0,
+    labelZh: "偏好设置",
+    labelEn: "Preferences",
+    subZh: ["常规", "外观", "快捷键"],
+    subEn: ["General", "Appearance", "Shortcuts"],
+  },
+  {
+    id: 1,
+    labelZh: "扩展插件",
+    labelEn: "Extensions",
+    subZh: ["已安装", "插件市场", "更新"],
+    subEn: ["Installed", "Marketplace", "Updates"],
+  },
+  {
+    id: 2,
+    labelZh: "账户配置",
+    labelEn: "Profiles",
+    subZh: ["个人", "工作区", "同步"],
+    subEn: ["Personal", "Workspace", "Sync"],
+  },
+] as const;
 
 export function HomeShowcase({ locale }: { locale: Locale }) {
   const [activeTab, setActiveTab] = useState<DemoKey>("triangle");
-  const [liveCaption, setLiveCaption] = useState<string | null>(null);
+  const [triangleStatus, setTriangleStatus] = useState<TriangleStatus>({ kind: "idle" });
+  const [beamPace, setBeamPace] = useState<BeamPace>("normal");
+  const [weightKind, setWeightKind] = useState<WeightKind>("solid");
   const tabRefs = useRef<Partial<Record<DemoKey, HTMLButtonElement | null>>>({});
 
   function tabLabel(id: DemoKey): string {
@@ -23,25 +57,55 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
     return "/s/button-taxonomy";
   }
 
-  function defaultCaption(id: DemoKey): string {
-    if (id === "triangle") {
+  function currentCaption(): string {
+    if (activeTab === "triangle") {
+      if (triangleStatus.kind === "holding") {
+        return locale === "en"
+          ? "Diagonal corridor active: neighbor switch deferred until pointer exits the triangle."
+          : "检测到斜向进入二级菜单：走廊保护生效，暂缓切换相邻主项。";
+      }
+      if (triangleStatus.kind === "selected") {
+        const item = TRIANGLE_ITEMS[triangleStatus.itemId];
+        if (item) {
+          const parent = locale === "en" ? item.labelEn : item.labelZh;
+          const child = (locale === "en" ? item.subEn : item.subZh)[triangleStatus.subIndex] ?? "";
+          return locale === "en" ? `Selected: ${parent} / ${child}` : `已选中：${parent} / ${child}`;
+        }
+      }
       return locale === "en"
         ? "Hover a left item and sweep diagonally toward the submenu to see the corridor protect your path."
         : "悬停左侧主项后斜向滑入右侧二级菜单，观察几何走廊如何保护斜向穿越。";
     }
-    if (id === "beam") {
+
+    if (activeTab === "beam") {
+      if (beamPace === "paused") {
+        return locale === "en"
+          ? "Paused: perimeter arc stops cleanly without hiding the surface border."
+          : "已暂停：外沿光束停驻，卡片边框与正文对比度不受影响。";
+      }
+      if (beamPace === "slow") {
+        return locale === "en"
+          ? "Slow orbit (7s): gentle ambient presence for low-priority focus frames."
+          : "慢速绕行（7s）：适合低干扰的聚焦提示外框。";
+      }
       return locale === "en"
         ? "Accent light travels strictly along the perimeter radius without washing out inner content."
         : "强调色光束严格贴合外沿圆角绕行，不侵占内部内容对比度。";
     }
+
+    if (weightKind === "outline") {
+      return locale === "en"
+        ? "Outline secondary: valid alternative that does not compete with the primary fill."
+        : "线状次操作：明确可执行，但不与面状主操作争夺第一落眼点。";
+    }
+    if (weightKind === "text") {
+      return locale === "en"
+        ? "Text weak action: quiet escape hatch such as cancel or skip."
+        : "文字弱操作：最低视觉重量，适合取消或跳过等退让动作。";
+    }
     return locale === "en"
       ? "Solid primary: one per region. Carries the single committed forward action."
       : "面状主操作：一区仅放一个，承载当前最明确的提交动作。";
-  }
-
-  function selectTab(next: DemoKey) {
-    setActiveTab(next);
-    setLiveCaption(null);
   }
 
   function onTabListKeyDown(e: React.KeyboardEvent) {
@@ -53,7 +117,7 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
     else if (e.key === "End") next = DEMO_TABS[DEMO_TABS.length - 1];
     if (!next) return;
     e.preventDefault();
-    selectTab(next);
+    setActiveTab(next);
     requestAnimationFrame(() => tabRefs.current[next]?.focus());
   }
 
@@ -83,7 +147,7 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
                 aria-selected={active}
                 aria-controls={`showcase-panel-${id}`}
                 tabIndex={active ? 0 : -1}
-                onClick={() => selectTab(id)}
+                onClick={() => setActiveTab(id)}
                 className={
                   active
                     ? "rounded-md bg-surface px-3 py-1.5 text-[0.8125rem] font-semibold text-fg transition-colors duration-150"
@@ -113,23 +177,22 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
       >
         <div key={activeTab} className="lab-fade w-full">
           {activeTab === "triangle" ? (
-            <TriangleMiniDemo locale={locale} onStatusChange={setLiveCaption} />
+            <TriangleMiniDemo locale={locale} onStatusChange={setTriangleStatus} />
           ) : null}
           {activeTab === "beam" ? (
-            <BeamMiniDemo locale={locale} onStatusChange={setLiveCaption} />
+            <BeamMiniDemo locale={locale} pace={beamPace} onPaceChange={setBeamPace} />
           ) : null}
           {activeTab === "weights" ? (
-            <WeightsMiniDemo locale={locale} onStatusChange={setLiveCaption} />
+            <WeightsMiniDemo locale={locale} selected={weightKind} onSelect={setWeightKind} />
           ) : null}
         </div>
       </div>
 
-      {/* 唯一底部状态与规则说明栏，消除舞台内重复提示 */}
       <div
         aria-live="polite"
         className="border-t border-border bg-surface-2/40 px-4 py-3 text-[0.8125rem] leading-relaxed text-fg-muted sm:px-6"
       >
-        {liveCaption ?? defaultCaption(activeTab)}
+        {currentCaption()}
       </div>
     </section>
   );
@@ -160,10 +223,10 @@ function TriangleMiniDemo({
   onStatusChange,
 }: {
   locale: Locale;
-  onStatusChange: (text: string | null) => void;
+  onStatusChange: (status: TriangleStatus) => void;
 }) {
   const [activeItem, setActiveItem] = useState(0);
-  const [selectedSub, setSelectedSub] = useState<string | null>(null);
+  const [selectedSubIdx, setSelectedSubIdx] = useState<number | null>(null);
   const [corridorHolding, setCorridorHolding] = useState(false);
   const [geometry, setGeometry] = useState<CorridorGeometry | null>(null);
 
@@ -180,24 +243,6 @@ function TriangleMiniDemo({
       }
     };
   }, []);
-
-  const items = [
-    {
-      id: 0,
-      label: locale === "en" ? "Preferences" : "偏好设置",
-      sub: locale === "en" ? ["General", "Appearance", "Shortcuts"] : ["常规", "外观", "快捷键"],
-    },
-    {
-      id: 1,
-      label: locale === "en" ? "Extensions" : "扩展插件",
-      sub: locale === "en" ? ["Installed", "Marketplace", "Updates"] : ["已安装", "插件市场", "更新"],
-    },
-    {
-      id: 2,
-      label: locale === "en" ? "Profiles" : "账户配置",
-      sub: locale === "en" ? ["Personal", "Workspace", "Sync"] : ["个人", "工作区", "同步"],
-    },
-  ];
 
   function clearPendingSwitch() {
     if (switchTimerRef.current !== null) {
@@ -238,7 +283,7 @@ function TriangleMiniDemo({
       anchorPointRef.current = curr;
       lastPointRef.current = curr;
       updateGeometry(curr);
-      onStatusChange(null);
+      if (selectedSubIdx === null) onStatusChange({ kind: "idle" });
       return;
     }
 
@@ -246,18 +291,14 @@ function TriangleMiniDemo({
       clearPendingSwitch();
       setCorridorHolding(true);
       updateGeometry(anchorPointRef.current);
-      onStatusChange(
-        locale === "en"
-          ? "Diagonal corridor active: neighbor switch deferred until pointer exits the triangle."
-          : "检测到斜向进入二级菜单：走廊保护生效，暂缓切换相邻主项。",
-      );
+      onStatusChange({ kind: "holding" });
       switchTimerRef.current = window.setTimeout(() => {
         setActiveItem(itemId);
-        setSelectedSub(null);
+        setSelectedSubIdx(null);
         setCorridorHolding(false);
         anchorPointRef.current = lastPointRef.current;
         updateGeometry(lastPointRef.current);
-        onStatusChange(null);
+        onStatusChange({ kind: "idle" });
         switchTimerRef.current = null;
       }, 240);
       return;
@@ -265,11 +306,11 @@ function TriangleMiniDemo({
 
     clearPendingSwitch();
     setActiveItem(itemId);
-    setSelectedSub(null);
+    setSelectedSubIdx(null);
     anchorPointRef.current = curr;
     lastPointRef.current = curr;
     updateGeometry(curr);
-    onStatusChange(null);
+    onStatusChange({ kind: "idle" });
   }
 
   function handlePrimaryMove(itemId: number, e: React.MouseEvent<HTMLButtonElement>) {
@@ -284,25 +325,25 @@ function TriangleMiniDemo({
   function handlePrimarySelect(itemId: number) {
     clearPendingSwitch();
     setActiveItem(itemId);
-    setSelectedSub(null);
-    onStatusChange(null);
+    setSelectedSubIdx(null);
+    onStatusChange({ kind: "idle" });
   }
 
-  function handleSubSelect(sub: string) {
-    setSelectedSub(sub);
-    const parentLabel = items[activeItem]?.label ?? "";
-    onStatusChange(
-      locale === "en" ? `Selected: ${parentLabel} / ${sub}` : `已选中：${parentLabel} / ${sub}`,
-    );
+  function handleSubSelect(subIndex: number) {
+    setSelectedSubIdx(subIndex);
+    onStatusChange({ kind: "selected", itemId: activeItem, subIndex });
   }
 
   function handleStageLeave() {
     clearPendingSwitch();
     setGeometry(null);
-    if (!selectedSub) {
-      onStatusChange(null);
+    if (selectedSubIdx === null) {
+      onStatusChange({ kind: "idle" });
     }
   }
+
+  const activeEntry = TRIANGLE_ITEMS[activeItem] ?? TRIANGLE_ITEMS[0];
+  const subLabels = locale === "en" ? activeEntry.subEn : activeEntry.subZh;
 
   return (
     <div
@@ -333,8 +374,9 @@ function TriangleMiniDemo({
 
       <div className="relative z-0 grid grid-cols-2 gap-4 sm:gap-10">
         <div className="space-y-1 rounded-xl border border-border-strong bg-surface p-2 shadow-card">
-          {items.map((item) => {
+          {TRIANGLE_ITEMS.map((item) => {
             const isActive = activeItem === item.id;
+            const label = locale === "en" ? item.labelEn : item.labelZh;
             return (
               <button
                 key={item.id}
@@ -350,7 +392,7 @@ function TriangleMiniDemo({
                     : "flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-[0.8125rem] font-medium text-fg-muted transition-colors duration-150 hover:bg-surface-2 hover:text-fg"
                 }
               >
-                <span className="truncate">{item.label}</span>
+                <span className="truncate">{label}</span>
                 <span className="opacity-75" aria-hidden="true">
                   ›
                 </span>
@@ -364,25 +406,25 @@ function TriangleMiniDemo({
           onMouseEnter={() => {
             clearPendingSwitch();
             setGeometry(null);
-            if (!selectedSub) onStatusChange(null);
+            if (selectedSubIdx === null) onStatusChange({ kind: "idle" });
           }}
           className="space-y-1 rounded-xl border border-border-strong bg-surface p-2 shadow-card"
         >
           <div className="flex items-center justify-between px-3 py-1.5 text-[0.8125rem] text-fg-subtle">
-            <span>{items[activeItem]?.label}</span>
+            <span>{locale === "en" ? activeEntry.labelEn : activeEntry.labelZh}</span>
             {corridorHolding ? (
               <span className="font-medium text-accent">
                 {locale === "en" ? "Holding" : "走廊保护中"}
               </span>
             ) : null}
           </div>
-          {items[activeItem]?.sub.map((sub) => {
-            const picked = selectedSub === sub;
+          {subLabels.map((sub, subIndex) => {
+            const picked = selectedSubIdx === subIndex;
             return (
               <button
-                key={sub}
+                key={subIndex}
                 type="button"
-                onClick={() => handleSubSelect(sub)}
+                onClick={() => handleSubSelect(subIndex)}
                 className={
                   picked
                     ? "block w-full rounded-lg bg-accent-soft px-3 py-2 text-left text-[0.8125rem] font-semibold text-accent transition-colors duration-150"
@@ -399,36 +441,16 @@ function TriangleMiniDemo({
   );
 }
 
-type BeamPace = "slow" | "normal" | "paused";
-
 function BeamMiniDemo({
   locale,
-  onStatusChange,
+  pace,
+  onPaceChange,
 }: {
   locale: Locale;
-  onStatusChange: (text: string | null) => void;
+  pace: BeamPace;
+  onPaceChange: (pace: BeamPace) => void;
 }) {
-  const [pace, setPace] = useState<BeamPace>("normal");
   const duration = pace === "slow" ? "7s" : "3.6s";
-
-  function choosePace(next: BeamPace) {
-    setPace(next);
-    if (next === "paused") {
-      onStatusChange(
-        locale === "en"
-          ? "Paused: perimeter arc stops cleanly without hiding the surface border."
-          : "已暂停：外沿光束停驻，卡片边框与正文对比度不受影响。",
-      );
-    } else if (next === "slow") {
-      onStatusChange(
-        locale === "en"
-          ? "Slow orbit (7s): gentle ambient presence for low-priority focus frames."
-          : "慢速绕行（7s）：适合低干扰的聚焦提示外框。",
-      );
-    } else {
-      onStatusChange(null);
-    }
-  }
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col items-center gap-6">
@@ -474,7 +496,7 @@ function BeamMiniDemo({
               key={item.id}
               type="button"
               aria-pressed={active}
-              onClick={() => choosePace(item.id)}
+              onClick={() => onPaceChange(item.id)}
               className={
                 active
                   ? "rounded-md bg-surface-2 px-3 py-1 text-[0.8125rem] font-semibold text-fg"
@@ -490,42 +512,21 @@ function BeamMiniDemo({
   );
 }
 
-type WeightKind = "solid" | "outline" | "text";
-
 function WeightsMiniDemo({
   locale,
-  onStatusChange,
+  selected,
+  onSelect,
 }: {
   locale: Locale;
-  onStatusChange: (text: string | null) => void;
+  selected: WeightKind;
+  onSelect: (kind: WeightKind) => void;
 }) {
-  const [selected, setSelected] = useState<WeightKind>("solid");
-
-  function chooseWeight(kind: WeightKind) {
-    setSelected(kind);
-    if (kind === "solid") {
-      onStatusChange(null);
-    } else if (kind === "outline") {
-      onStatusChange(
-        locale === "en"
-          ? "Outline secondary: valid alternative that does not compete with the primary fill."
-          : "线状次操作：明确可执行，但不与面状主操作争夺第一落眼点。",
-      );
-    } else {
-      onStatusChange(
-        locale === "en"
-          ? "Text weak action: quiet escape hatch such as cancel or skip."
-          : "文字弱操作：最低视觉重量，适合取消或跳过等退让动作。",
-      );
-    }
-  }
-
   return (
     <div className="mx-auto flex w-full max-w-lg items-center justify-center">
       <div className="flex w-full flex-wrap items-center justify-between gap-3 rounded-xl border border-border-strong bg-surface px-5 py-4 shadow-card">
         <button
           type="button"
-          onClick={() => chooseWeight("text")}
+          onClick={() => onSelect("text")}
           className={
             selected === "text"
               ? "min-h-9 rounded-lg px-3 py-1.5 text-[0.8125rem] font-semibold text-accent underline underline-offset-4"
@@ -538,7 +539,7 @@ function WeightsMiniDemo({
         <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
-            onClick={() => chooseWeight("outline")}
+            onClick={() => onSelect("outline")}
             className={
               selected === "outline"
                 ? "min-h-9 rounded-lg border border-accent bg-accent-soft px-4 py-1.5 text-[0.8125rem] font-semibold text-accent transition-colors duration-150"
@@ -550,7 +551,7 @@ function WeightsMiniDemo({
 
           <button
             type="button"
-            onClick={() => chooseWeight("solid")}
+            onClick={() => onSelect("solid")}
             className={
               selected === "solid"
                 ? "min-h-9 rounded-lg bg-fg px-4 py-1.5 text-[0.8125rem] font-semibold text-surface ring-2 ring-accent/40 ring-offset-2 ring-offset-surface transition-opacity duration-150"
