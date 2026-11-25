@@ -8,37 +8,84 @@
 
 :root {
   --lab-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --lab-dur: 460ms;
+  --lab-dur: 200ms;
+  /* 严格三档正文字阶：标题 1.125rem / 正文 0.9375rem / 辅助 0.8125rem */
+  --lab-text-heading: 1.125rem;
+  --lab-text-body: 0.9375rem;
+  --lab-text-sm: 0.8125rem;
+  --lab-sticky-offset: 4rem;
 }
 
 html {
   overflow-x: clip;
+  scroll-padding-top: var(--lab-sticky-offset);
 }
 
 .lab-shell {
   background-color: var(--color-bg);
   background-image:
     radial-gradient(
-      72rem 32rem at 6% -12%,
-      color-mix(in oklab, var(--color-accent-soft) 85%, transparent),
+      68rem 30rem at 8% -10%,
+      color-mix(in oklab, var(--color-accent-soft) 72%, transparent),
       transparent 58%
     ),
     radial-gradient(
-      40rem 20rem at 100% -8%,
-      color-mix(in oklab, var(--color-bg-warm) 90%, transparent),
+      42rem 22rem at 96% -8%,
+      color-mix(in oklab, var(--color-bg-warm) 80%, transparent),
       transparent 52%
     );
 }
 
-@keyframes lab-rise {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+/* 顶部通透顶栏：y=0 无边框，吸顶滚动后浮现表面与底线（现代 scroll-state + IntersectionObserver 兜底） */
+.lab-header-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  container-type: scroll-state;
+  container-name: site-header;
+}
+
+.lab-header-bar {
+  border-bottom: 1px solid transparent;
+  background-color: transparent;
+  transition:
+    background-color 180ms var(--lab-ease),
+    border-color 180ms var(--lab-ease),
+    backdrop-filter 180ms var(--lab-ease);
+}
+
+.lab-header-sticky.is-stuck .lab-header-bar {
+  border-bottom-color: var(--color-border);
+  background-color: color-mix(in oklab, var(--color-surface) 84%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+@container site-header scroll-state(stuck: top) {
+  .lab-header-bar {
+    border-bottom-color: var(--color-border);
+    background-color: color-mix(in oklab, var(--color-surface) 84%, transparent);
+    backdrop-filter: blur(12px);
   }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+}
+
+/* 可操作舞台专属的制图点阵底纹，与阅读/索引平面形成触感分界 */
+.lab-stage-grid {
+  background-color: var(--color-surface);
+  background-image: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--color-fg) 11%, transparent) 1px,
+    transparent 1.15px
+  );
+  background-size: 16px 16px;
+}
+
+.dark .lab-stage-grid {
+  background-color: var(--color-surface);
+  background-image: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--color-fg) 14%, transparent) 1px,
+    transparent 1.15px
+  );
 }
 
 @keyframes lab-fade {
@@ -53,7 +100,7 @@ html {
 @keyframes lab-drawer-up {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -64,7 +111,7 @@ html {
 @keyframes lab-drawer-side {
   from {
     opacity: 0;
-    transform: translateX(14px);
+    transform: translateX(12px);
   }
   to {
     opacity: 1;
@@ -75,7 +122,7 @@ html {
 @keyframes lab-pop {
   from {
     opacity: 0;
-    transform: translateY(-8px) scale(0.98);
+    transform: translateY(-6px) scale(0.985);
   }
   to {
     opacity: 1;
@@ -84,99 +131,34 @@ html {
 }
 
 .lab-page {
-  animation: lab-fade 280ms ease both;
-}
-
-.lab-rise {
-  animation: lab-rise var(--lab-dur) var(--lab-ease) both;
+  animation: lab-fade 160ms var(--lab-ease) both;
 }
 
 .lab-fade {
-  animation: lab-fade 320ms var(--lab-ease) both;
+  animation: lab-fade 180ms var(--lab-ease) both;
 }
 
 .lab-overlay {
-  animation: lab-fade 180ms ease both;
+  animation: lab-fade 160ms var(--lab-ease) both;
 }
 
 .lab-pop {
-  animation: lab-pop 220ms var(--lab-ease) both;
+  animation: lab-pop 180ms var(--lab-ease) both;
 }
 
 .lab-drawer {
-  animation: lab-drawer-up 300ms var(--lab-ease) both;
+  animation: lab-drawer-up 220ms var(--lab-ease) both;
 }
 
-.lab-delay-2 {
-  animation-delay: 110ms;
-}
-
-.lab-delay-3 {
-  animation-delay: 180ms;
-}
-
-.lab-delay-4 {
-  animation-delay: 250ms;
-}
-
-.lab-stagger > * {
-  animation: lab-rise var(--lab-dur) var(--lab-ease) both;
-}
-
-.lab-stagger > *:nth-child(1) {
-  animation-delay: 40ms;
-}
-.lab-stagger > *:nth-child(2) {
-  animation-delay: 80ms;
-}
-.lab-stagger > *:nth-child(3) {
-  animation-delay: 120ms;
-}
-.lab-stagger > *:nth-child(4) {
-  animation-delay: 160ms;
-}
-.lab-stagger > *:nth-child(5) {
-  animation-delay: 200ms;
-}
-.lab-stagger > *:nth-child(6) {
-  animation-delay: 240ms;
-}
-.lab-stagger > *:nth-child(7) {
-  animation-delay: 280ms;
-}
-.lab-stagger > *:nth-child(8) {
-  animation-delay: 320ms;
-}
-.lab-stagger > *:nth-child(9) {
-  animation-delay: 360ms;
-}
-.lab-stagger > *:nth-child(10) {
-  animation-delay: 400ms;
-}
-.lab-stagger > *:nth-child(11) {
-  animation-delay: 430ms;
-}
-.lab-stagger > *:nth-child(n + 12) {
-  animation-delay: 460ms;
-}
-
-.lab-card {
-  transition:
-    transform 180ms var(--lab-ease),
-    border-color 180ms ease,
-    background-color 180ms ease,
-    box-shadow 180ms ease,
-    color 180ms ease;
-}
-
+/* 首页与研究详情单层吸顶副栏：主顶栏在研究页随文档滚动收起，副栏贴顶 */
 .study-chrome {
   position: sticky;
-  top: 3rem;
-  z-index: 20;
+  top: 0;
+  z-index: 25;
 }
 
 .study-play {
-  --study-sticky-top: 7.25rem;
+  --study-sticky-top: 4rem;
   min-width: 0;
   overflow-x: clip;
 }
@@ -191,25 +173,25 @@ html {
 }
 
 .graph-when {
-  max-width: 11.5rem;
-  padding: 0.15rem 0.4rem;
+  max-width: 12.5rem;
+  padding: 0.25rem 0.5rem;
   border-radius: 6px;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-strong);
   background: var(--color-surface);
   color: var(--color-fg-muted);
-  font-size: 10px;
+  font-size: var(--lab-text-sm);
   line-height: 1.35;
   box-shadow: var(--shadow-card);
 }
 
 .graph-when-contrast {
-  border-color: color-mix(in srgb, var(--color-wrong) 35%, var(--color-border));
+  border-color: color-mix(in oklab, var(--color-wrong) 40%, var(--color-border));
   color: var(--color-wrong);
 }
 
 .note-prose h2,
 .note-prose h3 {
-  scroll-margin-top: 6rem;
+  scroll-margin-top: 5.5rem;
 }
 
 /* 轻量数学公式排版 */
@@ -285,12 +267,6 @@ html {
   padding-top: 0.04em;
 }
 
-@media (min-width: 640px) {
-  .study-chrome {
-    top: 3.5rem;
-  }
-}
-
 @media (min-width: 1024px) {
   .lab-drawer {
     animation-name: lab-drawer-side;
@@ -310,7 +286,7 @@ html {
   }
 }
 
-/* 微缩舞台卡片适配 */
+/* 微缩舞台画幅适配 */
 .lab-stage-preview {
   width: 100%;
   display: flex;
@@ -322,7 +298,7 @@ html {
 .lab-stage-preview [data-stage="root"] {
   min-height: 0 !important;
   height: auto !important;
-  padding: 0.75rem !important;
+  padding: 0.5rem !important;
   background: transparent !important;
   box-shadow: none !important;
 }
@@ -356,5 +332,3 @@ html {
 .device-frame-viewport [data-stage-notch] {
   display: none !important;
 }
-
-

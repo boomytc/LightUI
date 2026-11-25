@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Moon, Search, Sun } from "lucide-react";
 import { CommandPalette } from "./CommandPalette";
 import { Link } from "./Link";
@@ -23,7 +23,35 @@ export function Shell({ children, study = false }: { children: ReactNode; study?
   const { theme, locale, toggleTheme, toggleLocale } = usePrefs();
   const copy = messages(locale);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const shortcutLabel = getShortcutLabel();
+
+  useEffect(() => {
+    if (study) {
+      setScrolled(false);
+      return;
+    }
+    const sentinel = sentinelRef.current;
+    if (!sentinel || typeof IntersectionObserver === "undefined") {
+      const onScroll = () => setScrolled(window.scrollY > 4);
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      return () => window.removeEventListener("scroll", onScroll);
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[entries.length - 1];
+        if (entry) {
+          setScrolled(!entry.isIntersecting);
+        }
+      },
+      { threshold: 0 },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [study, path]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -52,98 +80,118 @@ export function Shell({ children, study = false }: { children: ReactNode; study?
     <div className="lab-shell flex min-h-dvh flex-col overflow-x-clip text-fg">
       <a
         href="#lab-main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-fg focus:px-3 focus:py-2 focus:text-[13px] focus:font-medium focus:text-surface"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-fg focus:px-3 focus:py-2 focus:text-[0.8125rem] focus:font-medium focus:text-surface"
       >
         {copy.skipToContent}
       </a>
-      <header className="sticky top-0 z-30 border-b border-border/80 bg-surface/80 backdrop-blur-md">
-        <div className="page-width flex h-12 items-center justify-between gap-4 sm:h-14">
-          <div className="flex min-w-0 items-center gap-4 sm:gap-5">
-            <Link href="/" className="group flex items-center gap-2.5 no-underline">
-              <span
-                className="grid size-7 place-items-center rounded-md bg-fg text-surface shadow-xs transition-transform duration-200 group-hover:scale-[1.04]"
-                aria-hidden="true"
+
+      {/* 顶部滚动哨兵：兼容不支持 scroll-state 容器查询的浏览器 */}
+      <div ref={sentinelRef} aria-hidden="true" className="pointer-events-none h-px w-full -mb-px" />
+
+      <header
+        className={
+          study
+            ? "relative z-30 border-b border-border bg-surface/80"
+            : scrolled
+              ? "lab-header-sticky is-stuck"
+              : "lab-header-sticky"
+        }
+      >
+        <div className={study ? "" : "lab-header-bar"}>
+          <div className="page-width flex min-h-14 items-center justify-between gap-4 py-2">
+            <div className="flex min-w-0 items-center gap-6">
+              <Link href="/" className="group flex items-center gap-2.5 no-underline">
+                <span
+                  className="grid size-7 shrink-0 place-items-center rounded-md bg-fg text-surface transition-transform duration-200 ease-[var(--lab-ease)] group-hover:scale-[1.04]"
+                  aria-hidden="true"
+                >
+                  <svg viewBox="0 0 24 24" className="size-3.5" fill="none">
+                    <path
+                      d="M5 19 19 5v14Z"
+                      fill="currentColor"
+                      fillOpacity="0.35"
+                      stroke="currentColor"
+                      strokeWidth="1.4"
+                    />
+                  </svg>
+                </span>
+                <span className="text-[1.1875rem] font-semibold leading-none tracking-[-0.03em] text-fg">
+                  LightUI
+                </span>
+              </Link>
+
+              <nav className="hidden items-center gap-1 sm:flex" aria-label="site">
+                {NAV.map((item) => {
+                  const active = item.match(path);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      ariaCurrent={active ? "page" : undefined}
+                      className={
+                        active
+                          ? "rounded-md px-2.5 py-1.5 text-[0.8125rem] font-semibold text-fg no-underline"
+                          : "rounded-md px-2.5 py-1.5 text-[0.8125rem] font-medium text-fg-muted no-underline transition-colors duration-150 hover:text-fg"
+                      }
+                    >
+                      {copy[item.key]}
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setPaletteOpen(true)}
+                className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-border bg-surface/90 px-3 py-1.5 text-left text-[0.8125rem] text-fg-muted transition-[border-color,background-color,color] duration-150 hover:border-border-strong hover:bg-surface hover:text-fg"
+                aria-label={copy.searchShortcut}
               >
-                <svg viewBox="0 0 24 24" className="size-3.5" fill="none">
-                  <path
-                    d="M5 19 19 5v14Z"
-                    fill="currentColor"
-                    fillOpacity="0.35"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                  />
-                </svg>
-              </span>
-              <span className="text-[15px] font-semibold tracking-tight">LightUI</span>
-            </Link>
-            <nav className="hidden items-center gap-0.5 sm:flex" aria-label="site">
-              {NAV.map((item) => {
-                const active = item.match(path);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    ariaCurrent={active ? "page" : undefined}
-                    className={
-                      active
-                        ? "rounded-md bg-surface-2 px-2.5 py-1 text-[13px] font-medium text-fg no-underline"
-                        : "rounded-md px-2.5 py-1 text-[13px] text-fg-muted no-underline transition-colors duration-150 hover:bg-surface-2/80 hover:text-fg"
-                    }
-                  >
-                    {copy[item.key]}
-                  </Link>
-                );
-              })}
-            </nav>
-          </div>
+                <Search className="size-3.5 shrink-0" />
+                <span className="hidden sm:inline">{copy.searchShortcut}</span>
+                <kbd className="hidden font-mono text-[0.8125rem] text-fg-subtle sm:inline">
+                  {shortcutLabel}
+                </kbd>
+              </button>
 
-          <div className="flex shrink-0 items-center gap-1">
-            <button
-              type="button"
-              onClick={() => setPaletteOpen(true)}
-              className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-surface px-2.5 text-left text-[12px] text-fg-muted shadow-xs transition-colors duration-150 hover:border-border-strong hover:bg-surface-2 hover:text-fg"
-              aria-label={copy.searchShortcut}
-            >
-              <Search className="size-3.5" />
-              <span className="hidden sm:inline">{copy.searchShortcut}</span>
-              <kbd className="hidden rounded bg-surface-2 px-1 py-0.5 font-mono text-[10px] text-fg-subtle sm:inline">
-                {shortcutLabel}
-              </kbd>
-            </button>
+              <IconButton
+                label={locale === "zh" ? copy.langToEn : copy.langToZh}
+                onClick={toggleLocale}
+              >
+                <span className="text-[0.8125rem] font-semibold">
+                  {locale === "zh" ? "EN" : "中"}
+                </span>
+              </IconButton>
 
-            <IconButton
-              label={locale === "zh" ? copy.langToEn : copy.langToZh}
-              onClick={toggleLocale}
-            >
-              <span className="text-[12px] font-semibold tracking-wide">
-                {locale === "zh" ? "EN" : "中"}
-              </span>
-            </IconButton>
+              <IconButton
+                label={theme === "dark" ? copy.themeToLight : copy.themeToDark}
+                onClick={toggleTheme}
+              >
+                {theme === "dark" ? <Sun className="size-4" strokeWidth={1.8} /> : <Moon className="size-4" strokeWidth={1.8} />}
+              </IconButton>
 
-            <IconButton
-              label={theme === "dark" ? copy.themeToLight : copy.themeToDark}
-              onClick={toggleTheme}
-            >
-              {theme === "dark" ? <Sun className="size-4" strokeWidth={1.8} /> : <Moon className="size-4" strokeWidth={1.8} />}
-            </IconButton>
-
-            <a
-              href={GITHUB_URL}
-              className="inline-flex size-9 items-center justify-center rounded-lg text-fg-muted no-underline transition-colors duration-150 hover:bg-surface-2 hover:text-fg"
-              rel="noreferrer"
-              target="_blank"
-              aria-label={copy.github}
-            >
-              <GitHubMark />
-            </a>
+              <a
+                href={GITHUB_URL}
+                className="inline-flex size-9 items-center justify-center rounded-lg text-fg-muted no-underline transition-[background-color,color] duration-150 hover:bg-surface-2 hover:text-fg"
+                rel="noreferrer"
+                target="_blank"
+                aria-label={copy.github}
+              >
+                <GitHubMark />
+              </a>
+            </div>
           </div>
         </div>
       </header>
 
       <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
       {study ? null : (
-        <div className="page-width border-b border-border/80 py-2 sm:hidden">
-          <nav className="flex items-center rounded-xl border border-border bg-surface-2/80 p-1" aria-label="mobile site">
+        <div className="page-width border-b border-border py-2 sm:hidden">
+          <nav
+            className="flex items-center rounded-lg border border-border bg-surface-2 p-0.5"
+            aria-label="mobile site"
+          >
             {NAV.map((item) => {
               const active = item.match(path);
               return (
@@ -153,8 +201,8 @@ export function Shell({ children, study = false }: { children: ReactNode; study?
                   ariaCurrent={active ? "page" : undefined}
                   className={
                     active
-                      ? "flex-1 rounded-lg bg-surface py-2 text-center text-[12px] font-semibold text-fg shadow-xs no-underline"
-                      : "flex-1 rounded-lg py-2 text-center text-[12px] font-medium text-fg-muted no-underline transition-colors duration-150 hover:text-fg"
+                      ? "flex-1 rounded-md bg-surface py-1.5 text-center text-[0.8125rem] font-semibold text-fg no-underline"
+                      : "flex-1 rounded-md py-1.5 text-center text-[0.8125rem] font-medium text-fg-muted no-underline transition-colors duration-150 hover:text-fg"
                   }
                 >
                   {copy[item.key]}
@@ -166,12 +214,12 @@ export function Shell({ children, study = false }: { children: ReactNode; study?
       )}
       <div className="min-w-0 flex-1">{children}</div>
       {study ? null : (
-        <footer className="mt-auto border-t border-border/80">
+        <footer className="mt-auto border-t border-border">
           <div className="page-width flex flex-wrap items-center justify-between gap-3 py-6">
-            <p className="text-[12px] text-fg-subtle">{copy.footer}</p>
-            <p className="hidden text-[12px] text-fg-subtle sm:block">
-              {copy.searchShortcut}
-              <kbd className="ml-1.5 rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[10px]">
+            <p className="text-[0.8125rem] text-fg-subtle">{copy.footer}</p>
+            <p className="hidden items-center gap-2 text-[0.8125rem] text-fg-subtle sm:flex">
+              <span>{copy.searchShortcut}</span>
+              <kbd className="rounded border border-border bg-surface px-1.5 py-0.5 font-mono text-[0.8125rem] text-fg-muted">
                 {shortcutLabel}
               </kbd>
             </p>
@@ -197,7 +245,7 @@ function IconButton({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="inline-flex size-9 items-center justify-center rounded-lg text-fg-muted transition-colors duration-150 hover:bg-surface-2 hover:text-fg"
+      className="inline-flex size-9 items-center justify-center rounded-lg text-fg-muted transition-[background-color,color] duration-150 hover:bg-surface-2 hover:text-fg"
     >
       {children}
     </button>

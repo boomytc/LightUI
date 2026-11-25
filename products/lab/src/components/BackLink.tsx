@@ -17,7 +17,7 @@ export function BackLink({ fallback, className }: { fallback: string; className?
       href={href}
       className={
         className ??
-        "inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-[13px] text-fg-muted no-underline hover:bg-surface-2 hover:text-fg"
+        "inline-flex min-h-8 items-center gap-1.5 rounded-lg px-2 text-[0.8125rem] text-fg-muted no-underline transition-colors duration-150 hover:bg-surface-2 hover:text-fg"
       }
       onClick={(e) => {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;

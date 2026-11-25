@@ -3,13 +3,13 @@ import {
   ArrowRight,
   BookOpen,
   Command,
+  Compass,
   FileText,
   Globe,
   Home,
   Layers,
   Moon,
   Search,
-  Sparkles,
   Sun,
   X,
 } from "lucide-react";
@@ -26,7 +26,7 @@ type PaletteItem = {
   group: "action" | "study" | "page" | "note";
   title: string;
   subtitle?: string;
-  badge?: string;
+  metaLabel?: string;
   icon: typeof Search;
   onSelect: () => void;
 };
@@ -61,7 +61,6 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
   );
   const allNotes = useMemo(() => loadNotes(locale), [locale]);
 
-  // Lock background scroll, manage initial focus & restore focus on close
   useEffect(() => {
     const previouslyFocused =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -79,7 +78,6 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
     };
   }, []);
 
-  // Global Escape and focus trap inside dialog
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
@@ -119,7 +117,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
       group: "action",
       title: theme === "dark" ? copy.themeToLight : copy.themeToDark,
       subtitle: locale === "en" ? "Toggle color mode" : "切换浅色 / 深色界面",
-      badge: locale === "en" ? "Theme" : "主题",
+      metaLabel: locale === "en" ? "Theme" : "主题",
       icon: theme === "dark" ? Sun : Moon,
       onSelect: () => {
         toggleTheme();
@@ -131,7 +129,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
       group: "action",
       title: locale === "zh" ? copy.langToEn : copy.langToZh,
       subtitle: locale === "en" ? "Switch language to Chinese" : "切换界面语言为 English",
-      badge: locale === "en" ? "Language" : "语言",
+      metaLabel: locale === "en" ? "Language" : "语言",
       icon: Globe,
       onSelect: () => {
         toggleLocale();
@@ -143,7 +141,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
       group: "page",
       title: copy.commandActionHome,
       subtitle: "/",
-      badge: locale === "en" ? "Page" : "页面",
+      metaLabel: locale === "en" ? "Page" : "页面",
       icon: Home,
       onSelect: () => {
         navigate("/");
@@ -155,7 +153,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
       group: "page",
       title: copy.commandActionGraph,
       subtitle: "/graph",
-      badge: locale === "en" ? "Graph" : "图谱",
+      metaLabel: locale === "en" ? "Map" : "图谱",
       icon: Layers,
       onSelect: () => {
         navigate("/graph");
@@ -167,8 +165,8 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
       group: "page",
       title: copy.navWorks,
       subtitle: "/studies",
-      badge: locale === "en" ? "Catalog" : "作品",
-      icon: Sparkles,
+      metaLabel: locale === "en" ? "Catalog" : "作品",
+      icon: Compass,
       onSelect: () => {
         navigate("/studies");
         onClose();
@@ -179,7 +177,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
       group: "page",
       title: copy.navNotes,
       subtitle: "/notes",
-      badge: locale === "en" ? "Essays" : "笔记",
+      metaLabel: locale === "en" ? "Essays" : "笔记",
       icon: BookOpen,
       onSelect: () => {
         navigate("/notes");
@@ -193,7 +191,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
     return (
       a.title.toLowerCase().includes(q) ||
       (a.subtitle && a.subtitle.toLowerCase().includes(q)) ||
-      (a.badge && a.badge.toLowerCase().includes(q))
+      (a.metaLabel && a.metaLabel.toLowerCase().includes(q))
     );
   });
 
@@ -204,8 +202,8 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
       group: "study" as const,
       title: studyTitle(meta, locale),
       subtitle: studyAsks(meta, locale) || `/s/${meta.slug}`,
-      badge: categoryLabel(category, locale),
-      icon: Sparkles,
+      metaLabel: categoryLabel(category, locale),
+      icon: Compass,
       onSelect: () => {
         navigate(`/s/${meta.slug}`);
         onClose();
@@ -218,7 +216,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
     group: "note" as const,
     title: note.title,
     subtitle: note.summary || `/notes/${note.slug}`,
-    badge: locale === "en" ? "Note" : "笔记",
+    metaLabel: locale === "en" ? "Note" : "笔记",
     icon: FileText,
     onSelect: () => {
       navigate(`/notes/${note.slug}`);
@@ -287,10 +285,9 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
 
       <div
         ref={dialogRef}
-        className="lab-pop relative flex max-h-[80vh] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-menu"
+        className="lab-pop relative flex max-h-[80vh] w-full max-w-xl flex-col overflow-hidden rounded-xl border border-border-strong bg-surface shadow-menu"
       >
-        {/* Search header */}
-        <div className="flex items-center gap-3 border-b border-border px-4 py-3 sm:px-5">
+        <div className="flex items-center gap-3 border-b border-border px-4 py-3.5 sm:px-5">
           <Search className="size-4 shrink-0 text-fg-subtle" aria-hidden="true" />
           <input
             ref={inputRef}
@@ -302,7 +299,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
             }}
             placeholder={copy.commandPlaceholder}
             aria-label={copy.commandPlaceholder}
-            className="flex-1 bg-transparent text-[14px] text-fg outline-none placeholder:text-fg-subtle"
+            className="flex-1 bg-transparent text-[0.9375rem] text-fg outline-none placeholder:text-fg-subtle"
           />
           {query ? (
             <button
@@ -313,31 +310,28 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
                 inputRef.current?.focus();
               }}
               aria-label={copy.clearSearch}
-              className="rounded-md p-1 text-fg-subtle transition-colors hover:text-fg"
+              className="rounded-md p-1 text-fg-subtle transition-colors duration-150 hover:text-fg"
             >
               <X className="size-4" />
             </button>
           ) : (
-            <kbd className="rounded-md border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] text-fg-subtle shadow-xs">
-              ESC
-            </kbd>
+            <kbd className="font-mono text-[0.8125rem] text-fg-subtle">Esc</kbd>
           )}
         </div>
 
-        {/* Results scroll list */}
         <div ref={listRef} className="flex-1 overflow-y-auto p-2">
           {allFilteredItems.length === 0 ? (
-            <div className="py-12 text-center text-[13px] text-fg-muted">
-              <Command className="mx-auto mb-2 size-6 text-fg-subtle opacity-40" />
+            <div className="py-12 text-center text-[0.8125rem] text-fg-muted">
+              <Command className="mx-auto mb-2 size-5 text-fg-subtle opacity-50" />
               <p>{copy.commandNoResults}</p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4 py-1">
               {grouped.map((group) => {
                 const start = allFilteredItems.findIndex((item) => item.id === group.items[0]?.id);
                 return (
                   <div key={group.id}>
-                    <p className="px-3 pb-1.5 pt-1 text-[10px] font-semibold uppercase tracking-wider text-fg-subtle">
+                    <p className="px-3 pb-1.5 text-[0.8125rem] font-medium text-fg-subtle">
                       {group.label}
                     </p>
                     <div className="space-y-0.5">
@@ -354,30 +348,28 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
                             onMouseEnter={() => setActiveIndex(index)}
                             className={
                               isSelected
-                                ? "group flex w-full items-center justify-between rounded-xl bg-accent px-3 py-2.5 text-left text-accent-fg shadow-xs transition-colors duration-150"
-                                : "group flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-fg transition-colors duration-150 hover:bg-surface-2"
+                                ? "group flex w-full items-center justify-between rounded-lg bg-accent px-3 py-2.5 text-left text-accent-fg transition-colors duration-150"
+                                : "group flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-fg transition-colors duration-150 hover:bg-surface-2"
                             }
                           >
                             <div className="flex min-w-0 items-center gap-3">
-                              <div
+                              <Icon
                                 className={
                                   isSelected
-                                    ? "grid size-7 shrink-0 place-items-center rounded-lg bg-accent-fg/15 text-accent-fg"
-                                    : "grid size-7 shrink-0 place-items-center rounded-lg bg-surface-2 text-fg-muted"
+                                    ? "size-4 shrink-0 text-accent-fg"
+                                    : "size-4 shrink-0 text-fg-subtle"
                                 }
-                              >
-                                <Icon className="size-3.5" />
-                              </div>
+                              />
                               <div className="min-w-0">
-                                <p className="truncate text-[13px] font-medium leading-tight">
+                                <p className="truncate text-[0.9375rem] font-medium leading-snug">
                                   {item.title}
                                 </p>
                                 {item.subtitle ? (
                                   <p
                                     className={
                                       isSelected
-                                        ? "mt-0.5 truncate text-[11px] text-accent-fg/80"
-                                        : "mt-0.5 truncate text-[11px] text-fg-muted"
+                                        ? "mt-0.5 truncate text-[0.8125rem] text-accent-fg/85"
+                                        : "mt-0.5 truncate text-[0.8125rem] text-fg-muted"
                                     }
                                   >
                                     {item.subtitle}
@@ -386,23 +378,23 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
                               </div>
                             </div>
 
-                            <div className="flex shrink-0 items-center gap-2 pl-2">
-                              {item.badge ? (
+                            <div className="flex shrink-0 items-center gap-2 pl-3">
+                              {item.metaLabel ? (
                                 <span
                                   className={
                                     isSelected
-                                      ? "rounded-md bg-accent-fg/15 px-1.5 py-0.5 text-[10px] font-medium text-accent-fg"
-                                      : "rounded-md bg-surface-2 px-1.5 py-0.5 text-[10px] font-medium text-fg-subtle"
+                                      ? "text-[0.8125rem] text-accent-fg/85"
+                                      : "text-[0.8125rem] text-fg-subtle"
                                   }
                                 >
-                                  {item.badge}
+                                  {item.metaLabel}
                                 </span>
                               ) : null}
                               <ArrowRight
                                 className={
                                   isSelected
                                     ? "size-3.5 text-accent-fg"
-                                    : "size-3.5 text-fg-subtle opacity-0 transition-opacity group-hover:opacity-100"
+                                    : "size-3.5 text-fg-subtle opacity-0 transition-opacity duration-150 group-hover:opacity-100"
                                 }
                               />
                             </div>
@@ -417,26 +409,19 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
           )}
         </div>
 
-        {/* Footer shortcuts helper */}
-        <div className="flex items-center justify-between border-t border-border bg-surface-2/60 px-4 py-2 text-[11px] text-fg-subtle">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-1">
-              <kbd className="rounded border border-border bg-surface px-1 py-0.5 font-mono text-[10px]">
-                ↑↓
-              </kbd>
+        <div className="flex items-center justify-between border-t border-border bg-surface-2/60 px-4 py-2.5 text-[0.8125rem] text-fg-subtle">
+          <div className="flex items-center gap-4">
+            <span className="inline-flex items-center gap-1.5">
+              <kbd className="font-mono text-fg-muted">↑↓</kbd>
               <span>{copy.commandHintNavigate}</span>
             </span>
-            <span className="inline-flex items-center gap-1">
-              <kbd className="rounded border border-border bg-surface px-1 py-0.5 font-mono text-[10px]">
-                ↵
-              </kbd>
+            <span className="inline-flex items-center gap-1.5">
+              <kbd className="font-mono text-fg-muted">↵</kbd>
               <span>{copy.commandHintSelect}</span>
             </span>
           </div>
-          <span className="inline-flex items-center gap-1">
-            <kbd className="rounded border border-border bg-surface px-1 py-0.5 font-mono text-[10px]">
-              ESC
-            </kbd>
+          <span className="inline-flex items-center gap-1.5">
+            <kbd className="font-mono text-fg-muted">Esc</kbd>
             <span>{copy.commandHintClose}</span>
           </span>
         </div>

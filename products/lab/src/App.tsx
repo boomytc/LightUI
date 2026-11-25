@@ -99,22 +99,18 @@ function NotFound({ path }: { path: string }) {
   const { locale } = usePrefs();
   const copy = messages(locale);
   return (
-    <Page as="main" className="py-16">
-      <div className="max-w-lg space-y-5">
-        <p className="font-mono text-[12px] font-medium text-fg-subtle">404</p>
-        <p className="text-[15px] text-fg-muted">{copy.missingPage(path)}</p>
-        <div className="flex flex-wrap items-center gap-3 pt-1">
+    <Page as="main" className="py-20">
+      <div className="max-w-[52ch] space-y-5">
+        <h1 className="text-[clamp(2rem,1.4rem+2vw,3rem)] font-semibold leading-none tracking-[-0.03em] text-fg tabular-nums">
+          404
+        </h1>
+        <p className="text-[0.9375rem] leading-[1.65] text-fg-muted">{copy.missingPage(path)}</p>
+        <div className="pt-2">
           <Link
             href="/"
-            className="inline-flex h-9 items-center rounded-lg bg-fg px-4 text-[13px] font-medium text-surface no-underline shadow-xs transition-opacity hover:opacity-90"
+            className="inline-flex min-h-10 items-center rounded-lg bg-fg px-4 py-2 text-[0.8125rem] font-medium text-surface no-underline transition-opacity duration-150 hover:opacity-90"
           >
             {copy.commandActionHome}
-          </Link>
-          <Link
-            href="/studies"
-            className="inline-flex h-9 items-center rounded-lg border border-border bg-surface px-4 text-[13px] font-medium text-fg no-underline shadow-xs transition-colors hover:bg-surface-2"
-          >
-            {copy.homeSeeWorks}
           </Link>
         </div>
       </div>

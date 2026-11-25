@@ -50,7 +50,7 @@ export function StagePage({ slug }: { slug: string }) {
 
   if (!study) {
     return (
-      <div className="grid min-h-dvh place-items-center bg-bg px-6 text-[15px] text-fg-muted">
+      <div className="grid min-h-dvh place-items-center bg-bg px-6 text-[0.9375rem] text-fg-muted">
         {messages(locale).missingStudy(slug)}
       </div>
     );
@@ -66,7 +66,7 @@ export function StagePage({ slug }: { slug: string }) {
 
   if (!StageView) {
     return (
-      <div className="grid min-h-dvh place-items-center bg-bg px-6 text-[15px] text-fg-muted">
+      <div className="grid min-h-dvh place-items-center bg-bg px-6 text-[0.9375rem] text-fg-muted">
         {messages(locale).noStageView}
       </div>
     );
