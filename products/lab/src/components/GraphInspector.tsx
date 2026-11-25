@@ -189,14 +189,14 @@ export function GraphInspector({
                       onClick={() => onSelectSlug(item.slug)}
                       className="group flex w-full flex-col py-2.5 text-left transition-colors duration-150 hover:text-accent"
                     >
-                      <div className="flex items-center justify-between gap-2">
+                      <span className="flex w-full items-center justify-between gap-2">
                         <span className="text-[0.9375rem] font-medium text-fg transition-colors duration-150 group-hover:text-accent">
                           {studyTitle(target, locale)}
                         </span>
                         <ArrowRight className="size-3.5 text-fg-subtle transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-accent" />
-                      </div>
+                      </span>
                       {when ? (
-                        <p className="mt-0.5 text-[0.8125rem] text-fg-muted">{when}</p>
+                        <span className="mt-0.5 block text-[0.8125rem] text-fg-muted">{when}</span>
                       ) : null}
                     </button>
                   );
@@ -220,14 +220,14 @@ export function GraphInspector({
                       onClick={() => onSelectSlug(item.slug)}
                       className="group flex w-full flex-col py-2.5 text-left transition-colors duration-150"
                     >
-                      <div className="flex items-center justify-between gap-2">
+                      <span className="flex w-full items-center justify-between gap-2">
                         <span className="text-[0.9375rem] font-medium text-fg transition-colors duration-150 group-hover:text-accent">
                           {studyTitle(target, locale)}
                         </span>
                         <ArrowRight className="size-3.5 text-accent transition-transform duration-150 group-hover:translate-x-0.5" />
-                      </div>
+                      </span>
                       {when ? (
-                        <p className="mt-0.5 text-[0.8125rem] text-fg-muted">{when}</p>
+                        <span className="mt-0.5 block text-[0.8125rem] text-fg-muted">{when}</span>
                       ) : null}
                     </button>
                   );
@@ -251,14 +251,14 @@ export function GraphInspector({
                       onClick={() => onSelectSlug(item.slug)}
                       className="group flex w-full flex-col py-2.5 text-left transition-colors duration-150"
                     >
-                      <div className="flex items-center justify-between gap-2">
+                      <span className="flex w-full items-center justify-between gap-2">
                         <span className="text-[0.9375rem] font-medium text-fg transition-colors duration-150 group-hover:text-wrong">
                           ≠ {studyTitle(target, locale)}
                         </span>
                         <ArrowRight className="size-3.5 text-wrong transition-transform duration-150 group-hover:translate-x-0.5" />
-                      </div>
+                      </span>
                       {when ? (
-                        <p className="mt-0.5 text-[0.8125rem] text-fg-muted">{when}</p>
+                        <span className="mt-0.5 block text-[0.8125rem] text-fg-muted">{when}</span>
                       ) : null}
                     </button>
                   );

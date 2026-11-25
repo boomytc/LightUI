@@ -27,9 +27,9 @@ export function NotePagination({
             <ArrowLeft className="size-3.5 transition-transform duration-150 group-hover:-translate-x-0.5" />
             <span>{copy.prevNoteLabel}</span>
           </div>
-          <h3 className="mt-1.5 text-[0.9375rem] font-semibold text-fg transition-colors duration-150 group-hover:text-accent">
+          <p className="mt-1.5 text-[0.9375rem] font-semibold text-fg transition-colors duration-150 group-hover:text-accent">
             {prev.title}
-          </h3>
+          </p>
           {prev.summary ? (
             <p className="mt-1 line-clamp-2 text-[0.8125rem] text-fg-muted">{prev.summary}</p>
           ) : null}
@@ -47,9 +47,9 @@ export function NotePagination({
             <span>{copy.nextNoteLabel}</span>
             <ArrowRight className="size-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
           </div>
-          <h3 className="mt-1.5 text-[0.9375rem] font-semibold text-fg transition-colors duration-150 group-hover:text-accent">
+          <p className="mt-1.5 text-[0.9375rem] font-semibold text-fg transition-colors duration-150 group-hover:text-accent">
             {next.title}
-          </h3>
+          </p>
           {next.summary ? (
             <p className="mt-1 line-clamp-2 text-[0.8125rem] text-fg-muted">{next.summary}</p>
           ) : null}

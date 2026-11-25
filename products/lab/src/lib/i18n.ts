@@ -15,7 +15,6 @@ const zh = {
   homeLede: "作品是可以再摸一遍的交互。笔记写它为什么值得留下。不是组件库，也不是产品壳。",
   homeSeeWorks: "浏览全部作品",
   homeSeeGraph: "查看判定图谱",
-  homeReadNotes: "读笔记",
   homeWorks: "精选作品",
   homeNotes: "最新笔记",
   homeAll: "全部",
@@ -76,14 +75,12 @@ const zh = {
   noStageView: "这个作品还没有舞台。",
   statusDraft: "草稿",
   statusRetired: "已归档",
-  graphAsks: "问的是",
   graphContrast: "不要混",
   graphPairs: (n: number) => `${n} 对`,
   graphPageTitle: "判定图谱",
   graphPageLede: "每则作品是一个问题。实线是后一步时序，虚线是易混对照。点击节点展开决策推演。",
   graphHint: "悬停或点击节点高亮全链路因果与对照。",
   graphHintMobile: "点击节点高亮全链路并展开推演。",
-  graphScrollHint: "可左右滑动查看全部层级",
   graphEmpty: "还没有判定连上。",
   graphContrastToggle: "显示全部对照连线",
   viewModeFlow: "决策流向",
@@ -108,7 +105,6 @@ const zh = {
   clearFilters: "清空筛选",
   clearSearch: "清空搜索关键词",
   clearTag: (tag: string) => `移除标签 #${tag}`,
-  distinctionBadge: "辨析",
 };
 
 const en: typeof zh = {
@@ -126,7 +122,6 @@ const en: typeof zh = {
   homeLede: "Work is an interaction you can try again. Notes say why it is worth keeping. Not a component library, not a product shell.",
   homeSeeWorks: "Browse all work",
   homeSeeGraph: "Judgment map",
-  homeReadNotes: "Read notes",
   homeWorks: "Selected work",
   homeNotes: "Latest notes",
   homeAll: "All",
@@ -187,14 +182,12 @@ const en: typeof zh = {
   noStageView: "This study has no stage.",
   statusDraft: "Draft",
   statusRetired: "Retired",
-  graphAsks: "Asks",
   graphContrast: "Do not mix",
   graphPairs: (n) => (n === 1 ? "1 pair" : `${n} pairs`),
   graphPageTitle: "Judgment map",
   graphPageLede: "Each study is a question. Solid arrows indicate sequence; dashed links are contrast pairs. Click a node to inspect.",
   graphHint: "Hover or click a node to highlight full lineage and contrasts.",
   graphHintMobile: "Tap a node to highlight full lineage and inspect.",
-  graphScrollHint: "Scroll horizontally to view all layers",
   graphEmpty: "No judgments are linked yet.",
   graphContrastToggle: "All contrast links",
   viewModeFlow: "Decision flow",
@@ -219,7 +212,6 @@ const en: typeof zh = {
   clearFilters: "Clear filters",
   clearSearch: "Clear search",
   clearTag: (tag: string) => `Remove tag #${tag}`,
-  distinctionBadge: "Distinction",
 };
 
 export function messages(locale: Locale): typeof zh {

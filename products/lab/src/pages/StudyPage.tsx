@@ -189,9 +189,11 @@ export function StudyPage({ slug }: { slug: string }) {
     }
     const main = document.getElementById("lab-main");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // 主顶栏在研究页随文档滚动收起，因此仅需滚动对齐至 #lab-main 顶部
+    // 仅当页面已滚动超过研究副栏顶部时滚回对齐，避免在页首切换标签意外下拉隐藏主顶栏
     const top = main ? Math.max(0, window.scrollY + main.getBoundingClientRect().top) : 0;
-    window.scrollTo({ top, behavior: reduce ? "instant" : "smooth" });
+    if (window.scrollY > top) {
+      window.scrollTo({ top, behavior: reduce ? "instant" : "smooth" });
+    }
     panelRef.current?.focus({ preventScroll: true });
   }, [tab]);
 

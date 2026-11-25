@@ -371,7 +371,7 @@ export function GraphCanvas({
         )}
       >
         {showCategory || roleLabel ? (
-          <div className="mb-1 flex items-center justify-between gap-2 text-[0.8125rem]">
+          <span className="mb-1 flex items-center justify-between gap-2 text-[0.8125rem]">
             {showCategory ? (
               <span className="truncate text-fg-subtle">{categoryLabel(category, locale)}</span>
             ) : (
@@ -382,15 +382,17 @@ export function GraphCanvas({
                 {roleLabel}
               </span>
             ) : null}
-          </div>
+          </span>
         ) : null}
 
-        <h4 className="text-[0.9375rem] font-semibold leading-snug tracking-[-0.015em] text-fg transition-colors duration-150 group-hover:text-accent">
+        <span className="block text-[0.9375rem] font-semibold leading-snug tracking-[-0.015em] text-fg transition-colors duration-150 group-hover:text-accent">
           {studyTitle(meta, locale)}
-        </h4>
+        </span>
 
         {asks ? (
-          <p className="mt-1 line-clamp-2 text-[0.8125rem] leading-snug text-fg-muted">{asks}</p>
+          <span className="mt-1 line-clamp-2 block text-[0.8125rem] leading-snug text-fg-muted">
+            {asks}
+          </span>
         ) : null}
       </button>
     );

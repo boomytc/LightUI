@@ -352,7 +352,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
                                 : "group flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-fg transition-colors duration-150 hover:bg-surface-2"
                             }
                           >
-                            <div className="flex min-w-0 items-center gap-3">
+                            <span className="flex min-w-0 items-center gap-3">
                               <Icon
                                 className={
                                   isSelected
@@ -360,25 +360,25 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
                                     : "size-4 shrink-0 text-fg-subtle"
                                 }
                               />
-                              <div className="min-w-0">
-                                <p className="truncate text-[0.9375rem] font-medium leading-snug">
+                              <span className="block min-w-0">
+                                <span className="block truncate text-[0.9375rem] font-medium leading-snug">
                                   {item.title}
-                                </p>
+                                </span>
                                 {item.subtitle ? (
-                                  <p
+                                  <span
                                     className={
                                       isSelected
-                                        ? "mt-0.5 truncate text-[0.8125rem] text-accent-fg/85"
-                                        : "mt-0.5 truncate text-[0.8125rem] text-fg-muted"
+                                        ? "mt-0.5 block truncate text-[0.8125rem] text-accent-fg/85"
+                                        : "mt-0.5 block truncate text-[0.8125rem] text-fg-muted"
                                     }
                                   >
                                     {item.subtitle}
-                                  </p>
+                                  </span>
                                 ) : null}
-                              </div>
-                            </div>
+                              </span>
+                            </span>
 
-                            <div className="flex shrink-0 items-center gap-2 pl-3">
+                            <span className="flex shrink-0 items-center gap-2 pl-3">
                               {item.metaLabel ? (
                                 <span
                                   className={
@@ -397,7 +397,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
                                     : "size-3.5 text-fg-subtle opacity-0 transition-opacity duration-150 group-hover:opacity-100"
                                 }
                               />
-                            </div>
+                            </span>
                           </button>
                         );
                       })}

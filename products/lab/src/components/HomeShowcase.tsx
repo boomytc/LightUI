@@ -7,11 +7,6 @@ type DemoKey = "triangle" | "beam" | "weights";
 type BeamPace = "slow" | "normal" | "paused";
 type WeightKind = "solid" | "outline" | "text";
 
-type TriangleStatus =
-  | { kind: "idle" }
-  | { kind: "holding" }
-  | { kind: "selected"; itemId: number; subIndex: number };
-
 const DEMO_TABS: readonly DemoKey[] = ["triangle", "beam", "weights"];
 
 const TRIANGLE_ITEMS = [
@@ -40,7 +35,9 @@ const TRIANGLE_ITEMS = [
 
 export function HomeShowcase({ locale }: { locale: Locale }) {
   const [activeTab, setActiveTab] = useState<DemoKey>("triangle");
-  const [triangleStatus, setTriangleStatus] = useState<TriangleStatus>({ kind: "idle" });
+  const [triangleItem, setTriangleItem] = useState(0);
+  const [triangleSubIdx, setTriangleSubIdx] = useState<number | null>(null);
+  const [corridorHolding, setCorridorHolding] = useState(false);
   const [beamPace, setBeamPace] = useState<BeamPace>("normal");
   const [weightKind, setWeightKind] = useState<WeightKind>("solid");
   const tabRefs = useRef<Partial<Record<DemoKey, HTMLButtonElement | null>>>({});
@@ -57,18 +54,23 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
     return "/s/button-taxonomy";
   }
 
+  function switchTab(next: DemoKey) {
+    setCorridorHolding(false);
+    setActiveTab(next);
+  }
+
   function currentCaption(): string {
     if (activeTab === "triangle") {
-      if (triangleStatus.kind === "holding") {
+      if (corridorHolding) {
         return locale === "en"
           ? "Diagonal corridor active: neighbor switch deferred until pointer exits the triangle."
           : "检测到斜向进入二级菜单：走廊保护生效，暂缓切换相邻主项。";
       }
-      if (triangleStatus.kind === "selected") {
-        const item = TRIANGLE_ITEMS[triangleStatus.itemId];
+      if (triangleSubIdx !== null) {
+        const item = TRIANGLE_ITEMS[triangleItem];
         if (item) {
           const parent = locale === "en" ? item.labelEn : item.labelZh;
-          const child = (locale === "en" ? item.subEn : item.subZh)[triangleStatus.subIndex] ?? "";
+          const child = (locale === "en" ? item.subEn : item.subZh)[triangleSubIdx] ?? "";
           return locale === "en" ? `Selected: ${parent} / ${child}` : `已选中：${parent} / ${child}`;
         }
       }
@@ -117,7 +119,7 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
     else if (e.key === "End") next = DEMO_TABS[DEMO_TABS.length - 1];
     if (!next) return;
     e.preventDefault();
-    setActiveTab(next);
+    switchTab(next);
     requestAnimationFrame(() => tabRefs.current[next]?.focus());
   }
 
@@ -147,7 +149,7 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
                 aria-selected={active}
                 aria-controls={`showcase-panel-${id}`}
                 tabIndex={active ? 0 : -1}
-                onClick={() => setActiveTab(id)}
+                onClick={() => switchTab(id)}
                 className={
                   active
                     ? "rounded-md bg-surface px-3 py-1.5 text-[0.8125rem] font-semibold text-fg transition-colors duration-150"
@@ -177,7 +179,18 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
       >
         <div key={activeTab} className="lab-fade w-full">
           {activeTab === "triangle" ? (
-            <TriangleMiniDemo locale={locale} onStatusChange={setTriangleStatus} />
+            <TriangleMiniDemo
+              locale={locale}
+              activeItem={triangleItem}
+              selectedSubIdx={triangleSubIdx}
+              corridorHolding={corridorHolding}
+              onActiveItemChange={(next) => {
+                setTriangleItem(next);
+                setTriangleSubIdx(null);
+              }}
+              onSelectSub={setTriangleSubIdx}
+              onHoldingChange={setCorridorHolding}
+            />
           ) : null}
           {activeTab === "beam" ? (
             <BeamMiniDemo locale={locale} pace={beamPace} onPaceChange={setBeamPace} />
@@ -220,14 +233,21 @@ function pointInTriangle(p: Pt, a: Pt, b: Pt, c: Pt): boolean {
 
 function TriangleMiniDemo({
   locale,
-  onStatusChange,
+  activeItem,
+  selectedSubIdx,
+  corridorHolding,
+  onActiveItemChange,
+  onSelectSub,
+  onHoldingChange,
 }: {
   locale: Locale;
-  onStatusChange: (status: TriangleStatus) => void;
+  activeItem: number;
+  selectedSubIdx: number | null;
+  corridorHolding: boolean;
+  onActiveItemChange: (itemId: number) => void;
+  onSelectSub: (subIndex: number) => void;
+  onHoldingChange: (holding: boolean) => void;
 }) {
-  const [activeItem, setActiveItem] = useState(0);
-  const [selectedSubIdx, setSelectedSubIdx] = useState<number | null>(null);
-  const [corridorHolding, setCorridorHolding] = useState(false);
   const [geometry, setGeometry] = useState<CorridorGeometry | null>(null);
 
   const stageRef = useRef<HTMLDivElement>(null);
@@ -249,7 +269,7 @@ function TriangleMiniDemo({
       window.clearTimeout(switchTimerRef.current);
       switchTimerRef.current = null;
     }
-    setCorridorHolding(false);
+    onHoldingChange(false);
   }
 
   function updateGeometry(anchor: Pt | null) {
@@ -283,34 +303,28 @@ function TriangleMiniDemo({
       anchorPointRef.current = curr;
       lastPointRef.current = curr;
       updateGeometry(curr);
-      if (selectedSubIdx === null) onStatusChange({ kind: "idle" });
       return;
     }
 
     if (isMovingInsideCorridor(curr)) {
       clearPendingSwitch();
-      setCorridorHolding(true);
+      onHoldingChange(true);
       updateGeometry(anchorPointRef.current);
-      onStatusChange({ kind: "holding" });
       switchTimerRef.current = window.setTimeout(() => {
-        setActiveItem(itemId);
-        setSelectedSubIdx(null);
-        setCorridorHolding(false);
+        onActiveItemChange(itemId);
+        onHoldingChange(false);
         anchorPointRef.current = lastPointRef.current;
         updateGeometry(lastPointRef.current);
-        onStatusChange({ kind: "idle" });
         switchTimerRef.current = null;
       }, 240);
       return;
     }
 
     clearPendingSwitch();
-    setActiveItem(itemId);
-    setSelectedSubIdx(null);
+    onActiveItemChange(itemId);
     anchorPointRef.current = curr;
     lastPointRef.current = curr;
     updateGeometry(curr);
-    onStatusChange({ kind: "idle" });
   }
 
   function handlePrimaryMove(itemId: number, e: React.MouseEvent<HTMLButtonElement>) {
@@ -324,22 +338,12 @@ function TriangleMiniDemo({
 
   function handlePrimarySelect(itemId: number) {
     clearPendingSwitch();
-    setActiveItem(itemId);
-    setSelectedSubIdx(null);
-    onStatusChange({ kind: "idle" });
-  }
-
-  function handleSubSelect(subIndex: number) {
-    setSelectedSubIdx(subIndex);
-    onStatusChange({ kind: "selected", itemId: activeItem, subIndex });
+    onActiveItemChange(itemId);
   }
 
   function handleStageLeave() {
     clearPendingSwitch();
     setGeometry(null);
-    if (selectedSubIdx === null) {
-      onStatusChange({ kind: "idle" });
-    }
   }
 
   const activeEntry = TRIANGLE_ITEMS[activeItem] ?? TRIANGLE_ITEMS[0];
@@ -406,7 +410,6 @@ function TriangleMiniDemo({
           onMouseEnter={() => {
             clearPendingSwitch();
             setGeometry(null);
-            if (selectedSubIdx === null) onStatusChange({ kind: "idle" });
           }}
           className="space-y-1 rounded-xl border border-border-strong bg-surface p-2 shadow-card"
         >
@@ -424,7 +427,7 @@ function TriangleMiniDemo({
               <button
                 key={subIndex}
                 type="button"
-                onClick={() => handleSubSelect(subIndex)}
+                onClick={() => onSelectSub(subIndex)}
                 className={
                   picked
                     ? "block w-full rounded-lg bg-accent-soft px-3 py-2 text-left text-[0.8125rem] font-semibold text-accent transition-colors duration-150"
