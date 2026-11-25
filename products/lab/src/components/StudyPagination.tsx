@@ -18,26 +18,27 @@ export function StudyPagination({ slug, locale }: { slug: string; locale: Locale
   if (!prev && !next) return null;
 
   return (
-    <div className="mt-8 grid gap-3 sm:grid-cols-2">
+    <nav
+      aria-label={locale === "en" ? "Study navigation" : "研究翻页"}
+      className="mt-10 grid gap-6 border-t border-border pt-6 sm:grid-cols-2"
+    >
       {prev ? (
         <Link
           href={`/s/${prev.meta.slug}`}
-          className="group flex flex-col justify-between rounded-2xl border border-border bg-surface/80 p-4 no-underline transition-[border-color,background-color] duration-200 hover:border-border-strong hover:bg-surface"
+          className="group block no-underline"
         >
-          <div>
-            <div className="flex items-center gap-1.5 text-[11px] font-medium text-fg-subtle">
-              <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-0.5" />
-              <span>{copy.prevStudyLabel}</span>
-            </div>
-            <p className="mt-2 text-[14px] font-semibold text-fg group-hover:text-accent transition-colors">
-              {studyTitle(prev.meta, locale)}
-            </p>
-            {prev.meta.asks ? (
-              <p className="mt-1 text-[12px] text-fg-muted line-clamp-1">
-                {studyAsks(prev.meta, locale)}
-              </p>
-            ) : null}
+          <div className="flex items-center gap-1.5 text-[0.8125rem] text-fg-subtle">
+            <ArrowLeft className="size-3.5 transition-transform duration-150 group-hover:-translate-x-0.5" />
+            <span>{copy.prevStudyLabel}</span>
           </div>
+          <p className="mt-1.5 text-[0.9375rem] font-semibold text-fg transition-colors duration-150 group-hover:text-accent">
+            {studyTitle(prev.meta, locale)}
+          </p>
+          {prev.meta.asks ? (
+            <p className="mt-1 line-clamp-1 text-[0.8125rem] text-fg-muted">
+              {studyAsks(prev.meta, locale)}
+            </p>
+          ) : null}
         </Link>
       ) : (
         <div />
@@ -46,26 +47,24 @@ export function StudyPagination({ slug, locale }: { slug: string; locale: Locale
       {next ? (
         <Link
           href={`/s/${next.meta.slug}`}
-          className="group flex flex-col justify-between rounded-2xl border border-border bg-surface/80 p-4 text-right no-underline transition-[border-color,background-color] duration-200 hover:border-border-strong hover:bg-surface"
+          className="group block text-left no-underline sm:text-right"
         >
-          <div>
-            <div className="flex items-center justify-end gap-1.5 text-[11px] font-medium text-fg-subtle">
-              <span>{copy.nextStudyLabel}</span>
-              <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-            </div>
-            <p className="mt-2 text-[14px] font-semibold text-fg group-hover:text-accent transition-colors">
-              {studyTitle(next.meta, locale)}
-            </p>
-            {next.meta.asks ? (
-              <p className="mt-1 text-[12px] text-fg-muted line-clamp-1">
-                {studyAsks(next.meta, locale)}
-              </p>
-            ) : null}
+          <div className="flex items-center gap-1.5 text-[0.8125rem] text-fg-subtle sm:justify-end">
+            <span>{copy.nextStudyLabel}</span>
+            <ArrowRight className="size-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
           </div>
+          <p className="mt-1.5 text-[0.9375rem] font-semibold text-fg transition-colors duration-150 group-hover:text-accent">
+            {studyTitle(next.meta, locale)}
+          </p>
+          {next.meta.asks ? (
+            <p className="mt-1 line-clamp-1 text-[0.8125rem] text-fg-muted">
+              {studyAsks(next.meta, locale)}
+            </p>
+          ) : null}
         </Link>
       ) : (
         <div />
       )}
-    </div>
+    </nav>
   );
 }

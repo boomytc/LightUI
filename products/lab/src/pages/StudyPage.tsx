@@ -189,8 +189,8 @@ export function StudyPage({ slug }: { slug: string }) {
     }
     const main = document.getElementById("lab-main");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const header = window.matchMedia("(min-width: 640px)").matches ? 56 : 48;
-    const top = main ? Math.max(0, window.scrollY + main.getBoundingClientRect().top - header) : 0;
+    // 主顶栏在研究页随文档滚动收起，因此仅需滚动对齐至 #lab-main 顶部
+    const top = main ? Math.max(0, window.scrollY + main.getBoundingClientRect().top) : 0;
     window.scrollTo({ top, behavior: reduce ? "instant" : "smooth" });
     panelRef.current?.focus({ preventScroll: true });
   }, [tab]);
@@ -198,7 +198,7 @@ export function StudyPage({ slug }: { slug: string }) {
   if (!study) {
     return (
       <Page as="main" className="py-16">
-        <p className="text-[15px] text-fg-muted">{copy.missingStudy(slug)}</p>
+        <p className="text-[0.9375rem] text-fg-muted">{copy.missingStudy(slug)}</p>
         <BackLink fallback="/studies" />
       </Page>
     );
@@ -252,34 +252,33 @@ export function StudyPage({ slug }: { slug: string }) {
 
   return (
     <main id="lab-main">
-      <div id="study-chrome" className="study-chrome border-b border-border/70 bg-surface/85 backdrop-blur-md">
-        <div className="page-width flex h-11 items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-2">
+      {/* 单层吸顶副栏：紧贴视口顶部，实底避免下层标题透出 */}
+      <div id="study-chrome" className="study-chrome border-b border-border bg-surface">
+        <div className="page-width flex min-h-12 items-center justify-between gap-3 py-1.5">
+          <div className="flex min-w-0 items-center gap-2.5">
             <BackLink
               fallback="/studies"
-              className="inline-flex h-8 max-w-[7.5rem] min-w-0 shrink-0 items-center gap-1.5 rounded-md px-1.5 text-[13px] text-fg-muted no-underline transition-colors duration-150 hover:bg-surface-2 hover:text-fg sm:max-w-[12rem]"
+              className="inline-flex min-h-8 max-w-[7.5rem] min-w-0 shrink-0 items-center gap-1.5 rounded-md px-1.5 text-[0.8125rem] text-fg-muted no-underline transition-colors duration-150 hover:bg-surface-2 hover:text-fg sm:max-w-[12rem]"
             />
             <span className="hidden h-4 w-px shrink-0 bg-border sm:block" aria-hidden="true" />
-            <p className="min-w-0 truncate text-[13px] font-medium text-fg-muted">{title}</p>
+            <p className="min-w-0 truncate text-[0.8125rem] font-semibold text-fg">{title}</p>
           </div>
           <div className="flex items-center gap-2">
             {prefersDeviceFrame && tab === "stage" ? (
               <button
                 type="button"
                 onClick={() => setUseDeviceFrame(!useDeviceFrame)}
-                className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1 text-[12px] font-medium text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg shadow-xs"
+                className="hidden items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-[0.8125rem] font-medium text-fg-muted transition-colors duration-150 hover:bg-surface-2 hover:text-fg sm:inline-flex"
                 title={useDeviceFrame ? copy.viewportFull : copy.viewportDevice}
                 aria-label={useDeviceFrame ? copy.viewportFull : copy.viewportDevice}
               >
                 {useDeviceFrame ? <Monitor className="size-3.5" /> : <Smartphone className="size-3.5" />}
-                <span>
-                  {useDeviceFrame ? copy.viewportFull : copy.viewportDevice}
-                </span>
+                <span>{useDeviceFrame ? copy.viewportFull : copy.viewportDevice}</span>
               </button>
             ) : null}
 
             <div
-              className="flex shrink-0 rounded-lg border border-border bg-surface-2/70 p-0.5"
+              className="flex shrink-0 rounded-lg border border-border bg-surface-2 p-0.5"
               role="tablist"
               aria-label={copy.studyViewTabs}
               onKeyDown={onTabListKeyDown}
@@ -295,7 +294,13 @@ export function StudyPage({ slug }: { slug: string }) {
                   }}
                   onClick={() => activate(id, "pointer")}
                 >
-                  {id === "play" ? copy.tabPlay : id === "stage" ? copy.tabStage : id === "code" ? copy.tabCode : copy.tabIdea}
+                  {id === "play"
+                    ? copy.tabPlay
+                    : id === "stage"
+                      ? copy.tabStage
+                      : id === "code"
+                        ? copy.tabCode
+                        : copy.tabIdea}
                 </TabButton>
               ))}
             </div>
@@ -317,7 +322,7 @@ export function StudyPage({ slug }: { slug: string }) {
           ) : StudyView ? (
             <div className="study-play">{<StudyView />}</div>
           ) : (
-            <p className="page-width py-12 text-[14px] text-fg-muted">{copy.noStudyView}</p>
+            <p className="page-width py-12 text-[0.9375rem] text-fg-muted">{copy.noStudyView}</p>
           )
         ) : tab === "stage" ? (
           !stageViewLoaded ? (
@@ -325,18 +330,20 @@ export function StudyPage({ slug }: { slug: string }) {
           ) : StageView ? (
             <div className="page-width py-10">
               <div className="mx-auto flex max-w-4xl flex-col items-center">
-                <div className="mb-6 flex w-full flex-wrap items-center justify-between gap-3">
+                <div className="mb-6 flex w-full flex-wrap items-baseline justify-between gap-3">
                   <div>
-                    <h2 className="text-[15px] font-semibold text-fg">{copy.stageHeading}</h2>
-                    <p className="mt-0.5 text-[13px] text-fg-muted">{copy.stageDesc}</p>
+                    <h2 className="text-[1.125rem] font-semibold tracking-[-0.02em] text-fg">
+                      {copy.stageHeading}
+                    </h2>
+                    <p className="mt-1 text-[0.8125rem] text-fg-muted">{copy.stageDesc}</p>
                   </div>
                   <a
                     href={`/s/${meta.slug}/stage`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-[12px] font-medium text-fg no-underline shadow-xs transition-colors duration-150 hover:bg-surface-2"
+                    className="inline-flex items-center gap-1.5 text-[0.8125rem] font-medium text-accent no-underline transition-colors duration-150 hover:underline"
                   >
-                    {copy.openStandaloneStage}
+                    <span>{copy.openStandaloneStage}</span>
                     <ArrowUpRight className="size-3.5" />
                   </a>
                 </div>
@@ -345,32 +352,34 @@ export function StudyPage({ slug }: { slug: string }) {
                     <StageView />
                   </DeviceFrame>
                 ) : (
-                  <div className="w-full min-w-0 overflow-x-auto rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-10">
+                  <div className="lab-stage-grid w-full min-w-0 overflow-x-auto rounded-2xl border border-border p-6 sm:p-10">
                     <StageView />
                   </div>
                 )}
               </div>
             </div>
           ) : (
-            <p className="page-width py-12 text-[14px] text-fg-muted">{copy.noStageView}</p>
+            <p className="page-width py-12 text-[0.9375rem] text-fg-muted">{copy.noStageView}</p>
           )
         ) : tab === "code" ? (
           <div className="page-width py-10">
             <div className="mx-auto max-w-4xl">
-              <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+              <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
                 <div>
-                  <h2 className="text-[15px] font-semibold text-fg">{copy.codeHeading}</h2>
-                  <p className="mt-0.5 text-[13px] text-fg-muted">{copy.codeDesc}</p>
+                  <h2 className="text-[1.125rem] font-semibold tracking-[-0.02em] text-fg">
+                    {copy.codeHeading}
+                  </h2>
+                  <p className="mt-1 text-[0.8125rem] text-fg-muted">{copy.codeDesc}</p>
                 </div>
                 {study.hasMachinesCode ? (
-                  <div className="flex rounded-lg border border-border bg-surface-2 p-0.5 text-[12px]">
+                  <div className="inline-flex rounded-lg border border-border bg-surface-2 p-0.5 text-[0.8125rem]">
                     <button
                       type="button"
                       onClick={() => setActiveCodeFile("stage")}
                       className={
                         activeCodeFile === "stage"
-                          ? "rounded-md bg-surface px-2.5 py-1 font-medium text-fg shadow-xs"
-                          : "rounded-md px-2.5 py-1 font-medium text-fg-muted hover:text-fg"
+                          ? "rounded-md bg-surface px-3 py-1 font-semibold text-fg"
+                          : "rounded-md px-3 py-1 font-medium text-fg-muted transition-colors duration-150 hover:text-fg"
                       }
                     >
                       {copy.codeFileStage}
@@ -380,8 +389,8 @@ export function StudyPage({ slug }: { slug: string }) {
                       onClick={() => setActiveCodeFile("machines")}
                       className={
                         activeCodeFile === "machines"
-                          ? "rounded-md bg-surface px-2.5 py-1 font-medium text-fg shadow-xs"
-                          : "rounded-md px-2.5 py-1 font-medium text-fg-muted hover:text-fg"
+                          ? "rounded-md bg-surface px-3 py-1 font-semibold text-fg"
+                          : "rounded-md px-3 py-1 font-medium text-fg-muted transition-colors duration-150 hover:text-fg"
                       }
                     >
                       {copy.codeFileMachines}
@@ -406,7 +415,7 @@ export function StudyPage({ slug }: { slug: string }) {
             {!ideaLoaded ? (
               <TabLoading compact />
             ) : (
-              <article className="note-prose mx-auto max-w-[70ch]">
+              <article className="note-prose mx-auto max-w-[62ch]">
                 <Markdown source={ideaSource} locale={locale} />
               </article>
             )}
@@ -425,10 +434,14 @@ export function StudyPage({ slug }: { slug: string }) {
 function TabLoading({ compact = false }: { compact?: boolean }) {
   return (
     <div
-      className={compact ? "flex min-h-48 items-center justify-center" : "page-width flex min-h-72 items-center justify-center"}
+      className={
+        compact
+          ? "flex min-h-48 items-center justify-center"
+          : "page-width flex min-h-72 items-center justify-center"
+      }
       aria-busy="true"
     >
-      <div className="size-7 animate-spin rounded-full border-2 border-border border-t-accent" />
+      <div className="size-6 animate-spin rounded-full border-2 border-border border-t-accent" />
     </div>
   );
 }
@@ -460,8 +473,8 @@ function TabButton({
       onClick={onClick}
       className={
         active
-          ? "rounded-md bg-surface px-3 py-1 text-[12px] font-semibold text-fg shadow-xs"
-          : "rounded-md px-3 py-1 text-[12px] font-medium text-fg-muted transition-colors duration-150 hover:text-fg"
+          ? "rounded-md bg-surface px-3 py-1 text-[0.8125rem] font-semibold text-fg transition-colors duration-150"
+          : "rounded-md px-3 py-1 text-[0.8125rem] font-medium text-fg-muted transition-colors duration-150 hover:text-fg"
       }
     >
       {children}

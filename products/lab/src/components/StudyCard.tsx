@@ -7,13 +7,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { ArrowUpRight, HelpCircle } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { DateStamp } from "./DateStamp";
 import { Link } from "./Link";
 import type { LoadedStudy } from "../lib/catalog";
 import { categoryLabel, getStudyCategory } from "../lib/categories";
 import { messages } from "../lib/i18n";
-import { studyAsks, studyEyebrow, studySummary, studyTitle } from "../lib/localize";
+import { studyAsks, studySummary, studyTitle } from "../lib/localize";
 import { navigate } from "../lib/nav";
 import type { Locale } from "../lib/prefs";
 
@@ -30,10 +30,10 @@ class PreviewErrorBoundary extends Component<{ fallback: ReactNode; children: Re
   }
 }
 
-const MAX_PREVIEW_SCALE = 0.46;
-const MIN_PREVIEW_SCALE = 0.08;
-const MAX_FIT_ASPECT_RATIO = 2;
-const PREVIEW_PADDING_PX = 8;
+const MAX_PREVIEW_SCALE = 0.72;
+const MIN_PREVIEW_SCALE = 0.12;
+const MAX_FIT_ASPECT_RATIO = 1.75;
+const PREVIEW_PADDING_PX = 20;
 
 type PreviewLayout = {
   scale: number;
@@ -42,11 +42,11 @@ type PreviewLayout = {
 
 function StagePlaceholder({ loading = false }: { loading?: boolean }) {
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-surface-2/30">
+    <div className="absolute inset-0 flex items-center justify-center">
       {loading ? (
-        <div className="size-7 animate-spin rounded-full border-2 border-border/80 border-t-accent/60 opacity-40" />
+        <div className="size-6 animate-spin rounded-full border-2 border-border border-t-accent/70" />
       ) : (
-        <div className="size-7 rounded-full border border-border/60 opacity-25" />
+        <div className="size-6 rounded-full border border-border/70 opacity-40" />
       )}
     </div>
   );
@@ -72,7 +72,16 @@ function ScaledStagePreview({ StageView }: { StageView: ComponentType }) {
 
       const availW = Math.max(1, frameW - PREVIEW_PADDING_PX * 2);
       const availH = Math.max(1, frameH - PREVIEW_PADDING_PX * 2);
-      const contentW = Math.max(content.offsetWidth, content.scrollWidth);
+
+      // 优先按实际可视子容器包围盒测量宽度，避免窄型组件被 480px 外壳强行缩得过小
+      const stageRoot = content.querySelector<HTMLElement>('[data-stage="root"]') ?? content;
+      const singleChild =
+        stageRoot.children.length === 1 ? (stageRoot.firstElementChild as HTMLElement | null) : null;
+      const rawContentW = Math.max(content.offsetWidth, content.scrollWidth);
+      const contentW =
+        singleChild && singleChild.offsetWidth > 48 && singleChild.offsetWidth < rawContentW - 36
+          ? singleChild.offsetWidth + 24
+          : rawContentW;
       const contentH = Math.max(content.offsetHeight, content.scrollHeight);
       if (contentW <= 0 || contentH <= 0) return;
 
@@ -104,7 +113,7 @@ function ScaledStagePreview({ StageView }: { StageView: ComponentType }) {
       ref={frameRef}
       className={
         layout.topAligned
-          ? "absolute inset-0 flex items-start justify-center overflow-hidden pt-2"
+          ? "absolute inset-0 flex items-start justify-center overflow-hidden pt-3.5"
           : "absolute inset-0 flex items-center justify-center overflow-hidden"
       }
       style={
@@ -116,7 +125,7 @@ function ScaledStagePreview({ StageView }: { StageView: ComponentType }) {
       <div
         ref={contentRef}
         className={
-          layout.topAligned ? "w-[560px] shrink-0 origin-top" : "w-[560px] shrink-0 origin-center"
+          layout.topAligned ? "w-[480px] shrink-0 origin-top" : "w-[480px] shrink-0 origin-center"
         }
         style={{ transform: `scale(${layout.scale})` }}
       >
@@ -171,7 +180,7 @@ export function StudyCard({
           setIsInView(entry.isIntersecting);
         }
       },
-      { rootMargin: "160px" },
+      { rootMargin: "200px" },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -207,13 +216,14 @@ export function StudyCard({
   const isStageLoading = stageState.slug === meta.slug && stageState.loading;
 
   return (
-    <article className="lab-card group relative flex h-full flex-col justify-between rounded-2xl border border-border bg-surface p-5 shadow-card motion-safe:hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-2 hover:shadow-menu">
+    <article className="group relative flex h-full min-w-0 flex-col justify-between">
       <div>
+        {/* 单层制图点阵微缩舞台：无外卡片套娃 */}
         <div
           ref={containerRef}
           inert
           aria-hidden="true"
-          className="pointer-events-none relative mb-3.5 h-40 w-full select-none overflow-hidden rounded-xl border border-border/60 bg-surface-2/40 transition-colors duration-150 group-hover:border-border-strong"
+          className="lab-stage-grid pointer-events-none relative aspect-[16/10] w-full select-none overflow-hidden rounded-xl border border-border transition-[border-color,transform] duration-200 ease-[var(--lab-ease)] group-hover:border-border-strong motion-safe:group-hover:-translate-y-0.5"
         >
           {StageView && isInView ? (
             <PreviewErrorBoundary fallback={<StagePlaceholder />}>
@@ -224,38 +234,32 @@ export function StudyCard({
           )}
         </div>
 
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-[11px] font-medium tracking-wide text-accent">
-              {studyEyebrow(meta, locale) || categoryLabel(categoryId, locale)}
-            </p>
-            <h2 className="mt-1 text-[1.2rem] font-semibold tracking-tight text-fg transition-colors duration-150 group-hover:text-accent">
-              <Link
-                href={href}
-                className="no-underline after:absolute after:inset-0 after:content-['']"
-              >
-                {studyTitle(meta, locale)}
-              </Link>
-            </h2>
-          </div>
-          <ArrowUpRight className="size-4 shrink-0 text-fg-subtle transition-colors duration-150 group-hover:text-fg" />
+        {/* 直接从标题起笔：零眉标胶囊、零灰底问号盒 */}
+        <div className="mt-4 flex items-baseline justify-between gap-3">
+          <h2 className="min-w-0 text-[1.125rem] font-semibold leading-snug tracking-[-0.02em] text-fg transition-colors duration-150 group-hover:text-accent">
+            <Link
+              href={href}
+              className="no-underline after:absolute after:inset-0 after:content-['']"
+            >
+              {studyTitle(meta, locale)}
+            </Link>
+          </h2>
+          <ArrowUpRight className="size-4 shrink-0 text-fg-subtle transition-[transform,color] duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
         </div>
 
         {asks ? (
-          <div className="mt-3 flex items-start gap-1.5 rounded-lg bg-surface-2 px-2.5 py-1.5 text-[12px] font-medium text-fg">
-            <HelpCircle className="mt-0.5 size-3.5 shrink-0 text-accent" />
-            <span className="leading-snug">{asks}</span>
-          </div>
+          <p className="mt-1.5 text-[0.9375rem] font-medium leading-snug text-fg">{asks}</p>
         ) : null}
 
-        <p className="mt-2.5 line-clamp-3 text-[13px] leading-relaxed text-fg-muted">
+        <p className="mt-1.5 line-clamp-2 text-[0.8125rem] leading-relaxed text-fg-muted">
           {studySummary(meta, locale)}
         </p>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
-        <div className="relative z-10 flex flex-wrap gap-1">
-          {meta.tags?.slice(0, 3).map((tag) => (
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 border-t border-border pt-3 text-[0.8125rem] text-fg-subtle">
+        <div className="relative z-10 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="shrink-0 text-fg-muted">{categoryLabel(categoryId, locale)}</span>
+          {meta.tags?.slice(0, 2).map((tag) => (
             <button
               key={tag}
               type="button"
@@ -268,8 +272,8 @@ export function StudyCard({
               }}
               className={
                 selectedTag === tag
-                  ? "rounded-md border border-accent bg-accent-soft px-1.5 py-0.5 font-mono text-[10px] text-accent"
-                  : "rounded-md border border-border/80 bg-bg px-1.5 py-0.5 font-mono text-[10px] text-fg-subtle transition-colors duration-150 hover:border-border-strong hover:text-fg"
+                  ? "shrink-0 font-medium text-accent transition-colors duration-150"
+                  : "shrink-0 text-fg-subtle transition-colors duration-150 hover:text-fg"
               }
             >
               #{tag}
@@ -278,13 +282,7 @@ export function StudyCard({
         </div>
 
         {meta.status !== "active" ? (
-          <span
-            className={
-              meta.status === "draft"
-                ? "rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent"
-                : "rounded-full bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-fg-subtle"
-            }
-          >
+          <span className={meta.status === "draft" ? "shrink-0 font-medium text-accent" : "shrink-0 text-fg-subtle"}>
             {meta.status === "draft" ? copy.statusDraft : copy.statusRetired}
           </span>
         ) : (
@@ -292,7 +290,7 @@ export function StudyCard({
             created={meta.created}
             updated={meta.updated}
             locale={locale}
-            className="font-mono text-[11px] text-fg-subtle"
+            className="shrink-0 whitespace-nowrap tabular-nums text-fg-subtle"
           />
         )}
       </div>

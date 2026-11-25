@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles, Split } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "./Link";
 import { loadStudies } from "../lib/catalog";
 import { neighborsOf, type Neighbor } from "../lib/graph";
@@ -16,42 +16,50 @@ export function RelatedDecisions({ slug, locale }: { slug: string; locale: Local
     return null;
   }
 
-  const afters = neighbors.filter((n) => n.rel === "after");
-  const contrasts = neighbors.filter((n) => n.rel === "contrast");
-  const befores = neighbors.filter((n) => n.rel === "before");
+  const ordered = [
+    ...neighbors.filter((n) => n.rel === "after").map((item) => ({ item, label: copy.relatedAfter })),
+    ...neighbors.filter((n) => n.rel === "contrast").map((item) => ({ item, label: copy.relatedContrast })),
+    ...neighbors.filter((n) => n.rel === "before").map((item) => ({ item, label: copy.relatedBefore })),
+  ];
 
   return (
-    <section className="mt-10 border-t border-border/70 pt-8">
-      <div className="flex items-end justify-between gap-4">
+    <section className="mt-14 border-t border-border pt-10">
+      <div className="flex flex-wrap items-baseline justify-between gap-4">
         <div>
-          <h2 className="text-[15px] font-semibold tracking-tight text-fg">{copy.relatedHeading}</h2>
-          <p className="mt-1 text-[12px] text-fg-muted">
+          <h2 className="text-[1.125rem] font-semibold tracking-[-0.02em] text-fg">
+            {copy.relatedHeading}
+          </h2>
+          <p className="mt-1 text-[0.8125rem] text-fg-muted">
             {locale === "en"
               ? "The judgment graph connects this rule to its next questions and easy-to-mix alternatives."
               : "决策图谱将本则规则与后一步设问及易混淆方案相连。"}
           </p>
         </div>
-        <Link href="/graph" className="shrink-0 text-[13px] font-medium text-accent no-underline transition-colors hover:underline">
-          {copy.homeSeeGraph} →
+        <Link
+          href="/graph"
+          className="inline-flex shrink-0 items-center gap-1 text-[0.8125rem] font-medium text-accent no-underline transition-colors duration-150 hover:underline"
+        >
+          <span>{copy.homeSeeGraph}</span>
+          <ArrowRight className="size-3.5" />
         </Link>
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {afters.map((item) => (
-          <NeighborCard key={`after-${item.slug}`} item={item} metas={metas} locale={locale} relLabel={copy.relatedAfter} />
+      <ul className="mt-6 divide-y divide-border border-y border-border">
+        {ordered.map(({ item, label }) => (
+          <NeighborRow
+            key={`${item.rel}-${item.slug}`}
+            item={item}
+            metas={metas}
+            locale={locale}
+            relLabel={label}
+          />
         ))}
-        {contrasts.map((item) => (
-          <NeighborCard key={`contrast-${item.slug}`} item={item} metas={metas} locale={locale} relLabel={copy.relatedContrast} />
-        ))}
-        {befores.map((item) => (
-          <NeighborCard key={`before-${item.slug}`} item={item} metas={metas} locale={locale} relLabel={copy.relatedBefore} />
-        ))}
-      </div>
+      </ul>
     </section>
   );
 }
 
-function NeighborCard({
+function NeighborRow({
   item,
   metas,
   locale,
@@ -71,46 +79,37 @@ function NeighborCard({
   const isContrast = item.rel === "contrast";
 
   return (
-    <Link
-      href={`/s/${target.slug}`}
-      className="group flex flex-col justify-between rounded-2xl border border-border bg-surface p-4 no-underline shadow-card transition-[border-color,background-color] duration-200 hover:border-border-strong hover:bg-surface-2"
-    >
-      <div>
-        <div className="flex items-center justify-between gap-2">
-          <span
-            className={
-              isAfter
-                ? "inline-flex items-center gap-1 rounded-md bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent"
-                : isContrast
-                  ? "inline-flex items-center gap-1 rounded-md bg-wrong-soft px-2 py-0.5 text-[11px] font-medium text-wrong"
-                  : "inline-flex items-center gap-1 rounded-md bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-fg-subtle"
-            }
-          >
-            {isAfter ? <Sparkles className="size-3" /> : isContrast ? <Split className="size-3" /> : null}
-            {relLabel}
-          </span>
-          <ArrowRight className="size-3.5 text-fg-subtle transition-transform duration-150 group-hover:translate-x-0.5 group-hover:text-fg" />
+    <li>
+      <Link
+        href={`/s/${target.slug}`}
+        className="group grid gap-2 py-4 no-underline transition-colors duration-150 hover:bg-surface/60 sm:-mx-3 sm:grid-cols-[8.5rem_minmax(0,1fr)_auto] sm:items-baseline sm:gap-6 sm:rounded-lg sm:px-3"
+      >
+        <span
+          className={
+            isAfter
+              ? "text-[0.8125rem] font-medium text-accent"
+              : isContrast
+                ? "text-[0.8125rem] font-medium text-wrong"
+                : "text-[0.8125rem] font-medium text-fg-subtle"
+          }
+        >
+          {relLabel}
+        </span>
+
+        <div className="min-w-0">
+          <h3 className="text-[0.9375rem] font-semibold text-fg transition-colors duration-150 group-hover:text-accent">
+            {studyTitle(target, locale)}
+          </h3>
+          {when ? (
+            <p className="mt-1 text-[0.9375rem] leading-snug text-fg-muted">{when}</p>
+          ) : null}
+          {asks ? (
+            <p className="mt-0.5 text-[0.8125rem] leading-relaxed text-fg-subtle">{asks}</p>
+          ) : null}
         </div>
 
-        {when ? (
-          <p className="mt-2.5 text-[13px] font-medium text-fg">{when}</p>
-        ) : null}
-
-        <h3 className="mt-2 text-[15px] font-semibold tracking-tight text-fg group-hover:text-accent">
-          {studyTitle(target, locale)}
-        </h3>
-
-        {asks ? (
-          <p className="mt-1 text-[12px] leading-relaxed text-fg-muted line-clamp-2">{asks}</p>
-        ) : null}
-      </div>
-
-      <div className="mt-4 pt-3 border-t border-border/60 flex items-center justify-between text-[11px] text-fg-subtle font-mono">
-        <span>/s/{target.slug}</span>
-        <span className="text-accent opacity-0 transition-opacity duration-150 group-hover:opacity-100 font-sans font-medium">
-          {locale === "en" ? "Explore" : "前往"} →
-        </span>
-      </div>
-    </Link>
+        <ArrowRight className="hidden size-4 shrink-0 text-fg-subtle transition-[transform,color] duration-150 group-hover:translate-x-0.5 group-hover:text-accent sm:block" />
+      </Link>
+    </li>
   );
 }
