@@ -466,7 +466,7 @@ function inline(text: string, keyPrefix = "in"): ReactNode[] {
         parts.push(
           <code
             key={`${keyPrefix}-${key++}`}
-            className="rounded-md border border-border/70 bg-surface-2 px-1.5 py-0.5 font-mono text-[12px] text-fg"
+            className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[0.86em] text-fg"
           >
             {text.slice(i + 1, end)}
           </code>,
@@ -680,21 +680,21 @@ export function CodeBlock({
   }
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-border/80 bg-[#12141a] p-4 text-[#e2e4ea] shadow-card sm:p-5">
-      <div className="mb-3 flex items-center justify-between border-b border-white/10 pb-2">
-        <span className="font-mono text-[11px] tracking-wider text-white/55">
+    <div className="group relative overflow-hidden rounded-xl border border-border bg-[#12141a] p-4 text-[#e2e4ea] sm:p-5">
+      <div className="mb-3 flex items-center justify-between border-b border-white/10 pb-2.5">
+        <span className="font-mono text-[0.8125rem] text-white/60">
           {headerLabel}
         </span>
         <button
           type="button"
           onClick={copy}
-          className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+          className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[0.8125rem] font-medium text-white/80 transition-colors duration-150 hover:bg-white/10 hover:text-white"
         >
-          {copied ? <Check className="size-3 text-emerald-400" /> : <Copy className="size-3" />}
+          {copied ? <Check className="size-3.5 text-emerald-400" /> : <Copy className="size-3.5" />}
           <span>{copied ? resolvedCopiedLabel : resolvedCopyLabel}</span>
         </button>
       </div>
-      <pre className="overflow-x-auto font-mono text-[12px] leading-relaxed text-[#dcdfe6]">
+      <pre className="overflow-x-auto font-mono text-[0.8125rem] leading-[1.65] text-[#dcdfe6]">
         {shouldHighlight ? highlightCode(code) : code}
       </pre>
     </div>
@@ -1049,10 +1049,10 @@ function renderBlocks(blocks: Block[], locale?: Locale, nested = false): ReactNo
     if (block.type === "h") {
       const cls =
         block.level === 1
-          ? "text-[1.7rem] font-semibold tracking-tight text-fg"
+          ? "text-[1.5rem] font-semibold leading-tight tracking-[-0.025em] text-fg"
           : block.level === 2
-            ? "pt-6 text-[1.2rem] font-semibold tracking-tight text-fg"
-            : "pt-3 text-[1.05rem] font-semibold tracking-tight text-fg";
+            ? "pt-6 text-[1.125rem] font-semibold leading-snug tracking-[-0.02em] text-fg"
+            : "pt-3 text-[0.9375rem] font-semibold leading-snug text-fg";
       const Tag = `h${block.level}` as const;
       return (
         <Tag key={i} id={block.id} className={cls}>
@@ -1062,7 +1062,7 @@ function renderBlocks(blocks: Block[], locale?: Locale, nested = false): ReactNo
     }
     if (block.type === "p") {
       return (
-        <p key={i} className="text-[15px] leading-[1.8] text-fg">
+        <p key={i} className="text-[0.9375rem] leading-[1.8] text-fg">
           {inline(block.text)}
         </p>
       );
@@ -1077,7 +1077,7 @@ function renderBlocks(blocks: Block[], locale?: Locale, nested = false): ReactNo
       return (
         <blockquote
           key={i}
-          className="rounded-r-xl border-l-[3px] border-accent bg-accent-soft/30 px-4 py-3 text-[14px] leading-relaxed italic text-fg-muted"
+          className="border-l-2 border-accent pl-4 text-[0.9375rem] leading-[1.8] text-fg-muted"
         >
           {inline(block.text)}
         </blockquote>
@@ -1087,7 +1087,7 @@ function renderBlocks(blocks: Block[], locale?: Locale, nested = false): ReactNo
       const defs = !nested ? asDefs(block.items) : null;
       if (defs) {
         return (
-          <dl key={i} className="grid grid-cols-[auto_1fr] items-baseline gap-x-3 gap-y-1.5 text-[15px] leading-[1.8] text-fg">
+          <dl key={i} className="grid grid-cols-[auto_1fr] items-baseline gap-x-3 gap-y-2 text-[0.9375rem] leading-[1.8] text-fg">
             {defs.map((def, idx) => (
               <div key={`${def.name}-${idx}`} className="contents">
                 <dt className="font-semibold text-fg">{inline(def.name)}</dt>
@@ -1102,8 +1102,8 @@ function renderBlocks(blocks: Block[], locale?: Locale, nested = false): ReactNo
           key={i}
           className={
             nested
-              ? "list-[circle] space-y-1.5 pl-5 text-[14.5px] leading-[1.75] text-fg-muted"
-              : "list-disc space-y-1.5 pl-5 text-[15px] leading-[1.8] text-fg"
+              ? "list-[circle] space-y-1.5 pl-5 text-[0.9375rem] leading-[1.8] text-fg-muted"
+              : "list-disc space-y-1.5 pl-5 text-[0.9375rem] leading-[1.8] text-fg"
           }
         >
           {block.items.map((item, j) => (
@@ -1124,8 +1124,8 @@ function renderBlocks(blocks: Block[], locale?: Locale, nested = false): ReactNo
           start={block.start && block.start !== 1 ? block.start : undefined}
           className={
             nested
-              ? "list-decimal space-y-1.5 pl-5 text-[14.5px] leading-[1.75] text-fg-muted"
-              : "list-decimal space-y-2 pl-5 text-[15px] leading-[1.8] text-fg"
+              ? "list-decimal space-y-1.5 pl-5 text-[0.9375rem] leading-[1.8] text-fg-muted"
+              : "list-decimal space-y-2 pl-5 text-[0.9375rem] leading-[1.8] text-fg"
           }
         >
           {block.items.map((item, j) => (
@@ -1143,8 +1143,8 @@ function renderBlocks(blocks: Block[], locale?: Locale, nested = false): ReactNo
       return <CodeBlock key={i} code={block.code} lang={block.lang} locale={locale} />;
     }
     return (
-      <div key={i} className="overflow-x-auto rounded-xl border border-border bg-surface shadow-xs">
-        <table className="w-full min-w-md border-collapse text-left text-[13px]">
+      <div key={i} className="overflow-x-auto rounded-xl border border-border bg-surface">
+        <table className="w-full min-w-md border-collapse text-left text-[0.8125rem]">
           <thead>
             <tr className="border-b border-border bg-surface-2/60">
               {block.headers.map((h, hi) => (
@@ -1156,7 +1156,7 @@ function renderBlocks(blocks: Block[], locale?: Locale, nested = false): ReactNo
           </thead>
           <tbody className="divide-y divide-border/60">
             {block.rows.map((row, ri) => (
-              <tr key={ri} className="transition-colors hover:bg-surface-2/40">
+              <tr key={ri} className="transition-colors duration-150 hover:bg-surface-2/40">
                 {row.map((cell, ci) => (
                   <td key={ci} className="px-4 py-2.5 text-fg-muted">
                     {inline(cell)}

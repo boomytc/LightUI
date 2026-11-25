@@ -17,26 +17,22 @@ export function NotePagination({
   if (!prev && !next) return null;
 
   return (
-    <div className="mt-12 grid gap-3 border-t border-border/70 pt-8 sm:grid-cols-2">
+    <nav
+      aria-label={locale === "en" ? "Note navigation" : "笔记翻页"}
+      className="mt-12 grid gap-6 border-t border-border pt-6 sm:grid-cols-2"
+    >
       {prev ? (
-        <Link
-          href={`/notes/${prev.slug}`}
-          className="group flex flex-col justify-between rounded-2xl border border-border bg-surface/80 p-4 text-left no-underline transition-[border-color,background-color] duration-200 hover:border-border-strong hover:bg-surface"
-        >
-          <div>
-            <div className="flex items-center gap-1.5 text-[11px] font-medium text-fg-subtle">
-              <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-0.5" />
-              <span>{copy.prevNoteLabel}</span>
-            </div>
-            <h3 className="mt-2 text-[14px] font-semibold text-fg group-hover:text-accent transition-colors">
-              {prev.title}
-            </h3>
-            {prev.summary ? (
-              <p className="mt-1 text-[12px] text-fg-muted line-clamp-2">
-                {prev.summary}
-              </p>
-            ) : null}
+        <Link href={`/notes/${prev.slug}`} className="group block text-left no-underline">
+          <div className="flex items-center gap-1.5 text-[0.8125rem] text-fg-subtle">
+            <ArrowLeft className="size-3.5 transition-transform duration-150 group-hover:-translate-x-0.5" />
+            <span>{copy.prevNoteLabel}</span>
           </div>
+          <h3 className="mt-1.5 text-[0.9375rem] font-semibold text-fg transition-colors duration-150 group-hover:text-accent">
+            {prev.title}
+          </h3>
+          {prev.summary ? (
+            <p className="mt-1 line-clamp-2 text-[0.8125rem] text-fg-muted">{prev.summary}</p>
+          ) : null}
         </Link>
       ) : (
         <div />
@@ -45,26 +41,22 @@ export function NotePagination({
       {next ? (
         <Link
           href={`/notes/${next.slug}`}
-          className="group flex flex-col justify-between rounded-2xl border border-border bg-surface/80 p-4 text-right no-underline transition-[border-color,background-color] duration-200 hover:border-border-strong hover:bg-surface"
+          className="group block text-left no-underline sm:text-right"
         >
-          <div>
-            <div className="flex items-center justify-end gap-1.5 text-[11px] font-medium text-fg-subtle">
-              <span>{copy.nextNoteLabel}</span>
-              <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-            </div>
-            <h3 className="mt-2 text-[14px] font-semibold text-fg group-hover:text-accent transition-colors">
-              {next.title}
-            </h3>
-            {next.summary ? (
-              <p className="mt-1 text-[12px] text-fg-muted line-clamp-2">
-                {next.summary}
-              </p>
-            ) : null}
+          <div className="flex items-center gap-1.5 text-[0.8125rem] text-fg-subtle sm:justify-end">
+            <span>{copy.nextNoteLabel}</span>
+            <ArrowRight className="size-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
           </div>
+          <h3 className="mt-1.5 text-[0.9375rem] font-semibold text-fg transition-colors duration-150 group-hover:text-accent">
+            {next.title}
+          </h3>
+          {next.summary ? (
+            <p className="mt-1 line-clamp-2 text-[0.8125rem] text-fg-muted">{next.summary}</p>
+          ) : null}
         </Link>
       ) : (
         <div />
       )}
-    </div>
+    </nav>
   );
 }

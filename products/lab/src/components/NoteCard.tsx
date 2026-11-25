@@ -1,8 +1,7 @@
-import { ArrowRight, Clock, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { DateStamp } from "./DateStamp";
 import { Link } from "./Link";
 import { CATEGORIES } from "../lib/categories";
-import { messages } from "../lib/i18n";
 import { studyTitle } from "../lib/localize";
 import { navigate } from "../lib/nav";
 import { estimateReadingTime, relatedMetas } from "./NoteItem";
@@ -16,7 +15,6 @@ export function NoteCard({
   note: Note;
   locale: Locale;
 }) {
-  const copy = messages(locale);
   const catId = getNoteCategory(note);
   const catMeta = CATEGORIES.find((c) => c.id === catId);
   const categoryName = catMeta ? (locale === "en" ? catMeta.nameEn : catMeta.nameZh) : "";
@@ -26,7 +24,7 @@ export function NoteCard({
 
   return (
     <article
-      className="group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-card transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-menu"
+      className="group relative cursor-pointer py-5 transition-colors duration-150 hover:bg-surface/60 sm:-mx-3 sm:rounded-lg sm:px-3"
       onClick={(e) => {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
         if ((e.target as HTMLElement).closest("a, button")) return;
@@ -34,66 +32,46 @@ export function NoteCard({
         navigate(href);
       }}
     >
-      <div>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            {categoryName ? (
-              <span className="rounded-md bg-accent-soft px-2 py-0.5 text-[11px] font-medium text-accent">
-                {categoryName}
-              </span>
-            ) : null}
-            <span className="inline-flex items-center gap-1 font-mono text-[11px] text-fg-subtle">
-              <Clock className="size-3" />
-              <span>{readTime}</span>
-            </span>
-          </div>
-          <DateStamp
-            created={note.date}
-            updated={note.updated}
-            locale={locale}
-            className="font-mono text-[11px] text-fg-subtle"
-          />
+      <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_16rem] md:items-baseline md:gap-10">
+        <div className="min-w-0">
+          <h2 className="text-[1.125rem] font-semibold leading-snug tracking-[-0.02em] text-fg transition-colors duration-150 group-hover:text-accent">
+            <Link href={href} className="no-underline">
+              {note.title}
+            </Link>
+          </h2>
+
+          {note.summary ? (
+            <p className="mt-1.5 max-w-[62ch] line-clamp-2 text-[0.9375rem] leading-[1.6] text-fg-muted">
+              {note.summary}
+            </p>
+          ) : null}
         </div>
 
-        <h2 className="mt-3 text-[16px] font-semibold tracking-tight text-fg transition-colors duration-150 group-hover:text-accent">
-          <Link href={href} className="no-underline">
-            {note.title}
-          </Link>
-        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 text-[0.8125rem] text-fg-subtle md:flex-col md:items-end md:text-right">
+          <div className="flex flex-wrap items-center gap-x-2 tabular-nums">
+            {categoryName ? <span className="text-fg-muted">{categoryName}</span> : null}
+            {categoryName ? <span aria-hidden="true">·</span> : null}
+            <DateStamp created={note.date} updated={note.updated} locale={locale} />
+            <span aria-hidden="true">·</span>
+            <span>{readTime}</span>
+          </div>
 
-        {note.summary ? (
-          <p className="mt-2 text-[13px] leading-relaxed text-fg-muted line-clamp-3">
-            {note.summary}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
-        {related.length > 0 ? (
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] text-fg-subtle">
-              {copy.relatedStudyBadge}
-              {locale === "en" ? ":" : "："}
-            </span>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 md:justify-end">
             {related.map((meta) => (
               <Link
                 key={meta.slug}
                 href={`/s/${meta.slug}`}
-                className="inline-flex items-center gap-1 rounded-md border border-border bg-bg px-2 py-0.5 text-[11px] font-medium text-fg-muted no-underline transition-colors duration-150 hover:border-accent hover:text-accent"
+                className="font-medium text-fg-muted no-underline transition-colors duration-150 hover:text-accent"
               >
-                <Sparkles className="size-3 text-accent" />
-                <span>{studyTitle(meta, locale)}</span>
+                {studyTitle(meta, locale)}
               </Link>
             ))}
+            <span className="inline-flex items-center gap-1 font-medium text-accent">
+              <span>{locale === "en" ? "Read" : "阅读"}</span>
+              <ArrowRight className="size-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
+            </span>
           </div>
-        ) : (
-          <div />
-        )}
-
-        <span className="inline-flex items-center gap-1 text-[12px] font-medium text-fg-muted transition-colors duration-150 group-hover:text-accent">
-          <span>{locale === "en" ? "Read" : "阅读"}</span>
-          <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-        </span>
+        </div>
       </div>
     </article>
   );
