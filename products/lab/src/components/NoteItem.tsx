@@ -11,13 +11,11 @@ import type { StudyMeta } from "../lib/study";
 export function NoteItem({
   note,
   locale,
-  compact = false,
   className,
   style,
 }: {
   note: Note;
   locale: Locale;
-  compact?: boolean;
   className?: string;
   style?: CSSProperties;
 }) {
@@ -25,20 +23,14 @@ export function NoteItem({
     <li className={className} style={style}>
       <Link
         href={`/notes/${note.slug}`}
-        className="group block px-4 py-3.5 no-underline transition-colors duration-200 hover:bg-surface-2"
+        className="group block py-4 no-underline transition-colors duration-150 hover:bg-surface/60 sm:-mx-3 sm:rounded-lg sm:px-3"
       >
-        <span
-          className={
-            compact
-              ? "block text-[15px] font-semibold tracking-tight text-fg transition-colors duration-150 group-hover:text-accent"
-              : "block text-[16px] font-semibold tracking-tight text-fg transition-colors duration-150 group-hover:text-accent"
-          }
-        >
+        <span className="block text-[1.125rem] font-semibold leading-snug tracking-[-0.02em] text-fg transition-colors duration-150 group-hover:text-accent">
           {note.title}
         </span>
         <NoteByline note={note} locale={locale} className="mt-1.5" />
         {note.summary ? (
-          <span className="mt-1.5 block line-clamp-2 text-[13px] leading-relaxed text-fg-muted">
+          <span className="mt-1.5 block line-clamp-2 text-[0.8125rem] leading-relaxed text-fg-muted">
             {note.summary}
           </span>
         ) : null}
@@ -82,26 +74,22 @@ export function NoteByline({
           created={note.date}
           updated={note.updated}
           locale={locale}
-          className="font-mono text-fg-subtle"
+          className="tabular-nums text-fg-subtle"
         />
       ),
     });
   }
   segments.push({
     key: "reading-time",
-    node: (
-      <span className="font-mono text-[11px] text-fg-subtle">
-        {estimateReadingTime(note.body, locale)}
-      </span>
-    ),
+    node: <span className="tabular-nums text-fg-subtle">{estimateReadingTime(note.body, locale)}</span>,
   });
 
   return (
     <span
       className={
         className
-          ? `flex flex-wrap items-baseline gap-x-2 text-[12px] ${className}`
-          : "flex flex-wrap items-baseline gap-x-2 text-[12px]"
+          ? `flex flex-wrap items-baseline gap-x-2 text-[0.8125rem] ${className}`
+          : "flex flex-wrap items-baseline gap-x-2 text-[0.8125rem]"
       }
     >
       {segments.map((segment, i) => (

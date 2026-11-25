@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Compass, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "./Link";
 import type { Locale } from "../lib/prefs";
 
@@ -8,12 +8,40 @@ const DEMO_TABS: readonly DemoKey[] = ["triangle", "beam", "weights"];
 
 export function HomeShowcase({ locale }: { locale: Locale }) {
   const [activeTab, setActiveTab] = useState<DemoKey>("triangle");
+  const [liveCaption, setLiveCaption] = useState<string | null>(null);
   const tabRefs = useRef<Partial<Record<DemoKey, HTMLButtonElement | null>>>({});
 
   function tabLabel(id: DemoKey): string {
-    if (id === "triangle") return locale === "en" ? "Triangle" : "安全三角";
-    if (id === "beam") return locale === "en" ? "Beam" : "边光";
-    return locale === "en" ? "Weights" : "按钮重量";
+    if (id === "triangle") return locale === "en" ? "Safe triangle" : "安全三角";
+    if (id === "beam") return locale === "en" ? "Border beam" : "边光绕行";
+    return locale === "en" ? "Button weights" : "按钮重量";
+  }
+
+  function specimenHref(id: DemoKey): string {
+    if (id === "triangle") return "/s/intent-cascade";
+    if (id === "beam") return "/s/border-beam";
+    return "/s/button-taxonomy";
+  }
+
+  function defaultCaption(id: DemoKey): string {
+    if (id === "triangle") {
+      return locale === "en"
+        ? "Hover a left item and sweep diagonally toward the submenu to see the corridor protect your path."
+        : "悬停左侧主项后斜向滑入右侧二级菜单，观察几何走廊如何保护斜向穿越。";
+    }
+    if (id === "beam") {
+      return locale === "en"
+        ? "Accent light travels strictly along the perimeter radius without washing out inner content."
+        : "强调色光束严格贴合外沿圆角绕行，不侵占内部内容对比度。";
+    }
+    return locale === "en"
+      ? "Solid primary: one per region. Carries the single committed forward action."
+      : "面状主操作：一区仅放一个，承载当前最明确的提交动作。";
+  }
+
+  function selectTab(next: DemoKey) {
+    setActiveTab(next);
+    setLiveCaption(null);
   }
 
   function onTabListKeyDown(e: React.KeyboardEvent) {
@@ -25,23 +53,21 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
     else if (e.key === "End") next = DEMO_TABS[DEMO_TABS.length - 1];
     if (!next) return;
     e.preventDefault();
-    setActiveTab(next);
+    selectTab(next);
     requestAnimationFrame(() => tabRefs.current[next]?.focus());
   }
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-border bg-surface/90 p-5 shadow-card sm:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/70 pb-3">
-        <div className="flex items-center gap-1.5 text-[12px] font-semibold text-fg">
-          <Sparkles className="size-3.5 text-accent" />
-          <span>{locale === "en" ? "Interactive Lab Sampler" : "精选交互体验"}</span>
-        </div>
-
+    <section
+      aria-label={locale === "en" ? "Interactive specimen workbench" : "交互标本实验台"}
+      className="overflow-hidden rounded-2xl border border-border bg-surface"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-6">
         <div
           role="tablist"
-          aria-label={locale === "en" ? "Interactive Lab Sampler" : "精选交互体验"}
+          aria-label={locale === "en" ? "Interactive specimens" : "交互标本切换"}
           onKeyDown={onTabListKeyDown}
-          className="flex rounded-lg border border-border bg-surface-2/80 p-0.5"
+          className="inline-flex flex-wrap items-center rounded-lg border border-border bg-surface-2 p-0.5"
         >
           {DEMO_TABS.map((id) => {
             const active = activeTab === id;
@@ -57,11 +83,11 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
                 aria-selected={active}
                 aria-controls={`showcase-panel-${id}`}
                 tabIndex={active ? 0 : -1}
-                onClick={() => setActiveTab(id)}
+                onClick={() => selectTab(id)}
                 className={
                   active
-                    ? "rounded-md bg-surface px-2.5 py-1 text-[11px] font-semibold text-fg shadow-xs"
-                    : "rounded-md px-2.5 py-1 text-[11px] font-medium text-fg-muted transition-colors hover:text-fg"
+                    ? "rounded-md bg-surface px-3 py-1.5 text-[0.8125rem] font-semibold text-fg transition-colors duration-150"
+                    : "rounded-md px-3 py-1.5 text-[0.8125rem] font-medium text-fg-muted transition-colors duration-150 hover:text-fg"
                 }
               >
                 {tabLabel(id)}
@@ -69,48 +95,52 @@ export function HomeShowcase({ locale }: { locale: Locale }) {
             );
           })}
         </div>
+
+        <Link
+          href={specimenHref(activeTab)}
+          className="inline-flex items-center gap-1.5 text-[0.8125rem] font-medium text-accent no-underline transition-colors duration-150 hover:underline"
+        >
+          <span>{locale === "en" ? "Open full study" : "查看完整研究"}</span>
+          <ArrowRight className="size-3.5" />
+        </Link>
       </div>
 
-      {/* Interactive stage area */}
       <div
         id={`showcase-panel-${activeTab}`}
         role="tabpanel"
         aria-labelledby={`showcase-tab-${activeTab}`}
-        className="mt-4 flex min-h-[170px] items-center justify-center rounded-2xl border border-border/80 bg-bg p-4"
+        className="lab-stage-grid relative flex min-h-[250px] flex-col items-center justify-center px-4 py-7 sm:min-h-[285px] sm:px-8 sm:py-9"
       >
         <div key={activeTab} className="lab-fade w-full">
-          {activeTab === "triangle" ? <TriangleMiniDemo locale={locale} /> : null}
-          {activeTab === "beam" ? <BeamMiniDemo locale={locale} /> : null}
-          {activeTab === "weights" ? <WeightsMiniDemo locale={locale} /> : null}
+          {activeTab === "triangle" ? (
+            <TriangleMiniDemo locale={locale} onStatusChange={setLiveCaption} />
+          ) : null}
+          {activeTab === "beam" ? (
+            <BeamMiniDemo locale={locale} onStatusChange={setLiveCaption} />
+          ) : null}
+          {activeTab === "weights" ? (
+            <WeightsMiniDemo locale={locale} onStatusChange={setLiveCaption} />
+          ) : null}
         </div>
       </div>
 
-      {/* Footer link to full study */}
-      <div className="mt-4 flex items-center justify-between text-[12px]">
-        <span className="text-fg-subtle">
-          {activeTab === "triangle" && (locale === "en" ? "Slope corridor protection" : "斜向穿越走廊保护")}
-          {activeTab === "beam" && (locale === "en" ? "Border perimeter ray tracer" : "沿外沿圆角光束绕行")}
-          {activeTab === "weights" && (locale === "en" ? "One primary solid per region" : "一区只放一个面状主操作")}
-        </span>
-        <Link
-          href={
-            activeTab === "triangle"
-              ? "/s/intent-cascade"
-              : activeTab === "beam"
-                ? "/s/border-beam"
-                : "/s/button-taxonomy"
-          }
-          className="inline-flex items-center gap-1 font-medium text-accent no-underline hover:underline"
-        >
-          {locale === "en" ? "Full study" : "查看完整研究"}
-          <ArrowRight className="size-3.5" />
-        </Link>
+      {/* 唯一底部状态与规则说明栏，消除舞台内重复提示 */}
+      <div
+        aria-live="polite"
+        className="border-t border-border bg-surface-2/40 px-4 py-3 text-[0.8125rem] leading-relaxed text-fg-muted sm:px-6"
+      >
+        {liveCaption ?? defaultCaption(activeTab)}
       </div>
-    </div>
+    </section>
   );
 }
 
 type Pt = { x: number; y: number };
+type CorridorGeometry = {
+  anchor: Pt;
+  top: Pt;
+  bottom: Pt;
+};
 
 function cross(a: Pt, b: Pt, c: Pt): number {
   return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
@@ -125,11 +155,19 @@ function pointInTriangle(p: Pt, a: Pt, b: Pt, c: Pt): boolean {
   return !(hasNeg && hasPos);
 }
 
-function TriangleMiniDemo({ locale }: { locale: Locale }) {
+function TriangleMiniDemo({
+  locale,
+  onStatusChange,
+}: {
+  locale: Locale;
+  onStatusChange: (text: string | null) => void;
+}) {
   const [activeItem, setActiveItem] = useState(0);
   const [selectedSub, setSelectedSub] = useState<string | null>(null);
   const [corridorHolding, setCorridorHolding] = useState(false);
+  const [geometry, setGeometry] = useState<CorridorGeometry | null>(null);
 
+  const stageRef = useRef<HTMLDivElement>(null);
   const subMenuRef = useRef<HTMLDivElement>(null);
   const anchorPointRef = useRef<Pt | null>(null);
   const lastPointRef = useRef<Pt | null>(null);
@@ -152,12 +190,12 @@ function TriangleMiniDemo({ locale }: { locale: Locale }) {
     {
       id: 1,
       label: locale === "en" ? "Extensions" : "扩展插件",
-      sub: locale === "en" ? ["Installed", "Market", "Updates"] : ["已安装", "插件市场", "更新"],
+      sub: locale === "en" ? ["Installed", "Marketplace", "Updates"] : ["已安装", "插件市场", "更新"],
     },
     {
       id: 2,
       label: locale === "en" ? "Profiles" : "账户配置",
-      sub: locale === "en" ? ["Personal", "Work"] : ["个人", "工作"],
+      sub: locale === "en" ? ["Personal", "Workspace", "Sync"] : ["个人", "工作区", "同步"],
     },
   ];
 
@@ -169,13 +207,27 @@ function TriangleMiniDemo({ locale }: { locale: Locale }) {
     setCorridorHolding(false);
   }
 
+  function updateGeometry(anchor: Pt | null) {
+    const stageRect = stageRef.current?.getBoundingClientRect();
+    const subRect = subMenuRef.current?.getBoundingClientRect();
+    if (!anchor || !stageRect || !subRect) {
+      setGeometry(null);
+      return;
+    }
+    setGeometry({
+      anchor: { x: anchor.x - stageRect.left, y: anchor.y - stageRect.top },
+      top: { x: subRect.left - stageRect.left, y: subRect.top - stageRect.top },
+      bottom: { x: subRect.left - stageRect.left, y: subRect.bottom - stageRect.top },
+    });
+  }
+
   function isMovingInsideCorridor(curr: Pt): boolean {
     const anchor = anchorPointRef.current;
     const subRect = subMenuRef.current?.getBoundingClientRect();
     if (!anchor || !subRect) return false;
     if (curr.x <= anchor.x) return false;
-    const topCorner: Pt = { x: subRect.left, y: subRect.top - 12 };
-    const bottomCorner: Pt = { x: subRect.left, y: subRect.bottom + 12 };
+    const topCorner: Pt = { x: subRect.left, y: subRect.top - 14 };
+    const bottomCorner: Pt = { x: subRect.left, y: subRect.bottom + 14 };
     return pointInTriangle(curr, anchor, topCorner, bottomCorner);
   }
 
@@ -185,17 +237,27 @@ function TriangleMiniDemo({ locale }: { locale: Locale }) {
       clearPendingSwitch();
       anchorPointRef.current = curr;
       lastPointRef.current = curr;
+      updateGeometry(curr);
+      onStatusChange(null);
       return;
     }
 
     if (isMovingInsideCorridor(curr)) {
       clearPendingSwitch();
       setCorridorHolding(true);
+      updateGeometry(anchorPointRef.current);
+      onStatusChange(
+        locale === "en"
+          ? "Diagonal corridor active: neighbor switch deferred until pointer exits the triangle."
+          : "检测到斜向进入二级菜单：走廊保护生效，暂缓切换相邻主项。",
+      );
       switchTimerRef.current = window.setTimeout(() => {
         setActiveItem(itemId);
         setSelectedSub(null);
         setCorridorHolding(false);
         anchorPointRef.current = lastPointRef.current;
+        updateGeometry(lastPointRef.current);
+        onStatusChange(null);
         switchTimerRef.current = null;
       }, 240);
       return;
@@ -206,6 +268,8 @@ function TriangleMiniDemo({ locale }: { locale: Locale }) {
     setSelectedSub(null);
     anchorPointRef.current = curr;
     lastPointRef.current = curr;
+    updateGeometry(curr);
+    onStatusChange(null);
   }
 
   function handlePrimaryMove(itemId: number, e: React.MouseEvent<HTMLButtonElement>) {
@@ -214,73 +278,210 @@ function TriangleMiniDemo({ locale }: { locale: Locale }) {
       anchorPointRef.current = curr;
     }
     lastPointRef.current = curr;
+    updateGeometry(anchorPointRef.current);
   }
 
   function handlePrimarySelect(itemId: number) {
     clearPendingSwitch();
     setActiveItem(itemId);
     setSelectedSub(null);
+    onStatusChange(null);
+  }
+
+  function handleSubSelect(sub: string) {
+    setSelectedSub(sub);
+    const parentLabel = items[activeItem]?.label ?? "";
+    onStatusChange(
+      locale === "en" ? `Selected: ${parentLabel} / ${sub}` : `已选中：${parentLabel} / ${sub}`,
+    );
+  }
+
+  function handleStageLeave() {
+    clearPendingSwitch();
+    setGeometry(null);
+    if (!selectedSub) {
+      onStatusChange(null);
+    }
   }
 
   return (
     <div
-      className="mx-auto flex w-full max-w-sm select-none items-start gap-2 text-[12px]"
-      onMouseLeave={clearPendingSwitch}
+      ref={stageRef}
+      onMouseLeave={handleStageLeave}
+      className="relative mx-auto w-full max-w-[34rem] select-none"
     >
-      <div className="flex-1 space-y-0.5 rounded-xl border border-border bg-surface p-1.5 shadow-sm">
-        {items.map((item) => {
-          const isActive = activeItem === item.id;
+      {geometry ? (
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-10 size-full overflow-visible"
+        >
+          <polygon
+            points={`${geometry.anchor.x},${geometry.anchor.y} ${geometry.top.x},${geometry.top.y} ${geometry.bottom.x},${geometry.bottom.y}`}
+            className={
+              corridorHolding
+                ? "fill-accent/18 stroke-accent transition-[fill,stroke] duration-150"
+                : "fill-accent/8 stroke-accent/55 transition-[fill,stroke] duration-150"
+            }
+            strokeWidth={corridorHolding ? 1.5 : 1}
+            strokeDasharray={corridorHolding ? undefined : "4 3"}
+          />
+          <circle cx={geometry.anchor.x} cy={geometry.anchor.y} r={3.5} className="fill-accent" />
+          <circle cx={geometry.top.x} cy={geometry.top.y} r={2.5} className="fill-accent/80" />
+          <circle cx={geometry.bottom.x} cy={geometry.bottom.y} r={2.5} className="fill-accent/80" />
+        </svg>
+      ) : null}
+
+      <div className="relative z-0 grid grid-cols-2 gap-4 sm:gap-10">
+        <div className="space-y-1 rounded-xl border border-border-strong bg-surface p-2 shadow-card">
+          {items.map((item) => {
+            const isActive = activeItem === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onMouseEnter={(e) => handlePrimaryEnter(item.id, e)}
+                onMouseMove={(e) => handlePrimaryMove(item.id, e)}
+                onClick={() => handlePrimarySelect(item.id)}
+                onFocus={() => handlePrimarySelect(item.id)}
+                aria-expanded={isActive}
+                className={
+                  isActive
+                    ? "flex w-full items-center justify-between rounded-lg bg-accent px-3 py-2 text-left text-[0.8125rem] font-semibold text-accent-fg"
+                    : "flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-[0.8125rem] font-medium text-fg-muted transition-colors duration-150 hover:bg-surface-2 hover:text-fg"
+                }
+              >
+                <span className="truncate">{item.label}</span>
+                <span className="opacity-75" aria-hidden="true">
+                  ›
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div
+          ref={subMenuRef}
+          onMouseEnter={() => {
+            clearPendingSwitch();
+            setGeometry(null);
+            if (!selectedSub) onStatusChange(null);
+          }}
+          className="space-y-1 rounded-xl border border-border-strong bg-surface p-2 shadow-card"
+        >
+          <div className="flex items-center justify-between px-3 py-1.5 text-[0.8125rem] text-fg-subtle">
+            <span>{items[activeItem]?.label}</span>
+            {corridorHolding ? (
+              <span className="font-medium text-accent">
+                {locale === "en" ? "Holding" : "走廊保护中"}
+              </span>
+            ) : null}
+          </div>
+          {items[activeItem]?.sub.map((sub) => {
+            const picked = selectedSub === sub;
+            return (
+              <button
+                key={sub}
+                type="button"
+                onClick={() => handleSubSelect(sub)}
+                className={
+                  picked
+                    ? "block w-full rounded-lg bg-accent-soft px-3 py-2 text-left text-[0.8125rem] font-semibold text-accent transition-colors duration-150"
+                    : "block w-full rounded-lg px-3 py-2 text-left text-[0.8125rem] text-fg transition-colors duration-150 hover:bg-surface-2"
+                }
+              >
+                {sub}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type BeamPace = "slow" | "normal" | "paused";
+
+function BeamMiniDemo({
+  locale,
+  onStatusChange,
+}: {
+  locale: Locale;
+  onStatusChange: (text: string | null) => void;
+}) {
+  const [pace, setPace] = useState<BeamPace>("normal");
+  const duration = pace === "slow" ? "7s" : "3.6s";
+
+  function choosePace(next: BeamPace) {
+    setPace(next);
+    if (next === "paused") {
+      onStatusChange(
+        locale === "en"
+          ? "Paused: perimeter arc stops cleanly without hiding the surface border."
+          : "已暂停：外沿光束停驻，卡片边框与正文对比度不受影响。",
+      );
+    } else if (next === "slow") {
+      onStatusChange(
+        locale === "en"
+          ? "Slow orbit (7s): gentle ambient presence for low-priority focus frames."
+          : "慢速绕行（7s）：适合低干扰的聚焦提示外框。",
+      );
+    } else {
+      onStatusChange(null);
+    }
+  }
+
+  return (
+    <div className="mx-auto flex w-full max-w-md flex-col items-center gap-6">
+      <div className="relative w-full max-w-[20rem] overflow-hidden rounded-2xl border border-border bg-surface px-7 py-6 text-center shadow-card">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-[120%]"
+          style={{
+            background: "conic-gradient(from 0deg, transparent 0 330deg, var(--color-accent) 360deg)",
+            animation: `spin ${duration} linear infinite`,
+            animationPlayState: pace === "paused" ? "paused" : "running",
+            opacity: pace === "paused" ? 0.35 : 0.85,
+          }}
+        />
+        <div className="absolute inset-[1.5px] rounded-[14.5px] bg-surface" />
+        <div className="relative z-10">
+          <p className="text-[0.9375rem] font-semibold tracking-tight text-fg">
+            {locale === "en" ? "Perimeter ray" : "外沿圆角光束"}
+          </p>
+          <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-fg-muted">
+            {locale === "en"
+              ? "Inner surface stays completely neutral and legible."
+              : "内层卡片保持纯平面与完整文字对比度。"}
+          </p>
+        </div>
+      </div>
+
+      <div
+        role="group"
+        aria-label={locale === "en" ? "Beam pace" : "光束节奏"}
+        className="inline-flex items-center rounded-lg border border-border bg-surface p-0.5"
+      >
+        {(
+          [
+            { id: "slow", zh: "慢速", en: "Slow" },
+            { id: "normal", zh: "标准", en: "Standard" },
+            { id: "paused", zh: "暂停", en: "Paused" },
+          ] as const
+        ).map((item) => {
+          const active = pace === item.id;
           return (
             <button
               key={item.id}
               type="button"
-              onMouseEnter={(e) => handlePrimaryEnter(item.id, e)}
-              onMouseMove={(e) => handlePrimaryMove(item.id, e)}
-              onClick={() => handlePrimarySelect(item.id)}
-              onFocus={() => handlePrimarySelect(item.id)}
-              aria-expanded={isActive}
+              aria-pressed={active}
+              onClick={() => choosePace(item.id)}
               className={
-                isActive
-                  ? "flex w-full items-center justify-between rounded-lg bg-accent px-2.5 py-1.5 text-left font-medium text-accent-fg"
-                  : "flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg"
+                active
+                  ? "rounded-md bg-surface-2 px-3 py-1 text-[0.8125rem] font-semibold text-fg"
+                  : "rounded-md px-3 py-1 text-[0.8125rem] font-medium text-fg-muted transition-colors duration-150 hover:text-fg"
               }
             >
-              <span>{item.label}</span>
-              <span className="text-[10px] opacity-75" aria-hidden="true">
-                ›
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      <div
-        ref={subMenuRef}
-        onMouseEnter={clearPendingSwitch}
-        className="flex-1 space-y-0.5 rounded-xl border border-border bg-surface p-1.5 shadow-sm"
-      >
-        <div className="flex items-center justify-between px-2 py-1 font-mono text-[10px] text-fg-subtle">
-          <span>{locale === "en" ? "Protected level 2" : "受保护二级项"}</span>
-          {corridorHolding ? (
-            <span className="rounded bg-accent-soft px-1 text-[9px] font-semibold text-accent">
-              {locale === "en" ? "Hold" : "保护中"}
-            </span>
-          ) : null}
-        </div>
-        {items[activeItem]?.sub.map((sub) => {
-          const picked = selectedSub === sub;
-          return (
-            <button
-              key={sub}
-              type="button"
-              onClick={() => setSelectedSub(sub)}
-              className={
-                picked
-                  ? "block w-full rounded-lg bg-accent-soft px-2.5 py-1.5 text-left font-medium text-accent transition-colors"
-                  : "block w-full rounded-lg px-2.5 py-1.5 text-left text-fg transition-colors hover:bg-accent-soft hover:text-accent"
-              }
-            >
-              {sub}
+              {locale === "en" ? item.en : item.zh}
             </button>
           );
         })}
@@ -289,87 +490,77 @@ function TriangleMiniDemo({ locale }: { locale: Locale }) {
   );
 }
 
-function BeamMiniDemo({ locale }: { locale: Locale }) {
+type WeightKind = "solid" | "outline" | "text";
+
+function WeightsMiniDemo({
+  locale,
+  onStatusChange,
+}: {
+  locale: Locale;
+  onStatusChange: (text: string | null) => void;
+}) {
+  const [selected, setSelected] = useState<WeightKind>("solid");
+
+  function chooseWeight(kind: WeightKind) {
+    setSelected(kind);
+    if (kind === "solid") {
+      onStatusChange(null);
+    } else if (kind === "outline") {
+      onStatusChange(
+        locale === "en"
+          ? "Outline secondary: valid alternative that does not compete with the primary fill."
+          : "线状次操作：明确可执行，但不与面状主操作争夺第一落眼点。",
+      );
+    } else {
+      onStatusChange(
+        locale === "en"
+          ? "Text weak action: quiet escape hatch such as cancel or skip."
+          : "文字弱操作：最低视觉重量，适合取消或跳过等退让动作。",
+      );
+    }
+  }
+
   return (
-    <div className="relative flex flex-col items-center justify-center">
-      <div className="group relative overflow-hidden rounded-2xl border border-border bg-surface px-6 py-5 text-center shadow-card">
-        {/* Animated border glow overlay */}
-        <div
-          className="pointer-events-none absolute -inset-[100%] animate-[spin_4s_linear_infinite] opacity-60"
-          style={{
-            background: "conic-gradient(from 0deg, transparent 0 340deg, var(--color-accent) 360deg)",
-          }}
-        />
-        <div className="absolute inset-[1px] rounded-[15px] bg-surface" />
-        <div className="relative z-10">
-          <div className="mx-auto grid size-8 place-items-center rounded-lg bg-accent-soft text-accent">
-            <Compass className="size-4 animate-pulse" />
-          </div>
-          <p className="mt-2 text-[13px] font-semibold text-fg">
-            {locale === "en" ? "Orbiting Beam" : "圆角高光绕行"}
-          </p>
-          <p className="mt-0.5 text-[11px] text-fg-muted">
-            {locale === "en" ? "Pure border traversal" : "强调色光束贴着边框走"}
-          </p>
+    <div className="mx-auto flex w-full max-w-lg items-center justify-center">
+      <div className="flex w-full flex-wrap items-center justify-between gap-3 rounded-xl border border-border-strong bg-surface px-5 py-4 shadow-card">
+        <button
+          type="button"
+          onClick={() => chooseWeight("text")}
+          className={
+            selected === "text"
+              ? "min-h-9 rounded-lg px-3 py-1.5 text-[0.8125rem] font-semibold text-accent underline underline-offset-4"
+              : "min-h-9 rounded-lg px-3 py-1.5 text-[0.8125rem] font-medium text-fg-muted transition-colors duration-150 hover:text-fg"
+          }
+        >
+          {locale === "en" ? "Cancel" : "暂不保存"}
+        </button>
+
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => chooseWeight("outline")}
+            className={
+              selected === "outline"
+                ? "min-h-9 rounded-lg border border-accent bg-accent-soft px-4 py-1.5 text-[0.8125rem] font-semibold text-accent transition-colors duration-150"
+                : "min-h-9 rounded-lg border border-border-strong bg-surface px-4 py-1.5 text-[0.8125rem] font-medium text-fg transition-[border-color,background-color] duration-150 hover:bg-surface-2"
+            }
+          >
+            {locale === "en" ? "Save draft" : "存为草稿"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => chooseWeight("solid")}
+            className={
+              selected === "solid"
+                ? "min-h-9 rounded-lg bg-fg px-4 py-1.5 text-[0.8125rem] font-semibold text-surface ring-2 ring-accent/40 ring-offset-2 ring-offset-surface transition-opacity duration-150"
+                : "min-h-9 rounded-lg bg-fg px-4 py-1.5 text-[0.8125rem] font-semibold text-surface transition-opacity duration-150 hover:opacity-90"
+            }
+          >
+            {locale === "en" ? "Publish change" : "发布变更"}
+          </button>
         </div>
       </div>
-    </div>
-  );
-}
-
-function WeightsMiniDemo({ locale }: { locale: Locale }) {
-  const [clicked, setClicked] = useState<string | null>(null);
-
-  return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        <button
-          type="button"
-          onClick={() => setClicked("solid")}
-          className="rounded-lg bg-fg px-3.5 py-1.5 text-[12px] font-medium text-surface shadow-sm transition-transform active:scale-95"
-        >
-          {locale === "en" ? "Solid (Primary)" : "面状 (主操作)"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setClicked("outline")}
-          className="rounded-lg border border-border bg-surface px-3.5 py-1.5 text-[12px] font-medium text-fg shadow-sm transition-colors hover:bg-surface-2 active:scale-95"
-        >
-          {locale === "en" ? "Outline" : "线状 (次)"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setClicked("text")}
-          className="rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-fg-muted hover:text-fg active:scale-95"
-        >
-          {locale === "en" ? "Text" : "文字 (弱)"}
-        </button>
-      </div>
-
-      <p className="flex items-center gap-1.5 text-[11px] text-fg-muted">
-        <ShieldCheck className="size-3.5 text-intent" />
-        <span>
-          {clicked
-            ? locale === "en"
-              ? `Selected weight: ${
-                  clicked === "solid"
-                    ? "Solid (Primary)"
-                    : clicked === "outline"
-                      ? "Outline"
-                      : "Text"
-                }`
-              : `已触发操作重量：${
-                  clicked === "solid"
-                    ? "面状（主操作）"
-                    : clicked === "outline"
-                      ? "线状（次）"
-                      : "文字（弱）"
-                }`
-            : locale === "en"
-              ? "Click buttons to feel the visual hierarchy"
-              : "点击按钮体验视觉重量层级"}
-        </span>
-      </p>
     </div>
   );
 }
