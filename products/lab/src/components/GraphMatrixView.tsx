@@ -9,10 +9,12 @@ import type { StudyMeta } from "../lib/study";
 export function GraphMatrixView({
   studies,
   locale,
+  selectedSlug,
   onSelectSlug,
 }: {
   studies: StudyMeta[];
   locale: Locale;
+  selectedSlug?: string;
   onSelectSlug: (slug: string) => void;
 }) {
   const copy = messages(locale);
@@ -50,38 +52,50 @@ export function GraphMatrixView({
               ) : null}
 
               <div className="mt-auto grid grid-cols-2 divide-x divide-border border-t border-border/70 pt-3">
-                {[a, b].map((node, idx) => (
-                  <div
-                    key={node.slug}
-                    className={
-                      idx === 0
-                        ? "group relative flex flex-col justify-between pr-3.5"
-                        : "group relative flex flex-col justify-between pl-3.5"
-                    }
-                  >
-                    <div>
-                      <button
-                        type="button"
-                        onClick={() => onSelectSlug(node.slug)}
-                        className="block cursor-pointer text-left text-[0.9375rem] font-semibold leading-snug text-fg transition-colors duration-150 group-hover:text-accent after:absolute after:inset-0 after:content-['']"
-                      >
-                        {studyTitle(node, locale)}
-                      </button>
-                      {node.asks ? (
-                        <p className="mt-1 line-clamp-2 text-[0.8125rem] leading-snug text-fg-muted">
-                          {studyAsks(node, locale)}
-                        </p>
-                      ) : null}
-                    </div>
-                    <Link
-                      href={`/s/${node.slug}`}
-                      className="relative z-10 mt-3 inline-flex w-fit items-center gap-1 text-[0.8125rem] font-medium text-accent no-underline hover:underline"
+                {[a, b].map((node, idx) => {
+                  const isSelected = selectedSlug === node.slug;
+                  return (
+                    <div
+                      key={node.slug}
+                      className={
+                        idx === 0
+                          ? isSelected
+                            ? "group relative -ml-2 flex flex-col justify-between rounded-l-lg bg-accent-soft/70 py-1.5 pl-2 pr-3.5 transition-colors duration-150"
+                            : "group relative -ml-2 flex flex-col justify-between rounded-l-lg py-1.5 pl-2 pr-3.5 transition-colors duration-150"
+                          : isSelected
+                            ? "group relative -mr-2 flex flex-col justify-between rounded-r-lg bg-accent-soft/70 py-1.5 pl-3.5 pr-2 transition-colors duration-150"
+                            : "group relative -mr-2 flex flex-col justify-between rounded-r-lg py-1.5 pl-3.5 pr-2 transition-colors duration-150"
+                      }
                     >
-                      <span>{copy.inspectorOpenStudy}</span>
-                      <ArrowUpRight className="size-3.5" />
-                    </Link>
-                  </div>
-                ))}
+                      <div>
+                        <button
+                          type="button"
+                          aria-pressed={isSelected}
+                          onClick={() => onSelectSlug(node.slug)}
+                          className={
+                            isSelected
+                              ? "block cursor-pointer text-left text-[0.9375rem] font-semibold leading-snug text-accent transition-colors duration-150 after:absolute after:inset-0 after:content-['']"
+                              : "block cursor-pointer text-left text-[0.9375rem] font-semibold leading-snug text-fg transition-colors duration-150 group-hover:text-accent after:absolute after:inset-0 after:content-['']"
+                          }
+                        >
+                          {studyTitle(node, locale)}
+                        </button>
+                        {node.asks ? (
+                          <p className="mt-1 line-clamp-2 text-[0.8125rem] leading-snug text-fg-muted">
+                            {studyAsks(node, locale)}
+                          </p>
+                        ) : null}
+                      </div>
+                      <Link
+                        href={`/s/${node.slug}`}
+                        className="relative z-10 mt-3 inline-flex w-fit items-center gap-1 text-[0.8125rem] font-medium text-accent no-underline hover:underline"
+                      >
+                        <span>{copy.inspectorOpenStudy}</span>
+                        <ArrowUpRight className="size-3.5" />
+                      </Link>
+                    </div>
+                  );
+                })}
               </div>
             </article>
           );

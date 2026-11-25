@@ -80,6 +80,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
+      if (e.isComposing || e.keyCode === 229) return;
       if (e.key === "Escape") {
         e.preventDefault();
         onClose();
@@ -250,6 +251,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
   }, [activeIndex]);
 
   function handleDialogKeyDown(e: React.KeyboardEvent) {
+    if (e.nativeEvent.isComposing || e.keyCode === 229) return;
     if (e.key === "ArrowDown") {
       e.preventDefault();
       if (allFilteredItems.length > 0) {

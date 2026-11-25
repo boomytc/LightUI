@@ -350,6 +350,7 @@ export function GraphCanvas({
         type="button"
         key={meta.slug}
         id={meta.slug}
+        aria-pressed={isSelected}
         ref={(el) => {
           nodeRefs.current[meta.slug] = el;
         }}
@@ -447,7 +448,7 @@ export function GraphCanvas({
           ref={scrollRef}
           className="relative max-w-full overflow-x-auto overscroll-x-contain p-5 pb-12 sm:p-6"
         >
-          <div ref={rootRef} className="relative inline-block min-w-full pb-8 pr-6 lg:pr-8">
+          <div ref={rootRef} className="relative block w-full pb-8 pr-6 lg:inline-block lg:w-auto lg:min-w-full lg:pr-8">
             <svg
               className="pointer-events-none absolute inset-0 size-full overflow-visible"
               aria-hidden="true"
@@ -520,7 +521,7 @@ export function GraphCanvas({
                   })
               : null}
 
-            <div className="relative z-10 flex min-w-max flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-11">
+            <div className="relative z-10 flex flex-col gap-10 lg:min-w-max lg:flex-row lg:items-start lg:justify-between lg:gap-11">
               {levels.map((level, levelIdx) => {
                 const groupedByDomain =
                   level.length > 10
@@ -540,7 +541,7 @@ export function GraphCanvas({
                     : null;
 
                 return (
-                  <div key={levelIdx} className="flex w-[12.5rem] shrink-0 flex-col gap-3.5">
+                  <div key={levelIdx} className="flex w-full max-w-[26rem] shrink-0 flex-col gap-3.5 pr-8 lg:w-[12.5rem] lg:max-w-none lg:pr-0">
                     <div className="flex items-center gap-2 border-b border-border pb-2 text-[0.8125rem] tabular-nums">
                       <span className="font-semibold text-fg">L{levelIdx + 1}</span>
                       <span className="text-fg-subtle">{level.length}</span>

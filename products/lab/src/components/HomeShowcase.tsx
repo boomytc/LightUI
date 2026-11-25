@@ -463,7 +463,10 @@ function BeamMiniDemo({
           className="pointer-events-none absolute -inset-[120%]"
           style={{
             background: "conic-gradient(from 0deg, transparent 0 330deg, var(--color-accent) 360deg)",
-            animation: `spin ${duration} linear infinite`,
+            animationName: "spin",
+            animationDuration: duration,
+            animationTimingFunction: "linear",
+            animationIterationCount: "infinite",
             animationPlayState: pace === "paused" ? "paused" : "running",
             opacity: pace === "paused" ? 0.35 : 0.85,
           }}
@@ -526,9 +529,14 @@ function WeightsMiniDemo({
 }) {
   return (
     <div className="mx-auto flex w-full max-w-lg items-center justify-center">
-      <div className="flex w-full flex-wrap items-center justify-between gap-3 rounded-xl border border-border-strong bg-surface px-5 py-4 shadow-card">
+      <div
+        role="group"
+        aria-label={locale === "en" ? "Button weight hierarchy" : "按钮重量层级"}
+        className="flex w-full flex-wrap items-center justify-between gap-3 rounded-xl border border-border-strong bg-surface px-5 py-4 shadow-card"
+      >
         <button
           type="button"
+          aria-pressed={selected === "text"}
           onClick={() => onSelect("text")}
           className={
             selected === "text"
@@ -542,6 +550,7 @@ function WeightsMiniDemo({
         <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
+            aria-pressed={selected === "outline"}
             onClick={() => onSelect("outline")}
             className={
               selected === "outline"
@@ -554,6 +563,7 @@ function WeightsMiniDemo({
 
           <button
             type="button"
+            aria-pressed={selected === "solid"}
             onClick={() => onSelect("solid")}
             className={
               selected === "solid"

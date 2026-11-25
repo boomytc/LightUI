@@ -134,10 +134,14 @@ function TryStudyItem({
 
   return (
     <div className="max-w-sm py-3 first:pt-0 lg:max-w-none">
-      <p className="text-[0.8125rem] text-fg-subtle">{categoryLabel(category, locale)}</p>
-      <h3 className="mt-1 text-[1.125rem] font-semibold tracking-[-0.02em] text-fg">
-        {studyTitle(meta, locale)}
-      </h3>
+      <div className="flex items-baseline justify-between gap-3">
+        <h3 className="min-w-0 text-[1.125rem] font-semibold tracking-[-0.02em] text-fg">
+          {studyTitle(meta, locale)}
+        </h3>
+        <span className="shrink-0 text-[0.8125rem] text-fg-subtle">
+          {categoryLabel(category, locale)}
+        </span>
+      </div>
 
       {asks ? (
         <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-fg-muted">{asks}</p>

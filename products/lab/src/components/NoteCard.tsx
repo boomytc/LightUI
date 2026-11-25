@@ -3,7 +3,6 @@ import { DateStamp } from "./DateStamp";
 import { Link } from "./Link";
 import { CATEGORIES } from "../lib/categories";
 import { studyTitle } from "../lib/localize";
-import { navigate } from "../lib/nav";
 import { estimateReadingTime, relatedMetas } from "./NoteItem";
 import { getNoteCategory, type Note } from "../lib/notes";
 import type { Locale } from "../lib/prefs";
@@ -23,19 +22,11 @@ export function NoteCard({
   const href = `/notes/${note.slug}`;
 
   return (
-    <article
-      className="group relative cursor-pointer py-5 transition-colors duration-150 hover:bg-surface/60 sm:-mx-3 sm:rounded-lg sm:px-3"
-      onClick={(e) => {
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-        if ((e.target as HTMLElement).closest("a, button")) return;
-        if (window.getSelection()?.toString()) return;
-        navigate(href);
-      }}
-    >
+    <article className="group relative py-5 transition-colors duration-150 hover:bg-surface/60 sm:-mx-3 sm:rounded-lg sm:px-3">
       <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_16rem] md:items-baseline md:gap-10">
         <div className="min-w-0">
           <h2 className="text-[1.125rem] font-semibold leading-snug tracking-[-0.02em] text-fg transition-colors duration-150 group-hover:text-accent">
-            <Link href={href} className="no-underline">
+            <Link href={href} className="no-underline after:absolute after:inset-0 after:content-['']">
               {note.title}
             </Link>
           </h2>
@@ -61,12 +52,12 @@ export function NoteCard({
               <Link
                 key={meta.slug}
                 href={`/s/${meta.slug}`}
-                className="font-medium text-fg-muted no-underline transition-colors duration-150 hover:text-accent"
+                className="relative z-10 font-medium text-fg-muted no-underline transition-colors duration-150 hover:text-accent"
               >
                 {studyTitle(meta, locale)}
               </Link>
             ))}
-            <span className="inline-flex items-center gap-1 font-medium text-accent">
+            <span aria-hidden="true" className="inline-flex items-center gap-1 font-medium text-accent">
               <span>{locale === "en" ? "Read" : "阅读"}</span>
               <ArrowRight className="size-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
             </span>

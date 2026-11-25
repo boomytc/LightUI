@@ -17,6 +17,12 @@ html {
   scroll-padding-top: var(--lab-sticky-offset);
 }
 
+/* 使用自定义清除按钮时隐藏 WebKit 原生搜索取消叉号，避免出现双叉号 */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .lab-shell {
   background-color: var(--color-bg);
   background-image:

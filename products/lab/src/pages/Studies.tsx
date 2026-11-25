@@ -110,12 +110,16 @@ export function Studies() {
     <Page as="main" className="pb-24 pt-8 sm:pt-12">
       <PageHero title={copy.studiesTitle} lede={copy.studiesLede}>
         <div className="relative w-full sm:w-[20rem] sm:min-w-[20rem]">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-subtle" />
+          <Search
+            aria-hidden="true"
+            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-fg-subtle"
+          />
           <input
             type="search"
             value={searchQuery}
             onChange={(e) => handleQueryChange(e.target.value)}
             placeholder={copy.searchPlaceholder}
+            aria-label={copy.searchPlaceholder}
             className="min-h-10 w-full rounded-lg border border-border bg-surface py-2 pl-9 pr-8 text-[0.8125rem] text-fg outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-fg-subtle focus:border-border-strong focus:ring-2 focus:ring-ring"
           />
           {searchQuery ? (

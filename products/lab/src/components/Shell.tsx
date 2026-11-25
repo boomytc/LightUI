@@ -120,7 +120,10 @@ export function Shell({ children, study = false }: { children: ReactNode; study?
                 </span>
               </Link>
 
-              <nav className="hidden items-center gap-1 sm:flex" aria-label="site">
+              <nav
+                className="hidden items-center gap-1 sm:flex"
+                aria-label={locale === "en" ? "Primary" : "主站点"}
+              >
                 {NAV.map((item) => {
                   const active = item.match(path);
                   return (
@@ -190,7 +193,7 @@ export function Shell({ children, study = false }: { children: ReactNode; study?
         <div className="page-width border-b border-border py-2 sm:hidden">
           <nav
             className="flex items-center rounded-lg border border-border bg-surface-2 p-0.5"
-            aria-label="mobile site"
+            aria-label={locale === "en" ? "Mobile" : "移动端"}
           >
             {NAV.map((item) => {
               const active = item.match(path);

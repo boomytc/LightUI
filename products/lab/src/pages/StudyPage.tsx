@@ -24,7 +24,8 @@ export function StudyPage({ slug }: { slug: string }) {
   const [useDeviceFrame, setUseDeviceFrame] = useState(prefersDeviceFrame);
   const panelRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Partial<Record<StudyTab, HTMLButtonElement | null>>>({});
-  const skipFocus = useRef(true);
+  const isInitialTabRef = useRef(true);
+  const focusPanelOnTabRef = useRef(false);
 
   const [studyViewState, setStudyViewState] = useState<{
     slug: string;
@@ -77,7 +78,8 @@ export function StudyPage({ slug }: { slug: string }) {
     setTab("play");
     setActiveCodeFile("stage");
     setUseDeviceFrame(prefersDeviceFrame);
-    skipFocus.current = true;
+    isInitialTabRef.current = true;
+    focusPanelOnTabRef.current = false;
   }, [slug, prefersDeviceFrame]);
 
   useEffect(() => {
@@ -183,8 +185,8 @@ export function StudyPage({ slug }: { slug: string }) {
   }, [slug, study, tab, locale]);
 
   useEffect(() => {
-    if (skipFocus.current) {
-      skipFocus.current = false;
+    if (isInitialTabRef.current) {
+      isInitialTabRef.current = false;
       return;
     }
     const main = document.getElementById("lab-main");
@@ -194,7 +196,10 @@ export function StudyPage({ slug }: { slug: string }) {
     if (window.scrollY > top) {
       window.scrollTo({ top, behavior: reduce ? "instant" : "smooth" });
     }
-    panelRef.current?.focus({ preventScroll: true });
+    if (focusPanelOnTabRef.current) {
+      focusPanelOnTabRef.current = false;
+      panelRef.current?.focus({ preventScroll: true });
+    }
   }, [tab]);
 
   if (!study) {
@@ -227,11 +232,12 @@ export function StudyPage({ slug }: { slug: string }) {
 
   function activate(next: StudyTab, via: "pointer" | "keyboard") {
     if (via === "keyboard") {
-      skipFocus.current = true;
+      focusPanelOnTabRef.current = false;
       setTab(next);
-      requestAnimationFrame(() => tabRefs.current[next]?.focus());
+      requestAnimationFrame(() => tabRefs.current[next]?.focus({ preventScroll: true }));
       return;
     }
+    focusPanelOnTabRef.current = true;
     setTab(next);
   }
 
@@ -260,10 +266,12 @@ export function StudyPage({ slug }: { slug: string }) {
           <div className="flex min-w-0 items-center gap-2.5">
             <BackLink
               fallback="/studies"
-              className="inline-flex min-h-8 max-w-[7.5rem] min-w-0 shrink-0 items-center gap-1.5 rounded-md px-1.5 text-[0.8125rem] text-fg-muted no-underline transition-colors duration-150 hover:bg-surface-2 hover:text-fg sm:max-w-[12rem]"
+              className="inline-flex min-h-8 max-w-[9rem] min-w-0 shrink-0 items-center gap-1.5 rounded-md px-1.5 text-[0.8125rem] text-fg-muted no-underline transition-colors duration-150 hover:bg-surface-2 hover:text-fg sm:max-w-[12rem]"
             />
             <span className="hidden h-4 w-px shrink-0 bg-border sm:block" aria-hidden="true" />
-            <p className="min-w-0 truncate text-[0.8125rem] font-semibold text-fg">{title}</p>
+            <p className="hidden min-w-0 truncate text-[0.8125rem] font-semibold text-fg sm:block">
+              {title}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             {prefersDeviceFrame && tab === "stage" ? (
@@ -374,9 +382,14 @@ export function StudyPage({ slug }: { slug: string }) {
                   <p className="mt-1 text-[0.8125rem] text-fg-muted">{copy.codeDesc}</p>
                 </div>
                 {study.hasMachinesCode ? (
-                  <div className="inline-flex rounded-lg border border-border bg-surface-2 p-0.5 text-[0.8125rem]">
+                  <div
+                    role="group"
+                    aria-label={copy.codeHeading}
+                    className="inline-flex rounded-lg border border-border bg-surface-2 p-0.5 text-[0.8125rem]"
+                  >
                     <button
                       type="button"
+                      aria-pressed={activeCodeFile === "stage"}
                       onClick={() => setActiveCodeFile("stage")}
                       className={
                         activeCodeFile === "stage"
@@ -388,6 +401,7 @@ export function StudyPage({ slug }: { slug: string }) {
                     </button>
                     <button
                       type="button"
+                      aria-pressed={activeCodeFile === "machines"}
                       onClick={() => setActiveCodeFile("machines")}
                       className={
                         activeCodeFile === "machines"

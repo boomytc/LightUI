@@ -30,7 +30,7 @@ export function Home() {
           </h1>
 
           <div className="flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-end">
-            <p className="max-w-[68ch] text-[0.9375rem] leading-[1.65] text-fg-muted">
+            <p className="max-w-[62ch] text-[0.9375rem] leading-[1.65] text-fg-muted">
               {copy.homeLede}
             </p>
 

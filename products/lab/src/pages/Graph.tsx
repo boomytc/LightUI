@@ -113,7 +113,8 @@ export function Graph() {
             <GraphMatrixView
               studies={studies}
               locale={locale}
-              onSelectSlug={(slug) => selectSlug(slug)}
+              selectedSlug={selectedSlug}
+              onSelectSlug={toggleSlug}
             />
           )}
         </div>

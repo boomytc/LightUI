@@ -22,9 +22,10 @@ export function GraphInspector({
   onSelectSlug: (slug: string) => void;
 }) {
   const copy = messages(locale);
+  const open = Boolean(slug);
 
   useEffect(() => {
-    if (!slug) return;
+    if (!open) return;
     const mq = window.matchMedia("(min-width: 1024px)");
     const syncBodyLock = () => {
       document.body.style.overflow = mq.matches ? "" : "hidden";
@@ -45,7 +46,7 @@ export function GraphInspector({
       window.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = "";
     };
-  }, [slug, onClose]);
+  }, [open, onClose]);
 
   if (!slug) return null;
 
@@ -93,10 +94,14 @@ export function GraphInspector({
 
         <div className="flex-1 space-y-6 overflow-y-auto overscroll-contain p-5">
           <div>
-            <p className="text-[0.8125rem] text-fg-subtle">{categoryLabel(category, locale)}</p>
-            <h2 className="mt-1 text-[1.125rem] font-semibold tracking-[-0.02em] text-fg">
-              {studyTitle(current, locale)}
-            </h2>
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 className="min-w-0 text-[1.125rem] font-semibold tracking-[-0.02em] text-fg">
+                {studyTitle(current, locale)}
+              </h2>
+              <span className="shrink-0 text-[0.8125rem] text-fg-subtle">
+                {categoryLabel(category, locale)}
+              </span>
+            </div>
             {asks ? (
               <p className="mt-2 text-[0.9375rem] leading-[1.6] text-fg-muted">{asks}</p>
             ) : null}

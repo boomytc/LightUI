@@ -1148,7 +1148,7 @@ function renderBlocks(blocks: Block[], locale?: Locale, nested = false): ReactNo
           <thead>
             <tr className="border-b border-border bg-surface-2/60">
               {block.headers.map((h, hi) => (
-                <th key={hi} className="px-4 py-2.5 font-semibold text-fg">
+                <th key={hi} scope="col" className="px-4 py-2.5 font-semibold text-fg">
                   {inline(h)}
                 </th>
               ))}
