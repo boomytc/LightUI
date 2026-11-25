@@ -1,4 +1,4 @@
-import { ArrowUpRight, Scale } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Link } from "./Link";
 import { contrastPairs } from "../lib/graph";
 import { messages } from "../lib/i18n";
@@ -19,19 +19,21 @@ export function GraphMatrixView({
   const pairs = contrastPairs(studies);
 
   if (pairs.length === 0) {
-    return <p className="text-[14px] text-fg-subtle">{copy.graphEmpty}</p>;
+    return <p className="text-[0.9375rem] text-fg-subtle">{copy.graphEmpty}</p>;
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-[13px] font-semibold text-fg">
-          <Scale className="size-4 text-wrong" />
-          <span>{copy.graphContrast} ({copy.graphPairs(pairs.length)})</span>
-        </div>
+      <div className="flex items-baseline gap-3">
+        <h2 className="text-[1.125rem] font-semibold tracking-[-0.02em] text-fg">
+          {copy.graphContrast}
+        </h2>
+        <span className="text-[0.8125rem] tabular-nums text-fg-subtle">
+          {copy.graphPairs(pairs.length)}
+        </span>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 xl:grid-cols-3">
         {pairs.map((pair) => {
           const a = studies.find((s) => s.slug === pair.a);
           const b = studies.find((s) => s.slug === pair.b);
@@ -39,54 +41,49 @@ export function GraphMatrixView({
           const when = linkWhen(pair.when, pair.whenEn, locale);
 
           return (
-            <div
+            <article
               key={`${pair.a}|${pair.b}`}
-              className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-card transition-all duration-200 hover:border-border-strong"
+              className="flex flex-col justify-between border-t border-border pt-4"
             >
-              {/* Header Context / When */}
               {when ? (
-                <div className="mb-4">
-                  <span className="inline-block rounded-md bg-wrong-soft px-2 py-0.5 font-mono text-[11px] font-medium text-wrong">
-                    {copy.distinctionBadge}
-                  </span>
-                  <p className="mt-1.5 text-[14px] font-medium leading-snug text-fg">
-                    {when}
-                  </p>
-                </div>
+                <p className="mb-4 text-[0.9375rem] font-semibold leading-snug text-fg">{when}</p>
               ) : null}
 
-              {/* Binary Contrast Duel Cards */}
-              <div className="mt-auto grid grid-cols-2 gap-2.5 pt-2">
-                {[a, b].map((node) => (
+              <div className="mt-auto grid grid-cols-2 divide-x divide-border border-t border-border/70 pt-3">
+                {[a, b].map((node, idx) => (
                   <div
                     key={node.slug}
-                    className="relative flex flex-col justify-between rounded-xl border border-border/80 bg-bg p-3 text-left transition-colors hover:border-accent hover:bg-surface-2"
+                    className={
+                      idx === 0
+                        ? "group relative flex flex-col justify-between pr-3.5"
+                        : "group relative flex flex-col justify-between pl-3.5"
+                    }
                   >
                     <div>
                       <button
                         type="button"
                         onClick={() => onSelectSlug(node.slug)}
-                        className="block cursor-pointer text-left text-[13px] font-semibold leading-tight text-fg after:absolute after:inset-0 after:content-['']"
+                        className="block cursor-pointer text-left text-[0.9375rem] font-semibold leading-snug text-fg transition-colors duration-150 group-hover:text-accent after:absolute after:inset-0 after:content-['']"
                       >
                         {studyTitle(node, locale)}
                       </button>
                       {node.asks ? (
-                        <p className="mt-1 line-clamp-2 text-[11px] text-fg-muted">
+                        <p className="mt-1 line-clamp-2 text-[0.8125rem] leading-snug text-fg-muted">
                           {studyAsks(node, locale)}
                         </p>
                       ) : null}
                     </div>
                     <Link
                       href={`/s/${node.slug}`}
-                      className="relative z-10 mt-3 inline-flex w-fit items-center gap-1 text-[11px] text-accent no-underline hover:underline"
+                      className="relative z-10 mt-3 inline-flex w-fit items-center gap-1 text-[0.8125rem] font-medium text-accent no-underline hover:underline"
                     >
-                      <span>{copy.tryWork}</span>
-                      <ArrowUpRight className="size-3" />
+                      <span>{copy.inspectorOpenStudy}</span>
+                      <ArrowUpRight className="size-3.5" />
                     </Link>
                   </div>
                 ))}
               </div>
-            </div>
+            </article>
           );
         })}
       </div>

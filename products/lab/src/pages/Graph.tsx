@@ -63,9 +63,13 @@ export function Graph() {
   ];
 
   return (
-    <Page as="main" className="pb-24 pt-10 sm:pt-12">
+    <Page as="main" className="pb-24 pt-8 sm:pt-12">
       <PageHero title={copy.graphPageTitle} lede={copy.graphPageLede}>
-        <div className="flex w-full items-center rounded-xl border border-border bg-surface-2/80 p-1 shadow-xs sm:w-auto">
+        <div
+          role="group"
+          aria-label={copy.graphPageTitle}
+          className="flex w-full items-center rounded-lg border border-border bg-surface-2 p-0.5 sm:w-auto"
+        >
           {modes.map((mode) => {
             const Icon = mode.icon;
             const active = viewMode === mode.id;
@@ -77,19 +81,11 @@ export function Graph() {
                 aria-pressed={active}
                 className={
                   active
-                    ? "flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-surface px-3 py-1.5 text-[12px] font-semibold text-fg shadow-xs sm:flex-none"
-                    : "flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-[12px] font-medium text-fg-muted transition-colors duration-150 hover:text-fg sm:flex-none"
+                    ? "flex flex-1 items-center justify-center gap-1.5 rounded-md bg-surface px-3 py-1.5 text-[0.8125rem] font-semibold text-fg transition-colors duration-150 sm:flex-none"
+                    : "flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-[0.8125rem] font-medium text-fg-muted transition-colors duration-150 hover:text-fg sm:flex-none"
                 }
               >
-                <Icon
-                  className={
-                    mode.id === "flow"
-                      ? "size-3.5 text-accent"
-                      : mode.id === "cluster"
-                        ? "size-3.5 text-intent"
-                        : "size-3.5 text-wrong"
-                  }
-                />
+                <Icon className={active ? "size-3.5 text-accent" : "size-3.5 text-fg-subtle"} />
                 <span className="whitespace-nowrap">{mode.label}</span>
               </button>
             );
