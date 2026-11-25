@@ -34,19 +34,17 @@ export function Graph() {
   );
 
   useEffect(() => {
-    if (!focusHash) {
-      setSelectedSlug(undefined);
-      return;
-    }
-    if (studySlugs.has(focusHash)) {
-      setSelectedSlug(focusHash);
-    }
+    setSelectedSlug(focusHash && studySlugs.has(focusHash) ? focusHash : undefined);
   }, [focusHash, studySlugs]);
 
   const selectSlug = useCallback((next: string | undefined) => {
     setSelectedSlug(next);
     replaceHash(next ?? null);
   }, []);
+
+  const closeInspector = useCallback(() => {
+    selectSlug(undefined);
+  }, [selectSlug]);
 
   const toggleSlug = useCallback(
     (slug: string) => {
@@ -124,8 +122,8 @@ export function Graph() {
             slug={selectedSlug}
             studies={studies}
             locale={locale}
-            onClose={() => selectSlug(undefined)}
-            onSelectSlug={(slug) => selectSlug(slug)}
+            onClose={closeInspector}
+            onSelectSlug={selectSlug}
           />
         ) : null}
       </div>

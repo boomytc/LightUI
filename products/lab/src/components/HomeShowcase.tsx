@@ -346,6 +346,21 @@ function TriangleMiniDemo({
     setGeometry(null);
   }
 
+  const primaryRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  function handlePrimaryKeyDown(index: number, e: React.KeyboardEvent<HTMLButtonElement>) {
+    let nextIdx: number | undefined;
+    if (e.key === "ArrowDown") nextIdx = (index + 1) % TRIANGLE_ITEMS.length;
+    else if (e.key === "ArrowUp") nextIdx = (index - 1 + TRIANGLE_ITEMS.length) % TRIANGLE_ITEMS.length;
+    if (nextIdx === undefined) return;
+    e.preventDefault();
+    const nextItem = TRIANGLE_ITEMS[nextIdx];
+    if (nextItem) {
+      handlePrimarySelect(nextItem.id);
+      primaryRefs.current[nextIdx]?.focus();
+    }
+  }
+
   const activeEntry = TRIANGLE_ITEMS[activeItem] ?? TRIANGLE_ITEMS[0];
   const subLabels = locale === "en" ? activeEntry.subEn : activeEntry.subZh;
 
@@ -378,17 +393,20 @@ function TriangleMiniDemo({
 
       <div className="relative z-0 grid grid-cols-2 gap-4 sm:gap-10">
         <div className="space-y-1 rounded-xl border border-border-strong bg-surface p-2 shadow-card">
-          {TRIANGLE_ITEMS.map((item) => {
+          {TRIANGLE_ITEMS.map((item, idx) => {
             const isActive = activeItem === item.id;
             const label = locale === "en" ? item.labelEn : item.labelZh;
             return (
               <button
                 key={item.id}
+                ref={(el) => {
+                  primaryRefs.current[idx] = el;
+                }}
                 type="button"
                 onMouseEnter={(e) => handlePrimaryEnter(item.id, e)}
                 onMouseMove={(e) => handlePrimaryMove(item.id, e)}
                 onClick={() => handlePrimarySelect(item.id)}
-                onFocus={() => handlePrimarySelect(item.id)}
+                onKeyDown={(e) => handlePrimaryKeyDown(idx, e)}
                 aria-expanded={isActive}
                 className={
                   isActive
@@ -427,6 +445,7 @@ function TriangleMiniDemo({
               <button
                 key={subIndex}
                 type="button"
+                aria-pressed={picked}
                 onClick={() => onSelectSub(subIndex)}
                 className={
                   picked
@@ -453,35 +472,21 @@ function BeamMiniDemo({
   pace: BeamPace;
   onPaceChange: (pace: BeamPace) => void;
 }) {
-  const duration = pace === "slow" ? "7s" : "3.6s";
-
   return (
     <div className="mx-auto flex w-full max-w-md flex-col items-center gap-6">
-      <div className="relative w-full max-w-[20rem] overflow-hidden rounded-2xl border border-border bg-surface px-7 py-6 text-center shadow-card">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -inset-[120%]"
-          style={{
-            background: "conic-gradient(from 0deg, transparent 0 330deg, var(--color-accent) 360deg)",
-            animationName: "spin",
-            animationDuration: duration,
-            animationTimingFunction: "linear",
-            animationIterationCount: "infinite",
-            animationPlayState: pace === "paused" ? "paused" : "running",
-            opacity: pace === "paused" ? 0.35 : 0.85,
-          }}
-        />
-        <div className="absolute inset-[1.5px] rounded-[14.5px] bg-surface" />
-        <div className="relative z-10">
-          <p className="text-[0.9375rem] font-semibold tracking-tight text-fg">
-            {locale === "en" ? "Perimeter ray" : "外沿圆角光束"}
-          </p>
-          <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-fg-muted">
-            {locale === "en"
-              ? "Inner surface stays completely neutral and legible."
-              : "内层卡片保持纯平面与完整文字对比度。"}
-          </p>
-        </div>
+      <div
+        data-beam-card=""
+        data-pace={pace}
+        className="lab-beam-card w-full max-w-[20rem] rounded-2xl px-7 py-6 text-center shadow-card"
+      >
+        <p className="text-[0.9375rem] font-semibold tracking-tight text-fg">
+          {locale === "en" ? "Perimeter ray" : "外沿圆角光束"}
+        </p>
+        <p className="mt-1.5 text-[0.8125rem] leading-relaxed text-fg-muted">
+          {locale === "en"
+            ? "Inner surface stays completely neutral and legible."
+            : "内层卡片保持纯平面与完整文字对比度。"}
+        </p>
       </div>
 
       <div

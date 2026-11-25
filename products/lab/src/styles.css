@@ -152,6 +152,91 @@ input[type="search"]::-webkit-search-cancel-button {
   animation: lab-drawer-up 220ms var(--lab-ease) both;
 }
 
+/* 原生顶层命令面板 <dialog>：浏览器接管顶层堆叠、背景 inert 与焦点归还，无需修改 body overflow */
+dialog.lab-palette-dialog {
+  margin: 4rem auto auto;
+  width: min(36rem, calc(100vw - 2rem));
+  max-width: none;
+  max-height: 80dvh;
+  padding: 0;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  color: var(--color-fg);
+  box-shadow: var(--shadow-menu);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+dialog.lab-palette-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  animation: lab-pop 180ms var(--lab-ease) both;
+}
+
+dialog.lab-palette-dialog::backdrop {
+  background-color: rgb(0 0 0 / 0.45);
+  backdrop-filter: blur(4px);
+  overflow: hidden;
+  overscroll-behavior: contain;
+  animation: lab-fade 160ms var(--lab-ease) both;
+}
+
+@media (min-width: 640px) {
+  dialog.lab-palette-dialog {
+    margin-top: 6rem;
+    width: min(36rem, calc(100vw - 3rem));
+  }
+}
+
+/* 首页边光实验卡：padding-box + border-box 双层裁切保证圆角内外严格同心 */
+@property --lab-beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 35deg;
+}
+
+@keyframes lab-beam-orbit {
+  from {
+    --lab-beam-angle: 35deg;
+  }
+  to {
+    --lab-beam-angle: 395deg;
+  }
+}
+
+.lab-beam-card {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    conic-gradient(
+      from var(--lab-beam-angle),
+      transparent 0deg 280deg,
+      color-mix(in oklab, var(--color-accent) 45%, transparent) 318deg,
+      var(--color-accent) 348deg,
+      transparent 360deg
+    ) border-box,
+    linear-gradient(var(--color-border-strong), var(--color-border-strong)) border-box;
+  animation: lab-beam-orbit 3.6s linear infinite;
+}
+
+.lab-beam-card[data-pace="slow"] {
+  animation-duration: 7s;
+}
+
+.lab-beam-card[data-pace="paused"] {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab-beam-card {
+    animation: none;
+    background:
+      linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+      linear-gradient(var(--color-accent), var(--color-accent)) border-box;
+  }
+}
+
 /* 首页与研究详情单层吸顶副栏：主顶栏在研究页随文档滚动收起，副栏贴顶 */
 .study-chrome {
   position: sticky;

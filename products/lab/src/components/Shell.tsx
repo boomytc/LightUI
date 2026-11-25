@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Moon, Search, Sun } from "lucide-react";
 import { CommandPalette } from "./CommandPalette";
 import { Link } from "./Link";
@@ -53,8 +53,15 @@ export function Shell({ children, study = false }: { children: ReactNode; study?
     return () => observer.disconnect();
   }, [study, path]);
 
+  const closePalette = useCallback(() => setPaletteOpen(false), []);
+
+  useEffect(() => {
+    setPaletteOpen(false);
+  }, [path]);
+
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
+      if (e.isComposing || e.keyCode === 229) return;
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setPaletteOpen((prev) => !prev);
@@ -188,7 +195,7 @@ export function Shell({ children, study = false }: { children: ReactNode; study?
         </div>
       </header>
 
-      <CommandPalette isOpen={paletteOpen} onClose={() => setPaletteOpen(false)} />
+      <CommandPalette isOpen={paletteOpen} onClose={closePalette} />
       {study ? null : (
         <div className="page-width border-b border-border py-2 sm:hidden">
           <nav

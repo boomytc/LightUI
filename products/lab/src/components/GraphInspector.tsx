@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { ArrowRight, ArrowUpRight, ChevronRight, X } from "lucide-react";
 import { Link } from "./Link";
 import { categoryLabel, getStudyCategory } from "../lib/categories";
@@ -23,6 +23,8 @@ export function GraphInspector({
 }) {
   const copy = messages(locale);
   const open = Boolean(slug);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!open) return;
@@ -34,10 +36,11 @@ export function GraphInspector({
     mq.addEventListener("change", syncBodyLock);
 
     const onKeyDown = (e: KeyboardEvent) => {
+      if (e.isComposing || e.keyCode === 229) return;
       if (e.key !== "Escape") return;
-      if (document.querySelector('[role="dialog"]')) return;
+      if (document.querySelector('dialog[open], [role="dialog"]')) return;
       e.preventDefault();
-      onClose();
+      onCloseRef.current();
     };
     window.addEventListener("keydown", onKeyDown);
 
@@ -46,7 +49,7 @@ export function GraphInspector({
       window.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = "";
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!slug) return null;
 

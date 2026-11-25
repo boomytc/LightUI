@@ -63,6 +63,10 @@ function lateralBulge(y1: number, y2: number): number {
   return Math.min(48, 22 + Math.abs(y2 - y1) * 0.045);
 }
 
+function verticalGutterBulge(y1: number, y2: number): number {
+  return Math.min(30, 16 + Math.abs(y2 - y1) * 0.015);
+}
+
 function calcPath(from: Box, to: Box, wide: boolean, type: "after" | "contrast"): string {
   if (wide) {
     if (type === "after") {
@@ -91,19 +95,20 @@ function calcPath(from: Box, to: Box, wide: boolean, type: "after" | "contrast")
     return `M ${x1} ${y1} C ${x1} ${arc}, ${x2} ${arc}, ${x2} ${y2}`;
   }
 
+  // 窄屏竖列模式：时序实线走左侧安全槽、对照虚线走右侧安全槽，避免中轴竖线穿透无关节点卡片
   if (type === "after") {
-    const x1 = from.x + from.w / 2;
-    const y1 = from.y + from.h;
-    const x2 = to.x + to.w / 2;
-    const y2 = to.y;
-    const mid = y1 + Math.max(20, (y2 - y1) / 2);
-    return `M ${x1} ${y1} C ${x1} ${mid}, ${x2} ${mid}, ${x2} ${y2}`;
+    const x1 = from.x;
+    const y1 = from.y + from.h / 2;
+    const x2 = to.x;
+    const y2 = to.y + to.h / 2;
+    const arcX = Math.min(x1, x2) - verticalGutterBulge(y1, y2);
+    return `M ${x1} ${y1} C ${arcX} ${y1}, ${arcX} ${y2}, ${x2} ${y2}`;
   }
   const x1 = from.x + from.w;
   const y1 = from.y + from.h / 2;
   const x2 = to.x + to.w;
   const y2 = to.y + to.h / 2;
-  const arcX = Math.max(x1, x2) + lateralBulge(y1, y2);
+  const arcX = Math.max(x1, x2) + verticalGutterBulge(y1, y2);
   return `M ${x1} ${y1} C ${arcX} ${y1}, ${arcX} ${y2}, ${x2} ${y2}`;
 }
 
@@ -135,16 +140,21 @@ function calcMid(from: Box, to: Box, wide: boolean, type: "after" | "contrast"):
     };
   }
   if (type === "after") {
+    const x1 = from.x;
+    const y1 = from.y + from.h / 2;
+    const x2 = to.x;
+    const y2 = to.y + to.h / 2;
+    const arcX = Math.min(x1, x2) - verticalGutterBulge(y1, y2);
     return {
-      x: (from.x + from.w / 2 + to.x + to.w / 2) / 2,
-      y: (from.y + from.h + to.y) / 2,
+      x: 0.25 * ((x1 + x2) / 2) + 0.75 * arcX,
+      y: (y1 + y2) / 2,
     };
   }
   const x1 = from.x + from.w;
   const y1 = from.y + from.h / 2;
   const x2 = to.x + to.w;
   const y2 = to.y + to.h / 2;
-  const arcX = Math.max(x1, x2) + lateralBulge(y1, y2);
+  const arcX = Math.max(x1, x2) + verticalGutterBulge(y1, y2);
   return {
     x: 0.25 * ((x1 + x2) / 2) + 0.75 * arcX,
     y: (y1 + y2) / 2,
@@ -215,9 +225,17 @@ export function GraphCanvas({
           behavior: reduce ? "instant" : "smooth",
         });
       }
+      if (wide && (nodeRect.top < 88 || nodeRect.bottom > window.innerHeight - 24)) {
+        const targetTop =
+          window.scrollY + nodeRect.top - window.innerHeight / 2 + nodeRect.height / 2;
+        window.scrollTo({
+          top: Math.max(0, targetTop),
+          behavior: reduce ? "instant" : "smooth",
+        });
+      }
     });
     return () => cancelAnimationFrame(raf);
-  }, [selectedSlug]);
+  }, [selectedSlug, wide]);
 
   useEffect(() => {
     const scroller = scrollRef.current;
@@ -446,9 +464,9 @@ export function GraphCanvas({
 
         <div
           ref={scrollRef}
-          className="relative max-w-full overflow-x-auto overscroll-x-contain p-5 pb-12 sm:p-6"
+          className="relative max-w-full overflow-x-auto overscroll-x-contain p-4 pb-12 sm:p-6"
         >
-          <div ref={rootRef} className="relative block w-full pb-8 pr-6 lg:inline-block lg:w-auto lg:min-w-full lg:pr-8">
+          <div ref={rootRef} className="relative block w-full pb-8 lg:inline-block lg:w-auto lg:min-w-full lg:pr-6">
             <svg
               className="pointer-events-none absolute inset-0 size-full overflow-visible"
               aria-hidden="true"
@@ -472,7 +490,9 @@ export function GraphCanvas({
                     ? showAllContrasts
                       ? 0.45
                       : 0.09
-                    : 0.65;
+                    : wide
+                      ? 0.65
+                      : 0.24;
                 const strokeWidth = edge.hot && activeSlug ? 2.25 : isContrast && !showAllContrasts ? 1 : 1.5;
 
                 return (
@@ -521,7 +541,7 @@ export function GraphCanvas({
                   })
               : null}
 
-            <div className="relative z-10 flex flex-col gap-10 lg:min-w-max lg:flex-row lg:items-start lg:justify-between lg:gap-11">
+            <div className="relative z-10 flex flex-col gap-10 lg:min-w-max lg:flex-row lg:items-start lg:justify-between lg:gap-8 xl:gap-10">
               {levels.map((level, levelIdx) => {
                 const groupedByDomain =
                   level.length > 10
@@ -541,7 +561,10 @@ export function GraphCanvas({
                     : null;
 
                 return (
-                  <div key={levelIdx} className="flex w-full max-w-[26rem] shrink-0 flex-col gap-3.5 pr-8 lg:w-[12.5rem] lg:max-w-none lg:pr-0">
+                  <div
+                    key={levelIdx}
+                    className="mx-auto flex w-full max-w-[36rem] shrink-0 flex-col gap-3.5 px-7 sm:px-8 lg:mx-0 lg:w-[11.25rem] lg:max-w-none lg:px-0 xl:w-[11.75rem] 2xl:w-[12.5rem]"
+                  >
                     <div className="flex items-center gap-2 border-b border-border pb-2 text-[0.8125rem] tabular-nums">
                       <span className="font-semibold text-fg">L{levelIdx + 1}</span>
                       <span className="text-fg-subtle">{level.length}</span>
